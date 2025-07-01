@@ -1,0 +1,101 @@
+{
+  "perfil_usado": "rapido",
+  "pasos_aplicados": [
+    "Inversión temprana (Caso A)",
+    "Corrección de sesgo",
+    "Mejora de contraste CLAHE",
+    "Binarización adaptativa",
+    "Operaciones morfológicas"
+  ],
+  "metricas_antes": {
+    "brillo_promedio": 40.82880658436214,
+    "contraste": 37.11509698980526,
+    "nitidez": 5166.004909312605,
+    "rango_dinamico": 255.0
+  },
+  "parametros_aplicados": {
+    "inversion_caso_a": {
+      "intensidad_media_original": 40.83,
+      "confianza_inversion": 0.9779999852180481,
+      "pixeles_oscuros": 119128,
+      "pixeles_claros": 2649
+    },
+    "deskew": {
+      "angulo_corregido": 2.5,
+      "dimensiones_nuevas": [
+        266,
+        550
+      ],
+      "tipo_imagen": "escaneada"
+    },
+    "mejora_contraste": {
+      "metodo": "CLAHE",
+      "clip_limit": 3.0,
+      "tile_size": [
+        8,
+        8
+      ]
+    },
+    "binarizacion": {
+      "block_size": 15,
+      "C": 5,
+      "brillo_detectado": 40.8
+    },
+    "morfologia": {
+      "apertura_kernel": [
+        2,
+        2
+      ],
+      "cierre_kernel": [
+        3,
+        1
+      ]
+    }
+  },
+  "tiempo_procesamiento": 0.017,
+  "tipo_imagen_detectado": {
+    "tipo": "documento_escaneado",
+    "es_screenshot": false,
+    "dimensiones": "243x540",
+    "aspect_ratio": 0.45,
+    "sesgo_detectado": 2.5
+  },
+  "estrategia_seleccionada": {
+    "redimensionar": true,
+    "deskew": "conditional",
+    "bilateral_filter": "conditional",
+    "noise_removal": false,
+    "contrast_enhancement": true,
+    "adaptive_threshold": true,
+    "morphology": "full",
+    "sharpening": "conditional"
+  },
+  "metricas_despues": {
+    "brillo_promedio": 219.85427204374574,
+    "contraste": 87.9030058375128,
+    "nitidez": 16791.82843472317,
+    "rango_dinamico": 255.0
+  },
+  "imagen_mejorada": "temp/web_20250701_070208/ocr_f7ead836_20250701_070208/imagen_mejorada.png",
+  "mejora_calidad": {
+    "contraste": {
+      "antes": 37.12,
+      "despues": 87.9,
+      "cambio": 50.79,
+      "porcentaje": 136.8
+    },
+    "nitidez": {
+      "antes": 5166.0,
+      "despues": 16791.83,
+      "cambio": 11625.82,
+      "porcentaje": 225.0
+    },
+    "rango_dinamico": {
+      "antes": 255.0,
+      "despues": 255.0,
+      "cambio": 0.0,
+      "porcentaje": 0.0
+    }
+  },
+  "tiempo": 0.019
+}
