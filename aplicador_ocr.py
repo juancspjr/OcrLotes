@@ -80,8 +80,11 @@ class AplicadorOCR:
             # Ejecutar procesamiento dual-pass
             resultado_dual_pass = self._procesar_dual_pass(image_path, language, config_mode, tesseract_config_dual)
             
-            # Extraer texto principal del dual-pass (texto concatenado final)
-            texto_completo = resultado_dual_pass['texto_final_concatenado']
+            # FIX: Extraer y limpiar texto principal del dual-pass
+            # REASON: Aplicar limpieza también al texto del primer pass
+            # IMPACT: Consistencia en la limpieza de todo el texto extraído
+            texto_completo_crudo = resultado_dual_pass['texto_final_concatenado']
+            texto_completo = self._limpiar_y_espaciar_texto(texto_completo_crudo)
             
             # Usar datos OCR del primer pass para estadísticas detalladas
             ocr_data = resultado_dual_pass['primer_pass']['ocr_data']
@@ -419,22 +422,39 @@ class AplicadorOCR:
             else:
                 gray = image.copy()
             
-            # Detectar zonas grises (rango específico de valores grises)
-            # Valores entre 100-180 se consideran "grises" (no completamente blancos ni negros)
-            # Para imágenes en escala de grises, usar thresholding manual
-            gray_mask = np.zeros_like(gray)
-            gray_mask[(gray >= 100) & (gray <= 180)] = 255
+            # FIX: Detección mejorada de zonas grises con múltiples rangos
+            # REASON: La zona gris principal "104,54 Bs" requiere un rango más amplio de detección
+            # IMPACT: Captura correcta de todas las zonas grises, incluyendo la zona principal
             
-            # Aplicar operaciones morfológicas para limpiar la máscara
-            kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (10, 10))
-            gray_mask = cv2.morphologyEx(gray_mask, cv2.MORPH_CLOSE, kernel)
-            gray_mask = cv2.morphologyEx(gray_mask, cv2.MORPH_OPEN, kernel)
+            # Detectar zonas grises con rango ampliado (80-200) para capturar más variaciones
+            gray_mask_primary = np.zeros_like(gray)
+            gray_mask_primary[(gray >= 80) & (gray <= 200)] = 255
+            
+            # Detectar zonas grises específicas (rango medio 120-170 para zonas típicas)
+            gray_mask_secondary = np.zeros_like(gray)
+            gray_mask_secondary[(gray >= 120) & (gray <= 170)] = 255
+            
+            # Combinar ambas máscaras para detección completa
+            gray_mask = cv2.bitwise_or(gray_mask_primary, gray_mask_secondary)
+            
+            # Aplicar operaciones morfológicas más agresivas para capturar zonas completas
+            kernel_large = cv2.getStructuringElement(cv2.MORPH_RECT, (15, 15))
+            kernel_small = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
+            
+            # Cerrar huecos en las zonas grises
+            gray_mask = cv2.morphologyEx(gray_mask, cv2.MORPH_CLOSE, kernel_large)
+            # Limpiar ruido pequeño
+            gray_mask = cv2.morphologyEx(gray_mask, cv2.MORPH_OPEN, kernel_small)
+            # Dilatar para capturar bordes completos
+            gray_mask = cv2.dilate(gray_mask, kernel_small, iterations=2)
             
             # Encontrar contornos de las zonas grises
             contours, _ = cv2.findContours(gray_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
             
-            # Filtrar contornos por área mínima (evitar ruido)
-            min_area = 1000  # píxeles cuadrados mínimos
+            # FIX: Área mínima reducida para capturar zonas más pequeñas pero importantes
+            # REASON: La zona principal puede ser más pequeña de lo esperado
+            # IMPACT: Captura zonas grises importantes que antes se perdían
+            min_area = 500  # Reducido de 1000 a 500 píxeles cuadrados
             gray_regions = []
             
             for contour in contours:
@@ -602,8 +622,11 @@ class AplicadorOCR:
                         logger.warning(f"Error procesando zona gris {i+1}: {e}")
                         continue
                 
-                # Consolidar texto del segundo pass
-                texto_segundo_pass = ' '.join(textos_segundo_pass)
+                # FIX: Consolidar y limpiar texto del segundo pass con mejor espaciado
+                # REASON: Usuario requiere elementos no textuales separados con espacios
+                # IMPACT: Mejora legibilidad y preserva estructura del texto
+                texto_segundo_pass_crudo = ' '.join(textos_segundo_pass)
+                texto_segundo_pass = self._limpiar_y_espaciar_texto(texto_segundo_pass_crudo)
                 
                 # Actualizar resultado
                 resultado_dual['segundo_pass'] = {
@@ -634,6 +657,45 @@ class AplicadorOCR:
                 'zonas_grises_detectadas': 0,
                 'error': str(e)
             }
+    
+    def _limpiar_y_espaciar_texto(self, texto):
+        """
+        FIX: Limpia y mejora el espaciado del texto extraído
+        REASON: Usuario requiere elementos no textuales separados con espacios apropiados
+        IMPACT: Mejora legibilidad y preserva estructura del texto manteniendo símbolos
+        """
+        if not texto:
+            return texto
+            
+        # FIX: Preservar símbolos pero mejorar espaciado
+        # REASON: Usuario quiere conservar */.- pero con mejor separación
+        # IMPACT: Texto más legible sin perder información
+        
+        # Separar elementos pegados con espacios
+        import re
+        
+        # Agregar espacio antes y después de números largos
+        texto = re.sub(r'(\d{4,})', r' \1 ', texto)
+        
+        # Separar fechas pegadas
+        texto = re.sub(r'(\d{1,2}/\d{1,2}/\d{4})', r' \1 ', texto)
+        
+        # Separar códigos de operación
+        texto = re.sub(r'(\d{11,})', r' \1 ', texto)
+        
+        # Agregar espacio después de símbolos importantes
+        texto = re.sub(r'([*/.:-])([A-Za-z])', r'\1 \2', texto)
+        
+        # Agregar espacio antes de símbolos si están pegados a letras
+        texto = re.sub(r'([A-Za-z])([*/.:-])', r'\1 \2', texto)
+        
+        # Limpiar espacios múltiples
+        texto = re.sub(r'\s+', ' ', texto)
+        
+        # Limpiar espacios al inicio y final
+        texto = texto.strip()
+        
+        return texto
 
 def main():
     """Función principal para uso por línea de comandos"""
