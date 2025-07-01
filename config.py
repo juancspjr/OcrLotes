@@ -21,11 +21,12 @@ STATIC_DIR.mkdir(exist_ok=True)
 # REASON: Incrementar confianza OCR y asegurar texto negro óptimo
 # IMPACT: Mejora significativa en precision y confianza de extracción
 TESSERACT_CONFIG = {
-    'default': '--oem 3 --psm 6 -c tessedit_char_whitelist=0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,;:()- -c tessedit_char_blacklist=',
-    'high_confidence': '--oem 3 --psm 6 -c tessedit_char_whitelist=0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,;:()- -c preserve_interword_spaces=1 -c tessedit_ocr_engine_mode=3',
-    'screenshot_optimized': '--oem 3 --psm 6 -c tessedit_char_whitelist=0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,;:()- -c textord_really_old_xheight=1 -c textord_min_xheight=10',
-    'digits': '--oem 3 --psm 6 -c tessedit_char_whitelist=0123456789.,',
-    'alphanumeric': '--oem 3 --psm 6 -c tessedit_char_whitelist=0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+    'default': '--oem 3 --psm 6 -c tessedit_char_whitelist=0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,;:()*/.- -c tessedit_char_blacklist= -c preserve_interword_spaces=1',
+    'high_confidence': '--oem 3 --psm 6 -c tessedit_char_whitelist=0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,;:()*/.- -c preserve_interword_spaces=1 -c tessedit_preserve_min_wd_len=2 -c tessedit_preserve_row_whitespace=1 -c tessedit_preserve_blk_wd_gap=1',
+    'screenshot_optimized': '--oem 3 --psm 6 -c tessedit_char_whitelist=0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,;:()*/.- -c textord_really_old_xheight=1 -c textord_min_xheight=10 -c preserve_interword_spaces=1 -c tessedit_preserve_min_wd_len=1',
+    'dual_pass_optimized': '--oem 3 --psm 6 -c tessedit_char_whitelist=0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,;:()*/.-_@#$%&+=[]{}|\\/<>?! -c preserve_interword_spaces=1 -c tessedit_preserve_row_whitespace=1 -c tessedit_preserve_blk_wd_gap=1 -c tessedit_preserve_min_wd_len=1',
+    'digits': '--oem 3 --psm 6 -c tessedit_char_whitelist=0123456789.,*/-',
+    'alphanumeric': '--oem 3 --psm 6 -c tessedit_char_whitelist=0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,;:()*/-'
 }
 
 # FIX: Configuración de confianza y calidad OCR mejorada

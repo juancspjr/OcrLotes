@@ -32,16 +32,17 @@ class AplicadorOCR:
         
     def extraer_texto(self, image_path, language='spa', config_mode='high_confidence', extract_financial=True, deteccion_inteligente=None):
         """
-        Extrae texto de una imagen usando Tesseract OCR
+        Extrae texto de una imagen usando Tesseract OCR con procesamiento dual-pass
         
         Args:
             image_path: Ruta a la imagen procesada
             language: Idioma para OCR
             config_mode: Configuración de Tesseract a usar
             extract_financial: Si extraer datos financieros específicos
+            deteccion_inteligente: Información de detección inteligente
             
         Returns:
-            dict: Resultados de OCR con texto y datos estructurados
+            dict: Resultados de OCR con texto y datos estructurados, incluyendo dual-pass
         """
         try:
             # Cargar imagen
@@ -67,24 +68,35 @@ class AplicadorOCR:
             
             logger.info(f"Iniciando OCR con idioma: {language}, modo: {config_mode}")
             
-            # Extraer texto con confianza
-            ocr_data = pytesseract.image_to_data(
-                pil_image, 
-                lang=language, 
-                config=tesseract_config,
-                output_type=pytesseract.Output.DICT
-            )
+            # FIX: NUEVO - Procesamiento dual-pass con detección de zonas grises
+            # REASON: Usuario requiere conservación extrema de caracteres y procesamiento especializado de zonas grises
+            # IMPACT: Maximiza extracción de texto y preserva símbolos/espacios
             
-            # Extraer texto simple
-            texto_completo = pytesseract.image_to_string(
-                pil_image, 
-                lang=language, 
-                config=tesseract_config
-            ).strip()
+            # FIX: Usar configuración especializada para dual-pass que preserva todos los símbolos
+            # REASON: Usuario requiere conservación extrema de espacios y símbolos */.- etc.
+            # IMPACT: Máxima preservación de caracteres y símbolos en el texto extraído
+            tesseract_config_dual = self.tesseract_configs.get('dual_pass_optimized', tesseract_config)
             
-            # Procesar resultados
+            # Ejecutar procesamiento dual-pass
+            resultado_dual_pass = self._procesar_dual_pass(image_path, language, config_mode, tesseract_config_dual)
+            
+            # Extraer texto principal del dual-pass (texto concatenado final)
+            texto_completo = resultado_dual_pass['texto_final_concatenado']
+            
+            # Usar datos OCR del primer pass para estadísticas detalladas
+            ocr_data = resultado_dual_pass['primer_pass']['ocr_data']
+            
+            # Procesar resultados consolidados
             resultado_ocr = {
                 'texto_completo': texto_completo,
+                # FIX: NUEVO - Incluir información del procesamiento dual-pass
+                'dual_pass_info': {
+                    'primer_pass_caracteres': resultado_dual_pass['primer_pass']['caracteres'],
+                    'segundo_pass_caracteres': resultado_dual_pass['segundo_pass']['caracteres_adicionales'],
+                    'zonas_grises_detectadas': resultado_dual_pass['zonas_grises_detectadas'],
+                    'zonas_procesadas': resultado_dual_pass['segundo_pass']['zonas_procesadas'],
+                    'elementos_detectados': resultado_dual_pass['elementos_detectados']
+                },
                 'estadisticas_ocr': self._analizar_estadisticas_ocr(ocr_data),
                 'palabras_detectadas': self._extraer_palabras_con_confianza(ocr_data),
                 'confianza_promedio': self._calcular_confianza_promedio(ocr_data),
@@ -95,7 +107,7 @@ class AplicadorOCR:
             if extract_financial:
                 resultado_ocr['datos_financieros'] = self._extraer_datos_financieros(texto_completo)
             
-            logger.info(f"OCR completado. Texto extraído: {len(texto_completo)} caracteres")
+            logger.info(f"OCR dual-pass completado. Texto final: {len(resultado_ocr['texto_completo'])} caracteres")
             return resultado_ocr
             
         except Exception as e:
@@ -393,6 +405,235 @@ class AplicadorOCR:
             recomendaciones.append("Calidad de extracción satisfactoria")
         
         return recomendaciones
+
+    def _detectar_zonas_grises(self, image):
+        """
+        FIX: Detecta zonas grises en la imagen final para procesamiento dual-pass
+        REASON: Usuario requiere detección específica de zonas grises para segundo pase de OCR
+        IMPACT: Permite procesamiento especializado de áreas con fondo gris que pueden contener texto adicional
+        """
+        try:
+            # Convertir a escala de grises si no lo está
+            if len(image.shape) == 3:
+                gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+            else:
+                gray = image.copy()
+            
+            # Detectar zonas grises (rango específico de valores grises)
+            # Valores entre 100-180 se consideran "grises" (no completamente blancos ni negros)
+            # Para imágenes en escala de grises, usar thresholding manual
+            gray_mask = np.zeros_like(gray)
+            gray_mask[(gray >= 100) & (gray <= 180)] = 255
+            
+            # Aplicar operaciones morfológicas para limpiar la máscara
+            kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (10, 10))
+            gray_mask = cv2.morphologyEx(gray_mask, cv2.MORPH_CLOSE, kernel)
+            gray_mask = cv2.morphologyEx(gray_mask, cv2.MORPH_OPEN, kernel)
+            
+            # Encontrar contornos de las zonas grises
+            contours, _ = cv2.findContours(gray_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            
+            # Filtrar contornos por área mínima (evitar ruido)
+            min_area = 1000  # píxeles cuadrados mínimos
+            gray_regions = []
+            
+            for contour in contours:
+                area = cv2.contourArea(contour)
+                if area > min_area:
+                    x, y, w, h = cv2.boundingRect(contour)
+                    # Agregar padding para capturar texto completo
+                    padding = 10
+                    x = max(0, x - padding)
+                    y = max(0, y - padding)
+                    w = min(image.shape[1] - x, w + 2*padding)
+                    h = min(image.shape[0] - y, h + 2*padding)
+                    
+                    gray_regions.append({
+                        'bbox': (x, y, w, h),
+                        'area': area,
+                        'region_image': image[y:y+h, x:x+w]
+                    })
+            
+            logger.info(f"Detectadas {len(gray_regions)} zonas grises para procesamiento secundario")
+            return gray_regions
+            
+        except Exception as e:
+            logger.error(f"Error detectando zonas grises: {e}")
+            return []
+    
+    def _detectar_logos_figuras(self, image):
+        """
+        FIX: Detecta y separa logos/figuras del texto para preservar caracteres
+        REASON: Usuario requiere separación de elementos gráficos vs texto
+        IMPACT: Mejora precisión OCR al evitar interferencia de elementos no textuales
+        """
+        try:
+            # Convertir a escala de grises
+            if len(image.shape) == 3:
+                gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+            else:
+                gray = image.copy()
+            
+            # Detectar bordes para identificar figuras/logos
+            edges = cv2.Canny(gray, 50, 150)
+            
+            # Encontrar contornos
+            contours, _ = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            
+            # Clasificar contornos como texto vs figuras/logos
+            text_regions = []
+            figure_regions = []
+            
+            for contour in contours:
+                area = cv2.contourArea(contour)
+                x, y, w, h = cv2.boundingRect(contour)
+                aspect_ratio = w / h if h > 0 else 0
+                
+                # Heurísticas para clasificar:
+                # - Texto: relación de aspecto moderada, área pequeña-mediana
+                # - Figuras/logos: área grande o relación de aspecto extrema
+                if area < 5000 and 0.1 < aspect_ratio < 10:
+                    # Probablemente texto
+                    text_regions.append({
+                        'bbox': (x, y, w, h),
+                        'area': area,
+                        'type': 'text'
+                    })
+                else:
+                    # Probablemente figura/logo
+                    figure_regions.append({
+                        'bbox': (x, y, w, h),
+                        'area': area,
+                        'type': 'figure'
+                    })
+            
+            logger.info(f"Detectadas {len(text_regions)} regiones de texto y {len(figure_regions)} figuras/logos")
+            
+            return {
+                'text_regions': text_regions,
+                'figure_regions': figure_regions
+            }
+            
+        except Exception as e:
+            logger.error(f"Error detectando logos/figuras: {e}")
+            return {'text_regions': [], 'figure_regions': []}
+    
+    def _procesar_dual_pass(self, image_path, language, config_mode, tesseract_config):
+        """
+        FIX: Implementa procesamiento dual-pass OCR (imagen completa + zonas grises)
+        REASON: Usuario requiere procesamiento especializado de zonas grises adicionales
+        IMPACT: Maximiza extracción de texto al procesar tanto la imagen completa como zonas específicas
+        """
+        try:
+            # Cargar imagen
+            image = cv2.imread(str(image_path))
+            if image is None:
+                raise ValueError(f"No se puede cargar imagen para dual-pass: {image_path}")
+            
+            # PRIMER PASS: OCR completo de toda la imagen
+            logger.info("Ejecutando PRIMER PASS: OCR completo de imagen")
+            
+            # Usar método original para OCR completo
+            pil_image = Image.fromarray(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
+            
+            # OCR con datos detallados para primer pass
+            ocr_data_full = pytesseract.image_to_data(
+                pil_image, 
+                lang=language, 
+                config=tesseract_config, 
+                output_type=pytesseract.Output.DICT
+            )
+            
+            # Texto completo del primer pass
+            texto_primer_pass = pytesseract.image_to_string(
+                pil_image, 
+                lang=language, 
+                config=tesseract_config
+            ).strip()
+            
+            # DETECTAR ZONAS GRISES para segundo pass
+            zonas_grises = self._detectar_zonas_grises(image)
+            
+            # DETECTAR LOGOS/FIGURAS para separación
+            elementos_detectados = self._detectar_logos_figuras(image)
+            
+            resultado_dual = {
+                'primer_pass': {
+                    'texto': texto_primer_pass,
+                    'caracteres': len(texto_primer_pass),
+                    'ocr_data': ocr_data_full
+                },
+                'segundo_pass': {
+                    'texto': '',
+                    'zonas_procesadas': 0,
+                    'caracteres_adicionales': 0
+                },
+                'texto_final_concatenado': texto_primer_pass,
+                'elementos_detectados': elementos_detectados,
+                'zonas_grises_detectadas': len(zonas_grises)
+            }
+            
+            # SEGUNDO PASS: Solo si se detectaron zonas grises
+            if zonas_grises:
+                logger.info(f"Ejecutando SEGUNDO PASS: Procesando {len(zonas_grises)} zonas grises")
+                
+                textos_segundo_pass = []
+                
+                for i, zona in enumerate(zonas_grises):
+                    try:
+                        # Extraer imagen de la zona gris
+                        zona_image = zona['region_image']
+                        
+                        # Convertir para PIL
+                        zona_pil = Image.fromarray(cv2.cvtColor(zona_image, cv2.COLOR_BGR2RGB))
+                        
+                        # OCR específico de la zona gris
+                        texto_zona = pytesseract.image_to_string(
+                            zona_pil,
+                            lang=language,
+                            config=tesseract_config
+                        ).strip()
+                        
+                        if texto_zona:  # Solo agregar si hay texto
+                            textos_segundo_pass.append(texto_zona)
+                            logger.info(f"Zona gris {i+1}: Extraídos {len(texto_zona)} caracteres")
+                    
+                    except Exception as e:
+                        logger.warning(f"Error procesando zona gris {i+1}: {e}")
+                        continue
+                
+                # Consolidar texto del segundo pass
+                texto_segundo_pass = ' '.join(textos_segundo_pass)
+                
+                # Actualizar resultado
+                resultado_dual['segundo_pass'] = {
+                    'texto': texto_segundo_pass,
+                    'zonas_procesadas': len(textos_segundo_pass),
+                    'caracteres_adicionales': len(texto_segundo_pass)
+                }
+                
+                # CONCATENAR RESULTADOS: Primer pass + Segundo pass
+                if texto_segundo_pass:
+                    resultado_dual['texto_final_concatenado'] = f"{texto_primer_pass}\n\n--- TEXTO DE ZONAS GRISES ---\n{texto_segundo_pass}"
+                
+                logger.info(f"Dual-pass completado: {len(texto_primer_pass)} + {len(texto_segundo_pass)} = {len(resultado_dual['texto_final_concatenado'])} caracteres totales")
+            
+            else:
+                logger.info("No se detectaron zonas grises, usando solo resultado del primer pass")
+            
+            return resultado_dual
+            
+        except Exception as e:
+            logger.error(f"Error en procesamiento dual-pass: {e}")
+            # Fallback: retornar solo texto básico
+            return {
+                'primer_pass': {'texto': '', 'caracteres': 0, 'ocr_data': {}},
+                'segundo_pass': {'texto': '', 'zonas_procesadas': 0, 'caracteres_adicionales': 0},
+                'texto_final_concatenado': '',
+                'elementos_detectados': {'text_regions': [], 'figure_regions': []},
+                'zonas_grises_detectadas': 0,
+                'error': str(e)
+            }
 
 def main():
     """Función principal para uso por línea de comandos"""

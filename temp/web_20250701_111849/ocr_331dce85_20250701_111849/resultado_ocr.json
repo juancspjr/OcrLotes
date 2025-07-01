@@ -1,0 +1,240 @@
+{
+  "texto_completo": "PagomovilBDVPersonas\no\nFecha: 20062025\nOperacin: 003039387344T\nIdentificacin: 27061025\nOrigen: 01022679\nDestino: 04125318244\nBanco: 0105-BANCOMERCANTIL",
+  "estadisticas_ocr": {
+    "total_palabras": 25,
+    "palabras_validas": 14,
+    "confianza_promedio": 44.36,
+    "confianza_minima": 0,
+    "confianza_maxima": 96,
+    "palabras_alta_confianza": 6,
+    "palabras_baja_confianza": 7,
+    "distribucion_confianza": {
+      "excelente (90-100)": 6,
+      "buena (70-89)": 0,
+      "regular (50-69)": 1,
+      "baja (30-49)": 0,
+      "muy_baja (0-29)": 7
+    }
+  },
+  "palabras_detectadas": [
+    {
+      "texto": "27061025",
+      "confianza": 96,
+      "posicion": {
+        "x": 504,
+        "y": 576,
+        "width": 151,
+        "height": 23
+      },
+      "categoria_confianza": "excelente"
+    },
+    {
+      "texto": "04125318244",
+      "confianza": 96,
+      "posicion": {
+        "x": 445,
+        "y": 712,
+        "width": 210,
+        "height": 23
+      },
+      "categoria_confianza": "excelente"
+    },
+    {
+      "texto": "Fecha:",
+      "confianza": 93,
+      "posicion": {
+        "x": 66,
+        "y": 435,
+        "width": 89,
+        "height": 43
+      },
+      "categoria_confianza": "excelente"
+    },
+    {
+      "texto": "Destino:",
+      "confianza": 93,
+      "posicion": {
+        "x": 66,
+        "y": 707,
+        "width": 116,
+        "height": 43
+      },
+      "categoria_confianza": "excelente"
+    },
+    {
+      "texto": "Banco:",
+      "confianza": 93,
+      "posicion": {
+        "x": 66,
+        "y": 775,
+        "width": 94,
+        "height": 43
+      },
+      "categoria_confianza": "excelente"
+    },
+    {
+      "texto": "Origen:",
+      "confianza": 92,
+      "posicion": {
+        "x": 65,
+        "y": 639,
+        "width": 103,
+        "height": 39
+      },
+      "categoria_confianza": "excelente"
+    },
+    {
+      "texto": "o",
+      "confianza": 58,
+      "posicion": {
+        "x": 335,
+        "y": 232,
+        "width": 50,
+        "height": 50
+      },
+      "categoria_confianza": "aceptable"
+    },
+    {
+      "texto": "PagomovilBDVPersonas",
+      "confianza": 0,
+      "posicion": {
+        "x": 152,
+        "y": 173,
+        "width": 418,
+        "height": 38
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "20062025",
+      "confianza": 0,
+      "posicion": {
+        "x": 485,
+        "y": 439,
+        "width": 170,
+        "height": 26
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "Operacin:",
+      "confianza": 0,
+      "posicion": {
+        "x": 65,
+        "y": 501,
+        "width": 153,
+        "height": 45
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "003039387344T",
+      "confianza": 0,
+      "posicion": {
+        "x": 386,
+        "y": 496,
+        "width": 277,
+        "height": 38
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "Identificacin:",
+      "confianza": 0,
+      "posicion": {
+        "x": 66,
+        "y": 569,
+        "width": 194,
+        "height": 45
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "01022679",
+      "confianza": 0,
+      "posicion": {
+        "x": 445,
+        "y": 644,
+        "width": 209,
+        "height": 23
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "0105-BANCOMERCANTIL",
+      "confianza": 0,
+      "posicion": {
+        "x": 246,
+        "y": 780,
+        "width": 410,
+        "height": 23
+      },
+      "categoria_confianza": "baja"
+    }
+  ],
+  "confianza_promedio": {
+    "simple": 44.36,
+    "ponderada": 31.78,
+    "palabras_evaluadas": 14
+  },
+  "calidad_extraccion": {
+    "caracteres_totales": 138,
+    "palabras_totales": 14,
+    "densidad_informacion": 0.914,
+    "errores_detectados": [],
+    "puntuacion_calidad": 64.35714285714286,
+    "categoria": "Buena",
+    "recomendaciones": [
+      "Calidad de extracción satisfactoria"
+    ]
+  },
+  "datos_financieros": {
+    "amount": [
+      {
+        "valor": "200",
+        "posicion_texto": 30
+      },
+      {
+        "valor": "620",
+        "posicion_texto": 33
+      },
+      {
+        "valor": "25",
+        "posicion_texto": 36
+      },
+      {
+        "valor": "003",
+        "posicion_texto": 49
+      },
+      {
+        "valor": "039",
+        "posicion_texto": 52
+      }
+    ],
+    "phone": [
+      {
+        "valor": "00303938734",
+        "posicion_texto": 49
+      },
+      {
+        "valor": "04125318244",
+        "posicion_texto": 113
+      }
+    ],
+    "analisis_documento": {
+      "tipo": "desconocido",
+      "confianza": 0,
+      "keywords_encontradas": []
+    },
+    "resumen_extraido": {
+      "montos_encontrados": 5,
+      "fechas_encontradas": 0,
+      "referencias_encontradas": 0,
+      "cuentas_encontradas": 0,
+      "telefonos_encontrados": 2,
+      "total_elementos": 7,
+      "completitud_porcentaje": 50
+    }
+  },
+  "tiempo": 2.33
+}

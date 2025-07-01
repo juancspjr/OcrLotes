@@ -1,0 +1,602 @@
+{
+  "execution_id": "331dce85",
+  "timestamp": "20250701_111849",
+  "input_image": "uploads/20250701_111849_Imagen_de_WhatsApp_2025-06-21_a_las_18.44.16_a769da92.jpg",
+  "temp_directory": "temp/web_20250701_111849/ocr_331dce85_20250701_111849",
+  "parametros": {
+    "language": "spa",
+    "profile": "rapido",
+    "save_intermediate": true
+  },
+  "etapas": {
+    "1_validacion": {
+      "tiempo": 0.106,
+      "diagnostico": {
+        "imagen_info": {
+          "ancho": 720,
+          "alto": 879,
+          "resolucion_total": 632880,
+          "canales": 3,
+          "modo": "RGB",
+          "formato": "JPEG",
+          "brillo_promedio": 49.93417709518392,
+          "desviacion_brillo": 46.757898388750995,
+          "rango_dinamico": 255.0
+        },
+        "calidad_imagen": {
+          "contraste": 46.757898388750995,
+          "blur_variance": 1110.718221248074,
+          "entropy": 1.933966875076294,
+          "gradiente_promedio": 42.52235298532598,
+          "brillo_promedio": 49.93417709518392,
+          "uniformidad_brillo": 46.757898388750995,
+          "calificacion_calidad": 65
+        },
+        "deteccion_texto": {
+          "regiones_detectadas": 26,
+          "area_total_texto": 155378,
+          "densidad_texto": 0.24550941726709644,
+          "regiones": [
+            {
+              "x": 330,
+              "y": 790,
+              "width": 14,
+              "height": 8,
+              "area": 112,
+              "aspect_ratio": 1.75
+            },
+            {
+              "x": 639,
+              "y": 778,
+              "width": 19,
+              "height": 28,
+              "area": 532,
+              "aspect_ratio": 0.6785714285714286
+            },
+            {
+              "x": 244,
+              "y": 778,
+              "width": 21,
+              "height": 27,
+              "area": 567,
+              "aspect_ratio": 0.7777777777777778
+            },
+            {
+              "x": 475,
+              "y": 777,
+              "width": 163,
+              "height": 32,
+              "area": 5216,
+              "aspect_ratio": 5.09375
+            },
+            {
+              "x": 352,
+              "y": 777,
+              "width": 115,
+              "height": 29,
+              "area": 3335,
+              "aspect_ratio": 3.9655172413793105
+            },
+            {
+              "x": 266,
+              "y": 777,
+              "width": 57,
+              "height": 29,
+              "area": 1653,
+              "aspect_ratio": 1.9655172413793103
+            },
+            {
+              "x": 64,
+              "y": 777,
+              "width": 98,
+              "height": 29,
+              "area": 2842,
+              "aspect_ratio": 3.3793103448275863
+            },
+            {
+              "x": 561,
+              "y": 710,
+              "width": 96,
+              "height": 28,
+              "area": 2688,
+              "aspect_ratio": 3.4285714285714284
+            },
+            {
+              "x": 443,
+              "y": 710,
+              "width": 58,
+              "height": 28,
+              "area": 1624,
+              "aspect_ratio": 2.0714285714285716
+            },
+            {
+              "x": 501,
+              "y": 709,
+              "width": 59,
+              "height": 29,
+              "area": 1711,
+              "aspect_ratio": 2.0344827586206895
+            },
+            {
+              "x": 64,
+              "y": 709,
+              "width": 120,
+              "height": 29,
+              "area": 3480,
+              "aspect_ratio": 4.137931034482759
+            },
+            {
+              "x": 443,
+              "y": 642,
+              "width": 21,
+              "height": 27,
+              "area": 567,
+              "aspect_ratio": 0.7777777777777778
+            },
+            {
+              "x": 465,
+              "y": 641,
+              "width": 191,
+              "height": 31,
+              "area": 5921,
+              "aspect_ratio": 6.161290322580645
+            },
+            {
+              "x": 63,
+              "y": 641,
+              "width": 107,
+              "height": 35,
+              "area": 3745,
+              "aspect_ratio": 3.057142857142857
+            },
+            {
+              "x": 501,
+              "y": 573,
+              "width": 156,
+              "height": 29,
+              "area": 4524,
+              "aspect_ratio": 5.379310344827586
+            },
+            {
+              "x": 64,
+              "y": 571,
+              "width": 198,
+              "height": 31,
+              "area": 6138,
+              "aspect_ratio": 6.387096774193548
+            },
+            {
+              "x": 383,
+              "y": 505,
+              "width": 234,
+              "height": 29,
+              "area": 6786,
+              "aspect_ratio": 8.068965517241379
+            },
+            {
+              "x": 63,
+              "y": 503,
+              "width": 157,
+              "height": 37,
+              "area": 5809,
+              "aspect_ratio": 4.243243243243243
+            },
+            {
+              "x": 629,
+              "y": 494,
+              "width": 37,
+              "height": 42,
+              "area": 1554,
+              "aspect_ratio": 0.8809523809523809
+            },
+            {
+              "x": 483,
+              "y": 437,
+              "width": 174,
+              "height": 31,
+              "area": 5394,
+              "aspect_ratio": 5.612903225806452
+            }
+          ],
+          "cobertura_texto_porcentaje": 24.550941726709645
+        },
+        "ruido_artefactos": {
+          "nivel_ruido": 3.1275597269624575,
+          "desviacion_ruido": 10.877349693433873,
+          "porcentaje_pixeles_ruidosos": 5.2027240551131335,
+          "uniformidad": 2.4172149538617114,
+          "calificacion_ruido": "Moderado"
+        },
+        "geometria_orientacion": {
+          "sesgo_estimado": 2.5,
+          "lineas_detectadas": 50,
+          "simetria_horizontal": 0.4919326603412628,
+          "relacion_aspecto": 0.8191126279863481,
+          "requiere_deskew": true,
+          "orientacion_correcta": true
+        },
+        "deteccion_inteligente": {
+          "tipo_imagen": "screenshot_movil",
+          "esquema_color": "texto_claro_fondo_oscuro",
+          "inversion_requerida": true,
+          "ui_elements_detectados": true,
+          "aspect_ratio": 0.8191126279863481,
+          "calidad_digital": false,
+          "dark_percentage": 95.3119125366211,
+          "light_percentage": 4.6880927085876465,
+          "edge_density": 0.028499873593730247,
+          "noise_estimate": 64.5722161257968,
+          "confianza_deteccion": 0.7
+        },
+        "recomendaciones": {
+          "perfil_recomendado": "rapido",
+          "aplicar_deskew": true,
+          "nivel_denoise": "moderado",
+          "ajuste_contraste": false,
+          "filtro_bilateral": true,
+          "prioridades": [
+            "Corrección de sesgo necesaria"
+          ]
+        },
+        "puntuacion_general": {
+          "total": 78.0,
+          "calidad": 65,
+          "texto": 100,
+          "ruido": 60,
+          "geometria": 100,
+          "categoria": "Buena"
+        }
+      },
+      "imagen_original": "temp/web_20250701_111849/ocr_331dce85_20250701_111849/00_imagen_original.png",
+      "archivo_diagnostico": "temp/web_20250701_111849/ocr_331dce85_20250701_111849/diagnostico.json"
+    },
+    "2_mejora": {
+      "perfil_usado": "rapido",
+      "pasos_aplicados": [
+        "00_inversion_color",
+        "03_unsharp_suave",
+        "04_contraste_suave"
+      ],
+      "metricas_antes": {
+        "brillo_promedio": 49.93417709518392,
+        "contraste": 46.757898388750995,
+        "nitidez": 1110.718221248074,
+        "rango_dinamico": 255.0
+      },
+      "parametros_aplicados": {
+        "screenshot_processing": {
+          "upscaling_applied": false,
+          "unsharp_radius": 1.0,
+          "unsharp_amount": 0.3,
+          "contrast_adjustment": true,
+          "binarization_applied": false
+        }
+      },
+      "tiempo_procesamiento": 0.061,
+      "estrategia_aplicada": "Screenshot Móvil - Conservación Extrema",
+      "metricas_despues": {
+        "brillo_promedio": 209.95968588041967,
+        "contraste": 48.36722337525596,
+        "nitidez": 1658.4733846098425,
+        "rango_dinamico": 255.0
+      },
+      "imagen_mejorada": "temp/web_20250701_111849/ocr_331dce85_20250701_111849/imagen_mejorada.png",
+      "mejora_calidad": {
+        "contraste": {
+          "antes": 46.76,
+          "despues": 48.37,
+          "cambio": 1.61,
+          "porcentaje": 3.4
+        },
+        "nitidez": {
+          "antes": 1110.72,
+          "despues": 1658.47,
+          "cambio": 547.76,
+          "porcentaje": 49.3
+        },
+        "rango_dinamico": {
+          "antes": 255.0,
+          "despues": 255.0,
+          "cambio": 0.0,
+          "porcentaje": 0.0
+        }
+      },
+      "tiempo": 0.081,
+      "archivo_resultado": "temp/web_20250701_111849/ocr_331dce85_20250701_111849/resultado_mejora.json"
+    },
+    "3_ocr": {
+      "texto_completo": "PagomovilBDVPersonas\no\nFecha: 20062025\nOperacin: 003039387344T\nIdentificacin: 27061025\nOrigen: 01022679\nDestino: 04125318244\nBanco: 0105-BANCOMERCANTIL",
+      "estadisticas_ocr": {
+        "total_palabras": 25,
+        "palabras_validas": 14,
+        "confianza_promedio": 44.36,
+        "confianza_minima": 0,
+        "confianza_maxima": 96,
+        "palabras_alta_confianza": 6,
+        "palabras_baja_confianza": 7,
+        "distribucion_confianza": {
+          "excelente (90-100)": 6,
+          "buena (70-89)": 0,
+          "regular (50-69)": 1,
+          "baja (30-49)": 0,
+          "muy_baja (0-29)": 7
+        }
+      },
+      "palabras_detectadas": [
+        {
+          "texto": "27061025",
+          "confianza": 96,
+          "posicion": {
+            "x": 504,
+            "y": 576,
+            "width": 151,
+            "height": 23
+          },
+          "categoria_confianza": "excelente"
+        },
+        {
+          "texto": "04125318244",
+          "confianza": 96,
+          "posicion": {
+            "x": 445,
+            "y": 712,
+            "width": 210,
+            "height": 23
+          },
+          "categoria_confianza": "excelente"
+        },
+        {
+          "texto": "Fecha:",
+          "confianza": 93,
+          "posicion": {
+            "x": 66,
+            "y": 435,
+            "width": 89,
+            "height": 43
+          },
+          "categoria_confianza": "excelente"
+        },
+        {
+          "texto": "Destino:",
+          "confianza": 93,
+          "posicion": {
+            "x": 66,
+            "y": 707,
+            "width": 116,
+            "height": 43
+          },
+          "categoria_confianza": "excelente"
+        },
+        {
+          "texto": "Banco:",
+          "confianza": 93,
+          "posicion": {
+            "x": 66,
+            "y": 775,
+            "width": 94,
+            "height": 43
+          },
+          "categoria_confianza": "excelente"
+        },
+        {
+          "texto": "Origen:",
+          "confianza": 92,
+          "posicion": {
+            "x": 65,
+            "y": 639,
+            "width": 103,
+            "height": 39
+          },
+          "categoria_confianza": "excelente"
+        },
+        {
+          "texto": "o",
+          "confianza": 58,
+          "posicion": {
+            "x": 335,
+            "y": 232,
+            "width": 50,
+            "height": 50
+          },
+          "categoria_confianza": "aceptable"
+        },
+        {
+          "texto": "PagomovilBDVPersonas",
+          "confianza": 0,
+          "posicion": {
+            "x": 152,
+            "y": 173,
+            "width": 418,
+            "height": 38
+          },
+          "categoria_confianza": "baja"
+        },
+        {
+          "texto": "20062025",
+          "confianza": 0,
+          "posicion": {
+            "x": 485,
+            "y": 439,
+            "width": 170,
+            "height": 26
+          },
+          "categoria_confianza": "baja"
+        },
+        {
+          "texto": "Operacin:",
+          "confianza": 0,
+          "posicion": {
+            "x": 65,
+            "y": 501,
+            "width": 153,
+            "height": 45
+          },
+          "categoria_confianza": "baja"
+        },
+        {
+          "texto": "003039387344T",
+          "confianza": 0,
+          "posicion": {
+            "x": 386,
+            "y": 496,
+            "width": 277,
+            "height": 38
+          },
+          "categoria_confianza": "baja"
+        },
+        {
+          "texto": "Identificacin:",
+          "confianza": 0,
+          "posicion": {
+            "x": 66,
+            "y": 569,
+            "width": 194,
+            "height": 45
+          },
+          "categoria_confianza": "baja"
+        },
+        {
+          "texto": "01022679",
+          "confianza": 0,
+          "posicion": {
+            "x": 445,
+            "y": 644,
+            "width": 209,
+            "height": 23
+          },
+          "categoria_confianza": "baja"
+        },
+        {
+          "texto": "0105-BANCOMERCANTIL",
+          "confianza": 0,
+          "posicion": {
+            "x": 246,
+            "y": 780,
+            "width": 410,
+            "height": 23
+          },
+          "categoria_confianza": "baja"
+        }
+      ],
+      "confianza_promedio": {
+        "simple": 44.36,
+        "ponderada": 31.78,
+        "palabras_evaluadas": 14
+      },
+      "calidad_extraccion": {
+        "caracteres_totales": 138,
+        "palabras_totales": 14,
+        "densidad_informacion": 0.914,
+        "errores_detectados": [],
+        "puntuacion_calidad": 64.35714285714286,
+        "categoria": "Buena",
+        "recomendaciones": [
+          "Calidad de extracción satisfactoria"
+        ]
+      },
+      "datos_financieros": {
+        "amount": [
+          {
+            "valor": "200",
+            "posicion_texto": 30
+          },
+          {
+            "valor": "620",
+            "posicion_texto": 33
+          },
+          {
+            "valor": "25",
+            "posicion_texto": 36
+          },
+          {
+            "valor": "003",
+            "posicion_texto": 49
+          },
+          {
+            "valor": "039",
+            "posicion_texto": 52
+          }
+        ],
+        "phone": [
+          {
+            "valor": "00303938734",
+            "posicion_texto": 49
+          },
+          {
+            "valor": "04125318244",
+            "posicion_texto": 113
+          }
+        ],
+        "analisis_documento": {
+          "tipo": "desconocido",
+          "confianza": 0,
+          "keywords_encontradas": []
+        },
+        "resumen_extraido": {
+          "montos_encontrados": 5,
+          "fechas_encontradas": 0,
+          "referencias_encontradas": 0,
+          "cuentas_encontradas": 0,
+          "telefonos_encontrados": 2,
+          "total_elementos": 7,
+          "completitud_porcentaje": 50
+        }
+      },
+      "tiempo": 2.33,
+      "archivo_resultado": "temp/web_20250701_111849/ocr_331dce85_20250701_111849/resultado_ocr.json",
+      "archivo_texto": "temp/web_20250701_111849/ocr_331dce85_20250701_111849/texto_extraido.txt"
+    }
+  },
+  "archivos_generados": [],
+  "resumen_final": {
+    "imagen_original": {
+      "dimensiones": "720x879",
+      "calidad_inicial": "Buena",
+      "puntuacion_calidad": 78.0
+    },
+    "procesamiento_aplicado": {
+      "perfil_usado": "rapido",
+      "pasos_ejecutados": 3,
+      "lista_pasos": [
+        "00_inversion_color",
+        "03_unsharp_suave",
+        "04_contraste_suave"
+      ],
+      "tiempo_procesamiento": 0.061
+    },
+    "resultados_ocr": {
+      "caracteres_extraidos": 151,
+      "palabras_detectadas": 14,
+      "confianza_promedio": 44.36,
+      "confianza_ponderada": 31.78,
+      "calidad_extraccion": "Buena"
+    },
+    "datos_financieros": {
+      "tipo_documento": "desconocido",
+      "elementos_encontrados": 7,
+      "completitud": 50,
+      "montos_encontrados": 5,
+      "fechas_encontradas": 0
+    },
+    "rendimiento": {
+      "tiempo_total": 0,
+      "tiempo_validacion": 0.106,
+      "tiempo_mejora": 0.081,
+      "tiempo_ocr": 2.33
+    },
+    "calificacion_final": {
+      "puntuacion": 56.1,
+      "categoria": "Regular",
+      "componentes": {
+        "calidad_imagen": 78.0,
+        "confianza_ocr": 44.4,
+        "completitud_datos": 50.0
+      }
+    },
+    "recomendaciones": [
+      "Considerar usar perfil 'Normal' para mejor precisión",
+      "Revisar manualmente los datos críticos extraídos"
+    ]
+  },
+  "tiempo_total": 2.522
+}
