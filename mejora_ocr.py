@@ -140,9 +140,23 @@ class MejoradorOCR:
         # REASON: Usar la detección inteligente ya implementada en validador_ocr.py
         # IMPACT: Procesamiento optimizado según tipo de imagen detectado
         
-        deteccion_inteligente = diagnostico.get('deteccion_inteligente', {})
-        tipo_imagen = deteccion_inteligente.get('tipo_imagen', 'documento_escaneado')
-        inversion_requerida = deteccion_inteligente.get('inversion_requerida', False)
+        # FIX: CRITICAL - Validar tipo de datos del diagnóstico antes de usar
+        # REASON: El diagnostico puede venir como string o dict, necesitamos manejarlo correctamente
+        # IMPACT: Evita errores de tipo "string indices must be integers, not 'str'"
+        if isinstance(diagnostico, str):
+            logger.warning("Diagnóstico recibido como string, usando procesamiento tradicional")
+            deteccion_inteligente = {}
+            tipo_imagen = 'documento_escaneado'
+            inversion_requerida = False
+        elif isinstance(diagnostico, dict):
+            deteccion_inteligente = diagnostico.get('deteccion_inteligente', {})
+            tipo_imagen = deteccion_inteligente.get('tipo_imagen', 'documento_escaneado')
+            inversion_requerida = deteccion_inteligente.get('inversion_requerida', False)
+        else:
+            logger.error(f"Tipo de diagnóstico inesperado: {type(diagnostico)}")
+            deteccion_inteligente = {}
+            tipo_imagen = 'documento_escaneado'
+            inversion_requerida = False
         
         # FASE 1: Inversión de color temprana si es necesaria
         if inversion_requerida:
@@ -1068,10 +1082,47 @@ class MejoradorOCR:
         resultado['estrategia_aplicada'] = 'Documento Escaneado - Procesamiento Tradicional'
         
         # Aplicar la secuencia tradicional pero mejorada
-        current = self._aplicar_estrategia_inteligente(
-            current, 'tradicional', diagnostico, resultado, 
-            save_steps, output_dir, step_counter, profile_config
-        )
+        # Para documentos escaneados, aplicamos el procesamiento tradicional existente
+        
+        # PASO 1: Redimensionamiento si es necesario
+        if current.shape[1] < 600:  # Si es muy pequeña
+            scale_factor = 1.5
+            new_width = int(current.shape[1] * scale_factor)
+            new_height = int(current.shape[0] * scale_factor)
+            current = cv2.resize(current, (new_width, new_height), interpolation=cv2.INTER_CUBIC)
+            resultado['pasos_aplicados'].append(f'{step_counter:02d}_redimensionamiento')
+            if save_steps and output_dir:
+                cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_redimensionamiento.png"), current)
+                step_counter += 1
+        
+        # PASO 2: Filtro bilateral para reducir ruido
+        if profile_config.get('bilateral_filter', True):
+            current = cv2.bilateralFilter(current, 9, 75, 75)
+            resultado['pasos_aplicados'].append(f'{step_counter:02d}_bilateral_filter')
+            if save_steps and output_dir:
+                cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_bilateral_filter.png"), current)
+                step_counter += 1
+        
+        # PASO 3: Mejora de contraste
+        current = cv2.convertScaleAbs(current, alpha=1.1, beta=10)
+        resultado['pasos_aplicados'].append(f'{step_counter:02d}_contraste_tradicional')
+        if save_steps and output_dir:
+            cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_contraste_tradicional.png"), current)
+            step_counter += 1
+        
+        # PASO 4: Binarización adaptativa
+        current = cv2.adaptiveThreshold(current, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, 
+                                      cv2.THRESH_BINARY, 11, 2)
+        resultado['pasos_aplicados'].append(f'{step_counter:02d}_binarizacion_tradicional')
+        if save_steps and output_dir:
+            cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_binarizacion_tradicional.png"), current)
+        
+        resultado['parametros_aplicados']['documento_processing'] = {
+            'redimensionamiento_aplicado': current.shape[1] < 600,
+            'filtro_bilateral': profile_config.get('bilateral_filter', True),
+            'contraste_alpha': 1.1,
+            'contraste_beta': 10
+        }
         
         return current
 
