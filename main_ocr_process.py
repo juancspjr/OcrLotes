@@ -106,8 +106,9 @@ class OrquestadorOCR:
             # ETAPA 3: Aplicación de OCR
             logger.info("ETAPA 3: Aplicación de OCR y extracción de datos")
             imagen_mejorada = resultado_completo['etapas']['2_mejora']['imagen_mejorada']
+            deteccion_inteligente = resultado_completo['etapas']['1_validacion']['diagnostico'].get('deteccion_inteligente', {})
             resultado_completo['etapas']['3_ocr'] = self._ejecutar_ocr(
-                imagen_mejorada, language, temp_dir, save_intermediate
+                imagen_mejorada, language, temp_dir, save_intermediate, deteccion_inteligente
             )
             
             if 'error' in resultado_completo['etapas']['3_ocr']:
@@ -202,14 +203,17 @@ class OrquestadorOCR:
         except Exception as e:
             return {'error': str(e)}
     
-    def _ejecutar_ocr(self, imagen_mejorada, language, temp_dir, save_intermediate):
+    def _ejecutar_ocr(self, imagen_mejorada, language, temp_dir, save_intermediate, deteccion_inteligente=None):
         """Ejecuta la etapa de OCR"""
         try:
             import time
             start_time = time.time()
             
+            # FIX: Usar configuración high_confidence por defecto y pasar detección inteligente
+            # REASON: Mejorar precisión OCR y usar configuración optimizada para tipo de imagen
+            # IMPACT: Mejor calidad de extracción de texto
             resultado_ocr = self.aplicador.extraer_texto(
-                imagen_mejorada, language, 'default', True
+                imagen_mejorada, language, 'high_confidence', True, deteccion_inteligente
             )
             
             tiempo_ocr = round(time.time() - start_time, 3)

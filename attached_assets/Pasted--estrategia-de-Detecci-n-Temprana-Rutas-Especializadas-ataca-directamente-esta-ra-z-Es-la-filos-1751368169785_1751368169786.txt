@@ -1,0 +1,311 @@
+ estrategia de "Detección Temprana + Rutas Especializadas" ataca directamente esta raíz. Es la filosofía central que necesitamos integrar para garantizar que el sistema no solo funcione, sino que opere con la precisión y eficiencia esperadas para cada tipo de imagen. La clave, como bien señalas, es la preservación de la calidad digital original en los screenshots, en lugar de intentar "mejorarlos" con técnicas que son destructivas para este tipo de contenido.
+
+Integración de la Estrategia "Detección Temprana + Rutas Especializadas"
+Esta estrategia será el pilar del flujo de procesamiento, modificando directamente cómo validador_ocr.py informa y cómo mejora_ocr.py actúa.
+
+1. Modificaciones en validador_ocr.py: La Detección Inteligente
+Este módulo será el encargado de la "Detección Temprana de Screenshots Móviles", ampliando su capacidad de diagnóstico.
+
+Nuevas Métricas de Diagnóstico (JSON de salida de validador_ocr.py):
+
+tipo_imagen: "screenshot_movil" o "documento_escaneado".
+
+esquema_color: "texto_claro_fondo_oscuro" o "texto_oscuro_fondo_claro".
+
+ui_elements_detectados: True/False (ej., detección de bandas uniformes de píxeles en bordes superiores/inferiores para barras de estado, o patrones de botones comunes).
+
+inversion_requerida: True/False (basado en esquema_color).
+
+Lógica de Detección:
+
+Análisis de Histograma de Luminosidad: Si el histograma muestra una clara preponderancia de píxeles muy oscuros y un pico menor de píxeles muy claros, y si estos píxeles claros forman el texto, es un fuerte indicio de texto claro sobre fondo oscuro.
+
+Detección de Bordes Uniformes/Metadatos Visuales: Análisis de los márgenes de la imagen para detectar bandas de color uniforme o patrones de píxeles que a menudo corresponden a barras de estado o navegación de apps. Aunque no podemos usar ML, podemos buscar la varianza de píxeles en estas áreas o patrones de color simples.
+
+Proporción de Aspecto: Aunque no es concluyente por sí sola, una proporción de aspecto marcadamente vertical puede ser un indicador secundario de una captura móvil.
+
+Determinación tipo_imagen: La combinación de un esquema_color de "texto_claro_fondo_oscuro" y/o ui_elements_detectados en True sería el disparador principal para clasificarla como "screenshot_movil".
+
+2. Modificaciones en mejora_ocr.py: Las Rutas Especializadas y la Conservación Extrema
+Aquí es donde se ejecuta la lógica principal de tu estrategia: aplicar un pre-procesamiento radicalmente diferente según el tipo_imagen diagnosticado.
+
+Flujo Condicional Principal:
+
+mejora_ocr.py leerá el tipo_imagen y inversion_requerida del JSON de diagnóstico de validador_ocr.py.
+
+Si tipo_imagen es "screenshot_movil":
+
+Inversión Inmediata (si inversion_requerida es True): Aplicar cv2.bitwise_not() como el primer paso absoluto después de cargar la imagen y convertirla a escala de grises. Esto transforma el texto blanco sobre fondo oscuro en texto oscuro sobre fondo claro.
+
+Pre-procesamiento Mínimo y Conservativo:
+
+Upscaling Inteligente: Aumentar la resolución a 300 DPI (o un factor fijo como 2x) usando una interpolación de alta calidad (cv2.INTER_LANCZOS4 o cv2.INTER_CUBIC).
+
+Unsharp Masking SUAVE: Aplicar un filtro de "unsharp mask" con un amount muy bajo (ej., 0.5-0.8) y un radius pequeño, para realzar bordes sin introducir artefactos ni engrosar caracteres.
+
+Binarización Adaptativa (o NULA): Para screenshots, si el contraste es ya alto (detectado por validador_ocr.py), se podría incluso omitir la binarización si no es estrictamente necesaria, dejando la imagen en escala de grises pero con un contraste optimizado. Si la binarización es necesaria, usar una adaptativa con block_size y C_value muy conservadores (grandes block_size, C_value cercano a 0 o negativo) para no perder detalles de los caracteres finos.
+
+CERO Eliminación de Ruido Agresiva: Evitar filtros de ruido como la mediana o Gaussiano con kernels grandes, ya que los píxeles individuales pueden ser parte de los caracteres finos en fuentes digitales. Podría considerarse un filtro bilateral muy suave si se detecta un ruido de compresión, pero solo si no afecta los bordes.
+
+CERO Operaciones Morfológicas Agresivas: Evitar erosiones o dilataciones con kernels > 1x1, a menos que sean estrictamente necesarias para unir caracteres rotos y se apliquen de forma muy controlada.
+
+Corrección de Contraste Suave: Si el contraste es adecuado después de la inversión (si aplica), no hacer nada. Si es necesario un ligero ajuste, aplicar una transformación lineal o gamma muy suave para llevar el fondo a un blanco suficiente y el texto a un negro suficiente, sin alterar los bordes.
+
+Si tipo_imagen es "documento_escaneado":
+
+Procesamiento Tradicional (basado en perfiles): El sistema continuará con el flujo de pre-procesamiento actual, aplicando binarización adaptativa, denoising (mediana/bilateral según el perfil), corrección de sesgo/perspectiva y operaciones morfológicas según el perfil de velocidad seleccionado (Ultra Rápido, Rápido, Normal), como se define en config.py. La "Filosofía de Conservación Extrema de Caracteres" también aplica aquí, pero con una mayor tolerancia a la manipulación de píxeles para corregir imperfecciones físicas del escaneo.
+
+Refinamiento de PROFILE_SETTINGS en config.py:
+
+Será necesario ajustar los parámetros dentro de PROFILE_SETTINGS para cada perfil (1, 2, 3) y quizás introducir un nuevo conjunto de "parámetros de screenshot" que mejora_ocr.py usará cuando detecte un screenshot, ignorando los parámetros normales de PROFILE_SETTINGS para ciertos pasos. O, más inteligentemente, que los perfiles 1 (Ultra Rápido) y 2 (Rápido) tengan parámetros predeterminados que sean inherentemente más "conservacionistas" y se ajusten mejor a los screenshots por su naturaleza de procesamiento ligero, mientras que el perfil 3 (Normal/Calidad Máxima) mantenga los tratamientos más robustos para documentos escaneados.
+
+Aplicación de una Técnica de Claridad Mejorada (Ejemplo de Código para mejora_ocr.py)
+Para ilustrar cómo se aplicaría una estrategia de procesamiento para "poner una imagen con más nivel de claridad" de manera conservativa en mejora_ocr.py, nos centraremos en el Upscaling Inteligente con Unsharp Masking Suave y un ajuste de contraste adaptativo y conservativo. Estas técnicas son cruciales para mejorar la legibilidad de caracteres pequeños y preservar sus bordes sin "romperlos".
+
+Asumiremos que estas funciones se llamarían condicionalmente después de la fase de detección y posible inversión de colores en mejora_ocr.py.
+
+Python
+
+import cv2
+import numpy as np
+from PIL import Image # Para algunos métodos, o usar solo OpenCV
+import os
+import json # Para el diagnóstico
+
+# Asume que config está importado y accesible como 'cfg'
+# import config as cfg
+
+class MejoraOCR:
+    def __init__(self, debug_dir=None):
+        self.debug_dir = debug_dir
+
+    def _save_debug_image(self, image, filename_suffix):
+        """Guarda una imagen para depuración si el modo debug está activo."""
+        if self.debug_dir:
+            if isinstance(image, Image.Image): # Si es PIL Image
+                image.save(os.path.join(self.debug_dir, f"step_{filename_suffix}.png"))
+            else: # Asume OpenCV (numpy array)
+                cv2.imwrite(os.path.join(self.debug_dir, f"step_{filename_suffix}.png"), image)
+
+    def aplicar_claridad_conservativa(self, image_np, diagnosis_json, profile_settings):
+        """
+        Aplica técnicas de mejora de claridad conservativas basadas en el diagnóstico
+        y las configuraciones del perfil, priorizando la "Filosofía de Conservación Extrema de Caracteres".
+
+        Args:
+            image_np (np.array): Imagen de entrada en formato NumPy (escala de grises).
+            diagnosis_json (dict): JSON de diagnóstico de validador_ocr.py.
+            profile_settings (dict): Configuración del perfil de rendimiento actual.
+
+        Returns:
+            np.array: Imagen con claridad mejorada.
+        """
+        processed_image = image_np.copy()
+        tipo_imagen = diagnosis_json.get('tipo_imagen', 'documento_escaneado')
+
+        # --- 1. Upscaling Inteligente (Amplificación de Calidad) ---
+        # FIX: Implementación robusta de upscaling que utiliza INTER_LANCZOS4 para mejor calidad
+        # y aplica unsharp masking si es un screenshot o si el perfil lo indica.
+        # REASON: Mejorar la resolución es clave para texto digital fino sin introducir pixelación,
+        # y el unsharp masking realza los bordes sutilmente.
+        # IMPACT: Caracteres más definidos para Tesseract, especialmente en imágenes de baja resolución original.
+        ampliacion_config = profile_settings.get("ampliacion_calidad", {})
+        
+        # Factor de escalado dinámico (ej. para llegar a ~300 DPI si la original es < 150 DPI)
+        # Esto requeriría saber los DPI originales, o asumir un factor fijo si no hay info de DPI.
+        # Por simplicidad, usaremos el factor del perfil.
+        scale_factor = ampliacion_config.get("factor", 1.0)
+        
+        # Solo escalar si el factor es > 1.0 y la imagen es de baja resolución para screenshots.
+        # Para screenshots, un factor de 2.0 es a menudo un buen punto de partida.
+        if tipo_imagen == "screenshot_movil" or scale_factor > 1.0:
+            new_width = int(processed_image.shape[1] * scale_factor)
+            new_height = int(processed_image.shape[0] * scale_factor)
+            
+            # Usar la interpolación de mayor calidad para preservar bordes
+            interpolation_method = cv2.INTER_LANCZOS4
+            if ampliacion_config.get("method") == "INTER_CUBIC":
+                interpolation_method = cv2.INTER_CUBIC
+
+            processed_image = cv2.resize(processed_image, (new_width, new_height), interpolation=interpolation_method)
+            self._save_debug_image(processed_image, "1_upscaled")
+
+            # Aplicar Unsharp Masking si está activo en el perfil o si es screenshot y mejora
+            if ampliacion_config.get("unsharp_mask") or tipo_imagen == "screenshot_movil":
+                unsharp_amount = ampliacion_config.get("unsharp_amount", 0.5) # Valor conservador
+                
+                # Crear una imagen borrosa para restar
+                blurred = cv2.GaussianBlur(processed_image, (0,0), unsharp_amount * 2) # Sigma basado en amount
+                # Realzar: imagen original + (original - borrosa) * amount
+                processed_image = cv2.addWeighted(processed_image, 1.0 + unsharp_amount, blurred, -unsharp_amount, 0)
+                # Asegurar que los valores de píxeles permanezcan dentro de 0-255
+                processed_image = np.clip(processed_image, 0, 255).astype(np.uint8)
+                self._save_debug_image(processed_image, "2_unsharp_masked")
+
+        # --- 2. Corrección de Contraste Suave y Adaptativa ---
+        # FIX: Ajuste de contraste que es más conservativo para screenshots
+        # y se basa en la luminosiad del fondo y la inversion requerida.
+        # REASON: Asegurar que el fondo sea suficientemente blanco y el texto suficientemente negro
+        # sin "rellenar" caracteres ni introducir ruido, vital para OCR.
+        # IMPACT: Mejora la distinción texto/fondo sin dañar los caracteres.
+        contraste_config = profile_settings.get("contraste_brillo", {})
+        
+        if contraste_config.get("adjust_contrast") or tipo_imagen == "screenshot_movil":
+            # Calcular el promedio de luminosidad del fondo para adaptar el ajuste
+            # Esto es un ejemplo, validador_ocr.py debería dar un mejor estimado.
+            # Aquí asumimos que ya está en texto oscuro sobre fondo claro.
+            mean_luminosity = np.mean(processed_image)
+
+            # Ajustar factor alpha/beta para contraste/brillo.
+            # Para screenshots, queremos empujar el fondo a blanco y texto a negro, pero suave.
+            # Un alpha de 1.05-1.1 y beta pequeños son conservadores.
+            alpha = contraste_config.get("contrast_factor", 1.0)
+            beta = contraste_config.get("brightness_factor", 0)
+
+            if tipo_imagen == "screenshot_movil":
+                # Si es screenshot, ajustar de forma más fina para no perder bordes.
+                # Podemos ajustar alpha y beta basados en la luminosidad media.
+                # Si la imagen es generalmente oscura (ej. después de invertir), subir beta ligeramente.
+                # Si es generalmente clara, ajustar alpha para mejorar contraste.
+                if mean_luminosity < 150: # Si aún es un poco oscura, empujar el brillo
+                    beta += 10 # Empujar el brillo hacia arriba
+                alpha = min(alpha, 1.1) # No aplicar contraste excesivo
+
+            processed_image = cv2.convertScaleAbs(processed_image, alpha=alpha, beta=beta)
+            self._save_debug_image(processed_image, "3_contrast_adjusted")
+
+        return processed_image
+
+    def procesar_imagen_para_ocr(self, image_path, diagnosis_json, profile_id):
+        """
+        Función principal que orquesta el pre-procesamiento de la imagen
+        basándose en el diagnóstico y el perfil de velocidad.
+        """
+        # Cargar imagen
+        image_cv = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+        if image_cv is None:
+            raise FileNotFoundError(f"No se pudo cargar la imagen: {image_path}")
+
+        # Obtener la configuración del perfil desde config.py (simulado aquí)
+        # Esto debería venir directamente de config.PROFILE_SETTINGS[profile_id]
+        # FIX: Asegurarse de que PROFILE_SETTINGS es accesible.
+        # REASON: Centraliza las configuraciones y permite un ajuste dinámico.
+        # IMPACT: Consistencia y flexibilidad en el procesamiento.
+        _profile_settings_mock = { # Esta es una simulación, usar el real de config.py
+            1: { # Perfil 1: Ultra Rápido
+                "ampliacion_calidad": {"method": "INTER_LINEAR", "factor": 1.0, "unsharp_mask": False, "unsharp_amount": 0.0},
+                "contraste_brillo": {"adjust_contrast": False, "contrast_factor": 1.0, "adjust_brightness": False, "brightness_factor": 0},
+            },
+            3: { # Perfil 3: Normal (Calidad Máxima) - Adaptado para este ejemplo
+                "ampliacion_calidad": {"method": "INTER_LANCZOS4", "factor": 2.0, "unsharp_mask": True, "unsharp_amount": 1.5},
+                "contraste_brillo": {"adjust_contrast": True, "contrast_factor": 1.5, "adjust_brightness": True, "brightness_factor": 10},
+            }
+        }
+        profile_settings = _profile_settings_mock.get(profile_id, _profile_settings_mock[1])
+
+        processed_image = image_cv.copy()
+
+        # --- Lógica de Inversión Inicial (Si es screenshot y requiere) ---
+        # Este paso debería ocurrir muy temprano en mejora_ocr.py
+        if diagnosis_json.get('tipo_imagen') == "screenshot_movil" and diagnosis_json.get('inversion_requerida'):
+            processed_image = cv2.bitwise_not(processed_image)
+            self._save_debug_image(processed_image, "0_inverted_early")
+            print("INFO: Colores invertidos para screenshot móvil.")
+
+        # --- Aplicar la estrategia de claridad conservativa ---
+        # Esto reemplaza o precede otros pasos de binarización/ruido en la ruta de screenshots
+        # Para documentos escaneados, aún podría aplicarse de forma menos agresiva
+        processed_image = self.aplicar_claridad_conservativa(processed_image, diagnosis_json, profile_settings)
+
+        # Aquí irían otros pasos de pre-procesamiento si no es un screenshot
+        # o si son pasos muy conservativos incluso para screenshots (ej. deskewing suave)
+        # La lógica completa de mejora_ocr.py necesita este flujo condicional robusto.
+
+        return processed_image
+
+# --- Cómo se usaría en main_ocr_process.py (ejemplo conceptual) ---
+if __name__ == "__main__":
+    # Este es solo un bloque de prueba simulado.
+    # En el main_ocr_process.py real, esto se manejaría con argparse y la orquestación de módulos.
+    
+    # Simulación de diagnóstico de validador_ocr.py
+    # Para una imagen con texto blanco sobre fondo oscuro:
+    simulated_diagnosis_screenshot = {
+        'tipo_imagen': 'screenshot_movil',
+        'esquema_color': 'texto_claro_fondo_oscuro',
+        'inversion_requerida': True,
+        'calidad_inicial_imagen': 7,
+        'ruido_detectado': 3,
+        'contraste_general': 80,
+        # ... otras métricas
+    }
+
+    # Para una imagen que no es screenshot
+    simulated_diagnosis_document = {
+        'tipo_imagen': 'documento_escaneado',
+        'esquema_color': 'texto_oscuro_fondo_claro',
+        'inversion_requerida': False,
+        'calidad_inicial_imagen': 5,
+        'ruido_detectado': 6,
+        'contraste_general': 50,
+        # ... otras métricas
+    }
+
+    # Ruta a una imagen de prueba (reemplazar con una de tus imágenes de WhatsApp)
+    test_image_path_screenshot = "Imagen de WhatsApp 2025-06-21 a las 18.44.16_564ec301.jpg" # Ejemplo de las que subiste
+
+    # Crear un directorio de depuración temporal
+    temp_debug_dir = "./temp/debug_clarity_test"
+    os.makedirs(temp_debug_dir, exist_ok=True)
+
+    print(f"\n--- Probando procesamiento de Screenshot (Perfil 3) ---")
+    mejora_ocr_processor = MejoraOCR(debug_dir=temp_debug_dir)
+    try:
+        processed_screenshot = mejora_ocr_processor.procesar_imagen_para_ocr(
+            test_image_path_screenshot,
+            simulated_diagnosis_screenshot,
+            profile_id=3 # Usar perfil 3 para calidad máxima, que aplicará unsharp si el diagnóstico es screenshot
+        )
+        # cv2.imshow("Processed Screenshot", processed_screenshot) # Solo si tienes entorno gráfico
+        # cv2.waitKey(0)
+        # cv2.destroyAllWindows()
+        print(f"Imagen procesada guardada en: {temp_debug_dir}/step_final_clarity.png")
+        cv2.imwrite(os.path.join(temp_debug_dir, "step_final_clarity.png"), processed_screenshot)
+
+    except FileNotFoundError as e:
+        print(e)
+    except Exception as e:
+        print(f"Ocurrió un error durante el procesamiento: {e}")
+
+    print(f"\nLas imágenes de depuración se guardaron en: {temp_debug_dir}")
+    print("Por favor, inspecciona los archivos PNG/JPG en este directorio para ver las etapas de mejora.")
+
+Cómo Verificar el Resultado y el "Valor Esperado y Real"
+Asegúrate de tener la imagen de prueba: Guarda la imagen Imagen de WhatsApp 2025-06-21 a las 18.44.16_564ec301.jpg (o una similar de captura de pantalla con texto blanco sobre fondo oscuro) en el directorio raíz de tu proyecto, o ajusta la ruta en el if __name__ == "__main__": block.
+
+Ajusta config.py (simulado en el código): En tu config.py real, asegúrate de que los parámetros para ampliacion_calidad y contraste_brillo dentro de PROFILE_SETTINGS para el profile_id=3 (o el que uses) estén configurados para permitir el unsharp_mask y adjust_contrast/brightness.
+
+Ejecuta el Script de Prueba (main_ocr_process.py modificado):
+Una vez que integres esta lógica en tu mejora_ocr.py y main_ocr_process.py pueda llamarla con el diagnosis_json simulado de validador_ocr.py, ejecuta desde la terminal:
+
+Bash
+
+./.venv/bin/python3 main_ocr_process.py --imagen_ruta "ruta/a/tu/Imagen de WhatsApp 2025-06-21 a las 18.44.16_564ec301.jpg" --velocidad_perfil 3 --debug_mode True
+(Asegúrate de que --debug_mode True esté activo para ver las imágenes intermedias).
+
+Inspecciona las Imágenes de Depuración:
+Navega al directorio temp/debug_clarity_test (o el que se genere con timestamp/UUID si main_ocr_process.py lo maneja así). Busca:
+
+step_0_inverted_early.png: Confirma que la imagen de la captura de pantalla con texto blanco sobre fondo oscuro ha sido correctamente invertida a texto oscuro sobre fondo claro. Valor Esperado: Texto negro, fondo blanco.
+
+step_1_upscaled.png: Observa la imagen después del escalado. Valor Esperado: Una imagen de mayor resolución, donde los caracteres deberían verse más grandes pero sin pixelación evidente, y manteniendo sus bordes definidos.
+
+step_2_unsharp_masked.png: Mira si los bordes de los caracteres se ven más nítidos sin que las letras se vean "engrosadas" o "rodeadas" por halos. Valor Esperado: Caracteres ligeramente más definidos, sin artefactos.
+
+step_3_contrast_adjusted.png (o step_final_clarity.png si es la última): Esta es la imagen final que iría a Tesseract. Valor Esperado: Texto negro nítido sobre un fondo blanco uniforme (o muy claro), con los bordes de los caracteres perfectamente conservados, no rotos, no fusionados, no engrosados.
+Valor Real: Lo que observes en la imagen generada. Debe coincidir con el valor esperado.
+
+Verifica la Salida del OCR (Si aplicador_ocr.py ya está integrado):
+Una vez que esta imagen procesada sea enviada a Tesseract por aplicador_ocr.py, el texto extraído debería ser mucho más preciso. Compara el texto extraído en el JSON de salida con el texto real en la imagen original. Valor Esperado: Extracción de texto con alta precisión, especialmente para los caracteres que antes se perdían o eran ilegibles.
+
+Al seguir esta metodología, puedes validar visualmente y por datos que tu estrategia de "Detección Temprana + Rutas Especializadas" y las técnicas de mejora conservativas están funcionando como se espera, produciendo el valor real que coincide con tu valor esperado.

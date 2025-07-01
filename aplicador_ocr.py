@@ -30,7 +30,7 @@ class AplicadorOCR:
         self.confidence_config = config.OCR_CONFIDENCE_CONFIG
         self.quality_thresholds = getattr(config, 'OCR_QUALITY_THRESHOLDS', {})
         
-    def extraer_texto(self, image_path, language='spa', config_mode='high_confidence', extract_financial=True):
+    def extraer_texto(self, image_path, language='spa', config_mode='high_confidence', extract_financial=True, deteccion_inteligente=None):
         """
         Extrae texto de una imagen usando Tesseract OCR
         
@@ -56,8 +56,14 @@ class AplicadorOCR:
             else:
                 pil_image = Image.fromarray(image)
             
-            # Configuración de Tesseract
-            tesseract_config = self.tesseract_configs.get(config_mode, self.tesseract_configs['default'])
+            # FIX: Seleccionar configuración de Tesseract basada en detección inteligente
+            # REASON: Optimizar OCR según tipo de imagen detectado
+            # IMPACT: Mejora significativa en precisión para screenshots vs documentos escaneados
+            if deteccion_inteligente and deteccion_inteligente.get('tipo_imagen') == 'screenshot_movil':
+                tesseract_config = self.tesseract_configs.get('screenshot_optimized', self.tesseract_configs['high_confidence'])
+                logger.info("Usando configuración optimizada para screenshot móvil")
+            else:
+                tesseract_config = self.tesseract_configs.get(config_mode, self.tesseract_configs['default'])
             
             logger.info(f"Iniciando OCR con idioma: {language}, modo: {config_mode}")
             

@@ -53,6 +53,7 @@ class ValidadorOCR:
                 'deteccion_texto': self._detectar_regiones_texto(gray),
                 'ruido_artefactos': self._analizar_ruido(gray),
                 'geometria_orientacion': self._analizar_geometria(gray),
+                'deteccion_inteligente': self._detectar_tipo_imagen_inteligente(gray, image_pil),  # FIX: Nueva detección inteligente
                 'recomendaciones': {}
             }
             
@@ -260,6 +261,83 @@ class ValidadorOCR:
             score += 5
         
         return min(100, score)
+    
+    def _detectar_tipo_imagen_inteligente(self, gray, image_pil):
+        """
+        FIX: Implementa detección inteligente de tipo de imagen (screenshot vs documento escaneado)
+        REASON: Necesario para aplicar rutas de procesamiento especializadas según el tipo de imagen
+        IMPACT: Mejora dramática en la precisión OCR al aplicar técnicas específicas para cada tipo
+        """
+        # Análisis de histograma para detectar esquema de color
+        hist = cv2.calcHist([gray], [0], None, [256], [0, 256])
+        
+        # Detectar si es texto claro sobre fondo oscuro
+        dark_pixels = np.sum(hist[:128])  # Píxeles oscuros
+        light_pixels = np.sum(hist[128:])  # Píxeles claros
+        total_pixels = gray.shape[0] * gray.shape[1]
+        
+        dark_percentage = (dark_pixels / total_pixels) * 100
+        light_percentage = (light_pixels / total_pixels) * 100
+        
+        # Determinar esquema de color
+        if dark_percentage > 70 and light_percentage < 30:
+            esquema_color = "texto_claro_fondo_oscuro"
+            inversion_requerida = True
+        else:
+            esquema_color = "texto_oscuro_fondo_claro" 
+            inversion_requerida = False
+        
+        # Detectar elementos de UI móvil
+        height, width = gray.shape
+        aspect_ratio = width / height
+        
+        # Analizar bandas uniformes en bordes (barras de estado/navegación)
+        top_band = gray[:min(50, height//10), :]
+        bottom_band = gray[max(height-50, height-height//10):, :]
+        
+        top_uniformity = np.std(top_band) < 10  # Muy poca variación = barra uniforme
+        bottom_uniformity = np.std(bottom_band) < 10
+        
+        ui_elements_detectados = top_uniformity or bottom_uniformity
+        
+        # Determinar tipo de imagen
+        # Screenshots móviles típicamente tienen aspect ratio vertical y elementos UI
+        is_mobile_screenshot = (
+            (aspect_ratio < 0.8 and ui_elements_detectados) or  # Vertical con UI
+            (esquema_color == "texto_claro_fondo_oscuro") or    # Tema oscuro
+            (width < 500 and height > 800)  # Dimensiones típicas de móvil
+        )
+        
+        tipo_imagen = "screenshot_movil" if is_mobile_screenshot else "documento_escaneado"
+        
+        # Análisis adicional de calidad digital vs escaneado
+        # Los screenshots tienen bordes más definidos y menos ruido
+        edges = cv2.Canny(gray, 50, 150)
+        edge_density = np.sum(edges > 0) / (width * height)
+        
+        # Los documentos escaneados tienen más ruido y bordes menos definidos
+        noise_estimate = np.std(cv2.GaussianBlur(gray, (3, 3), 0) - gray)
+        
+        calidad_digital = edge_density > 0.02 and noise_estimate < 3
+        
+        return {
+            'tipo_imagen': tipo_imagen,
+            'esquema_color': esquema_color,
+            'inversion_requerida': bool(inversion_requerida),
+            'ui_elements_detectados': bool(ui_elements_detectados),
+            'aspect_ratio': float(aspect_ratio),
+            'calidad_digital': bool(calidad_digital),
+            'dark_percentage': float(dark_percentage),
+            'light_percentage': float(light_percentage),
+            'edge_density': float(edge_density),
+            'noise_estimate': float(noise_estimate),
+            'confianza_deteccion': float(
+                (0.4 if ui_elements_detectados else 0) +
+                (0.3 if esquema_color == "texto_claro_fondo_oscuro" else 0) +
+                (0.2 if aspect_ratio < 0.8 else 0) +
+                (0.1 if calidad_digital else 0)
+            )
+        }
     
     def _calificar_ruido(self, noise_level, noise_percentage):
         """Califica el nivel de ruido en la imagen"""

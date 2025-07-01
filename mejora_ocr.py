@@ -136,23 +136,30 @@ class MejoradorOCR:
         # REASON: Implementar evaluación completa antes de cualquier procesamiento
         # IMPACT: Evita transformaciones innecesarias y preserva integridad del texto
         
-        # FASE 1: Evaluación Inteligente y Triage de Imágenes
-        triage_result = self._evaluacion_inteligente_triage(current, diagnostico, resultado)
+        # FIX: Implementar rutas especializadas basadas en detección inteligente del validador
+        # REASON: Usar la detección inteligente ya implementada en validador_ocr.py
+        # IMPACT: Procesamiento optimizado según tipo de imagen detectado
         
-        if triage_result['skip_processing']:
-            resultado['razon_skip'] = triage_result['razon']
-            return triage_result['imagen_optimizada']
+        deteccion_inteligente = diagnostico.get('deteccion_inteligente', {})
+        tipo_imagen = deteccion_inteligente.get('tipo_imagen', 'documento_escaneado')
+        inversion_requerida = deteccion_inteligente.get('inversion_requerida', False)
         
-        # FASE 2: Detección de Tipo de Imagen y Estrategia
-        tipo_imagen = self._detectar_tipo_imagen(current, diagnostico, resultado)
-        estrategia = self._seleccionar_estrategia_procesamiento(tipo_imagen, profile_config, resultado)
+        # FASE 1: Inversión de color temprana si es necesaria
+        if inversion_requerida:
+            current = cv2.bitwise_not(current)
+            resultado['pasos_aplicados'].append('00_inversion_color')
+            if save_steps and output_dir:
+                cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_color_invertido.png"), current)
+                step_counter += 1
+        
+        # FASE 2: Aplicar estrategia especializada según tipo de imagen
+        if tipo_imagen == "screenshot_movil":
+            current = self._procesar_screenshot_movil(current, deteccion_inteligente, profile_config, resultado, save_steps, output_dir, step_counter)
+        else:
+            current = self._procesar_documento_escaneado(current, diagnostico, profile_config, resultado, save_steps, output_dir, step_counter)
         
         if save_steps and output_dir:
-            cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_analisis_tipo.png"), current)
-            step_counter += 1
-        
-        # FASE 3: Aplicación de Estrategia Específica
-        current = self._aplicar_estrategia_inteligente(current, estrategia, diagnostico, resultado, save_steps, output_dir, step_counter, profile_config)
+            cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_procesamiento_final.png"), current)
         
         return current
     
@@ -985,6 +992,88 @@ class MejoradorOCR:
             
         except Exception:
             return 0.5  # Score neutro si hay error
+    
+    def _procesar_screenshot_movil(self, image, deteccion_inteligente, profile_config, resultado, save_steps, output_dir, step_counter):
+        """
+        FIX: Procesamiento especializado para screenshots móviles con conservación extrema de caracteres
+        REASON: Los screenshots requieren procesamiento mínimo y conservativo para preservar calidad digital
+        IMPACT: Mejora dramática en OCR de screenshots al evitar procesamiento destructivo
+        """
+        current = image.copy()
+        resultado['estrategia_aplicada'] = 'Screenshot Móvil - Conservación Extrema'
+        
+        # PASO 1: Upscaling inteligente para mejorar resolución
+        if image.shape[1] < 600 or image.shape[0] < 800:  # Si es baja resolución
+            scale_factor = 2.0
+            new_width = int(current.shape[1] * scale_factor)
+            new_height = int(current.shape[0] * scale_factor)
+            current = cv2.resize(current, (new_width, new_height), interpolation=cv2.INTER_LANCZOS4)
+            resultado['pasos_aplicados'].append(f'{step_counter:02d}_upscaling_lanczos')
+            if save_steps and output_dir:
+                cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_upscaling_lanczos.png"), current)
+                step_counter += 1
+        
+        # PASO 2: Unsharp masking muy suave para realzar caracteres sin dañarlos
+        try:
+            from skimage.filters import unsharp_mask
+            # Parámetros muy conservadores para screenshots
+            current_normalized = current.astype(np.float64) / 255.0
+            enhanced = unsharp_mask(current_normalized, radius=1.0, amount=0.3, preserve_range=False)
+            current = (enhanced * 255).astype(np.uint8)
+            resultado['pasos_aplicados'].append(f'{step_counter:02d}_unsharp_suave')
+            if save_steps and output_dir:
+                cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_unsharp_suave.png"), current)
+                step_counter += 1
+        except Exception as e:
+            logger.warning(f"Error en unsharp masking: {e}")
+        
+        # PASO 3: Ajuste de contraste muy suave si es necesario
+        mean_intensity = np.mean(current)
+        if mean_intensity < 120 or mean_intensity > 135:  # Solo si no está en rango óptimo
+            alpha = 1.05  # Contraste muy suave
+            beta = 5 if mean_intensity < 120 else -5  # Brillo mínimo
+            current = cv2.convertScaleAbs(current, alpha=alpha, beta=beta)
+            resultado['pasos_aplicados'].append(f'{step_counter:02d}_contraste_suave')
+            if save_steps and output_dir:
+                cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_contraste_suave.png"), current)
+                step_counter += 1
+        
+        # PASO 4: Binarización adaptativa solo si es necesaria
+        edge_density = deteccion_inteligente.get('edge_density', 0)
+        if edge_density < 0.015:  # Solo si los bordes no están bien definidos
+            current = cv2.adaptiveThreshold(current, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, 
+                                          cv2.THRESH_BINARY, 11, 2)
+            resultado['pasos_aplicados'].append(f'{step_counter:02d}_binarizacion_adaptativa')
+            if save_steps and output_dir:
+                cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_binarizacion_adaptativa.png"), current)
+                step_counter += 1
+        
+        resultado['parametros_aplicados']['screenshot_processing'] = {
+            'upscaling_applied': image.shape[1] < 600,
+            'unsharp_radius': 1.0,
+            'unsharp_amount': 0.3,
+            'contrast_adjustment': abs(mean_intensity - 127.5) > 7.5,
+            'binarization_applied': edge_density < 0.015
+        }
+        
+        return current
+    
+    def _procesar_documento_escaneado(self, image, diagnostico, profile_config, resultado, save_steps, output_dir, step_counter):
+        """
+        FIX: Procesamiento tradicional mejorado para documentos escaneados
+        REASON: Los documentos escaneados requieren más procesamiento debido a artefactos físicos
+        IMPACT: Mantiene el procesamiento tradicional pero optimizado
+        """
+        current = image.copy()
+        resultado['estrategia_aplicada'] = 'Documento Escaneado - Procesamiento Tradicional'
+        
+        # Aplicar la secuencia tradicional pero mejorada
+        current = self._aplicar_estrategia_inteligente(
+            current, 'tradicional', diagnostico, resultado, 
+            save_steps, output_dir, step_counter, profile_config
+        )
+        
+        return current
 
 def main():
     """Función principal para uso por línea de comandos"""
