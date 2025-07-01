@@ -191,10 +191,35 @@ class MejoradorOCR:
     
     def _aplicar_deskew(self, image, diagnostico, resultado):
         """Corrige el sesgo de la imagen"""
+        # FIX: Conservación extrema de caracteres - deskew solo para documentos escaneados
+        # REASON: Las capturas de pantalla ya están perfectamente alineadas, deskew introduce distorsión
+        # IMPACT: Elimina rotaciones innecesarias que degradan la calidad de texto digital
+        
         geometria = diagnostico.get('geometria_orientacion', {})
         angle = geometria.get('sesgo_estimado', 0)
         
-        if abs(angle) > 0.5:  # Solo aplicar si hay sesgo significativo
+        # Detección inteligente: solo aplicar deskew si hay sesgo significativo Y no es captura de pantalla
+        imagen_info = diagnostico.get('imagen_info', {})
+        width = imagen_info.get('ancho', 0)
+        height = imagen_info.get('alto', 0)
+        
+        # Heurística para detectar capturas de pantalla (proporciones típicas de pantalla)
+        aspect_ratio = width / height if height > 0 else 1
+        is_screenshot = (
+            aspect_ratio > 1.5 or  # Pantalla wide
+            width > 1000 or        # Resolución alta típica de screenshots
+            height > 600           # Resolución mínima de screenshots
+        )
+        
+        # Solo aplicar deskew si:
+        # 1. Hay sesgo significativo (>2 grados para ser más conservador)
+        # 2. NO es una captura de pantalla
+        # 3. O el sesgo es extremo (>5 grados) incluso en screenshots
+        should_deskew = (
+            abs(angle) > 2.0 and not is_screenshot
+        ) or abs(angle) > 5.0
+        
+        if should_deskew:
             h, w = image.shape
             center = (w // 2, h // 2)
             
@@ -211,47 +236,130 @@ class MejoradorOCR:
             M[0, 2] += (new_w / 2) - center[0]
             M[1, 2] += (new_h / 2) - center[1]
             
-            # Aplicar rotación
+            # Aplicar rotación con interpolación de alta calidad
             rotated = cv2.warpAffine(image, M, (new_w, new_h), 
-                                   flags=cv2.INTER_CUBIC, 
+                                   flags=cv2.INTER_LANCZOS4,  # Mejor calidad
                                    borderMode=cv2.BORDER_REPLICATE)
             
             resultado['pasos_aplicados'].append('Corrección de sesgo')
             resultado['parametros_aplicados']['deskew'] = {
                 'angulo_corregido': round(angle, 2),
-                'dimensiones_nuevas': (new_w, new_h)
+                'dimensiones_nuevas': (new_w, new_h),
+                'tipo_imagen': 'escaneada' if not is_screenshot else 'screenshot_sesgo_extremo'
             }
             
             return rotated
+        else:
+            # Log por qué no se aplicó deskew
+            resultado['parametros_aplicados']['deskew_omitido'] = {
+                'razon': 'captura_de_pantalla' if is_screenshot else 'sesgo_minimo',
+                'angulo_detectado': round(angle, 2),
+                'es_screenshot': is_screenshot,
+                'dimensiones': f"{width}x{height}"
+            }
         
         return image
     
     def _aplicar_filtro_bilateral(self, image, diagnostico, resultado):
         """Aplica filtro bilateral para reducir ruido preservando bordes"""
+        # FIX: Conservación extrema de caracteres - bilateral solo cuando realmente hay ruido
+        # REASON: Las capturas de pantalla digitales no necesitan bilateral, causa difuminación
+        # IMPACT: Preserva la nitidez original del texto digital
+        
         ruido = diagnostico.get('ruido_artefactos', {})
         noise_level = ruido.get('nivel_ruido', 10)
         
-        # Ajustar parámetros según nivel de ruido
-        if noise_level > 20:
-            d, sigma_color, sigma_space = 9, 100, 100
-        elif noise_level > 10:
-            d, sigma_color, sigma_space = 7, 75, 75
+        # Detectar tipo de imagen
+        imagen_info = diagnostico.get('imagen_info', {})
+        width = imagen_info.get('ancho', 0)
+        height = imagen_info.get('alto', 0)
+        aspect_ratio = width / height if height > 0 else 1
+        
+        is_screenshot = (
+            aspect_ratio > 1.5 or
+            width > 1000 or
+            height > 600
+        )
+        
+        # Solo aplicar filtro bilateral si:
+        # 1. Hay ruido significativo (>15 para screenshots, >10 para documentos escaneados)
+        # 2. O no es screenshot y hay ruido moderado
+        noise_threshold = 15 if is_screenshot else 10
+        should_apply_bilateral = noise_level > noise_threshold
+        
+        # Inicializar parámetros por defecto
+        d, sigma_color, sigma_space = 5, 50, 50
+        
+        if should_apply_bilateral:
+            # Parámetros más conservadores para capturas de pantalla
+            if is_screenshot:
+                # Para screenshots: parámetros mínimos que preserven nitidez
+                if noise_level > 25:
+                    d, sigma_color, sigma_space = 5, 30, 30
+                else:
+                    d, sigma_color, sigma_space = 3, 20, 20
+            else:
+                # Para documentos escaneados: parámetros normales
+                if noise_level > 20:
+                    d, sigma_color, sigma_space = 9, 100, 100
+                elif noise_level > 10:
+                    d, sigma_color, sigma_space = 7, 75, 75
+                else:
+                    d, sigma_color, sigma_space = 5, 50, 50
+            
+            filtered = cv2.bilateralFilter(image, d, sigma_color, sigma_space)
+            
+            resultado['pasos_aplicados'].append('Filtro bilateral')
+            resultado['parametros_aplicados']['filtro_bilateral'] = {
+                'd': d, 'sigma_color': sigma_color, 'sigma_space': sigma_space,
+                'tipo_imagen': 'screenshot' if is_screenshot else 'escaneada',
+                'nivel_ruido': noise_level
+            }
+            
+            return filtered
         else:
-            d, sigma_color, sigma_space = 5, 50, 50
-        
-        filtered = cv2.bilateralFilter(image, d, sigma_color, sigma_space)
-        
-        resultado['pasos_aplicados'].append('Filtro bilateral')
-        resultado['parametros_aplicados']['filtro_bilateral'] = {
-            'd': d, 'sigma_color': sigma_color, 'sigma_space': sigma_space
-        }
-        
-        return filtered
+            # Log por qué no se aplicó bilateral
+            resultado['parametros_aplicados']['bilateral_omitido'] = {
+                'razon': 'preservacion_nitidez',
+                'nivel_ruido': noise_level,
+                'umbral_requerido': noise_threshold,
+                'tipo_imagen': 'screenshot' if is_screenshot else 'escaneada'
+            }
+            
+        return image
     
     def _aplicar_eliminacion_ruido(self, image, profile_config, resultado):
         """Aplica eliminación de ruido gaussiano"""
+        # FIX: Conservación extrema de caracteres - denoise solo cuando es crítico
+        # REASON: Gaussian blur en capturas de pantalla causa difuminación innecesaria
+        # IMPACT: Preserva la nitidez del texto digital evitando suavizado excesivo
+        
+        # Detectar si es captura de pantalla
+        h, w = image.shape
+        aspect_ratio = w / h if h > 0 else 1
+        is_screenshot = (
+            aspect_ratio > 1.5 or
+            w > 1000 or
+            h > 600
+        )
+        
         iterations = profile_config['noise_removal_iterations']
         kernel_size = profile_config['gaussian_blur_kernel']
+        
+        # Para capturas de pantalla: eliminar casi todo el denoising
+        if is_screenshot:
+            # Solo aplicar si hay muchas iteraciones configuradas (ruido severo)
+            if iterations > 2:
+                iterations = 1  # Máximo 1 iteración
+                kernel_size = min(kernel_size, 3)  # Kernel muy pequeño
+            else:
+                # Skip denoising completamente para screenshots
+                resultado['parametros_aplicados']['denoise_omitido'] = {
+                    'razon': 'screenshot_preservacion_nitidez',
+                    'iteraciones_originales': iterations,
+                    'kernel_original': kernel_size
+                }
+                return image
         
         denoised = image.copy()
         for i in range(iterations):
@@ -260,7 +368,9 @@ class MejoradorOCR:
         resultado['pasos_aplicados'].append('Eliminación de ruido')
         resultado['parametros_aplicados']['eliminacion_ruido'] = {
             'iteraciones': iterations,
-            'kernel_size': kernel_size
+            'kernel_size': kernel_size,
+            'tipo_imagen': 'screenshot' if is_screenshot else 'escaneada',
+            'reducido_por_conservacion': is_screenshot
         }
         
         return denoised
@@ -346,21 +456,66 @@ class MejoradorOCR:
     
     def _aplicar_nitidez(self, image, diagnostico, resultado):
         """Aplica filtro de nitidez"""
+        # FIX: Mejora agresiva de nitidez para compensar difuminación de procesamientos previos
+        # REASON: Los filtros conservadores pueden haber reducido ligeramente la nitidez
+        # IMPACT: Recupera la definición de bordes esencial para OCR óptimo
+        
         calidad = diagnostico.get('calidad_imagen', {})
         blur_variance = calidad.get('blur_variance', 100)
         
-        if blur_variance < 200:  # Solo si la imagen está borrosa
-            # Kernel de nitidez
-            kernel = np.array(self.preprocessing_config['sharpening_kernel'], dtype=np.float32)
+        # Detectar tipo de imagen
+        h, w = image.shape
+        aspect_ratio = w / h if h > 0 else 1
+        is_screenshot = (
+            aspect_ratio > 1.5 or
+            w > 1000 or
+            h > 600
+        )
+        
+        # Aplicar nitidez más agresiva para screenshots o si hay cualquier signo de difuminación
+        should_sharpen = (
+            blur_variance < 300 or  # Umbral más alto que antes
+            is_screenshot  # Siempre aplicar a screenshots para compensar procesamientos previos
+        )
+        
+        if should_sharpen:
+            if is_screenshot:
+                # Para screenshots: nitidez más agresiva para compensar bilateral/denoise reducidos
+                kernel = np.array([
+                    [0, -1, 0],
+                    [-1, 5.5, -1],  # Centro más fuerte para mayor nitidez
+                    [0, -1, 0]
+                ], dtype=np.float32)
+                metodo = 'Nitidez agresiva para screenshot'
+            else:
+                # Para documentos escaneados: nitidez estándar
+                kernel = np.array(self.preprocessing_config['sharpening_kernel'], dtype=np.float32)
+                metodo = 'Nitidez estándar'
+            
             sharpened = cv2.filter2D(image, -1, kernel)
+            
+            # Aplicar unsharp masking adicional para screenshots muy difuminados
+            if is_screenshot and blur_variance < 150:
+                gaussian = cv2.GaussianBlur(image, (3, 3), 0.8)
+                unsharp = cv2.addWeighted(sharpened, 1.5, gaussian, -0.5, 0)
+                sharpened = np.clip(unsharp, 0, 255).astype(np.uint8)
+                metodo += ' + Unsharp masking'
             
             resultado['pasos_aplicados'].append('Aplicación de nitidez')
             resultado['parametros_aplicados']['nitidez'] = {
                 'blur_variance_detectado': round(blur_variance, 1),
-                'kernel': 'Laplaciano 3x3'
+                'metodo': metodo,
+                'umbral_aplicado': 300,
+                'tipo_imagen': 'screenshot' if is_screenshot else 'escaneada'
             }
             
             return sharpened
+        else:
+            resultado['parametros_aplicados']['nitidez_omitida'] = {
+                'razon': 'imagen_suficientemente_nitida',
+                'blur_variance': round(blur_variance, 1),
+                'umbral_minimo': 300
+            }
         
         return image
     

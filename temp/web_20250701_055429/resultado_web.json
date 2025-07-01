@@ -1,0 +1,598 @@
+{
+  "execution_id": "57a4bf08",
+  "timestamp": "20250701_055429",
+  "input_image": "uploads/20250701_055429_Imagen_de_WhatsApp_2025-06-20_a_las_20.21.31_7a06b961.png",
+  "temp_directory": "temp/web_20250701_055429/ocr_57a4bf08_20250701_055429",
+  "parametros": {
+    "language": "spa",
+    "profile": "rapido",
+    "save_intermediate": true
+  },
+  "etapas": {
+    "1_validacion": {
+      "tiempo": 0.038,
+      "diagnostico": {
+        "imagen_info": {
+          "ancho": 243,
+          "alto": 540,
+          "resolucion_total": 131220,
+          "canales": 3,
+          "modo": "RGB",
+          "formato": "JPEG",
+          "brillo_promedio": 40.82880658436214,
+          "desviacion_brillo": 37.11509698980526,
+          "rango_dinamico": 255.0
+        },
+        "calidad_imagen": {
+          "contraste": 37.11509698980526,
+          "blur_variance": 5166.004909312605,
+          "entropy": 2.7545175552368164,
+          "gradiente_promedio": 45.51764266328379,
+          "brillo_promedio": 40.82880658436214,
+          "uniformidad_brillo": 37.11509698980526,
+          "calificacion_calidad": 70
+        },
+        "deteccion_texto": {
+          "regiones_detectadas": 29,
+          "area_total_texto": 28065,
+          "densidad_texto": 0.2138774577046182,
+          "regiones": [
+            {
+              "x": 184,
+              "y": 518,
+              "width": 11,
+              "height": 14,
+              "area": 154,
+              "aspect_ratio": 0.7857142857142857
+            },
+            {
+              "x": 46,
+              "y": 518,
+              "width": 15,
+              "height": 14,
+              "area": 210,
+              "aspect_ratio": 1.0714285714285714
+            },
+            {
+              "x": 113,
+              "y": 517,
+              "width": 16,
+              "height": 16,
+              "area": 256,
+              "aspect_ratio": 1.0
+            },
+            {
+              "x": 97,
+              "y": 488,
+              "width": 87,
+              "height": 12,
+              "area": 1044,
+              "aspect_ratio": 7.25
+            },
+            {
+              "x": 66,
+              "y": 486,
+              "width": 27,
+              "height": 17,
+              "area": 459,
+              "aspect_ratio": 1.588235294117647
+            },
+            {
+              "x": 113,
+              "y": 446,
+              "width": 17,
+              "height": 16,
+              "area": 272,
+              "aspect_ratio": 1.0625
+            },
+            {
+              "x": 158,
+              "y": 308,
+              "width": 67,
+              "height": 12,
+              "area": 804,
+              "aspect_ratio": 5.583333333333333
+            },
+            {
+              "x": 18,
+              "y": 308,
+              "width": 44,
+              "height": 13,
+              "area": 572,
+              "aspect_ratio": 3.3846153846153846
+            },
+            {
+              "x": 107,
+              "y": 288,
+              "width": 118,
+              "height": 13,
+              "area": 1534,
+              "aspect_ratio": 9.076923076923077
+            },
+            {
+              "x": 18,
+              "y": 288,
+              "width": 31,
+              "height": 13,
+              "area": 403,
+              "aspect_ratio": 2.3846153846153846
+            },
+            {
+              "x": 162,
+              "y": 268,
+              "width": 63,
+              "height": 13,
+              "area": 819,
+              "aspect_ratio": 4.846153846153846
+            },
+            {
+              "x": 18,
+              "y": 268,
+              "width": 37,
+              "height": 13,
+              "area": 481,
+              "aspect_ratio": 2.8461538461538463
+            },
+            {
+              "x": 162,
+              "y": 249,
+              "width": 62,
+              "height": 12,
+              "area": 744,
+              "aspect_ratio": 5.166666666666667
+            },
+            {
+              "x": 18,
+              "y": 249,
+              "width": 34,
+              "height": 14,
+              "area": 476,
+              "aspect_ratio": 2.4285714285714284
+            },
+            {
+              "x": 179,
+              "y": 229,
+              "width": 46,
+              "height": 13,
+              "area": 598,
+              "aspect_ratio": 3.5384615384615383
+            },
+            {
+              "x": 18,
+              "y": 229,
+              "width": 59,
+              "height": 13,
+              "area": 767,
+              "aspect_ratio": 4.538461538461538
+            },
+            {
+              "x": 18,
+              "y": 210,
+              "width": 47,
+              "height": 13,
+              "area": 611,
+              "aspect_ratio": 3.6153846153846154
+            },
+            {
+              "x": 144,
+              "y": 207,
+              "width": 84,
+              "height": 17,
+              "area": 1428,
+              "aspect_ratio": 4.9411764705882355
+            },
+            {
+              "x": 174,
+              "y": 190,
+              "width": 51,
+              "height": 13,
+              "area": 663,
+              "aspect_ratio": 3.923076923076923
+            },
+            {
+              "x": 18,
+              "y": 190,
+              "width": 30,
+              "height": 13,
+              "area": 390,
+              "aspect_ratio": 2.3076923076923075
+            }
+          ],
+          "cobertura_texto_porcentaje": 21.38774577046182
+        },
+        "ruido_artefactos": {
+          "nivel_ruido": 5.1341030330742266,
+          "desviacion_ruido": 17.818374255969488,
+          "porcentaje_pixeles_ruidosos": 4.8056698673982625,
+          "uniformidad": 5.728768480414571,
+          "calificacion_ruido": "Bajo"
+        },
+        "geometria_orientacion": {
+          "sesgo_estimado": 2.5,
+          "lineas_detectadas": 3,
+          "simetria_horizontal": 0.6015089154243469,
+          "relacion_aspecto": 0.45,
+          "requiere_deskew": true,
+          "orientacion_correcta": true
+        },
+        "recomendaciones": {
+          "perfil_recomendado": "rapido",
+          "aplicar_deskew": true,
+          "nivel_denoise": "moderado",
+          "ajuste_contraste": false,
+          "filtro_bilateral": true,
+          "prioridades": [
+            "Corrección de sesgo necesaria"
+          ]
+        },
+        "puntuacion_general": {
+          "total": 88.0,
+          "calidad": 70,
+          "texto": 100,
+          "ruido": 100,
+          "geometria": 100,
+          "categoria": "Excelente"
+        }
+      },
+      "imagen_original": "temp/web_20250701_055429/ocr_57a4bf08_20250701_055429/00_imagen_original.png",
+      "archivo_diagnostico": "temp/web_20250701_055429/ocr_57a4bf08_20250701_055429/diagnostico.json"
+    },
+    "2_mejora": {
+      "perfil_usado": "rapido",
+      "pasos_aplicados": [
+        "Corrección de sesgo",
+        "Filtro bilateral",
+        "Eliminación de ruido",
+        "Mejora de contraste CLAHE",
+        "Binarización adaptativa",
+        "Operaciones morfológicas"
+      ],
+      "metricas_antes": {
+        "brillo_promedio": 40.82880658436214,
+        "contraste": 37.11509698980526,
+        "nitidez": 5166.004909312605,
+        "rango_dinamico": 255.0
+      },
+      "parametros_aplicados": {
+        "deskew": {
+          "angulo_corregido": 2.5,
+          "dimensiones_nuevas": [
+            266,
+            550
+          ]
+        },
+        "filtro_bilateral": {
+          "d": 5,
+          "sigma_color": 50,
+          "sigma_space": 50
+        },
+        "eliminacion_ruido": {
+          "iteraciones": 2,
+          "kernel_size": 3
+        },
+        "mejora_contraste": {
+          "metodo": "CLAHE",
+          "clip_limit": 3.0,
+          "tile_size": [
+            8,
+            8
+          ]
+        },
+        "binarizacion": {
+          "block_size": 15,
+          "C": 5,
+          "brillo_detectado": 40.8
+        },
+        "morfologia": {
+          "apertura_kernel": [
+            2,
+            2
+          ],
+          "cierre_kernel": [
+            3,
+            1
+          ]
+        }
+      },
+      "tiempo_procesamiento": 0.021,
+      "metricas_despues": {
+        "brillo_promedio": 222.3728981544771,
+        "contraste": 85.17853717791951,
+        "nitidez": 13008.555695298335,
+        "rango_dinamico": 255.0
+      },
+      "imagen_mejorada": "temp/web_20250701_055429/ocr_57a4bf08_20250701_055429/imagen_mejorada.png",
+      "mejora_calidad": {
+        "contraste": {
+          "antes": 37.12,
+          "despues": 85.18,
+          "cambio": 48.06,
+          "porcentaje": 129.5
+        },
+        "nitidez": {
+          "antes": 5166.0,
+          "despues": 13008.56,
+          "cambio": 7842.55,
+          "porcentaje": 151.8
+        },
+        "rango_dinamico": {
+          "antes": 255.0,
+          "despues": 255.0,
+          "cambio": 0.0,
+          "porcentaje": 0.0
+        }
+      },
+      "tiempo": 0.025,
+      "archivo_resultado": "temp/web_20250701_055429/ocr_57a4bf08_20250701_055429/resultado_mejora.json"
+    },
+    "3_ocr": {
+      "texto_completo": "eoe\nPENCamerrianedecooncitoM\nC)\n3\ng 5\n5\n(:;. D\n(\nO\nE5E",
+      "estadisticas_ocr": {
+        "total_palabras": 25,
+        "palabras_validas": 12,
+        "confianza_promedio": 34.5,
+        "confianza_minima": 0,
+        "confianza_maxima": 85,
+        "palabras_alta_confianza": 1,
+        "palabras_baja_confianza": 6,
+        "distribucion_confianza": {
+          "excelente (90-100)": 0,
+          "buena (70-89)": 1,
+          "regular (50-69)": 4,
+          "baja (30-49)": 1,
+          "muy_baja (0-29)": 6
+        }
+      },
+      "palabras_detectadas": [
+        {
+          "texto": "C)",
+          "confianza": 85,
+          "posicion": {
+            "x": 120,
+            "y": 135,
+            "width": 17,
+            "height": 16
+          },
+          "categoria_confianza": "buena"
+        },
+        {
+          "texto": "g",
+          "confianza": 69,
+          "posicion": {
+            "x": 28,
+            "y": 257,
+            "width": 43,
+            "height": 36
+          },
+          "categoria_confianza": "aceptable"
+        },
+        {
+          "texto": "(:;.",
+          "confianza": 68,
+          "posicion": {
+            "x": 29,
+            "y": 315,
+            "width": 50,
+            "height": 18
+          },
+          "categoria_confianza": "aceptable"
+        },
+        {
+          "texto": "D",
+          "confianza": 60,
+          "posicion": {
+            "x": 172,
+            "y": 307,
+            "width": 70,
+            "height": 19
+          },
+          "categoria_confianza": "aceptable"
+        },
+        {
+          "texto": "O",
+          "confianza": 60,
+          "posicion": {
+            "x": 86,
+            "y": 490,
+            "width": 123,
+            "height": 23
+          },
+          "categoria_confianza": "aceptable"
+        },
+        {
+          "texto": "5",
+          "confianza": 39,
+          "posicion": {
+            "x": 173,
+            "y": 249,
+            "width": 68,
+            "height": 38
+          },
+          "categoria_confianza": "aceptable"
+        },
+        {
+          "texto": "(",
+          "confianza": 18,
+          "posicion": {
+            "x": 132,
+            "y": 449,
+            "width": 22,
+            "height": 21
+          },
+          "categoria_confianza": "baja"
+        },
+        {
+          "texto": "eoe",
+          "confianza": 15,
+          "posicion": {
+            "x": 3,
+            "y": 7,
+            "width": 262,
+            "height": 24
+          },
+          "categoria_confianza": "baja"
+        },
+        {
+          "texto": "PENCamerrianedecooncitoM",
+          "confianza": 0,
+          "posicion": {
+            "x": 10,
+            "y": 28,
+            "width": 231,
+            "height": 29
+          },
+          "categoria_confianza": "baja"
+        },
+        {
+          "texto": "3",
+          "confianza": 0,
+          "posicion": {
+            "x": 24,
+            "y": 190,
+            "width": 217,
+            "height": 64
+          },
+          "categoria_confianza": "baja"
+        },
+        {
+          "texto": "5",
+          "confianza": 0,
+          "posicion": {
+            "x": 30,
+            "y": 288,
+            "width": 211,
+            "height": 25
+          },
+          "categoria_confianza": "baja"
+        },
+        {
+          "texto": "E5E",
+          "confianza": 0,
+          "posicion": {
+            "x": 0,
+            "y": 511,
+            "width": 266,
+            "height": 32
+          },
+          "categoria_confianza": "baja"
+        }
+      ],
+      "confianza_promedio": {
+        "simple": 34.5,
+        "ponderada": 17.05,
+        "palabras_evaluadas": 12
+      },
+      "calidad_extraccion": {
+        "caracteres_totales": 43,
+        "palabras_totales": 12,
+        "densidad_informacion": 0.796,
+        "errores_detectados": [
+          "Números mal formateados: 1",
+          "Exceso de palabras de 1 letra: 3"
+        ],
+        "puntuacion_calidad": 34.5,
+        "categoria": "Deficiente",
+        "recomendaciones": [
+          "Considere mejorar la calidad de la imagen de entrada",
+          "Verifique la iluminación y el contraste",
+          "Verificar números importantes manualmente"
+        ]
+      },
+      "datos_financieros": {
+        "amount": [
+          {
+            "valor": "3",
+            "posicion_texto": 32
+          },
+          {
+            "valor": "5",
+            "posicion_texto": 36
+          },
+          {
+            "valor": "5",
+            "posicion_texto": 36
+          },
+          {
+            "valor": "5",
+            "posicion_texto": 36
+          }
+        ],
+        "analisis_documento": {
+          "tipo": "desconocido",
+          "confianza": 0,
+          "keywords_encontradas": []
+        },
+        "resumen_extraido": {
+          "montos_encontrados": 4,
+          "fechas_encontradas": 0,
+          "referencias_encontradas": 0,
+          "cuentas_encontradas": 0,
+          "telefonos_encontrados": 0,
+          "total_elementos": 4,
+          "completitud_porcentaje": 50.0
+        }
+      },
+      "tiempo": 2.406,
+      "archivo_resultado": "temp/web_20250701_055429/ocr_57a4bf08_20250701_055429/resultado_ocr.json",
+      "archivo_texto": "temp/web_20250701_055429/ocr_57a4bf08_20250701_055429/texto_extraido.txt"
+    }
+  },
+  "archivos_generados": [
+    "temp/web_20250701_055429/ocr_57a4bf08_20250701_055429/resultado_completo.json",
+    "temp/web_20250701_055429/ocr_57a4bf08_20250701_055429/reporte.html"
+  ],
+  "resumen_final": {
+    "imagen_original": {
+      "dimensiones": "243x540",
+      "calidad_inicial": "Excelente",
+      "puntuacion_calidad": 88.0
+    },
+    "procesamiento_aplicado": {
+      "perfil_usado": "rapido",
+      "pasos_ejecutados": 6,
+      "lista_pasos": [
+        "Corrección de sesgo",
+        "Filtro bilateral",
+        "Eliminación de ruido",
+        "Mejora de contraste CLAHE",
+        "Binarización adaptativa",
+        "Operaciones morfológicas"
+      ],
+      "tiempo_procesamiento": 0.021
+    },
+    "resultados_ocr": {
+      "caracteres_extraidos": 54,
+      "palabras_detectadas": 12,
+      "confianza_promedio": 34.5,
+      "confianza_ponderada": 17.05,
+      "calidad_extraccion": "Deficiente"
+    },
+    "datos_financieros": {
+      "tipo_documento": "desconocido",
+      "elementos_encontrados": 4,
+      "completitud": 50.0,
+      "montos_encontrados": 4,
+      "fechas_encontradas": 0
+    },
+    "rendimiento": {
+      "tiempo_total": 0,
+      "tiempo_validacion": 0.038,
+      "tiempo_mejora": 0.025,
+      "tiempo_ocr": 2.406
+    },
+    "calificacion_final": {
+      "puntuacion": 55.2,
+      "categoria": "Regular",
+      "componentes": {
+        "calidad_imagen": 88.0,
+        "confianza_ocr": 34.5,
+        "completitud_datos": 50.0
+      }
+    },
+    "recomendaciones": [
+      "Considerar usar perfil 'Normal' para mejor precisión",
+      "Revisar manualmente los datos críticos extraídos"
+    ]
+  },
+  "tiempo_total": 2.471
+}

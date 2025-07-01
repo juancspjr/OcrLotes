@@ -93,6 +93,14 @@ This is a Python-based OCR (Optical Character Recognition) system designed for p
 ```
 Changelog:
 - July 01, 2025. Initial setup
+- July 01, 2025. Critical fixes applied:
+  * Implemented "Extreme Character Conservation Philosophy" for screenshot processing
+  * Enhanced screenshot detection heuristics (aspect ratio, resolution-based)
+  * Conservative deskew: only applies to scanned documents, skips screenshots
+  * Reduced bilateral filtering and denoising for digital captures
+  * Aggressive sharpening compensation for screenshots after light processing
+  * Fixed JSON serialization errors with numpy types
+  * Improved data structure validation in result generation
 ```
 
 ## User Preferences

@@ -1,0 +1,209 @@
+{
+  "texto_completo": "eoe\nPENCamerrianedecooncitoM\nC)\n3\ng 5\n5\n(:;. D\n(\nO\nE5E",
+  "estadisticas_ocr": {
+    "total_palabras": 25,
+    "palabras_validas": 12,
+    "confianza_promedio": 34.5,
+    "confianza_minima": 0,
+    "confianza_maxima": 85,
+    "palabras_alta_confianza": 1,
+    "palabras_baja_confianza": 6,
+    "distribucion_confianza": {
+      "excelente (90-100)": 0,
+      "buena (70-89)": 1,
+      "regular (50-69)": 4,
+      "baja (30-49)": 1,
+      "muy_baja (0-29)": 6
+    }
+  },
+  "palabras_detectadas": [
+    {
+      "texto": "C)",
+      "confianza": 85,
+      "posicion": {
+        "x": 120,
+        "y": 135,
+        "width": 17,
+        "height": 16
+      },
+      "categoria_confianza": "buena"
+    },
+    {
+      "texto": "g",
+      "confianza": 69,
+      "posicion": {
+        "x": 28,
+        "y": 257,
+        "width": 43,
+        "height": 36
+      },
+      "categoria_confianza": "aceptable"
+    },
+    {
+      "texto": "(:;.",
+      "confianza": 68,
+      "posicion": {
+        "x": 29,
+        "y": 315,
+        "width": 50,
+        "height": 18
+      },
+      "categoria_confianza": "aceptable"
+    },
+    {
+      "texto": "D",
+      "confianza": 60,
+      "posicion": {
+        "x": 172,
+        "y": 307,
+        "width": 70,
+        "height": 19
+      },
+      "categoria_confianza": "aceptable"
+    },
+    {
+      "texto": "O",
+      "confianza": 60,
+      "posicion": {
+        "x": 86,
+        "y": 490,
+        "width": 123,
+        "height": 23
+      },
+      "categoria_confianza": "aceptable"
+    },
+    {
+      "texto": "5",
+      "confianza": 39,
+      "posicion": {
+        "x": 173,
+        "y": 249,
+        "width": 68,
+        "height": 38
+      },
+      "categoria_confianza": "aceptable"
+    },
+    {
+      "texto": "(",
+      "confianza": 18,
+      "posicion": {
+        "x": 132,
+        "y": 449,
+        "width": 22,
+        "height": 21
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "eoe",
+      "confianza": 15,
+      "posicion": {
+        "x": 3,
+        "y": 7,
+        "width": 262,
+        "height": 24
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "PENCamerrianedecooncitoM",
+      "confianza": 0,
+      "posicion": {
+        "x": 10,
+        "y": 28,
+        "width": 231,
+        "height": 29
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "3",
+      "confianza": 0,
+      "posicion": {
+        "x": 24,
+        "y": 190,
+        "width": 217,
+        "height": 64
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "5",
+      "confianza": 0,
+      "posicion": {
+        "x": 30,
+        "y": 288,
+        "width": 211,
+        "height": 25
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "E5E",
+      "confianza": 0,
+      "posicion": {
+        "x": 0,
+        "y": 511,
+        "width": 266,
+        "height": 32
+      },
+      "categoria_confianza": "baja"
+    }
+  ],
+  "confianza_promedio": {
+    "simple": 34.5,
+    "ponderada": 17.05,
+    "palabras_evaluadas": 12
+  },
+  "calidad_extraccion": {
+    "caracteres_totales": 43,
+    "palabras_totales": 12,
+    "densidad_informacion": 0.796,
+    "errores_detectados": [
+      "Números mal formateados: 1",
+      "Exceso de palabras de 1 letra: 3"
+    ],
+    "puntuacion_calidad": 34.5,
+    "categoria": "Deficiente",
+    "recomendaciones": [
+      "Considere mejorar la calidad de la imagen de entrada",
+      "Verifique la iluminación y el contraste",
+      "Verificar números importantes manualmente"
+    ]
+  },
+  "datos_financieros": {
+    "amount": [
+      {
+        "valor": "3",
+        "posicion_texto": 32
+      },
+      {
+        "valor": "5",
+        "posicion_texto": 36
+      },
+      {
+        "valor": "5",
+        "posicion_texto": 36
+      },
+      {
+        "valor": "5",
+        "posicion_texto": 36
+      }
+    ],
+    "analisis_documento": {
+      "tipo": "desconocido",
+      "confianza": 0,
+      "keywords_encontradas": []
+    },
+    "resumen_extraido": {
+      "montos_encontrados": 4,
+      "fechas_encontradas": 0,
+      "referencias_encontradas": 0,
+      "cuentas_encontradas": 0,
+      "telefonos_encontrados": 0,
+      "total_elementos": 4,
+      "completitud_porcentaje": 50.0
+    }
+  },
+  "tiempo": 2.406
+}
