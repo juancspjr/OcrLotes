@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="es" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultados OCR - {{ resultado.execution_id }}</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Custom CSS -->
+    <link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('index') }}">
+                <i class="fas fa-eye me-2"></i>Sistema OCR
+            </a>
+            <div class="ms-auto">
+                <a href="{{ url_for('index') }}" class="btn btn-outline-light">
+                    <i class="fas fa-plus me-2"></i>Nuevo Documento
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header Section -->
+    <div class="bg-gradient-primary text-white py-4">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="mb-1">
+                        <i class="fas fa-chart-line me-2"></i>Dashboard de Resultados
+                    </h1>
+                    <p class="mb-0">ID de Ejecución: <code>{{ resultado.execution_id }}</code></p>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <div class="badge-container">
+                        <span class="badge bg-{{ 'success' if resumen.calificacion_final.categoria == 'Excelente' else 'warning' if resumen.calificacion_final.categoria == 'Buena' else 'danger' }} fs-6">
+                            {{ resumen.calificacion_final.categoria }}
+                        </span>
+                        <div class="mt-1">
+                            <small>Puntuación: {{ resumen.calificacion_final.puntuacion }}/100</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container py-4">
+        <!-- Executive Summary -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="card-title mb-0">
+                            <i class="fas fa-chart-pie me-2"></i>Resumen Ejecutivo
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <!-- Key Metrics -->
+                            <div class="col-md-3">
+                                <div class="metric-card text-center p-3 bg-light rounded">
+                                    <i class="fas fa-clock fa-2x text-primary mb-2"></i>
+                                    <h5 class="mb-1">{{ resultado.tiempo_total }}s</h5>
+                                    <small class="text-muted">Tiempo Total</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="metric-card text-center p-3 bg-light rounded">
+                                    <i class="fas fa-file-alt fa-2x text-success mb-2"></i>
+                                    <h5 class="mb-1">{{ resumen.resultados_ocr.caracteres_extraidos }}</h5>
+                                    <small class="text-muted">Caracteres</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="metric-card text-center p-3 bg-light rounded">
+                                    <i class="fas fa-percentage fa-2x text-info mb-2"></i>
+                                    <h5 class="mb-1">{{ resumen.resultados_ocr.confianza_promedio|round(1) }}%</h5>
+                                    <small class="text-muted">Confianza OCR</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="metric-card text-center p-3 bg-light rounded">
+                                    <i class="fas fa-university fa-2x text-warning mb-2"></i>
+                                    <h5 class="mb-1">{{ resumen.datos_financieros.elementos_encontrados }}</h5>
+                                    <small class="text-muted">Datos Bancarios</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Image Comparison -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title mb-0">
+                            <i class="fas fa-images me-2"></i>Comparación Visual: Original vs Procesada
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <!-- Original Image -->
+                            <div class="col-md-6">
+                                <div class="image-container">
+                                    <h6 class="text-center mb-3">
+                                        <i class="fas fa-image me-2"></i>Imagen Original
+                                    </h6>
+                                    {% if etapas['1_validacion'] and etapas['1_validacion'].imagen_original %}
+                                        <div class="text-center">
+                                            <img src="{{ url_for('download_file', filename=etapas['1_validacion'].imagen_original.split('/')[-2:] | join('/')) }}" 
+                                                 class="img-fluid rounded shadow" 
+                                                 alt="Imagen Original"
+                                                 style="max-height: 300px;">
+                                        </div>
+                                        <div class="mt-2 text-center">
+                                            <small class="text-muted">
+                                                Dimensiones: {{ resumen.imagen_original.dimensiones }}
+                                            </small>
+                                        </div>
+                                    {% else %}
+                                        <div class="text-center py-5 bg-light rounded">
+                                            <i class="fas fa-image fa-3x text-muted mb-3"></i>
+                                            <p class="text-muted">Imagen original no disponible</p>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <!-- Processed Image -->
+                            <div class="col-md-6">
+                                <div class="image-container">
+                                    <h6 class="text-center mb-3">
+                                        <i class="fas fa-magic me-2"></i>Imagen Procesada
+                                    </h6>
+                                    {% if etapas['2_mejora'] and etapas['2_mejora'].imagen_mejorada %}
+                                        <div class="text-center">
+                                            <img src="{{ url_for('download_file', filename=etapas['2_mejora'].imagen_mejorada.split('/')[-2:] | join('/')) }}" 
+                                                 class="img-fluid rounded shadow" 
+                                                 alt="Imagen Procesada"
+                                                 style="max-height: 300px;">
+                                        </div>
+                                        <div class="mt-2 text-center">
+                                            <small class="text-success">
+                                                Perfil: {{ resumen.procesamiento_aplicado.perfil_usado }}
+                                            </small>
+                                        </div>
+                                    {% else %}
+                                        <div class="text-center py-5 bg-light rounded">
+                                            <i class="fas fa-cog fa-3x text-muted mb-3"></i>
+                                            <p class="text-muted">Imagen procesada no disponible</p>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Technical Diagnostics -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header bg-info text-white">
+                        <h4 class="card-title mb-0">
+                            <i class="fas fa-microscope me-2"></i>Diagnóstico Técnico
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        {% if etapas['1_validacion'] and etapas['1_validacion'].diagnostico %}
+                            {% set diagnostico = etapas['1_validacion'].diagnostico %}
+                            
+                            <!-- Quality Metrics Chart -->
+                            <div class="mb-4">
+                                <canvas id="qualityChart" width="400" height="200"></canvas>
+                            </div>
+
+                            <!-- Detailed Metrics -->
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <div class="metric-item">
+                                        <strong>Contraste:</strong>
+                                        <span class="float-end">{{ diagnostico.calidad_imagen.contraste|round(1) }}</span>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="metric-item">
+                                        <strong>Nitidez:</strong>
+                                        <span class="float-end">{{ diagnostico.calidad_imagen.blur_variance|round(1) }}</span>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="metric-item">
+                                        <strong>Ruido:</strong>
+                                        <span class="float-end">{{ diagnostico.ruido_artefactos.calificacion_ruido }}</span>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="metric-item">
+                                        <strong>Sesgo:</strong>
+                                        <span class="float-end">{{ diagnostico.geometria_orientacion.sesgo_estimado|round(1) }}°</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Recommendations -->
+                            {% if diagnostico.recomendaciones.prioridades %}
+                                <div class="mt-3">
+                                    <h6><i class="fas fa-lightbulb me-2"></i>Recomendaciones:</h6>
+                                    <ul class="list-unstyled">
+                                        {% for prioridad in diagnostico.recomendaciones.prioridades %}
+                                            <li><i class="fas fa-arrow-right me-2 text-warning"></i>{{ prioridad }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            {% endif %}
+                        {% else %}
+                            <div class="text-center text-muted">
+                                <i class="fas fa-exclamation-triangle fa-2x mb-3"></i>
+                                <p>Diagnóstico no disponible</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Processing Strategy -->
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header bg-success text-white">
+                        <h4 class="card-title mb-0">
+                            <i class="fas fa-sitemap me-2"></i>Estrategia de Procesamiento
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        {% if resumen.procesamiento_aplicado %}
+                            <!-- Performance Chart -->
+                            <div class="mb-4">
+                                <canvas id="performanceChart" width="400" height="200"></canvas>
+                            </div>
+
+                            <!-- Applied Steps -->
+                            <h6><i class="fas fa-list-ol me-2"></i>Pasos Ejecutados:</h6>
+                            <div class="steps-container">
+                                {% for paso in resumen.procesamiento_aplicado.lista_pasos %}
+                                    <div class="step-item d-flex align-items-center mb-2">
+                                        <i class="fas fa-check-circle text-success me-2"></i>
+                                        <span>{{ paso }}</span>
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                            <!-- Performance Metrics -->
+                            <div class="mt-3">
+                                <div class="row g-2">
+                                    <div class="col-6">
+                                        <small><strong>Perfil:</strong> {{ resumen.procesamiento_aplicado.perfil_usado }}</small>
+                                    </div>
+                                    <div class="col-6">
+                                        <small><strong>Tiempo:</strong> {{ resumen.procesamiento_aplicado.tiempo_procesamiento }}s</small>
+                                    </div>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="text-center text-muted">
+                                <i class="fas fa-cogs fa-2x mb-3"></i>
+                                <p>Información de procesamiento no disponible</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- OCR Results and Financial Data -->
+        <div class="row mb-4">
+            <!-- OCR Confidence -->
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header bg-warning text-dark">
+                        <h4 class="card-title mb-0">
+                            <i class="fas fa-font me-2"></i>Análisis OCR
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        {% if etapas['3_ocr'] %}
+                            <!-- Confidence Chart -->
+                            <div class="mb-4">
+                                <canvas id="confidenceChart" width="400" height="200"></canvas>
+                            </div>
+
+                            <!-- OCR Statistics -->
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <div class="metric-item">
+                                        <strong>Palabras:</strong>
+                                        <span class="float-end">{{ resumen.resultados_ocr.palabras_detectadas }}</span>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="metric-item">
+                                        <strong>Confianza:</strong>
+                                        <span class="float-end">{{ resumen.resultados_ocr.confianza_promedio|round(1) }}%</span>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="metric-item">
+                                        <strong>Calidad:</strong>
+                                        <span class="float-end">{{ resumen.resultados_ocr.calidad_extraccion }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="text-center text-muted">
+                                <i class="fas fa-font fa-2x mb-3"></i>
+                                <p>Resultados OCR no disponibles</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Financial Data -->
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header bg-danger text-white">
+                        <h4 class="card-title mb-0">
+                            <i class="fas fa-university me-2"></i>Datos Financieros
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        {% if resumen.datos_financieros %}
+                            <!-- Document Type -->
+                            <div class="mb-3">
+                                <h6><i class="fas fa-file-invoice me-2"></i>Tipo de Documento:</h6>
+                                <span class="badge bg-primary fs-6">{{ resumen.datos_financieros.tipo_documento }}</span>
+                            </div>
+
+                            <!-- Financial Elements -->
+                            <div class="row g-2 mb-3">
+                                <div class="col-6">
+                                    <div class="metric-item">
+                                        <strong>Montos:</strong>
+                                        <span class="float-end text-success">{{ resumen.datos_financieros.montos_encontrados }}</span>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="metric-item">
+                                        <strong>Fechas:</strong>
+                                        <span class="float-end text-info">{{ resumen.datos_financieros.fechas_encontradas }}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Completeness -->
+                            <div class="mb-3">
+                                <h6><i class="fas fa-chart-pie me-2"></i>Completitud del Documento:</h6>
+                                <div class="progress" style="height: 25px;">
+                                    <div class="progress-bar bg-{{ 'success' if resumen.datos_financieros.completitud > 80 else 'warning' if resumen.datos_financieros.completitud > 50 else 'danger' }}" 
+                                         role="progressbar" 
+                                         style="width: {{ resumen.datos_financieros.completitud }}%;">
+                                        {{ resumen.datos_financieros.completitud|round(1) }}%
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Financial Data Details -->
+                            {% if etapas['3_ocr'].datos_financieros %}
+                                <div class="financial-details">
+                                    <h6><i class="fas fa-list me-2"></i>Elementos Detectados:</h6>
+                                    {% for tipo, elementos in etapas['3_ocr'].datos_financieros.items() %}
+                                        {% if elementos and tipo != 'analisis_documento' and tipo != 'resumen_extraido' %}
+                                            <div class="mb-2">
+                                                <strong>{{ tipo|title }}:</strong>
+                                                {% for elemento in elementos[:3] %}
+                                                    <span class="badge bg-secondary ms-1">{{ elemento.valor }}</span>
+                                                {% endfor %}
+                                                {% if elementos|length > 3 %}
+                                                    <span class="text-muted">... +{{ elementos|length - 3 }} más</span>
+                                                {% endif %}
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        {% else %}
+                            <div class="text-center text-muted">
+                                <i class="fas fa-university fa-2x mb-3"></i>
+                                <p>Datos financieros no disponibles</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Extracted Text -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title mb-0">
+                            <i class="fas fa-align-left me-2"></i>Texto Extraído
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        {% if etapas['3_ocr'] and etapas['3_ocr'].texto_completo %}
+                            <div class="text-content bg-light p-3 rounded">
+                                <pre class="mb-0" style="white-space: pre-wrap; font-family: monospace;">{{ etapas['3_ocr'].texto_completo }}</pre>
+                            </div>
+                            <div class="mt-2 text-end">
+                                <small class="text-muted">{{ etapas['3_ocr'].texto_completo|length }} caracteres extraídos</small>
+                            </div>
+                        {% else %}
+                            <div class="text-center text-muted py-4">
+                                <i class="fas fa-file-alt fa-2x mb-3"></i>
+                                <p>No se extrajo texto o el contenido no está disponible</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Final Recommendations -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-secondary text-white">
+                        <h4 class="card-title mb-0">
+                            <i class="fas fa-lightbulb me-2"></i>Recomendaciones Finales
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        {% if resumen.recomendaciones %}
+                            <div class="row">
+                                {% for recomendacion in resumen.recomendaciones %}
+                                    <div class="col-md-6 mb-2">
+                                        <div class="d-flex align-items-start">
+                                            <i class="fas fa-check-circle text-success me-2 mt-1"></i>
+                                            <span>{{ recomendacion }}</span>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p class="text-muted mb-0">No hay recomendaciones específicas disponibles.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Download Section -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title mb-0">
+                            <i class="fas fa-download me-2"></i>Archivos Disponibles
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        {% if archivos_disponibles %}
+                            <div class="row g-3">
+                                {% for archivo in archivos_disponibles %}
+                                    <div class="col-md-4">
+                                        <div class="file-item p-3 border rounded">
+                                            <div class="d-flex align-items-center justify-content-between">
+                                                <div>
+                                                    <i class="fas fa-{{ 'image' if archivo.tipo == 'imagen' else 'file-alt' }} me-2"></i>
+                                                    <strong>{{ archivo.nombre }}</strong>
+                                                    <br>
+                                                    <small class="text-muted">{{ archivo.tamaño|filesize }}</small>
+                                                </div>
+                                                <a href="{{ url_for('download_file', filename=archivo.ruta) }}" 
+                                                   class="btn btn-sm btn-outline-primary">
+                                                    <i class="fas fa-download"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p class="text-muted mb-0">No hay archivos disponibles para descarga.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="row">
+            <div class="col-12 text-center">
+                <a href="{{ url_for('index') }}" class="btn btn-primary btn-lg me-3">
+                    <i class="fas fa-plus me-2"></i>Procesar Otro Documento
+                </a>
+                <button onclick="window.print()" class="btn btn-secondary btn-lg">
+                    <i class="fas fa-print me-2"></i>Imprimir Reporte
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Chart.js Scripts -->
+    <script>
+        // Quality Metrics Chart
+        {% if etapas['1_validacion'] and etapas['1_validacion'].diagnostico %}
+        const qualityCtx = document.getElementById('qualityChart').getContext('2d');
+        new Chart(qualityCtx, {
+            type: 'radar',
+            data: {
+                labels: ['Calidad', 'Texto', 'Ruido', 'Geometría'],
+                datasets: [{
+                    label: 'Métricas de Calidad',
+                    data: [
+                        {{ graficos_datos.metricas_calidad.Calidad or 0 }},
+                        {{ graficos_datos.metricas_calidad.Texto or 0 }},
+                        {{ graficos_datos.metricas_calidad.Ruido or 0 }},
+                        {{ graficos_datos.metricas_calidad.Geometría or 0 }}
+                    ],
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    r: {
+                        beginAtZero: true,
+                        max: 100
+                    }
+                }
+            }
+        });
+        {% endif %}
+
+        // Performance Chart
+        {% if graficos_datos.tiempos_etapas %}
+        const performanceCtx = document.getElementById('performanceChart').getContext('2d');
+        new Chart(performanceCtx, {
+            type: 'doughnut',
+            data: {
+                labels: Object.keys({{ graficos_datos.tiempos_etapas|tojson }}),
+                datasets: [{
+                    data: Object.values({{ graficos_datos.tiempos_etapas|tojson }}),
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.8)',
+                        'rgba(54, 162, 235, 0.8)',
+                        'rgba(255, 205, 86, 0.8)'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+        {% endif %}
+
+        // Confidence Chart
+        {% if graficos_datos.distribucion_confianza %}
+        const confidenceCtx = document.getElementById('confidenceChart').getContext('2d');
+        new Chart(confidenceCtx, {
+            type: 'bar',
+            data: {
+                labels: Object.keys({{ graficos_datos.distribucion_confianza|tojson }}),
+                datasets: [{
+                    label: 'Palabras',
+                    data: Object.values({{ graficos_datos.distribucion_confianza|tojson }}),
+                    backgroundColor: 'rgba(75, 192, 192, 0.8)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+        {% endif %}
+    </script>
+    
+    <!-- Custom JS -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

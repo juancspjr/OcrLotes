@@ -1,0 +1,365 @@
+"""
+Módulo de validación y diagnóstico de imágenes para OCR
+Analiza la calidad de la imagen y proporciona métricas detalladas
+"""
+
+import cv2
+import numpy as np
+import json
+import logging
+from pathlib import Path
+from skimage import measure, filters
+from PIL import Image, ImageStat
+import config
+
+# Configurar logging
+logging.basicConfig(**config.LOGGING_CONFIG)
+logger = logging.getLogger(__name__)
+
+class ValidadorOCR:
+    """Clase para validar y diagnosticar la calidad de imágenes para OCR"""
+    
+    def __init__(self):
+        self.thresholds = config.IMAGE_QUALITY_THRESHOLDS
+        
+    def analizar_imagen(self, image_path):
+        """
+        Analiza una imagen y genera un diagnóstico completo
+        
+        Args:
+            image_path: Ruta a la imagen a analizar
+            
+        Returns:
+            dict: Diccionario con métricas y diagnósticos
+        """
+        try:
+            # Cargar imagen
+            image_cv = cv2.imread(str(image_path))
+            image_pil = Image.open(image_path)
+            
+            if image_cv is None:
+                raise ValueError(f"No se puede cargar la imagen: {image_path}")
+            
+            # Convertir a escala de grises para análisis
+            gray = cv2.cvtColor(image_cv, cv2.COLOR_BGR2GRAY)
+            
+            # Realizar todas las mediciones
+            diagnostico = {
+                'imagen_info': self._obtener_info_basica(image_pil, gray),
+                'calidad_imagen': self._analizar_calidad(gray),
+                'deteccion_texto': self._detectar_regiones_texto(gray),
+                'ruido_artefactos': self._analizar_ruido(gray),
+                'geometria_orientacion': self._analizar_geometria(gray),
+                'recomendaciones': {}
+            }
+            
+            # Generar recomendaciones basadas en el análisis
+            diagnostico['recomendaciones'] = self._generar_recomendaciones(diagnostico)
+            
+            # Calcular puntuación general
+            diagnostico['puntuacion_general'] = self._calcular_puntuacion_general(diagnostico)
+            
+            logger.info(f"Análisis completado para {image_path}")
+            return diagnostico
+            
+        except Exception as e:
+            logger.error(f"Error en análisis de imagen: {str(e)}")
+            return {'error': str(e)}
+    
+    def _obtener_info_basica(self, image_pil, gray):
+        """Obtiene información básica de la imagen"""
+        stats = ImageStat.Stat(image_pil)
+        
+        return {
+            'ancho': gray.shape[1],
+            'alto': gray.shape[0],
+            'resolucion_total': gray.shape[0] * gray.shape[1],
+            'canales': len(image_pil.getbands()),
+            'modo': image_pil.mode,
+            'formato': image_pil.format,
+            'brillo_promedio': np.mean(gray),
+            'desviacion_brillo': np.std(gray),
+            'rango_dinamico': np.max(gray) - np.min(gray)
+        }
+    
+    def _analizar_calidad(self, gray):
+        """Analiza la calidad general de la imagen"""
+        # Calcular contraste usando desviación estándar
+        contraste = np.std(gray)
+        
+        # Detectar blur usando varianza del Laplaciano
+        blur_variance = cv2.Laplacian(gray, cv2.CV_64F).var()
+        
+        # Calcular histograma para analizar distribución de intensidades
+        hist = cv2.calcHist([gray], [0], None, [256], [0, 256])
+        hist_normalized = hist.flatten() / hist.sum()
+        
+        # Entropía como medida de información
+        entropy = -np.sum(hist_normalized * np.log2(hist_normalized + 1e-7))
+        
+        # Gradiente promedio como medida de nitidez
+        sobel_x = cv2.Sobel(gray, cv2.CV_64F, 1, 0, ksize=3)
+        sobel_y = cv2.Sobel(gray, cv2.CV_64F, 0, 1, ksize=3)
+        gradiente_promedio = np.mean(np.sqrt(sobel_x**2 + sobel_y**2))
+        
+        return {
+            'contraste': float(contraste),
+            'blur_variance': float(blur_variance),
+            'entropy': float(entropy),
+            'gradiente_promedio': float(gradiente_promedio),
+            'brillo_promedio': float(np.mean(gray)),
+            'uniformidad_brillo': float(np.std(gray)),
+            'calificacion_calidad': self._calificar_calidad(contraste, blur_variance, entropy)
+        }
+    
+    def _detectar_regiones_texto(self, gray):
+        """Detecta y analiza regiones que podrían contener texto"""
+        # Aplicar detección de bordes para encontrar regiones con texto
+        edges = cv2.Canny(gray, 50, 150)
+        
+        # Operaciones morfológicas para conectar componentes de texto
+        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
+        dilated = cv2.dilate(edges, kernel, iterations=2)
+        
+        # Encontrar contornos
+        contours, _ = cv2.findContours(dilated, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        
+        # Analizar contornos para identificar posibles regiones de texto
+        text_regions = []
+        total_text_area = 0
+        
+        for contour in contours:
+            x, y, w, h = cv2.boundingRect(contour)
+            area = w * h
+            aspect_ratio = w / h if h > 0 else 0
+            
+            # Filtrar regiones que podrían ser texto (ratio y tamaño apropiados)
+            if (area > 100 and 0.1 < aspect_ratio < 10 and 
+                w > 10 and h > 5 and h < gray.shape[0] * 0.3):
+                text_regions.append({
+                    'x': int(x), 'y': int(y), 
+                    'width': int(w), 'height': int(h),
+                    'area': int(area),
+                    'aspect_ratio': float(aspect_ratio)
+                })
+                total_text_area += area
+        
+        # Calcular densidad de texto
+        image_area = gray.shape[0] * gray.shape[1]
+        text_density = total_text_area / image_area if image_area > 0 else 0
+        
+        return {
+            'regiones_detectadas': len(text_regions),
+            'area_total_texto': int(total_text_area),
+            'densidad_texto': float(text_density),
+            'regiones': text_regions[:20],  # Limitar a 20 regiones para el JSON
+            'cobertura_texto_porcentaje': float(text_density * 100)
+        }
+    
+    def _analizar_ruido(self, gray):
+        """Analiza el nivel de ruido en la imagen"""
+        # Aplicar filtro Gaussiano y calcular diferencia
+        blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+        noise = cv2.absdiff(gray, blurred)
+        
+        # Calcular métricas de ruido
+        noise_level = np.mean(noise)
+        noise_std = np.std(noise)
+        
+        # Detectar píxeles con ruido significativo
+        noise_threshold = np.mean(noise) + 2 * np.std(noise)
+        noisy_pixels = np.sum(noise > noise_threshold)
+        noise_percentage = (noisy_pixels / (gray.shape[0] * gray.shape[1])) * 100
+        
+        # Analizar uniformidad usando filtro de mediana
+        median_filtered = cv2.medianBlur(gray, 5)
+        uniformity = np.mean(cv2.absdiff(gray, median_filtered))
+        
+        return {
+            'nivel_ruido': float(noise_level),
+            'desviacion_ruido': float(noise_std),
+            'porcentaje_pixeles_ruidosos': float(noise_percentage),
+            'uniformidad': float(uniformity),
+            'calificacion_ruido': self._calificar_ruido(noise_level, noise_percentage)
+        }
+    
+    def _analizar_geometria(self, gray):
+        """Analiza la geometría y orientación de la imagen"""
+        # Detectar líneas principales usando transformada de Hough
+        edges = cv2.Canny(gray, 50, 150)
+        lines = cv2.HoughLines(edges, 1, np.pi/180, threshold=100)
+        
+        angles = []
+        if lines is not None:
+            for line in lines[:50]:  # Limitar análisis a 50 líneas principales
+                rho, theta = line[0]
+                angle = np.degrees(theta) - 90  # Convertir a ángulo de inclinación
+                angles.append(angle)
+        
+        # Calcular sesgo predominante
+        if angles:
+            angle_hist, bins = np.histogram(angles, bins=36, range=(-90, 90))
+            dominant_angle_idx = np.argmax(angle_hist)
+            estimated_skew = (bins[dominant_angle_idx] + bins[dominant_angle_idx + 1]) / 2
+        else:
+            estimated_skew = 0
+        
+        # Detectar simetría
+        height, width = gray.shape
+        left_half = gray[:, :width//2]
+        right_half = cv2.flip(gray[:, width//2:], 1)
+        
+        # Redimensionar para comparación
+        min_width = min(left_half.shape[1], right_half.shape[1])
+        left_resized = cv2.resize(left_half, (min_width, height))
+        right_resized = cv2.resize(right_half, (min_width, height))
+        
+        symmetry_score = cv2.matchTemplate(left_resized, right_resized, cv2.TM_CCOEFF_NORMED)[0][0]
+        
+        return {
+            'sesgo_estimado': float(estimated_skew),
+            'lineas_detectadas': len(angles),
+            'simetria_horizontal': float(symmetry_score),
+            'relacion_aspecto': float(gray.shape[1] / gray.shape[0]),
+            'requiere_deskew': abs(estimated_skew) > 2,
+            'orientacion_correcta': abs(estimated_skew) < 5
+        }
+    
+    def _calificar_calidad(self, contraste, blur_variance, entropy):
+        """Califica la calidad general de la imagen"""
+        score = 0
+        
+        # Puntuación por contraste
+        if contraste > 60:
+            score += 40
+        elif contraste > 30:
+            score += 25
+        elif contraste > 15:
+            score += 10
+        
+        # Puntuación por nitidez (blur)
+        if blur_variance > 500:
+            score += 40
+        elif blur_variance > 100:
+            score += 25
+        elif blur_variance > 50:
+            score += 10
+        
+        # Puntuación por entropía (contenido de información)
+        if entropy > 6:
+            score += 20
+        elif entropy > 4:
+            score += 15
+        elif entropy > 2:
+            score += 5
+        
+        return min(100, score)
+    
+    def _calificar_ruido(self, noise_level, noise_percentage):
+        """Califica el nivel de ruido en la imagen"""
+        if noise_percentage < 5 and noise_level < 10:
+            return "Bajo"
+        elif noise_percentage < 15 and noise_level < 25:
+            return "Moderado"
+        else:
+            return "Alto"
+    
+    def _generar_recomendaciones(self, diagnostico):
+        """Genera recomendaciones basadas en el diagnóstico"""
+        recomendaciones = {
+            'perfil_recomendado': 'rapido',
+            'aplicar_deskew': False,
+            'nivel_denoise': 'moderado',
+            'ajuste_contraste': False,
+            'filtro_bilateral': True,
+            'prioridades': []
+        }
+        
+        calidad = diagnostico['calidad_imagen']
+        ruido = diagnostico['ruido_artefactos']
+        geometria = diagnostico['geometria_orientacion']
+        
+        # Determinar perfil recomendado
+        if calidad['calificacion_calidad'] > 80 and ruido['calificacion_ruido'] == 'Bajo':
+            recomendaciones['perfil_recomendado'] = 'ultra_rapido'
+        elif calidad['calificacion_calidad'] < 40 or ruido['calificacion_ruido'] == 'Alto':
+            recomendaciones['perfil_recomendado'] = 'normal'
+        
+        # Recomendaciones específicas
+        if geometria['requiere_deskew']:
+            recomendaciones['aplicar_deskew'] = True
+            recomendaciones['prioridades'].append('Corrección de sesgo necesaria')
+        
+        if calidad['contraste'] < 30:
+            recomendaciones['ajuste_contraste'] = True
+            recomendaciones['prioridades'].append('Mejorar contraste')
+        
+        if ruido['calificacion_ruido'] == 'Alto':
+            recomendaciones['nivel_denoise'] = 'agresivo'
+            recomendaciones['prioridades'].append('Reducción de ruido intensiva')
+        
+        if calidad['blur_variance'] < 100:
+            recomendaciones['prioridades'].append('Aplicar nitidez')
+        
+        return recomendaciones
+    
+    def _calcular_puntuacion_general(self, diagnostico):
+        """Calcula una puntuación general de la imagen"""
+        pesos = {
+            'calidad': 0.4,
+            'texto': 0.3,
+            'ruido': 0.2,
+            'geometria': 0.1
+        }
+        
+        # Puntuaciones individuales
+        score_calidad = diagnostico['calidad_imagen']['calificacion_calidad']
+        score_texto = min(100, diagnostico['deteccion_texto']['densidad_texto'] * 500)
+        score_ruido = 100 if diagnostico['ruido_artefactos']['calificacion_ruido'] == 'Bajo' else \
+                     60 if diagnostico['ruido_artefactos']['calificacion_ruido'] == 'Moderado' else 20
+        score_geometria = 100 if diagnostico['geometria_orientacion']['orientacion_correcta'] else 50
+        
+        # Puntuación ponderada
+        puntuacion_total = (
+            score_calidad * pesos['calidad'] +
+            score_texto * pesos['texto'] +
+            score_ruido * pesos['ruido'] +
+            score_geometria * pesos['geometria']
+        )
+        
+        return {
+            'total': round(puntuacion_total, 1),
+            'calidad': round(score_calidad, 1),
+            'texto': round(score_texto, 1),
+            'ruido': round(score_ruido, 1),
+            'geometria': round(score_geometria, 1),
+            'categoria': self._categorizar_puntuacion(puntuacion_total)
+        }
+    
+    def _categorizar_puntuacion(self, puntuacion):
+        """Categoriza la puntuación en niveles descriptivos"""
+        if puntuacion >= 80:
+            return 'Excelente'
+        elif puntuacion >= 60:
+            return 'Buena'
+        elif puntuacion >= 40:
+            return 'Regular'
+        else:
+            return 'Deficiente'
+
+def main():
+    """Función principal para uso por línea de comandos"""
+    import sys
+    
+    if len(sys.argv) != 2:
+        print("Uso: python validador_ocr.py <ruta_imagen>")
+        sys.exit(1)
+    
+    image_path = sys.argv[1]
+    validador = ValidadorOCR()
+    resultado = validador.analizar_imagen(image_path)
+    
+    print(json.dumps(resultado, indent=2, ensure_ascii=False))
+
+if __name__ == "__main__":
+    main()
