@@ -1,0 +1,316 @@
+{
+  "texto_completo": "e .\nEComprotariecsepercin-\nh\naitianel\na\n.. .\no E\nta hi\no .n-m\n. ece\n. aac\nan\nc\n92\nl o",
+  "estadisticas_ocr": {
+    "total_palabras": 41,
+    "palabras_validas": 23,
+    "confianza_promedio": 25.57,
+    "confianza_minima": 0,
+    "confianza_maxima": 90,
+    "palabras_alta_confianza": 1,
+    "palabras_baja_confianza": 15,
+    "distribucion_confianza": {
+      "excelente (90-100)": 1,
+      "buena (70-89)": 1,
+      "regular (50-69)": 4,
+      "baja (30-49)": 2,
+      "muy_baja (0-29)": 15
+    }
+  },
+  "palabras_detectadas": [
+    {
+      "texto": "o",
+      "confianza": 90,
+      "posicion": {
+        "x": 139,
+        "y": 525,
+        "width": 12,
+        "height": 12
+      },
+      "categoria_confianza": "excelente"
+    },
+    {
+      "texto": "..",
+      "confianza": 70,
+      "posicion": {
+        "x": 30,
+        "y": 189,
+        "width": 30,
+        "height": 31
+      },
+      "categoria_confianza": "buena"
+    },
+    {
+      "texto": ".n-m",
+      "confianza": 60,
+      "posicion": {
+        "x": 176,
+        "y": 253,
+        "width": 59,
+        "height": 10
+      },
+      "categoria_confianza": "aceptable"
+    },
+    {
+      "texto": ".",
+      "confianza": 59,
+      "posicion": {
+        "x": 33,
+        "y": 281,
+        "width": 6,
+        "height": 8
+      },
+      "categoria_confianza": "aceptable"
+    },
+    {
+      "texto": "h",
+      "confianza": 56,
+      "posicion": {
+        "x": 110,
+        "y": 78,
+        "width": 31,
+        "height": 32
+      },
+      "categoria_confianza": "aceptable"
+    },
+    {
+      "texto": ".",
+      "confianza": 51,
+      "posicion": {
+        "x": 185,
+        "y": 194,
+        "width": 48,
+        "height": 10
+      },
+      "categoria_confianza": "aceptable"
+    },
+    {
+      "texto": "a",
+      "confianza": 45,
+      "posicion": {
+        "x": 25,
+        "y": 135,
+        "width": 210,
+        "height": 56
+      },
+      "categoria_confianza": "aceptable"
+    },
+    {
+      "texto": "e",
+      "confianza": 31,
+      "posicion": {
+        "x": 0,
+        "y": 18,
+        "width": 162,
+        "height": 16
+      },
+      "categoria_confianza": "aceptable"
+    },
+    {
+      "texto": "aac",
+      "confianza": 29,
+      "posicion": {
+        "x": 123,
+        "y": 292,
+        "width": 114,
+        "height": 13
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "E",
+      "confianza": 24,
+      "posicion": {
+        "x": 156,
+        "y": 210,
+        "width": 81,
+        "height": 15
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "ece",
+      "confianza": 24,
+      "posicion": {
+        "x": 177,
+        "y": 273,
+        "width": 59,
+        "height": 10
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "an",
+      "confianza": 21,
+      "posicion": {
+        "x": 175,
+        "y": 311,
+        "width": 63,
+        "height": 11
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "hi",
+      "confianza": 16,
+      "posicion": {
+        "x": 191,
+        "y": 233,
+        "width": 44,
+        "height": 10
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "o",
+      "confianza": 12,
+      "posicion": {
+        "x": 32,
+        "y": 261,
+        "width": 30,
+        "height": 10
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": ".",
+      "confianza": 0,
+      "posicion": {
+        "x": 168,
+        "y": 11,
+        "width": 98,
+        "height": 15
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "EComprotariecsepercin-",
+      "confianza": 0,
+      "posicion": {
+        "x": 15,
+        "y": 32,
+        "width": 222,
+        "height": 21
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "aitianel",
+      "confianza": 0,
+      "posicion": {
+        "x": 66,
+        "y": 117,
+        "width": 124,
+        "height": 14
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "o",
+      "confianza": 0,
+      "posicion": {
+        "x": 30,
+        "y": 222,
+        "width": 44,
+        "height": 8
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "ta",
+      "confianza": 0,
+      "posicion": {
+        "x": 27,
+        "y": 235,
+        "width": 60,
+        "height": 21
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": ".",
+      "confianza": 0,
+      "posicion": {
+        "x": 34,
+        "y": 300,
+        "width": 28,
+        "height": 9
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "c",
+      "confianza": 0,
+      "posicion": {
+        "x": 136,
+        "y": 453,
+        "width": 14,
+        "height": 13
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "92",
+      "confianza": 0,
+      "posicion": {
+        "x": 0,
+        "y": 495,
+        "width": 266,
+        "height": 26
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "l",
+      "confianza": 0,
+      "posicion": {
+        "x": 72,
+        "y": 528,
+        "width": 11,
+        "height": 11
+      },
+      "categoria_confianza": "baja"
+    }
+  ],
+  "confianza_promedio": {
+    "simple": 25.57,
+    "ponderada": 15.57,
+    "palabras_evaluadas": 23
+  },
+  "calidad_extraccion": {
+    "caracteres_totales": 63,
+    "palabras_totales": 23,
+    "densidad_informacion": 0.741,
+    "errores_detectados": [
+      "Exceso de palabras de 1 letra: 9"
+    ],
+    "puntuacion_calidad": 35.565217391304344,
+    "categoria": "Deficiente",
+    "recomendaciones": [
+      "Considere mejorar la calidad de la imagen de entrada",
+      "Verifique la iluminación y el contraste"
+    ]
+  },
+  "datos_financieros": {
+    "amount": [
+      {
+        "valor": "92",
+        "posicion_texto": 79
+      }
+    ],
+    "analisis_documento": {
+      "tipo": "desconocido",
+      "confianza": 0,
+      "keywords_encontradas": []
+    },
+    "resumen_extraido": {
+      "montos_encontrados": 1,
+      "fechas_encontradas": 0,
+      "referencias_encontradas": 0,
+      "cuentas_encontradas": 0,
+      "telefonos_encontrados": 0,
+      "total_elementos": 1,
+      "completitud_porcentaje": 50.0
+    }
+  },
+  "tiempo": 2.671
+}

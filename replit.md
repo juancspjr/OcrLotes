@@ -101,6 +101,13 @@ Changelog:
   * Aggressive sharpening compensation for screenshots after light processing
   * Fixed JSON serialization errors with numpy types
   * Improved data structure validation in result generation
+- July 01, 2025. Migration to Replit and critical OCR enhancement:
+  * Fixed Flask session secret key configuration for Replit compatibility
+  * Implemented CRITICAL FIX: Early color inversion detection in image processing
+  * Now detects dark backgrounds and inverts colors BEFORE any processing steps
+  * Prevents text degradation by avoiding processing white text on black backgrounds
+  * Enforces "Extreme Character Conservation Philosophy" at the earliest stage
+  * Ensures optimal OCR accuracy for dark-themed screenshots and documents
 ```
 
 ## User Preferences

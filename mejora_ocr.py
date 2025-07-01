@@ -105,6 +105,33 @@ class MejoradorOCR:
         current = image.copy()
         step_counter = 2
         
+        # FIX: CRITICAL - Detectar e invertir imágenes de fondo oscuro PRIMERO
+        # REASON: Conservación Extrema de Caracteres - no procesar texto blanco sobre fondo negro
+        # IMPACT: Evita degradación del texto al procesar colores invertidos en múltiples etapas
+        
+        # 0. Detección temprana de inversión de colores
+        mean_intensity = np.mean(current)
+        if mean_intensity < 127:  # Imagen mayormente oscura
+            # Detectar si es realmente texto blanco sobre fondo negro
+            histogram = cv2.calcHist([current], [0], None, [256], [0, 256])
+            dark_pixels = np.sum(histogram[0:64])  # Píxeles muy oscuros
+            light_pixels = np.sum(histogram[192:256])  # Píxeles muy claros
+            
+            # Si hay más píxeles oscuros que claros, es probable que sea texto blanco sobre fondo negro
+            if dark_pixels > light_pixels:
+                current = cv2.bitwise_not(current)  # Invertir colores
+                resultado['pasos_aplicados'].append('Inversión de colores (detección temprana)')
+                resultado['parametros_aplicados']['inversion_temprana'] = {
+                    'intensidad_media_original': round(mean_intensity, 2),
+                    'pixeles_oscuros': int(dark_pixels),
+                    'pixeles_claros': int(light_pixels),
+                    'razon': 'texto_blanco_sobre_fondo_negro'
+                }
+                
+                if save_steps and output_dir:
+                    cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_inversion_temprana.png"), current)
+                    step_counter += 1
+        
         # 1. Redimensionamiento si es necesario
         if max(current.shape) > self.preprocessing_config['resize_max_dimension']:
             current = self._aplicar_redimensionamiento(current, resultado)
