@@ -24,6 +24,25 @@ class MejoradorOCR:
     def __init__(self):
         self.profiles = config.PERFORMANCE_PROFILES
         self.preprocessing_config = config.PREPROCESSING_CONFIG
+    
+    def _convert_numpy_types(self, obj):
+        """
+        FIX: Convierte tipos NumPy a tipos nativos Python para serialización JSON
+        REASON: Los valores float32/int64 de NumPy no son serializables en JSON
+        IMPACT: Evita errores de serialización manteniendo compatibilidad completa
+        """
+        if isinstance(obj, dict):
+            return {key: self._convert_numpy_types(value) for key, value in obj.items()}
+        elif isinstance(obj, list):
+            return [self._convert_numpy_types(item) for item in obj]
+        elif isinstance(obj, np.integer):
+            return int(obj)
+        elif isinstance(obj, np.floating):
+            return float(obj)
+        elif isinstance(obj, np.ndarray):
+            return obj.tolist()
+        else:
+            return obj
         
     def procesar_imagen(self, image_path, diagnostico, perfil='rapido', save_steps=False, output_dir=None):
         """
@@ -94,7 +113,11 @@ class MejoradorOCR:
             )
             
             logger.info(f"Procesamiento completado en {resultado_procesamiento['tiempo_procesamiento']}s")
-            return resultado_procesamiento
+            
+            # FIX: Convertir tipos NumPy antes de devolver resultado
+            # REASON: Evitar errores de serialización JSON con float32/int64
+            # IMPACT: Garantiza compatibilidad completa con JSON para API web
+            return self._convert_numpy_types(resultado_procesamiento)
             
         except Exception as e:
             logger.error(f"Error en procesamiento de imagen: {str(e)}")
@@ -182,8 +205,8 @@ class MejoradorOCR:
                 inverted = cv2.bitwise_not(image)
                 resultado['pasos_aplicados'].append('Inversión temprana (Caso A)')
                 resultado['parametros_aplicados']['inversion_caso_a'] = {
-                    'intensidad_media_original': round(mean_intensity, 2),
-                    'confianza_inversion': round(confidence, 3),
+                    'intensidad_media_original': float(round(mean_intensity, 2)),
+                    'confianza_inversion': float(round(confidence, 3)),
                     'pixeles_oscuros': int(dark_pixels),
                     'pixeles_claros': int(light_pixels)
                 }
@@ -231,8 +254,8 @@ class MejoradorOCR:
             'tipo': tipo,
             'es_screenshot': is_screenshot,
             'dimensiones': f"{w}x{h}",
-            'aspect_ratio': round(aspect_ratio, 2),
-            'sesgo_detectado': round(skew_angle, 2)
+            'aspect_ratio': float(round(aspect_ratio, 2)),
+            'sesgo_detectado': float(round(skew_angle, 2))
         }
         
         return tipo
