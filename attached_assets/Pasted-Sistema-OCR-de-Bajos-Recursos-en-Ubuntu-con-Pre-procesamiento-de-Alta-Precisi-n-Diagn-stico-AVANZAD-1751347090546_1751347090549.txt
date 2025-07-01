@@ -1,0 +1,573 @@
+Sistema OCR de Bajos Recursos en Ubuntu con Pre-procesamiento de Alta Precisión, Diagnóstico AVANZADO y Adaptativo (Filosofía de Conservación Extrema de Caracteres)
+Tu misión, como arquitecto de software y experto en procesamiento de imágenes, es CRÍTICA. Debes proporcionar un diseño modular EXHAUSTIVO y las directrices más precisas para implementar un sistema de Reconocimiento Óptico de Caracteres (OCR) no solo eficiente, sino EXCEPCIONALMENTE optimizado para operar en máquinas con recursos EXTREMADAMENTE LIMITADOS (ej., 2 GB de RAM, procesadores de 3.ª generación o entornos VirtualBox). ¡NO HAY LUGAR PARA LA AMBIGÜEDAD! Es ABSOLUTAMENTE IMPERATIVO que la solución PROHIBA categóricamente el uso de técnicas de Machine Learning, Deep Learning o redes neuronales en CUALQUIER punto del proceso de pre-procesamiento de imágenes o del reconocimiento OCR. El motor central será Tesseract OCR, y tu enfoque primario debe ser maximizar su precisión a través de un diagnóstico de imagen INTENSAMENTE granular y un pre-procesamiento adaptativo de VANGUARDIA, que sigue una filosofía de Conservación Extrema de Caracteres, utilizando EXCLUSIVAMENTE técnicas de visión por computadora TRADICIONALES. Cada script y la arquitectura completa deben ser diseñados para funcionar de manera NATIVA y EFICIENTE en un entorno de servidor Ubuntu, garantizando la estabilidad y el rendimiento con recursos mínimos.
+
+Para una depuración y validación visual CRÍTICAS, se incluye una sección detallada sobre la visualización de resultados sin necesidad de un servidor web dedicado, lo cual actúa como el panel de control interactivo para el comando de Python.
+
+¡ADVERTENCIAS Y PROHIBICIONES ESTRICTAS!
+PROHIBIDO RADICALMENTE: Incluir cualquier componente, algoritmo o referencia a Machine Learning (ML), Deep Learning (DL), redes neuronales, aprendizaje automático supervisado o no supervisado, o modelos de IA entrenados en CUALQUIER parte del pre-procesamiento de imagen o el proceso de OCR. ¡ESTO ES UN REQUISITO INNEGOCIABLE!
+
+PROHIBIDO TERMINANTEMENTE: Asumir o requerir acceso a GPUs o hardware de procesamiento especializado más allá de una CPU básica de bajo consumo. ¡EL ENFOQUE ES LA EFICIENCIA EN RECURSOS BÁSICOS!
+
+PROHIBIDO ABSOLUTAMENTE: Proponer soluciones que dependan de servicios en la nube para el procesamiento de imágenes o OCR. La solución debe ser 100% local y autónoma.
+
+PROHIBIDO UTILIZAR: Librerías o frameworks que introduzcan dependencias de ML/DL de forma subyacente (ej., TensorFlow, PyTorch, Keras, scikit-learn para procesamiento de imagen). Las librerías deben ser las ESPECIFICADAS: OpenCV, NumPy, Pillow, scikit-image para métricas de imagen, Tesseract/pytesseract.
+
+¡CLARIDAD EN LENGUAJES DE PROGRAMACIÓN!
+
+PROHIBIDO: Generar código en lenguajes diferentes a Python para los módulos principales (config.py, validador_ocr.py, mejora_ocr.py, aplicador_ocr.py, main_ocr_process.py).
+
+EXCEPCIÓN ÚNICA Y ESPECÍFICA: Se permite Shell Script (.sh) para el script de instalación (install_requirements.sh).
+
+EXCEPCIÓN PARA SERVIDOR WEB (CRUCIAL): Se permite Python (Flask) para el web_server.py si se decide implementarlo para futuras expansiones. Sin embargo, este NO DEBE CONTENER LÓGICA DE PROCESAMIENTO DE IMAGEN NI OCR DIRECTAMENTE. Su función EXCLUSIVA es actuar como una interfaz de invocación, por lo que debe INVOCAR los scripts principales del proyecto (main_ocr_process.py) vía subprocess.run para ejecutar la lógica de procesamiento. ¡ESTO ES VITAL PARA LA ARQUITECTURA MODULAR!
+
+PROHIBIDO OFRECER: Soluciones genéricas o que no estén específicamente adaptadas a las restricciones de recursos. ¡EL DETALLE Y LA ADAPTACIÓN SON CLAVE!
+
+PROHIBIDO OMITIR: O minimizar la importancia de la doble funcionalidad (Web -si se implementa- y Línea de Comandos para N8N). Esta característica debe ser FUNDAMENTAL en el diseño y en la explicación de las guías.
+
+1. Problema Actual y Justificación (Énfasis en la Severidad del Problema)
+En el complejo contexto actual de la digitalización de documentos financieros en Venezuela, se presenta un desafío CRÍTICO y recurrente para la automatización: la variabilidad EXTREMA y la baja calidad INHERENTE de las imágenes de origen. Estos documentos abarcan un amplio espectro: facturas, recibos de pago móvil o transferencias bancarias, estados de cuenta, vouchers de punto de venta, notas de crédito/débito, y cualquier otro comprobante o registro financiero vital.
+
+Las imágenes, en su mayoría, provienen de capturas de pantalla de dispositivos móviles con resoluciones dispares, condiciones de iluminación deficientes que generan sombras y brillos no deseados, la omnipresencia de ruidos visuales (artefactos de compresión agresivos, motas aleatorias, sombreados irregulares), fondos superpuestos (como interfaces de usuario de aplicaciones móviles, barras de estado que oscurecen información, etc.), y, de forma alarmante, una calidad de texto deficiente debido a la baja resolución o el desenfoque, lo que hace el texto apenas legible para un ojo humano, y mucho menos para un OCR estándar.
+
+Estas deficiencias degradan SIGNIFICATIVAMENTE la precisión de los motores de Reconocimiento Óptico de Caracteres (OCR) tradicionales, resultando en un ALTO volumen de errores en la extracción de datos clave (montos, fechas, números de operación, identificación de entidades, etc.). La subsiguiente corrección manual de estos errores es un cuello de botella ENORME, COSTOSO en tiempo y recursos humanos, lo que limita drásticamente la verdadera automatización y escalabilidad de procesos empresariales fundamentales como la conciliación bancaria, el registro contable o la auditoría de transacciones. ¡ESTE SISTEMA ES LA SOLUCIÓN A ESTE PROBLEMA!
+
+2. Objetivo General del Proyecto (Claridad y Granularidad)
+Desarrollar un sistema de pre-procesamiento de imágenes INTELIGENTE, DINÁMICO y ALTAMENTE ADAPTABLE, capaz de transformar imágenes de documentos financieros de origen variable y baja calidad en imágenes de ALTA nitidez y contraste, óptimas para el reconocimiento OCR de precisión SUPERIOR. El objetivo principal es minimizar los tiempos de procesamiento mediante técnicas avanzadas de optimización y, crucialmente, operar EFICAZMENTE en entornos con recursos computacionales MÍNIMOS. El sistema deberá adaptarse de forma AUTÓNOMA a las características específicas de cada imagen de entrada, aplicando tratamientos PERSONALIZADOS según un diagnóstico EXHAUSTIVO y MULTIFACTORIAL, siempre bajo la filosofía central de la Conservación Extrema de Caracteres.
+
+¡ELEMENTOS CLAVE PARA EL ÉXITO DE LA SOLUCIÓN Y LA EXPERIENCIA DEL USUARIO (REQUISITOS DE ALTO NIVEL E INNEGOCIABLES)!
+Versatilidad de Ejecución (¡SUPER IMPORTANTE! ¡DOBLE VÍA!): El sistema debe ser diseñado desde cero para funcionar seamlessly (sin fisuras) tanto a través de una interfaz web local (si se implementa para testeo y depuración visual exhaustiva) como mediante llamadas directas y robustas por línea de comandos, optimizado para la integración eficiente con herramientas de automatización como N8N. La instalación debe permitir que, una vez completada, el sistema esté listo para ser invocado por CUALQUIERA de estas vías sin pasos adicionales de configuración de entorno, asegurando una TRANSICIÓN SUAVE.
+
+Entorno de Testeo y Chequeo Exhaustivo (Visibilidad y Control): Se prioriza la ejecución directa por línea de comandos como método principal de testeo y operación. La visualización y depuración visual (crucial para ver CADA etapa del pre-procesamiento) se logrará generando archivos de imagen intermedios en un directorio temporal por cada ejecución del comando, permitiendo comparar variantes de tratamiento y obtener los resultados finales del OCR. Este enfoque elimina la necesidad de un servidor web dedicado para pruebas iniciales, simplificando el setup y el flujo de trabajo para el desarrollador. Si en el futuro se decide implementar un web_server.py (usando Flask), este invocará el main_ocr_process.py vía subprocess.run, sirviendo la respuesta JSON y las imágenes de depuración.
+
+Diagnóstico Ultra-Granular para Ajuste Fino (La Inteligencia del Sistema): El módulo validador_ocr.py debe ser capaz de realizar un análisis MUCHO MÁS PROFUNDO y HOLÍSTICO de la imagen, extrayendo un conjunto de variables más amplio, sofisticado y significativo que permitan una adaptación MILIMÉTRICA y dinámica de los algoritmos de pre-procesamiento en mejora_ocr.py. Este es el cerebro del proceso adaptativo, informando decisiones basadas en la filosofía de conservación extrema de caracteres.
+
+Ajuste Automático AVANZADO de Algoritmos de Pre-procesamiento (mejora_ocr.py) - (La Potencia del Pre-procesamiento y la Conservación de Caracteres): Basándose en este diagnóstico avanzado y los perfiles de rendimiento predefinidos, mejora_ocr.py debe aplicar ajustes avanzados y condicionales sobre una GAMA AMPLIADA de algoritmos de procesamiento de imágenes. El objetivo primordial es conseguir un resultado de ALTA nitidez y claridad SIN PÉRDIDA de información vital para el OCR, priorizando la consistencia, la robustez y la minimización del sacrificio de recursos de hardware. ¡Aquí se marca la diferencia, adhiriéndose estrictamente a la conservación de la forma original de los caracteres!
+
+Gestión de Archivos Temporales SEGURA y Eficiente: Todos los archivos intermedios generados durante el procesamiento (imágenes mejoradas en diferentes etapas, JSONs de diagnóstico, JSONs de parámetros aplicados) deben manejarse en directorios temporales DEDICADOS y ÚNICOS para CADA ejecución (o "hilo" de procesamiento). Esto es FUNDAMENTAL para evitar conflictos con otros archivos y procesos paralelos, y para asegurar una limpieza automática y fiable post-procesamiento. ¡LA INTEGRIDAD DE LOS DATOS ES CLAVE!
+
+Consistencia, Velocidad y Calidad Óptimas (El Triángulo de Oro): La implementación debe priorizar de manera balanceada: la consistencia en los resultados (predictibilidad), la velocidad máxima en el procesamiento sin sacrificar la calidad del OCR (evitando "soluciones rápidas y sucias"), y la optimización para reducir los tiempos de ejecución con mínimos sacrificios de hardware (eficiencia a ultranza).
+
+Perfiles de Velocidad/Calidad CONFIGURABLES y Estratégicos: El sistema debe ofrecer TRES perfiles de rendimiento claramente diferenciados y controlables que influirán directamente en la selección y los parámetros de los algoritmos en mejora_ocr.py, permitiendo al usuario elegir la estrategia más adecuada:
+
+1: Ultra Rápido (Prioridad: Velocidad Pura): Mínimo pre-procesamiento, prioriza la rapidez extrema, ideal para imágenes de muy buena calidad donde el tiempo es crítico.
+
+2: Rápido (Prioridad: Equilibrado): Balance óptimo entre velocidad y calidad, adecuado para la mayoría de los casos de uso con imágenes de calidad media.
+
+3: Normal (Prioridad: Calidad Máxima): Máximo pre-procesamiento, prioriza la precisión y la nitidez absolutas, diseñado para imágenes EXTREMADAMENTE desafiantes y de baja calidad.
+
+3. Arquitectura General del Sistema y Flujo de Datos (¡Visión Holística y Modularidad!)
+El sistema OCR se concibe como una colección de módulos Python interconectados, diseñados para operar de forma eficiente en entornos con recursos limitados y para ser invocados tanto por una interfaz web local (si se implementa) como por línea de comandos (ideal para N8N). La arquitectura se basa en el principio de la "separación de preocupaciones" para garantizar la mantenibilidad, la escalabilidad y la depuración efectiva.
+
+Componentes Principales y su Interacción:
+config.py (Archivo de Configuración Global): El centro neurálgico de todas las variables, rutas, umbrales y configuraciones de perfiles. Es importado por todos los demás módulos para garantizar la coherencia.
+
+validador_ocr.py (Módulo de Diagnóstico de Imagen): Recibe la imagen original y, utilizando técnicas de visión por computadora tradicionales, genera un JSON detallado con métricas de calidad, ruido, contraste, sesgo, etc. Su salida es consumida por mejora_ocr.py. Este módulo implementa la "Evaluación Inteligente y Triage de Imágenes" y el "Análisis Profundo del Estado Visual" de la nueva filosofía.
+
+mejora_ocr.py (Módulo de Pre-procesamiento Adaptativo): Toma la imagen original y el JSON de diagnóstico. Aplica dinámicamente una secuencia de algoritmos de pre-procesamiento (binarización, eliminación de ruido, corrección de sesgo, etc.) ajustando sus parámetros basándose en el diagnóstico y el perfil de velocidad seleccionado. Genera la imagen optimizada para OCR. Este módulo es la piedra angular de la nueva filosofía de pre-procesamiento, incorporando la "Clasificación de Características Dominantes" y la "Transformación Dinámica y Optimización con Conservación Extrema de Caracteres" de manera integral.
+
+aplicador_ocr.py (Módulo de Aplicación de OCR): Recibe la imagen pre-procesada y, utilizando Tesseract OCR, extrae el texto crudo y, opcionalmente, datos estructurados basados en patrones de expresiones regulares. Genera un JSON con los resultados del OCR y métricas de confianza. Este módulo también gestiona la "Validación Temprana por OCR" de la nueva filosofía.
+
+main_ocr_process.py (Orquestador Principal): Este es el punto de entrada principal del sistema. Recibe la imagen de entrada y los parámetros (perfil de velocidad, idioma, etc.). Coordina la ejecución secuencial de validador_ocr.py, mejora_ocr.py y aplicador_ocr.py como subprocesos. Consolida los resultados de todos los módulos en un único JSON de salida y maneja la creación/eliminación de directorios temporales únicos por ejecución.
+
+web_server.py (Servidor Web Local - Flask - Opcional para futura expansión): Proporciona una interfaz HTTP para que los usuarios (o desarrolladores) carguen imágenes y visualicen los resultados. Su función es solo invocar main_ocr_process.py como un subproceso y servir la respuesta JSON y las imágenes de depuración. No contiene lógica de procesamiento de imagen ni OCR directamente. Se enfatiza que este componente es opcional para el testeo inicial, ya que la depuración puede realizarse por línea de comandos.
+
+install_requirements.sh (Script de Instalación): Un script de shell que automatiza la instalación de todas las dependencias del sistema, incluyendo Tesseract OCR y las librerías Python dentro de un entorno virtual, asegurando un entorno de ejecución consistente.
+
+Flujo de Datos y Ejecución:
+Inicio: Una solicitud llega al sistema, ya sea a través de la interfaz web (si web_server.py está implementado) o, y esto es lo principal para el testeo, una llamada de línea de comandos a main_ocr_process.py.
+
+Orquestación (main_ocr_process.py):
+
+Crea un directorio temporal único para la ejecución actual.
+
+Copia la imagen de entrada a este directorio.
+
+Paso de Diagnóstico: Invoca validador_ocr.py, pasando la ruta de la imagen original. Captura el JSON de diagnóstico. Este paso evalúa la imagen para clasificarla y determinar sus características clave (tonalidad, contraste, ruido, etc.) según la "Fase 1: Evaluación Inteligente y Triage de Imágenes" y "Nivel 2: Clasificación de Características Dominantes" de la filosofía de pre-procesamiento.
+
+Paso de Mejora (Pre-procesamiento Inteligente): Invoca mejora_ocr.py, pasándole la imagen original, el diagnóstico recibido, el perfil de velocidad, y el directorio temporal. mejora_ocr.py guarda la imagen pre-procesada final (y las intermedias si el modo debug está activo) en este directorio. Aquí se aplica la "Transformación Dinámica y Optimización con Conservación Extrema de Caracteres" basada en el diagnóstico.
+
+Paso de OCR y Validación Temprana: Invoca aplicador_ocr.py, pasándole la ruta de la imagen pre-procesada final y el directorio temporal. Captura el JSON de resultados del OCR. Dentro de este paso, se ejecuta la "Validación Temprana por OCR" para decidir si la imagen ya es lo suficientemente legible o si requiere más optimización (aunque esta lógica principal de decisión debería residir en mejora_ocr.py o main_ocr_process.py para controlar el flujo). Si la confianza es alta, puede saltarse pasos posteriores de pre-procesamiento.
+
+Consolidación y Salida: Combina todos los JSONs de diagnóstico y resultados en un único JSON final, lo guarda en OUTPUT_RESULTS_DIR y lo imprime en stdout.
+
+Limpieza: Elimina el directorio temporal único y todos sus contenidos (a menos que el modo debug esté activado).
+
+Respuesta y Depuración (Principalmente por Línea de Comandos):
+
+Para N8N: Si la invocación fue desde N8N, este captura el JSON de stdout de main_ocr_process.py y puede usar sus datos para flujos de trabajo posteriores.
+
+Para Testeo y Depuración Local (Sin Servidor Web): El script main_ocr_process.py guardará en el directorio temporal imágenes clave del proceso (original, binarizada, con contraste ajustado, final pre-procesada, etc.). El usuario puede inspeccionar estas imágenes directamente desde el sistema de archivos para visualizar los efectos de cada paso y los ajustes. La salida JSON a stdout proporcionará las métricas de diagnóstico y los resultados del OCR.
+
+Esta arquitectura garantiza que cada componente tiene una responsabilidad clara, los recursos temporales se manejan de forma segura para la concurrencia, y el sistema es robusto y adaptable a diversas entradas de imágenes, con la nueva filosofía de pre-procesamiento integrada en el corazón de validador_ocr.py y mejora_ocr.py para asegurar la máxima precisión y conservación de los caracteres.
+
+4. Archivo de Variables Globales: config.py (El Corazón de la Configuración Centralizada)
+Crea un archivo Python llamado config.py que centralice ABSOLUTAMENTE TODAS las variables globales, configuraciones críticas, rutas y umbrales del sistema. Este archivo debe ser fácilmente importable por los demás módulos, permitiendo que cada uno sea autónomo pero comparta parámetros esenciales y consistentes.
+
+Contenido Sugerido para config.py (¡Énfasis en Perfiles y Umbrales de Diagnóstico CRÍTICOS para la Nueva Filosofía!):
+Rutas de directorios (¡Absolutas y Seguras!):
+
+BASE_DIR: Ruta base del proyecto (se autocalculará al inicio del script principal, garantizando portabilidad).
+
+INPUT_IMAGES_DIR: Directorio donde se almacenarán las imágenes de entrada (relativa a BASE_DIR).
+
+TEMP_DIR: Directorio BASE para la creación de hilos temporales ÚNICOS (ver main_ocr_process.py).
+
+OUTPUT_RESULTS_DIR: Directorio para los resultados JSON finales del OCR (relativa a BASE_DIR).
+
+UPLOAD_FOLDER_NAME: Nombre del directorio para las cargas temporales del servidor web Flask (relativa a BASE_DIR) - Aplicable solo si se implementa web_server.py.
+
+VENV_DIR_NAME: Nombre del directorio para el entorno virtual (ej., .venv), crucial para el install_requirements.sh.
+
+DEBUG_IMAGES_SUBDIR: Subdiretorio dentro de cada output_temp_dir para almacenar imágenes de depuración.
+
+LOGS_DIR: Directorio para los archivos de log del sistema.
+
+Configuración de Tesseract (Precisión Fundamental):
+
+TESSERACT_PATH: Ruta al ejecutable de Tesseract (el script de instalación intentará configurarlo o validarlo).
+
+TESSDATA_PREFIX: Ruta a la carpeta tessdata de Tesseract, esencial para los idiomas.
+
+DEFAULT_OCR_LANGUAGE: Idioma por defecto para Tesseract (ej., 'eng', 'spa').
+
+TESSERACT_CONFIG_OPTIONS: Opciones adicionales para Tesseract (ej., --psm 6, --oem 3).
+
+¡PERFILES DE RENDIMIENTO Y MAPEO DE PARÁMETROS PARA AJUSTE AUTOMÁTICO (LA INTELIGENCIA ADAPTATIVA Y LA CONSERVACIÓN DE CARACTERES)!:
+PROFILE_SETTINGS: Un diccionario anidado que define las configuraciones BASE y los parámetros iniciales para CADA perfil de velocidad. ¡ESTOS VALORES SON SÓLO PUNTOS DE PARTIDA! Se ajustarán DINÁMICA e INTELIGENTEMENTE en mejora_ocr.py según el diagnóstico avanzado de validador_ocr.py, siempre con la premisa de la conservación extrema de la forma del carácter.
+
+Python
+
+PROFILE_SETTINGS = {
+    1: { # Perfil 1: Ultra Rápido (Máxima Velocidad, Mínimo Pre-procesamiento)
+        "ampliacion_calidad": {"method": "INTER_LINEAR", "factor": 1.0, "unsharp_mask": False, "unsharp_amount": 0.0},
+        "escala_grises": {"method": "STANDARD"},
+        "binarizacion": {"method": "OTSU", "block_size": None, "C_value": None},
+        "eliminacion_ruido": {"method": "GAUSSIAN", "kernel_size": 3, "sigma": 0}, # Kernel más pequeño
+        "contraste_brillo": {"adjust_contrast": False, "contrast_factor": 1.0, "adjust_brightness": False, "brightness_factor": 0},
+        "grosor_lineas_bordes": {"thin_line_removal_intensity": 0, "bold_text_enhance_intensity": 0, "edge_enhance_type": "NONE", "morph_kernel_size": (1,1), "morph_iterations": 0},
+        "correccion_perspectiva": {"active": False, "max_skew_angle": 0, "perspective_transform_active": False},
+        "inversion_color": {"auto_threshold_luminance": 128, "force_invert": False},
+        "eliminacion_glare": {"active": False},
+        "desenfoque_correccion": {"active": False}
+    },
+    2: { # Perfil 2: Rápido (Balance Velocidad/Calidad)
+        "ampliacion_calidad": {"method": "INTER_CUBIC", "factor": 1.5, "unsharp_mask": True, "unsharp_amount": 0.8},
+        "escala_grises": {"method": "LUMINANCE_WEIGHTED"},
+        "binarizacion": {"method": "ADAPTIVE_GAUSSIAN", "block_size": 11, "C_value": 2},
+        "eliminacion_ruido": {"method": "MEDIAN", "kernel_size": 5}, # Más efectivo para sal y pimienta
+        "contraste_brillo": {"adjust_contrast": True, "contrast_factor": 1.2, "adjust_brightness": False, "brightness_factor": 0},
+        "grosor_lineas_bordes": {"thin_line_removal_intensity": 1, "bold_text_enhance_intensity": 1, "edge_enhance_type": "LAPLACIAN", "morph_kernel_size": (3,3), "morph_iterations": 1},
+        "correccion_perspectiva": {"active": True, "max_skew_angle": 5, "perspective_transform_active": False}, # Solo deskewing leve
+        "inversion_color": {"auto_threshold_luminance": 120, "force_invert": False},
+        "eliminacion_glare": {"active": True, "glare_threshold": 220},
+        "desenfoque_correccion": {"active": True, "sharpen_kernel": [[-1,-1,-1],[-1,9,-1],[-1,-1,-1]]}
+    },
+    3: { # Perfil 3: Normal (Máxima Calidad, Mayor Pre-procesamiento)
+        "ampliacion_calidad": {"method": "INTER_LANCZOS4", "factor": 2.0, "unsharp_mask": True, "unsharp_amount": 1.5},
+        "escala_grises": {"method": "ADVANCED_LUMINANCE"},
+        "binarizacion": {"method": "ADAPTIVE_MEAN", "block_size": 21, "C_value": 4}, # Más robusto para fondos variables
+        "eliminacion_ruido": {"method": "BILATERAL", "d": 9, "sigma_color": 75, "sigma_space": 75}, # Preserva bordes
+        "contraste_brillo": {"adjust_contrast": True, "contrast_factor": 1.5, "adjust_brightness": True, "brightness_factor": 10},
+        "grosor_lineas_bordes": {"thin_line_removal_intensity": 2, "bold_text_enhance_intensity": 2, "edge_enhance_type": "SOBEL_X_Y", "morph_kernel_size": (5,5), "morph_iterations": 2},
+        "correccion_perspectiva": {"active": True, "max_skew_angle": 15, "perspective_transform_active": True}, # Incluye corrección de perspectiva
+        "inversion_color": {"auto_threshold_luminance": 100, "force_invert": False}, # Umbral más bajo para inversión agresiva
+        "eliminacion_glare": {"active": True, "glare_threshold": 200, "clahe_active": True},
+        "desenfoque_correccion": {"active": True, "wiener_filter_active": True} # Filtro Wiener para desenfoque complejo
+    }
+}
+Rangos y Valores para Ajuste Automático (Flexibilidad Controlada):
+
+ADAPTIVE_THRESH_BLOCK_SIZES: [5, 11, 21, 31, 41, 51, 61, 71] (tamaños de bloque para umbralización adaptativa, SIEMPRE IMPARES).
+
+ADAPTIVE_THRESH_C_VALUES: [-5, -2, 0, 2, 4, 6, 8] (constante para umbralización adaptativa).
+
+GAUSSIAN_BLUR_KERNELS: [3, 5, 7, 9] (tamaños de kernel para Gaussiano, SIEMPRE IMPARES).
+
+MEDIAN_BLUR_KERNELS: [3, 5, 7] (tamaños de kernel para Mediana, SIEMPRE IMPARES).
+
+BILATERAL_FILTER_D_VALUES: [5, 9, 15] (diámetro para Bilateral).
+
+BILATERAL_FILTER_SIGMAS: [50, 75, 100, 125] (sigma_color y sigma_space para Bilateral).
+
+MORPHOLOGICAL_KERNEL_SIZES: [(1,1), (3,3), (5,5), (7,7)] (tamaños y tipos de kernels para operaciones morfológicas).
+
+UNSHARP_MASKING_AMOUNT_VALUES: [0.5, 1.0, 1.5, 2.0] (cantidad de enfoque).
+
+CONTRAST_BRIGHTNESS_FACTORS: Rangos para ajuste de contraste y brillo (alpha_min, alpha_max, beta_min, beta_max).
+
+¡UMBRALES DE DIAGNÓSTICO AVANZADO PARA LA LÓGICA DE AJUSTE DINÁMICO (LA INTELIGENCIA DEL FLUJO CONSERVACIONISTA)!:
+
+QUALITY_LOW_THRESHOLD, QUALITY_MEDIUM_THRESHOLD, QUALITY_HIGH_THRESHOLD: Umbrales numéricos para calidad_inicial_imagen (0-10).
+
+NOISE_HIGH_THRESHOLD, NOISE_MEDIUM_THRESHOLD: Umbrales numéricos para ruido_detectado (0-10).
+
+CONTRAST_LOW_THRESHOLD, CONTRAST_HIGH_THRESHOLD: Umbrales numéricos para contraste_general (0-100).
+
+FINENESS_VERY_THIN_THRESHOLD, FINENESS_THICK_THRESHOLD: Umbrales para finura_letras.
+
+VARIATION_NON_UNIFORM_THRESHOLD: Umbral para variacion_fondo.
+
+SKEW_ANGLE_THRESHOLD_MINOR, SKEW_ANGLE_THRESHOLD_MAJOR: Umbrales para desviacion_angular.
+
+BACKGROUND_LUMINOSITY_DARK_THRESHOLD, BACKGROUND_LUMINOSITY_LIGHT_THRESHOLD: Umbrales para luminosidad_fondo_promedio.
+
+TEXT_DENSITY_LOW_THRESHOLD, TEXT_DENSITY_HIGH_THRESHOLD: Umbrales para densidad_texto.
+
+GLARE_DETECTION_THRESHOLD: Umbral para glare_detectado.
+
+BLUR_DETECTION_THRESHOLD: Umbral para desenfoque_detectado (varianza de Laplace).
+
+Configuración del Servidor Web Local (Acceso y Visualización - Opcional):
+
+WEB_SERVER_PORT: Puerto para el servidor web local (ej., 3001), debe ser configurable.
+
+UPLOAD_FOLDER_NAME: Nombre del directorio para las cargas temporales del servidor web (relativa a BASE_DIR).
+
+MAX_CONTENT_LENGTH: Límite de tamaño de archivo para las cargas (ej., 16 * 1024 * 1024 = 16 MB).
+
+5. Script de Instalación y Configuración: install_requirements.sh (El Punto de Partida CRÍTICO)
+Crea un script de shell (.sh) ROBUSTO y EXHAUSTIVO para la instalación completa y automatizada de ABSOLUTAMENTE TODOS los requisitos necesarios para que el sistema OCR funcione en Ubuntu Server. Este script debe ser infalible y prever futuras mejoras, asegurando que el entorno esté preparado para un desarrollo y ejecución fluidos. Este script DEBE OBLIGATORIAMENTE crear y activar un entorno virtual de Python para la instalación de las librerías, garantizando la independencia, la limpieza y la adaptabilidad. La ejecución exitosa de este script es el paso FUNDAMENTAL para que el sistema pueda ser invocado tanto por la interfaz web (si se implementa) como por línea de comandos (N8N) sin problemas de entorno.
+
+Bash
+
+#!/bin/bash
+# Script de instalación y actualización rápida para el Sistema OCR en Ubuntu
+# Este script instalará Tesseract OCR, Python y todas las librerías necesarias
+# dentro de un entorno virtual, y configurará los directorios del proyecto.
+# ¡IMPORTANTE!: Ejecutar con 'bash install_requirements.sh' o 'chmod +x install_requirements.sh && ./install_requirements.sh'
+
+# Función para verificar si un comando existe
+command_exists () {
+  type "$1" &> /dev/null ;
+}
+
+# --- 1. Variables de Configuración del Script (¡Coherencia con config.py!) ---
+# Estas variables son para el script de instalación; las del sistema irán en config.py
+VENV_DIR_NAME=".venv" # Nombre del directorio del entorno virtual
+REQUIRED_PYTHON_VERSION="3.8" # Versión mínima de Python para compatibilidad
+TESSERACT_LANG_PACKS="tessdata-eng tessdata-spa tessdata-osd" # Paquetes de idiomas de Tesseract a instalar (Osd para detección de orientación)
+
+# Directorios relativos al script; deben coincidir con la lógica de config.py
+SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
+BASE_DIR="${SCRIPT_DIR}" # Asume que el script está en el directorio base del proyecto
+INPUT_IMAGES_DIR="input_images"
+TEMP_DIR="temp"
+OUTPUT_RESULTS_DIR="output_results"
+UPLOAD_FOLDER_NAME="uploads" # Para el servidor web (si se usa)
+LOGS_DIR="logs" # Directorio para logs del sistema
+
+# --- 2. Actualizar sistema e instalar dependencias básicas (¡La base sólida!) ---
+echo "--- Paso 2: Actualizando el sistema e instalando dependencias básicas... ---"
+sudo apt update -y || { echo "ERROR: Falló la actualización de apt. Verifique su conexión a internet o los repositorios."; exit 1; }
+sudo apt upgrade -y || { echo "ADVERTENCIA: Falló la actualización del sistema. Continuado pero podría haber dependencias desactualizadas."; }
+sudo apt install -y software-properties-common curl git || { echo "ERROR: Falló la instalación de software-properties-common, curl o git."; exit 1; }
+
+# Instalar Python 3 y pip, si no están ya instalados, asegurando la versión mínima
+echo "--- Paso 3: Verificando e instalando Python 3 y pip... ---"
+if ! command_exists python3; then
+    echo "Python 3 no encontrado. Intentando instalar..."
+    sudo apt install -y python3 || { echo "ERROR: Falló la instalación de python3."; exit 1; }
+else
+    PYTHON_VERSION=$(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')
+    if [[ "$(printf '%s\n' "$REQUIRED_PYTHON_VERSION" "$PYTHON_VERSION" | sort -V | head -n1)" = "$REQUIRED_PYTHON_VERSION" ]]; then
+        echo "Python 3 (versión $PYTHON_VERSION) ya está instalado y cumple con el requisito mínimo ($REQUIRED_PYTHON_VERSION)."
+    else
+        echo "ADVERTENCIA: Python 3 (versión $PYTHON_VERSION) está instalado, pero es inferior a la versión requerida ($REQUIRED_PYTHON_VERSION). Se recomienda actualizar."
+        # Intentar instalar una versión más reciente si es posible con PPA
+        # sudo add-apt-repository ppa:deadsnakes/ppa -y && sudo apt update -y
+        # sudo apt install -y python3.$REQUIRED_PYTHON_VERSION python3.$REQUIRED_PYTHON_VERSION-venv
+    fi
+fi
+
+if ! command_exists pip3; then
+    echo "pip3 no encontrado. Instalando..."
+    sudo apt install -y python3-pip || { echo "ERROR: Falló la instalación de python3-pip."; exit 1; }
+else
+    echo "pip3 ya está instalado."
+fi
+
+# Instalar python3-venv para entornos virtuales (¡INDISPENSABLE!)
+if ! dpkg -s python3-venv &> /dev/null; then
+    echo "python3-venv no encontrado. Instalando..."
+    sudo apt install -y python3-venv || { echo "ERROR: Falló la instalación de python3-venv."; exit 1; }
+else
+    echo "python3-venv ya está instalado."
+fi
+
+# --- 3. Instalar Tesseract OCR y paquetes de idiomas (¡El motor de OCR!) ---
+echo "--- Paso 4: Instalando Tesseract OCR y paquetes de idiomas... ---"
+if ! command_exists tesseract; then
+    echo "Tesseract OCR no encontrado. Instalando..."
+    sudo apt install -y tesseract-ocr || { echo "ERROR: Falló la instalación de tesseract-ocr."; exit 1; }
+    # Instalar paquetes de idiomas adicionales
+    for lang_pack in $TESSERACT_LANG_PACKS; do
+        if ! dpkg -s tesseract-ocr-$lang_pack &> /dev/null; then
+            echo "Instalando paquete de idioma Tesseract: $lang_pack"
+            sudo apt install -y tesseract-ocr-$lang_pack || { echo "ADVERTENCIA: Falló la instalación del paquete $lang_pack."; }
+        else
+            echo "Paquete de idioma Tesseract $lang_pack ya está instalado."
+        fi
+    done
+else
+    echo "Tesseract OCR ya está instalado."
+    for lang_pack in $TESSERACT_LANG_PACKS; do
+        if ! dpkg -s tesseract-ocr-$lang_pack &> /dev/null; then
+            echo "Instalando paquete de idioma Tesseract: $lang_pack"
+            sudo apt install -y tesseract-ocr-$lang_pack || { echo "ADVERTENCIA: Falló la instalación del paquete $lang_pack."; }
+        else
+            echo "Paquete de idioma Tesseract $lang_pack ya está instalado."
+        fi
+    done
+fi
+
+# --- 4. Crear y Activar Entorno Virtual (¡Aislamiento y Consistencia!) ---
+echo "--- Paso 5: Creando y activando entorno virtual en $BASE_DIR/$VENV_DIR_NAME ---"
+cd "$BASE_DIR" || { echo "ERROR: No se pudo cambiar al directorio base $BASE_DIR. Verifique la ruta."; exit 1; }
+if [ ! -d "$VENV_DIR_NAME" ]; then
+    echo "Creando entorno virtual..."
+    python3 -m venv "$VENV_DIR_NAME" || { echo "ERROR: Falló la creación del entorno virtual."; exit 1; }
+    echo "Entorno virtual creado exitosamente."
+else
+    echo "El entorno virtual $VENV_DIR_NAME ya existe. Reutilizando para actualización."
+fi
+
+# Activar el entorno virtual para la instalación de librerías Python
+# Esto es para que el script de instalación use el pip del venv.
+# ¡NOTA!: Las llamadas subsiguientes al sistema desde N8N o web server DEBEN usar la ruta completa al python del venv.
+source "./$VENV_DIR_NAME/bin/activate" || { echo "ERROR: Falló la activación del entorno virtual."; exit 1; }
+echo "Entorno virtual activado para la instalación de dependencias Python."
+
+# --- 5. Instalar Librerías Python (¡Las herramientas del sistema!) ---
+echo "--- Paso 6: Generando requirements.txt e instalando librerías Python... ---"
+# Crear o actualizar requirements.txt con las librerías necesarias
+# ¡Mantener esto sincronizado con las dependencias REALES del proyecto!
+cat > requirements.txt <<EOF
+pytesseract==0.3.10 # Versión probada y estable
+opencv-python==4.9.0.80 # Asegurar compatibilidad
+Pillow==10.3.0 # Gestión de imágenes
+numpy==1.26.4 # Base para operaciones numéricas
+Flask==3.0.3 # Framework web
+scikit-image==0.23.0 # Métricas de imagen, no ML
+Flask-Cors==4.0.1 # Para permitir peticiones CORS en el servidor web (si aplica)
+python-dotenv==1.0.1 # Para cargar variables de entorno (opcional, pero útil)
+EOF
+
+pip install --upgrade pip || { echo "ADVERTENCIA: Falló la actualización de pip."; }
+pip install -r requirements.txt || { echo "ERROR: Falló la instalación de librerías desde requirements.txt. Verifique el archivo o las versiones."; deactivate; exit 1; }
+echo "Librerías Python instaladas exitosamente en el entorno virtual."
+
+# --- 6. Crear Directorios del Proyecto (¡Organización Esencial!) ---
+echo "--- Paso 7: Creando/Verificando directorios del proyecto... ---"
+mkdir -p "$INPUT_IMAGES_DIR"
+mkdir -p "$TEMP_DIR"
+mkdir -p "$OUTPUT_RESULTS_DIR"
+mkdir -p "$UPLOAD_FOLDER_NAME" # Si se usa el web server
+mkdir -p "$LOGS_DIR"
+echo "Directorios creados/verificados:"
+echo "- $BASE_DIR/$INPUT_IMAGES_DIR"
+echo "- $BASE_DIR/$TEMP_DIR"
+echo "- $BASE_DIR/$OUTPUT_RESULTS_DIR"
+echo "- $BASE_DIR/$UPLOAD_FOLDER_NAME"
+echo "- $BASE_DIR/$LOGS_DIR"
+
+# --- 7. Verificación Final de la Instalación (¡Confirmación Crítica!) ---
+echo "--- Paso 8: Verificación final de la instalación... ---"
+# Verificar Tesseract
+if command_exists tesseract; then
+    echo "VERIFICACIÓN: Tesseract OCR está instalado y disponible."
+    echo "Versión de Tesseract: $(tesseract --version | head -n 1)"
+    # Verificar ruta de tessdata para asegurar que los idiomas están bien configurados
+    TESSDATA_PATH=$(tesseract --print-parameters 2>/dev/null | grep tessdata_dir | awk '{print $2}')
+    if [ -d "$TESSDATA_PATH" ]; then
+        echo "VERIFICACIÓN: Directorio tessdata encontrado en: $TESSDATA_PATH"
+    else
+        echo "ADVERTENCIA: Directorio tessdata no encontrado o Tesseract no reporta su ruta. Verifique manualmente."
+    fi
+else
+    echo "ERROR: Tesseract OCR NO se instaló correctamente. Revise los mensajes anteriores."
+fi
+
+# Verificar Python del entorno virtual
+if [ -f "./$VENV_DIR_NAME/bin/python3" ]; then
+    echo "VERIFICACIÓN: Intérprete Python del entorno virtual: $(./$VENV_DIR_NAME/bin/python3 --version)"
+    # Guardar la ruta del intérprete del venv para referencia futura
+    echo "$(readlink -f ./$VENV_DIR_NAME/bin/python3)" > "$BASE_DIR/venv_python_path.txt"
+    echo "Ruta del intérprete del venv guardada en venv_python_path.txt para fácil referencia."
+else
+    echo "ERROR: No se encontró el intérprete Python en el entorno virtual. Revise la creación del venv."
+fi
+
+# Verificar librerías Python instaladas (lista detallada)
+echo "VERIFICACIÓN: Librerías Python instaladas en el entorno virtual:"
+./$VENV_DIR_NAME/bin/pip list
+echo ""
+echo "================================================"
+echo "--- ¡INSTALACIÓN Y CONFIGURACIÓN COMPLETADAS CON ÉXITO! ---"
+echo "================================================"
+echo "El sistema está listo para ser utilizado. Siga las siguientes instrucciones:"
+echo "1. Para activar el entorno virtual manualmente (solo para desarrollo/pruebas directas):"
+echo " source ./$VENV_DIR_NAME/bin/activate"
+echo "2. Para iniciar el servidor web (si lo implementa y ASEGÚRESE DE QUE EL VENV ESTÉ ACTIVO O USE LA RUTA COMPLETA):"
+echo " python3 web_server.py"
+echo "3. Para ejecutar el proceso OCR principal desde línea de comandos (para N8N, ASEGÚRESE DE LA RUTA COMPLETA AL BINARIO DEL VENV):"
+echo " ./$VENV_DIR_NAME/bin/python3 main_ocr_process.py --imagen_ruta /ruta/a/su/imagen.jpg --velocidad_perfil 2"
+echo "¡RECUERDE USAR LA RUTA COMPLETA AL INTÉRPRETE DE PYTHON DENTRO DEL ENTORNO VIRTUAL PARA UNA EJECUCIÓN CORRECTA Y CONSISTENTE!"
+echo "También puede ver los archivos temporales generados para depuración visual en la carpeta 'temp/<ID_DE_EJECUCION>/debug_images/'."
+6. Integración de la Nueva Filosofía de Pre-procesamiento: Detalles Técnicos y Explicaciones Descriptivas
+La nueva estrategia "Prompt Descriptivo para un Sistema de Pre-procesamiento Inteligente de Imágenes para OCR (Con Conservación Extrema de Caracteres y Enfoque en Capturas de Pantalla Horizontales)" se integra como el corazón del módulo mejora_ocr.py, y la base del diagnóstico de validador_ocr.py. Ya no son pasos aislados, sino un flujo adaptativo que prioriza la integridad del carácter sobre la estética de la imagen.
+
+Principios Fundamentales del Pre-procesamiento Adaptativo:
+La meta es siempre lograr texto negro uniforme sobre un fondo suficientemente claro, garantizando la máxima calidad, nitidez y conservación de la forma de las letras y la separación efectiva del fondo. La "nitidez suficiente" para el OCR es prioritaria sobre un blanco puro si esto compromete la integridad de las letras; basta con que sea lo suficientemente claro para la lectura del OCR. El punto ideal de contraste para OCR se sitúa en un rango donde el texto es significativamente más oscuro que el fondo, sin que el texto se "rellene" ni el fondo se "oscurezca" excesivamente, manteniendo los bordes definidos.
+
+6.1. validador_ocr.py: El "Primer Ojo" y Cerebro de Diagnóstico
+Este módulo es el encargado de la "Fase 1: Evaluación Inteligente y Triage de Imágenes" y el "Nivel 2: Clasificación de Características Dominantes" de la nueva filosofía. Su rol es crucial porque sus resultados guían cada decisión posterior en mejora_ocr.py.
+
+Evaluación de Viabilidad y Detección de Daño Crítico:
+
+Explicación para el Ejecutor: Antes de invertir cualquier recurso de procesamiento, el sistema realiza una inspección rápida. Esto implica analizar la imagen a un nivel básico para determinar si tiene algún defecto tan severo (como píxeles aleatorios sin forma, contraste nulo o dimensiones corruptas) que la haga imposible de procesar por OCR. Si se detecta un daño crítico, la imagen se clasifica inmediatamente como "No Procesable", se registra el motivo y se omite el resto del pipeline. Esto ahorra tiempo y evita resultados erróneos.
+
+Implementación: Se calcularán métricas básicas como la desviación estándar de la luminosidad, la entropía de la imagen, y la proporción de píxeles negros/blancos. Umbrales definidos en config.py (QUALITY_LOW_THRESHOLD, CONTRAST_LOW_THRESHOLD) determinarán la viabilidad.
+
+Análisis Profundo del Estado Visual:
+
+Explicación para el Ejecutor: Una vez que la imagen se considera viable, se profundiza en su análisis. Primero, se convierte a escala de grises. Luego, se detecta la tonalidad dominante (¿fondo claro con texto oscuro, o viceversa?). Esto es vital porque una imagen con texto blanco sobre fondo negro requerirá una inversión de colores. También se evalúa la nitidez de los caracteres, su grosor y la presencia de ruido o artefactos. La detección de elementos gráficos no textuales es clave para su posible neutralización. Se asume horizontalidad, pero se verifica que no haya rotaciones inesperadas.
+
+Implementación: Se usarán métricas como la varianza de Laplace para el desenfoque (BLUR_DETECTION_THRESHOLD), histogramas de luminosidad para la detección de tonalidad (BACKGROUND_LUMINOSITY_DARK_THRESHOLD, BACKGROUND_LUMINOSITY_LIGHT_THRESHOLD), análisis de componentes conectados para la finura de las letras (FINENESS_VERY_THIN_THRESHOLD, FINENESS_THICK_THRESHOLD), y filtros de detección de ruido (NOISE_HIGH_THRESHOLD). Todos los resultados se empaquetarán en el JSON de diagnóstico.
+
+Clasificación de Características Dominantes:
+
+Explicación para el Ejecutor: Basándose en el análisis anterior, el sistema categoriza la imagen en uno de tres tipos principales:
+
+Fondo Oscuro, Letras Claras: Imágenes donde el fondo es predominantemente oscuro (negro, grises oscuros) y el texto es claro (blanco, grises claros). Requiere inversión de colores y un ajuste de contraste posterior.
+
+Fondo Claro, Letras Oscuras (Ideal): Imágenes con fondos blancos o muy claros y texto nítido y oscuro. Es el estado ideal y requiere un pre-procesamiento mínimo.
+
+Combinación de Fondos (Complejo): Imágenes con áreas donde coexisten fondos oscuros y claros. Es el escenario más desafiante y exige un procesamiento por regiones.
+
+Implementación: La lógica de clasificación residirá en validador_ocr.py, estableciendo banderas en el JSON de diagnóstico que mejora_ocr.py leerá.
+
+6.2. mejora_ocr.py: El Adaptador y Escultor de Imágenes (La Filosofía en Acción)
+Este módulo es el que lleva a cabo la "Transformación Dinámica y Optimización con Conservación Extrema de Caracteres". Su inteligencia radica en la lectura del JSON de diagnóstico y la aplicación condicional de los algoritmos de procesamiento de imagen, siempre priorizando la forma del carácter.
+
+Normalización de Color y Binarización Inteligente (Aplicación de Estrategia de Contraste):
+
+Explicación para el Ejecutor: Este es el paso más crítico. El módulo no aplica una binarización o ajuste fijo. En su lugar, lee el diagnóstico del validador_ocr.py y, según la clasificación de fondo/texto, aplica una de estas estrategias:
+
+Para Fondo Oscuro, Letras Claras: La imagen es primero binarizada y luego los colores se invierten automáticamente (texto negro sobre fondo blanco). Después de la inversión, se aplica un ajuste de contraste "punto de referencia medio". Esto significa que las letras se oscurecen selectivamente (hacia el negro puro) y el fondo se aclara (hacia el blanco puro), pero de manera controlada para no deformar las letras ni introducir ruido. Los factores (\Delta L_{texto}, \Delta L_{fondo}) se calculan dinámicamente o se basan en umbrales de config.py para asegurar que las letras no se "engorden" o "adelgacen" más allá de su forma original.
+
+Para Fondo Claro, Letras Oscuras: Se aplica una binarización adaptativa suave. Solo si el contraste no es óptimo, se realizarán microajustes de contraste para asegurar que el fondo sea muy claro y el texto muy oscuro, pero siempre con valores muy pequeños para evitar cualquier alteración de la forma de las letras que ya son nítidas.
+
+Para Combinación de Fondos: Este es el más complejo. El sistema intentará segmentar la imagen en regiones con fondos homogéneos. A cada región se le aplicará una inversión local si su fondo es oscuro. Luego, se unificarán las tonalidades de los fondos (ahora claros) utilizando una estrategia de "punto de referencia medio" o similar, asegurando que el fondo sea uniforme y suficientemente claro en toda la imagen, pero siempre dando prioridad a la no alteración del carácter. Esto evita que un ajuste global deteriore las partes ya correctas de la imagen.
+
+Implementación: Uso de cv2.threshold, cv2.adaptiveThreshold (con cv2.ADAPTIVE_THRESH_GAUSSIAN_C o cv2.ADAPTIVE_THRESH_MEAN_C), cv2.bitwise_not para inversión. La lógica de ajuste de contraste implicará manipulaciones de píxeles o transformaciones gamma/lineales basadas en los promedios de luminosidad detectados y los umbrales de config.py. Para fondos combinados, se podría explorar segmentación por umbralización o algoritmos de clustering simples (no ML) para definir regiones.
+
+Validación Temprana por OCR (Salida Temprana para Eficiencia):
+
+Explicación para el Ejecutor: Después de la binarización y el ajuste de contraste inicial, y ANTES de cualquier limpieza de ruido o perfeccionamiento de bordes más intensivo, el sistema realiza un OCR preliminar en los campos más críticos (Monto, Beneficiario, Cuenta, etc.). Si el OCR ya puede extraer estos datos con MUY alta confianza (ej., >95%) y pasan las validaciones básicas, el sistema considera que la imagen es ya procesable. En este caso, se omite el resto de los pasos de pre-procesamiento más pesados (limpieza de ruido, neutralización de gráficos). Esto es una estrategia de optimización: si ya lo logramos, ¿para qué seguir gastando recursos y arriesgarnos a dañar la imagen?
+
+Implementación: mejora_ocr.py invocará a aplicador_ocr.py en este punto intermedio. El resultado del aplicador_ocr.py incluirá la confianza por campo. La lógica de decisión de "salida temprana" residirá en mejora_ocr.py o main_ocr_process.py, basándose en los umbrales de confianza definidos en config.py.
+
+Limpieza de Ruido y Perfeccionamiento de Bordes (La "Pulidora Precisa" que No Altera - Solo si no hubo Salida Temprana):
+
+Explicación para el Ejecutor: Si la validación temprana no fue exitosa, el sistema procede a refinar la imagen. Aquí, la precisión es clave. Se aplican filtros de denoising (como el filtro de mediana o gaussiano) pero con kernels muy pequeños y de forma no invasiva, para suavizar el ruido sin borrar ni difuminar los bordes de los caracteres. Si las letras están muy finas o muy gruesas, se aplicarán operaciones morfológicas (erosión o dilatación) pero con kernels de 1x1 o 2x2 píxeles, y un mínimo de iteraciones, solo para corregir imperfecciones menores y consolidar la forma, NUNCA para alterarla fundamentalmente. También se limpiarán halos o "sombras" blancas persistentes alrededor de las letras para asegurar un fondo puro.
+
+Implementación: Uso de cv2.medianBlur, cv2.GaussianBlur, cv2.erode, cv2.dilate con parámetros y tamaños de kernel definidos por los perfiles y ajustados dinámicamente por el diagnóstico (MORPHOLOGICAL_KERNEL_SIZES, GAUSSIAN_BLUR_KERNELS, etc. en config.py).
+
+Neutralización de Elementos Gráficos No Textuales (Cuidado Extremo - Solo si no hubo Salida Temprana):
+
+Explicación para el Ejecutor: Algunos comprobantes tienen logotipos, íconos o líneas decorativas que no son texto y pueden confundir al OCR. Este paso identifica y, si es estrictamente necesario y se comprueba su interferencia, los rellena con blanco puro. Se aplica con extrema precaución para no eliminar ninguna información textual o dañar caracteres cercanos. La regla es: si no es texto y no está conectado a una región de texto legible, y sabemos que causa errores, entonces se neutraliza.
+
+Implementación: Detección de contornos cv2.findContours, filtrado por área o relación de aspecto para identificar elementos no textuales, y luego cv2.drawContours o relleno con blanco. La lógica será robusta para evitar "comerse" el texto.
+
+Normalización de Escala y Resolución:
+
+Explicación para el Ejecutor: Finalmente, la imagen se redimensiona a una resolución óptima (ej., 300 DPI) utilizando algoritmos de interpolación de alta calidad (como bicúbica o Lanczos4) que aseguran que el escalado no degrade la nitidez y el detalle de los caracteres, sino que los mejore o los mantenga. Esto garantiza una entrada consistente para Tesseract.
+
+Implementación: cv2.resize con interpolation methods como cv2.INTER_CUBIC o cv2.INTER_LANCZOS4.
+
+6.3. aplicador_ocr.py: Ejecución Robusta y Validación Post-Extracción
+Este módulo no solo ejecuta Tesseract, sino que también maneja la validación de los datos extraídos y el monitoreo de confianza.
+
+Configuración Optimizada del OCR (ej., Tesseract):
+
+Explicación para el Ejecutor: Se utiliza Tesseract con configuraciones que maximizan su precisión para documentos (como --psm 6 para un bloque de texto uniforme y --oem 3 para el mejor motor disponible). Se especifica el idioma español. Se pueden usar "whitelists" (listas de caracteres permitidos) para campos específicos (ej., solo números para montos), lo que aumenta la seguridad de la extracción al limitar las posibilidades de error del OCR.
+
+Implementación: Uso de pytesseract.image_to_string con los parámetros de config.py (TESSERACT_CONFIG_OPTIONS, DEFAULT_OCR_LANGUAGE).
+
+Extracción Estructurada y Validación de Datos (Exhaustiva):
+
+Explicación para el Ejecutor: Una vez que Tesseract ha extraído el texto crudo, el sistema aplica patrones de expresiones regulares para identificar y extraer todos los campos relevantes del comprobante (Fecha, Monto, Referencia, Bancos, Beneficiario, Cédula, Cuenta, Hora, Tipo de Transacción, etc.). Además, cada dato extraído se valida contra reglas básicas de formato (ej., un monto debe ser numérico, una fecha debe tener un formato válido).
+
+Implementación: Módulo con funciones que implementan expresiones regulares (re module en Python) y lógica de validación de formato.
+
+Monitoreo de Confianza y Detección de Anomalías:
+
+Explicación para el Ejecutor: El sistema asigna una puntuación de confianza a la extracción de cada campo por parte del OCR. Si un campo se extrae con baja confianza (por debajo de un umbral definido en config.py) o no pasa la validación de formato, se marca como una "anomalía". Esto es crucial para la revisión humana.
+
+Implementación: Análisis de la confianza devuelta por Tesseract (si el --psm lo permite) o heurísticas basadas en la longitud, caracteres esperados, etc. Almacenamiento de estas métricas en el JSON de salida.
+
+6.4. main_ocr_process.py: Orquestador Central y Punto de Control de Debug
+Este script no solo coordina, sino que también implementa la generación de archivos temporales para la depuración visual sin necesidad de un servidor web.
+
+Generación de Imágenes de Depuración:
+
+Explicación para el Ejecutor: Para que puedas ver el efecto de cada paso del pre-procesamiento sin un entorno web, el main_ocr_process.py se encargará de guardar automáticamente copias de la imagen en diferentes etapas clave (imagen original, después de escala de grises, después de binarización inicial, después de ajuste de contraste, después de limpieza de ruido, imagen final pre-procesada) dentro del directorio temporal único creado para cada ejecución. Esto te permite inspeccionar visualmente cómo la "filosofía de conservación extrema de caracteres" está operando en cada fase.
+
+Implementación: Dentro de main_ocr_process.py, después de cada invocación a validador_ocr.py y mejora_ocr.py, se añadirán llamadas a funciones de guardado de imagen (ej., cv2.imwrite o Pillow.save) en el subdirectorio DEBUG_IMAGES_SUBDIR del TEMP_DIR (temp/<ID_DE_EJECUCION>/debug_images/). Los nombres de archivo serán descriptivos (ej., original.jpg, grayscale.png, binarized_inverted.png, final_processed.png).
+
+Registro Integral y Manejo de Excepciones:
+
+Explicación para el Ejecutor: Cada paso del sistema se documenta meticulosamente en logs, incluyendo los resultados del diagnóstico, los parámetros de pre-procesamiento aplicados (que varían según la imagen), los resultados del OCR, las confianzas y las anomalías. Esto es tu "libro de auditoría" para entender exactamente qué sucedió con cada imagen. Si una imagen se marca como "No Procesable" al inicio, no se intenta procesar más. Si durante el OCR hay campos con baja confianza o errores de formato, estos se resaltan para que un humano solo revise ESOS campos específicos, en lugar de toda la imagen.
+
+Implementación: Uso del módulo logging de Python. La lógica de revisión humana se reflejará en la estructura del JSON de salida, que tendrá un campo para "anomalías_detectadas" o "campos_requieren_revision" con la información específica.
+
+7. Manual de Usuario y Manual de Instalación (Solicitud al Usuario)
+Para garantizar la usabilidad y el despliegue del sistema, se requiere la creación de los siguientes documentos:
+
+Manual de Instalación: Un documento detallado que guíe al usuario paso a paso a través de la ejecución del script install_requirements.sh, explicando cada comando y las posibles dependencias del sistema operativo. Debe cubrir desde la preparación del entorno Ubuntu hasta la verificación final de la instalación.
+
+Manual de Usuario (para la Línea de Comandos): Un documento que explique cómo ejecutar el main_ocr_process.py desde la línea de comandos. Debe detallar los argumentos de entrada (ruta de la imagen, perfil de velocidad, idioma, etc.), cómo interpretar la salida JSON en stdout, y, crucialmente, cómo acceder e interpretar los archivos de imágenes de depuración generados en los directorios temporales. Esto es vital para el testeo y la depuración sin servidor web. También explicará el manejo de los resultados en el OUTPUT_RESULTS_DIR.
+
+8. Verificación y Depuración sin Servidor Web: Un Enfoque Práctico
+Como se enfatizó, la depuración y verificación de los resultados se puede realizar completamente a través del comando de Python, sin necesidad de configurar un servidor web.
+
+Cómo Verificar Resultados:
+Ejecución del Comando Python:
+Para procesar una imagen, simplemente ejecuta el script main_ocr_process.py utilizando el intérprete de Python de tu entorno virtual:
+
+Bash
+
+./.venv/bin/python3 main_ocr_process.py --imagen_ruta /ruta/absoluta/a/tu/imagen.jpg --velocidad_perfil 3 --debug_mode True
+./.venv/bin/python3: Es la ruta al intérprete de Python dentro de tu entorno virtual (asegúrate de que tu install_requirements.sh lo genere y lo muestre).
+
+--imagen_ruta: La ruta completa a la imagen que deseas procesar.
+
+--velocidad_perfil: Elige el perfil de velocidad (1, 2 o 3) que deseas aplicar.
+
+--debug_mode True: ¡Esto es CRUCIAL para la depuración visual! Cuando está en True, el sistema no eliminará el directorio temporal al finalizar y guardará imágenes de depuración en diferentes etapas del pre-procesamiento.
+
+Inspección del JSON de Salida (stdout):
+El comando imprimirá en tu terminal un JSON completo con el diagnóstico de la imagen, los parámetros de pre-procesamiento aplicados, los resultados del OCR por campo, la confianza de cada extracción y cualquier anomalía detectada. Puedes redirigir esta salida a un archivo para un análisis más fácil:
+
+Bash
+
+./.venv/bin/python3 main_ocr_process.py --imagen_ruta /ruta/absoluta/a/tu/imagen.jpg --velocidad_perfil 3 --debug_mode True > resultado_ocr.json
+Luego, puedes abrir resultado_ocr.json con cualquier editor de texto o visualizador JSON.
+
+Depuración Visual de Imágenes Intermedias:
+Cuando --debug_mode es True, el sistema creará un directorio temporal único para esa ejecución (ej., temp/timestamp_uuid/). Dentro de este directorio, habrá un subdirectorio llamado debug_images/. Aquí encontrarás las imágenes en diferentes etapas de pre-procesamiento:
+
+original.jpg: La imagen tal como fue recibida.
+
+grayscale.png: Imagen convertida a escala de grises.
+
+binarized_initial.png: Imagen después de la binarización inicial.
+
+contrasted_adjusted.png: Imagen después del ajuste de contraste (y posiblemente inversión).
+
+denoised.png: Imagen después de la limpieza de ruido (si se aplicó).
+
+final_processed.png: La imagen tal como se envió a Tesseract OCR.
+
+Puedes abrir estas imágenes con cualquier visor de imágenes en tu sistema operativo (ej., eog en Ubuntu, gwenview, etc.) para observar directamente cómo la filosofía de "conservación extrema de caracteres" afecta la imagen en cada fase y si las transformaciones son las deseadas. Esto te permitirá validar la eficacia de los algoritmos y afinar los umbrales en config.py si es necesario, sin depender de un entorno web.
+
