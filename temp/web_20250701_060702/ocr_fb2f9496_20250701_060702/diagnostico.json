@@ -1,0 +1,223 @@
+{
+  "imagen_info": {
+    "ancho": 485,
+    "alto": 1080,
+    "resolucion_total": 523800,
+    "canales": 3,
+    "modo": "RGB",
+    "formato": "JPEG",
+    "brillo_promedio": 41.0049350897289,
+    "desviacion_brillo": 36.4990879559563,
+    "rango_dinamico": 255.0
+  },
+  "calidad_imagen": {
+    "contraste": 36.4990879559563,
+    "blur_variance": 936.4802749140894,
+    "entropy": 2.211930274963379,
+    "gradiente_promedio": 34.851996597549984,
+    "brillo_promedio": 41.0049350897289,
+    "uniformidad_brillo": 36.4990879559563,
+    "calificacion_calidad": 70
+  },
+  "deteccion_texto": {
+    "regiones_detectadas": 42,
+    "area_total_texto": 87747,
+    "densidad_texto": 0.1675200458190149,
+    "regiones": [
+      {
+        "x": 371,
+        "y": 1037,
+        "width": 15,
+        "height": 25,
+        "area": 375,
+        "aspect_ratio": 0.6
+      },
+      {
+        "x": 230,
+        "y": 1037,
+        "width": 25,
+        "height": 25,
+        "area": 625,
+        "aspect_ratio": 1.0
+      },
+      {
+        "x": 197,
+        "y": 978,
+        "width": 166,
+        "height": 20,
+        "area": 3320,
+        "aspect_ratio": 8.3
+      },
+      {
+        "x": 134,
+        "y": 974,
+        "width": 50,
+        "height": 30,
+        "area": 1500,
+        "aspect_ratio": 1.6666666666666667
+      },
+      {
+        "x": 228,
+        "y": 893,
+        "width": 30,
+        "height": 30,
+        "area": 900,
+        "aspect_ratio": 1.0
+      },
+      {
+        "x": 413,
+        "y": 619,
+        "width": 33,
+        "height": 18,
+        "area": 594,
+        "aspect_ratio": 1.8333333333333333
+      },
+      {
+        "x": 385,
+        "y": 619,
+        "width": 25,
+        "height": 18,
+        "area": 450,
+        "aspect_ratio": 1.3888888888888888
+      },
+      {
+        "x": 335,
+        "y": 619,
+        "width": 49,
+        "height": 18,
+        "area": 882,
+        "aspect_ratio": 2.7222222222222223
+      },
+      {
+        "x": 319,
+        "y": 619,
+        "width": 13,
+        "height": 19,
+        "area": 247,
+        "aspect_ratio": 0.6842105263157895
+      },
+      {
+        "x": 39,
+        "y": 619,
+        "width": 82,
+        "height": 21,
+        "area": 1722,
+        "aspect_ratio": 3.9047619047619047
+      },
+      {
+        "x": 344,
+        "y": 579,
+        "width": 103,
+        "height": 22,
+        "area": 2266,
+        "aspect_ratio": 4.681818181818182
+      },
+      {
+        "x": 217,
+        "y": 579,
+        "width": 46,
+        "height": 19,
+        "area": 874,
+        "aspect_ratio": 2.4210526315789473
+      },
+      {
+        "x": 39,
+        "y": 579,
+        "width": 56,
+        "height": 19,
+        "area": 1064,
+        "aspect_ratio": 2.9473684210526314
+      },
+      {
+        "x": 276,
+        "y": 578,
+        "width": 66,
+        "height": 20,
+        "area": 1320,
+        "aspect_ratio": 3.3
+      },
+      {
+        "x": 326,
+        "y": 540,
+        "width": 119,
+        "height": 21,
+        "area": 2499,
+        "aspect_ratio": 5.666666666666667
+      },
+      {
+        "x": 39,
+        "y": 540,
+        "width": 68,
+        "height": 19,
+        "area": 1292,
+        "aspect_ratio": 3.5789473684210527
+      },
+      {
+        "x": 38,
+        "y": 501,
+        "width": 62,
+        "height": 22,
+        "area": 1364,
+        "aspect_ratio": 2.8181818181818183
+      },
+      {
+        "x": 326,
+        "y": 499,
+        "width": 118,
+        "height": 21,
+        "area": 2478,
+        "aspect_ratio": 5.619047619047619
+      },
+      {
+        "x": 359,
+        "y": 461,
+        "width": 88,
+        "height": 20,
+        "area": 1760,
+        "aspect_ratio": 4.4
+      },
+      {
+        "x": 39,
+        "y": 461,
+        "width": 112,
+        "height": 19,
+        "area": 2128,
+        "aspect_ratio": 5.894736842105263
+      }
+    ],
+    "cobertura_texto_porcentaje": 16.752004581901488
+  },
+  "ruido_artefactos": {
+    "nivel_ruido": 2.660546009927453,
+    "desviacion_ruido": 10.126517822005317,
+    "porcentaje_pixeles_ruidosos": 4.509545628102329,
+    "uniformidad": 3.2601050019091256,
+    "calificacion_ruido": "Bajo"
+  },
+  "geometria_orientacion": {
+    "sesgo_estimado": 2.5,
+    "lineas_detectadas": 44,
+    "simetria_horizontal": 0.5953348875045776,
+    "relacion_aspecto": 0.44907407407407407,
+    "requiere_deskew": true,
+    "orientacion_correcta": true
+  },
+  "recomendaciones": {
+    "perfil_recomendado": "rapido",
+    "aplicar_deskew": true,
+    "nivel_denoise": "moderado",
+    "ajuste_contraste": false,
+    "filtro_bilateral": true,
+    "prioridades": [
+      "Corrección de sesgo necesaria"
+    ]
+  },
+  "puntuacion_general": {
+    "total": 83.1,
+    "calidad": 70,
+    "texto": 83.8,
+    "ruido": 100,
+    "geometria": 100,
+    "categoria": "Excelente"
+  }
+}

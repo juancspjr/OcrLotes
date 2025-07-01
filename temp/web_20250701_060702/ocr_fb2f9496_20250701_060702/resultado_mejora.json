@@ -1,0 +1,85 @@
+{
+  "perfil_usado": "rapido",
+  "pasos_aplicados": [
+    "Mejora de contraste CLAHE",
+    "Binarización adaptativa",
+    "Operaciones morfológicas"
+  ],
+  "metricas_antes": {
+    "brillo_promedio": 41.0049350897289,
+    "contraste": 36.4990879559563,
+    "nitidez": 936.4802749140894,
+    "rango_dinamico": 255.0
+  },
+  "parametros_aplicados": {
+    "deskew_omitido": {
+      "razon": "captura_de_pantalla",
+      "angulo_detectado": 2.5,
+      "es_screenshot": true,
+      "dimensiones": "485x1080"
+    },
+    "bilateral_omitido": {
+      "razon": "preservacion_nitidez",
+      "nivel_ruido": 2.660546009927453,
+      "umbral_requerido": 15,
+      "tipo_imagen": "screenshot"
+    },
+    "denoise_omitido": {
+      "razon": "screenshot_preservacion_nitidez",
+      "iteraciones_originales": 2,
+      "kernel_original": 3
+    },
+    "mejora_contraste": {
+      "metodo": "CLAHE",
+      "clip_limit": 3.0,
+      "tile_size": [
+        8,
+        8
+      ]
+    },
+    "binarizacion": {
+      "block_size": 15,
+      "C": 5,
+      "brillo_detectado": 41.0
+    },
+    "morfologia": {
+      "apertura_kernel": [
+        2,
+        2
+      ],
+      "cierre_kernel": [
+        3,
+        1
+      ]
+    }
+  },
+  "tiempo_procesamiento": 0.098,
+  "metricas_despues": {
+    "brillo_promedio": 231.35919243986254,
+    "contraste": 73.95619071950367,
+    "nitidez": 10745.884020618556,
+    "rango_dinamico": 255.0
+  },
+  "imagen_mejorada": "temp/web_20250701_060702/ocr_fb2f9496_20250701_060702/imagen_mejorada.png",
+  "mejora_calidad": {
+    "contraste": {
+      "antes": 36.5,
+      "despues": 73.96,
+      "cambio": 37.46,
+      "porcentaje": 102.6
+    },
+    "nitidez": {
+      "antes": 936.48,
+      "despues": 10745.88,
+      "cambio": 9809.4,
+      "porcentaje": 1047.5
+    },
+    "rango_dinamico": {
+      "antes": 255.0,
+      "despues": 255.0,
+      "cambio": 0.0,
+      "porcentaje": 0.0
+    }
+  },
+  "tiempo": 0.125
+}
