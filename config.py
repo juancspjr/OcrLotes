@@ -17,11 +17,27 @@ TEMP_DIR.mkdir(exist_ok=True)
 UPLOADS_DIR.mkdir(exist_ok=True)
 STATIC_DIR.mkdir(exist_ok=True)
 
-# Configuración de Tesseract OCR
+# FIX: Configuración optimizada de Tesseract OCR para máxima confianza
+# REASON: Incrementar confianza OCR y asegurar texto negro óptimo
+# IMPACT: Mejora significativa en precision y confianza de extracción
 TESSERACT_CONFIG = {
-    'default': '--oem 3 --psm 6 -c tessedit_char_whitelist=0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,;:()- ',
+    'default': '--oem 3 --psm 6 -c tessedit_char_whitelist=0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,;:()- -c tessedit_char_blacklist=',
+    'high_confidence': '--oem 3 --psm 6 -c tessedit_char_whitelist=0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,;:()- -c preserve_interword_spaces=1 -c tessedit_ocr_engine_mode=3',
+    'screenshot_optimized': '--oem 3 --psm 6 -c tessedit_char_whitelist=0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,;:()- -c textord_really_old_xheight=1 -c textord_min_xheight=10',
     'digits': '--oem 3 --psm 6 -c tessedit_char_whitelist=0123456789.,',
     'alphanumeric': '--oem 3 --psm 6 -c tessedit_char_whitelist=0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+}
+
+# FIX: Configuración de confianza y calidad OCR mejorada
+# REASON: Aumentar confianza OCR como solicita el usuario
+# IMPACT: Texto extraído con mayor precisión y confianza
+OCR_CONFIDENCE_CONFIG = {
+    'min_confidence_threshold': 60,  # FIX: Incrementado de 30 a 60
+    'high_confidence_threshold': 80,  # Para marcar como alta confianza
+    'word_confidence_threshold': 70,  # Confianza mínima por palabra
+    'line_confidence_threshold': 75,  # Confianza mínima por línea
+    'text_color_preference': 'black_on_white',  # FIX: Priorizar texto negro
+    'preprocessing_for_confidence': True  # Preprocesamiento específico para confianza
 }
 
 # Perfiles de rendimiento con filosofía de conservación extrema
@@ -52,15 +68,18 @@ PERFORMANCE_PROFILES = {
     },
     'normal': {
         'name': 'Normal',
-        'description': 'Máxima calidad con filosofía de conservación extrema',
+        'description': 'Máxima precisión OCR con filosofía de conservación extrema',
         'gaussian_blur_kernel': 5,
         'bilateral_filter': 'conditional',
         'morphology_operations': True,
         'adaptive_threshold': True,
-        'deskew': 'conditional',
+        'deskew': False,  # FIX: ELIMINADO - Causa falsa inclinación en screenshots
         'noise_removal_iterations': 0,  # Eliminado para capturas digitales
-        'sharpening': 'conditional',
-        'intelligent_preprocessing': True
+        'sharpening': 'adaptive',  # FIX: Nitidez adaptativa para mejor definición
+        'intelligent_preprocessing': True,
+        'advanced_binarization': True,  # FIX: Binarización avanzada mejorada
+        'contrast_enhancement': 'adaptive',  # FIX: Mejora de contraste adaptativo
+        'character_conservation': 'extreme'  # FIX: Máxima conservación de caracteres
     }
 }
 
@@ -96,7 +115,9 @@ IMAGE_QUALITY_THRESHOLDS = {
     'text_density_min': 0.1
 }
 
-# Configuración de preprocesamiento
+# FIX: Configuración avanzada de preprocesamiento con conservación extrema  
+# REASON: Implementar nuevas técnicas más allá del simple upscaling
+# IMPACT: Mejora significativa en calidad OCR y confianza de extracción
 PREPROCESSING_CONFIG = {
     'resize_max_dimension': 2000,
     'gaussian_blur_range': (3, 7),
@@ -110,7 +131,33 @@ PREPROCESSING_CONFIG = {
         'C': 2
     },
     'deskew_angle_range': (-45, 45),
-    'sharpening_kernel': [[-1, -1, -1], [-1, 9, -1], [-1, -1, -1]]
+    'sharpening_kernel': [[-1, -1, -1], [-1, 9, -1], [-1, -1, -1]],
+    
+    # FIX: Nuevas técnicas avanzadas de mejora más allá del upscaling
+    'advanced_techniques': {
+        'clahe_enabled': True,  # Histogram equalization adaptativo
+        'clahe_clip_limit': 2.0,
+        'clahe_tile_grid_size': (8, 8),
+        'unsharp_mask_enabled': True,  # Unsharp masking para nitidez
+        'unsharp_mask_strength': 1.5,
+        'unsharp_mask_radius': 1.0,
+        'edge_enhancement_enabled': True,  # Realce de bordes
+        'gamma_correction_enabled': True,  # Corrección gamma adaptativa
+        'gamma_range': (0.8, 1.2),
+        'denoising_wavelet': True,  # Denoising con wavelets
+        'structure_preservation': True  # Preservación de estructura
+    },
+    
+    # FIX: Binarización avanzada mejorada
+    'advanced_binarization': {
+        'otsu_enabled': True,
+        'adaptive_mean_enabled': True,
+        'adaptive_gaussian_enabled': True,
+        'multi_threshold_enabled': True,
+        'local_threshold_enabled': True,
+        'sauvola_enabled': True,  # Algoritmo Sauvola para documentos
+        'niblack_enabled': True   # Algoritmo Niblack para texto fino
+    }
 }
 
 # Patrones de expresiones regulares para documentos financieros

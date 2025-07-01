@@ -1,0 +1,178 @@
+{
+  "texto_completo": "eCEY\nP VF.;\nm E\nA\ne\nEs\n-\noe\nEkE",
+  "estadisticas_ocr": {
+    "total_palabras": 23,
+    "palabras_validas": 11,
+    "confianza_promedio": 36.73,
+    "confianza_minima": 0,
+    "confianza_maxima": 87,
+    "palabras_alta_confianza": 3,
+    "palabras_baja_confianza": 5,
+    "distribucion_confianza": {
+      "excelente (90-100)": 0,
+      "buena (70-89)": 3,
+      "regular (50-69)": 1,
+      "baja (30-49)": 2,
+      "muy_baja (0-29)": 5
+    }
+  },
+  "palabras_detectadas": [
+    {
+      "texto": "Es",
+      "confianza": 87,
+      "posicion": {
+        "x": 17,
+        "y": 288,
+        "width": 48,
+        "height": 35
+      },
+      "categoria_confianza": "buena"
+    },
+    {
+      "texto": "E",
+      "confianza": 85,
+      "posicion": {
+        "x": 209,
+        "y": 206,
+        "width": 3,
+        "height": 1
+      },
+      "categoria_confianza": "buena"
+    },
+    {
+      "texto": "e",
+      "confianza": 80,
+      "posicion": {
+        "x": 17,
+        "y": 249,
+        "width": 106,
+        "height": 48
+      },
+      "categoria_confianza": "buena"
+    },
+    {
+      "texto": "P",
+      "confianza": 59,
+      "posicion": {
+        "x": 61,
+        "y": 106,
+        "width": 12,
+        "height": 1
+      },
+      "categoria_confianza": "aceptable"
+    },
+    {
+      "texto": "A",
+      "confianza": 38,
+      "posicion": {
+        "x": 17,
+        "y": 207,
+        "width": 64,
+        "height": 37
+      },
+      "categoria_confianza": "aceptable"
+    },
+    {
+      "texto": "VF.;",
+      "confianza": 33,
+      "posicion": {
+        "x": 114,
+        "y": 81,
+        "width": 29,
+        "height": 27
+      },
+      "categoria_confianza": "aceptable"
+    },
+    {
+      "texto": "oe",
+      "confianza": 22,
+      "posicion": {
+        "x": 65,
+        "y": 486,
+        "width": 121,
+        "height": 20
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "eCEY",
+      "confianza": 0,
+      "posicion": {
+        "x": 9,
+        "y": 24,
+        "width": 232,
+        "height": 25
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "m",
+      "confianza": 0,
+      "posicion": {
+        "x": 17,
+        "y": 191,
+        "width": 33,
+        "height": 16
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "-",
+      "confianza": 0,
+      "posicion": {
+        "x": 0,
+        "y": 442,
+        "width": 243,
+        "height": 32
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "EkE",
+      "confianza": 0,
+      "posicion": {
+        "x": 0,
+        "y": 518,
+        "width": 243,
+        "height": 22
+      },
+      "categoria_confianza": "baja"
+    }
+  ],
+  "confianza_promedio": {
+    "simple": 36.73,
+    "ponderada": 29.14,
+    "palabras_evaluadas": 11
+  },
+  "calidad_extraccion": {
+    "caracteres_totales": 21,
+    "palabras_totales": 11,
+    "densidad_informacion": 0.677,
+    "errores_detectados": [
+      "Exceso de palabras de 1 letra: 5"
+    ],
+    "puntuacion_calidad": 46.72727272727273,
+    "categoria": "Regular",
+    "recomendaciones": [
+      "Considere mejorar la calidad de la imagen de entrada",
+      "Verifique la iluminación y el contraste"
+    ]
+  },
+  "datos_financieros": {
+    "analisis_documento": {
+      "tipo": "desconocido",
+      "confianza": 0,
+      "keywords_encontradas": []
+    },
+    "resumen_extraido": {
+      "montos_encontrados": 0,
+      "fechas_encontradas": 0,
+      "referencias_encontradas": 0,
+      "cuentas_encontradas": 0,
+      "telefonos_encontrados": 0,
+      "total_elementos": 0,
+      "completitud_porcentaje": 0
+    }
+  },
+  "tiempo": 1.577
+}

@@ -1,0 +1,577 @@
+{
+  "execution_id": "c9ba3764",
+  "timestamp": "20250701_071858",
+  "input_image": "uploads/20250701_071858_Imagen_de_WhatsApp_2025-06-20_a_las_20.21.31_7a06b961.png",
+  "temp_directory": "temp/web_20250701_071858/ocr_c9ba3764_20250701_071858",
+  "parametros": {
+    "language": "spa",
+    "profile": "rapido",
+    "save_intermediate": true
+  },
+  "etapas": {
+    "1_validacion": {
+      "tiempo": 0.05,
+      "diagnostico": {
+        "imagen_info": {
+          "ancho": 243,
+          "alto": 540,
+          "resolucion_total": 131220,
+          "canales": 3,
+          "modo": "RGB",
+          "formato": "JPEG",
+          "brillo_promedio": 40.82880658436214,
+          "desviacion_brillo": 37.11509698980526,
+          "rango_dinamico": 255.0
+        },
+        "calidad_imagen": {
+          "contraste": 37.11509698980526,
+          "blur_variance": 5166.004909312605,
+          "entropy": 2.7545175552368164,
+          "gradiente_promedio": 45.51764266328379,
+          "brillo_promedio": 40.82880658436214,
+          "uniformidad_brillo": 37.11509698980526,
+          "calificacion_calidad": 70
+        },
+        "deteccion_texto": {
+          "regiones_detectadas": 29,
+          "area_total_texto": 28065,
+          "densidad_texto": 0.2138774577046182,
+          "regiones": [
+            {
+              "x": 184,
+              "y": 518,
+              "width": 11,
+              "height": 14,
+              "area": 154,
+              "aspect_ratio": 0.7857142857142857
+            },
+            {
+              "x": 46,
+              "y": 518,
+              "width": 15,
+              "height": 14,
+              "area": 210,
+              "aspect_ratio": 1.0714285714285714
+            },
+            {
+              "x": 113,
+              "y": 517,
+              "width": 16,
+              "height": 16,
+              "area": 256,
+              "aspect_ratio": 1.0
+            },
+            {
+              "x": 97,
+              "y": 488,
+              "width": 87,
+              "height": 12,
+              "area": 1044,
+              "aspect_ratio": 7.25
+            },
+            {
+              "x": 66,
+              "y": 486,
+              "width": 27,
+              "height": 17,
+              "area": 459,
+              "aspect_ratio": 1.588235294117647
+            },
+            {
+              "x": 113,
+              "y": 446,
+              "width": 17,
+              "height": 16,
+              "area": 272,
+              "aspect_ratio": 1.0625
+            },
+            {
+              "x": 158,
+              "y": 308,
+              "width": 67,
+              "height": 12,
+              "area": 804,
+              "aspect_ratio": 5.583333333333333
+            },
+            {
+              "x": 18,
+              "y": 308,
+              "width": 44,
+              "height": 13,
+              "area": 572,
+              "aspect_ratio": 3.3846153846153846
+            },
+            {
+              "x": 107,
+              "y": 288,
+              "width": 118,
+              "height": 13,
+              "area": 1534,
+              "aspect_ratio": 9.076923076923077
+            },
+            {
+              "x": 18,
+              "y": 288,
+              "width": 31,
+              "height": 13,
+              "area": 403,
+              "aspect_ratio": 2.3846153846153846
+            },
+            {
+              "x": 162,
+              "y": 268,
+              "width": 63,
+              "height": 13,
+              "area": 819,
+              "aspect_ratio": 4.846153846153846
+            },
+            {
+              "x": 18,
+              "y": 268,
+              "width": 37,
+              "height": 13,
+              "area": 481,
+              "aspect_ratio": 2.8461538461538463
+            },
+            {
+              "x": 162,
+              "y": 249,
+              "width": 62,
+              "height": 12,
+              "area": 744,
+              "aspect_ratio": 5.166666666666667
+            },
+            {
+              "x": 18,
+              "y": 249,
+              "width": 34,
+              "height": 14,
+              "area": 476,
+              "aspect_ratio": 2.4285714285714284
+            },
+            {
+              "x": 179,
+              "y": 229,
+              "width": 46,
+              "height": 13,
+              "area": 598,
+              "aspect_ratio": 3.5384615384615383
+            },
+            {
+              "x": 18,
+              "y": 229,
+              "width": 59,
+              "height": 13,
+              "area": 767,
+              "aspect_ratio": 4.538461538461538
+            },
+            {
+              "x": 18,
+              "y": 210,
+              "width": 47,
+              "height": 13,
+              "area": 611,
+              "aspect_ratio": 3.6153846153846154
+            },
+            {
+              "x": 144,
+              "y": 207,
+              "width": 84,
+              "height": 17,
+              "area": 1428,
+              "aspect_ratio": 4.9411764705882355
+            },
+            {
+              "x": 174,
+              "y": 190,
+              "width": 51,
+              "height": 13,
+              "area": 663,
+              "aspect_ratio": 3.923076923076923
+            },
+            {
+              "x": 18,
+              "y": 190,
+              "width": 30,
+              "height": 13,
+              "area": 390,
+              "aspect_ratio": 2.3076923076923075
+            }
+          ],
+          "cobertura_texto_porcentaje": 21.38774577046182
+        },
+        "ruido_artefactos": {
+          "nivel_ruido": 5.1341030330742266,
+          "desviacion_ruido": 17.818374255969488,
+          "porcentaje_pixeles_ruidosos": 4.8056698673982625,
+          "uniformidad": 5.728768480414571,
+          "calificacion_ruido": "Bajo"
+        },
+        "geometria_orientacion": {
+          "sesgo_estimado": 2.5,
+          "lineas_detectadas": 3,
+          "simetria_horizontal": 0.6015089154243469,
+          "relacion_aspecto": 0.45,
+          "requiere_deskew": true,
+          "orientacion_correcta": true
+        },
+        "recomendaciones": {
+          "perfil_recomendado": "rapido",
+          "aplicar_deskew": true,
+          "nivel_denoise": "moderado",
+          "ajuste_contraste": false,
+          "filtro_bilateral": true,
+          "prioridades": [
+            "Corrección de sesgo necesaria"
+          ]
+        },
+        "puntuacion_general": {
+          "total": 88.0,
+          "calidad": 70,
+          "texto": 100,
+          "ruido": 100,
+          "geometria": 100,
+          "categoria": "Excelente"
+        }
+      },
+      "imagen_original": "temp/web_20250701_071858/ocr_c9ba3764_20250701_071858/00_imagen_original.png",
+      "archivo_diagnostico": "temp/web_20250701_071858/ocr_c9ba3764_20250701_071858/diagnostico.json"
+    },
+    "2_mejora": {
+      "perfil_usado": "rapido",
+      "pasos_aplicados": [
+        "Inversión temprana (Caso A)",
+        "Deskew ELIMINADO (Conservación Extrema)",
+        "Mejora de contraste CLAHE",
+        "Binarización Avanzada: Adaptativo Gaussiano",
+        "Operaciones morfológicas"
+      ],
+      "metricas_antes": {
+        "brillo_promedio": 40.82880658436214,
+        "contraste": 37.11509698980526,
+        "nitidez": 5166.004909312605,
+        "rango_dinamico": 255.0
+      },
+      "parametros_aplicados": {
+        "inversion_caso_a": {
+          "intensidad_media_original": 40.83,
+          "confianza_inversion": 0.9779999852180481,
+          "pixeles_oscuros": 119128,
+          "pixeles_claros": 2649
+        },
+        "deskew_eliminado": {
+          "razon": "conservacion_extrema_caracteres",
+          "angulo_detectado_ignorado": 2.5,
+          "politica": "nunca_rotar_screenshots_ni_documentos"
+        },
+        "mejora_contraste": {
+          "metodo": "CLAHE",
+          "clip_limit": 3.0,
+          "tile_size": [
+            8,
+            8
+          ]
+        },
+        "binarization_advanced": {
+          "methods_tested": 7,
+          "best_method": "Adaptativo Gaussiano",
+          "quality_score": 0.9758024691358025
+        },
+        "morfologia": {
+          "apertura_kernel": [
+            2,
+            2
+          ],
+          "cierre_kernel": [
+            3,
+            1
+          ]
+        }
+      },
+      "tiempo_procesamiento": 0.027,
+      "tipo_imagen_detectado": {
+        "tipo": "documento_escaneado",
+        "es_screenshot": false,
+        "dimensiones": "243x540",
+        "aspect_ratio": 0.45,
+        "sesgo_detectado": 2.5
+      },
+      "estrategia_seleccionada": {
+        "redimensionar": true,
+        "deskew": "conditional",
+        "bilateral_filter": "conditional",
+        "noise_removal": false,
+        "contrast_enhancement": true,
+        "adaptive_threshold": true,
+        "morphology": "full",
+        "sharpening": "conditional"
+      },
+      "metricas_despues": {
+        "brillo_promedio": 204.2001600365798,
+        "contraste": 101.84957265675222,
+        "nitidez": 19592.733196159123,
+        "rango_dinamico": 255.0
+      },
+      "imagen_mejorada": "temp/web_20250701_071858/ocr_c9ba3764_20250701_071858/imagen_mejorada.png",
+      "mejora_calidad": {
+        "contraste": {
+          "antes": 37.12,
+          "despues": 101.85,
+          "cambio": 64.73,
+          "porcentaje": 174.4
+        },
+        "nitidez": {
+          "antes": 5166.0,
+          "despues": 19592.73,
+          "cambio": 14426.73,
+          "porcentaje": 279.3
+        },
+        "rango_dinamico": {
+          "antes": 255.0,
+          "despues": 255.0,
+          "cambio": 0.0,
+          "porcentaje": 0.0
+        }
+      },
+      "tiempo": 0.03,
+      "archivo_resultado": "temp/web_20250701_071858/ocr_c9ba3764_20250701_071858/resultado_mejora.json"
+    },
+    "3_ocr": {
+      "texto_completo": "eCEY\nP VF.;\nm E\nA\ne\nEs\n-\noe\nEkE",
+      "estadisticas_ocr": {
+        "total_palabras": 23,
+        "palabras_validas": 11,
+        "confianza_promedio": 36.73,
+        "confianza_minima": 0,
+        "confianza_maxima": 87,
+        "palabras_alta_confianza": 3,
+        "palabras_baja_confianza": 5,
+        "distribucion_confianza": {
+          "excelente (90-100)": 0,
+          "buena (70-89)": 3,
+          "regular (50-69)": 1,
+          "baja (30-49)": 2,
+          "muy_baja (0-29)": 5
+        }
+      },
+      "palabras_detectadas": [
+        {
+          "texto": "Es",
+          "confianza": 87,
+          "posicion": {
+            "x": 17,
+            "y": 288,
+            "width": 48,
+            "height": 35
+          },
+          "categoria_confianza": "buena"
+        },
+        {
+          "texto": "E",
+          "confianza": 85,
+          "posicion": {
+            "x": 209,
+            "y": 206,
+            "width": 3,
+            "height": 1
+          },
+          "categoria_confianza": "buena"
+        },
+        {
+          "texto": "e",
+          "confianza": 80,
+          "posicion": {
+            "x": 17,
+            "y": 249,
+            "width": 106,
+            "height": 48
+          },
+          "categoria_confianza": "buena"
+        },
+        {
+          "texto": "P",
+          "confianza": 59,
+          "posicion": {
+            "x": 61,
+            "y": 106,
+            "width": 12,
+            "height": 1
+          },
+          "categoria_confianza": "aceptable"
+        },
+        {
+          "texto": "A",
+          "confianza": 38,
+          "posicion": {
+            "x": 17,
+            "y": 207,
+            "width": 64,
+            "height": 37
+          },
+          "categoria_confianza": "aceptable"
+        },
+        {
+          "texto": "VF.;",
+          "confianza": 33,
+          "posicion": {
+            "x": 114,
+            "y": 81,
+            "width": 29,
+            "height": 27
+          },
+          "categoria_confianza": "aceptable"
+        },
+        {
+          "texto": "oe",
+          "confianza": 22,
+          "posicion": {
+            "x": 65,
+            "y": 486,
+            "width": 121,
+            "height": 20
+          },
+          "categoria_confianza": "baja"
+        },
+        {
+          "texto": "eCEY",
+          "confianza": 0,
+          "posicion": {
+            "x": 9,
+            "y": 24,
+            "width": 232,
+            "height": 25
+          },
+          "categoria_confianza": "baja"
+        },
+        {
+          "texto": "m",
+          "confianza": 0,
+          "posicion": {
+            "x": 17,
+            "y": 191,
+            "width": 33,
+            "height": 16
+          },
+          "categoria_confianza": "baja"
+        },
+        {
+          "texto": "-",
+          "confianza": 0,
+          "posicion": {
+            "x": 0,
+            "y": 442,
+            "width": 243,
+            "height": 32
+          },
+          "categoria_confianza": "baja"
+        },
+        {
+          "texto": "EkE",
+          "confianza": 0,
+          "posicion": {
+            "x": 0,
+            "y": 518,
+            "width": 243,
+            "height": 22
+          },
+          "categoria_confianza": "baja"
+        }
+      ],
+      "confianza_promedio": {
+        "simple": 36.73,
+        "ponderada": 29.14,
+        "palabras_evaluadas": 11
+      },
+      "calidad_extraccion": {
+        "caracteres_totales": 21,
+        "palabras_totales": 11,
+        "densidad_informacion": 0.677,
+        "errores_detectados": [
+          "Exceso de palabras de 1 letra: 5"
+        ],
+        "puntuacion_calidad": 46.72727272727273,
+        "categoria": "Regular",
+        "recomendaciones": [
+          "Considere mejorar la calidad de la imagen de entrada",
+          "Verifique la iluminación y el contraste"
+        ]
+      },
+      "datos_financieros": {
+        "analisis_documento": {
+          "tipo": "desconocido",
+          "confianza": 0,
+          "keywords_encontradas": []
+        },
+        "resumen_extraido": {
+          "montos_encontrados": 0,
+          "fechas_encontradas": 0,
+          "referencias_encontradas": 0,
+          "cuentas_encontradas": 0,
+          "telefonos_encontrados": 0,
+          "total_elementos": 0,
+          "completitud_porcentaje": 0
+        }
+      },
+      "tiempo": 1.577,
+      "archivo_resultado": "temp/web_20250701_071858/ocr_c9ba3764_20250701_071858/resultado_ocr.json",
+      "archivo_texto": "temp/web_20250701_071858/ocr_c9ba3764_20250701_071858/texto_extraido.txt"
+    }
+  },
+  "archivos_generados": [
+    "temp/web_20250701_071858/ocr_c9ba3764_20250701_071858/resultado_completo.json",
+    "temp/web_20250701_071858/ocr_c9ba3764_20250701_071858/reporte.html"
+  ],
+  "resumen_final": {
+    "imagen_original": {
+      "dimensiones": "243x540",
+      "calidad_inicial": "Excelente",
+      "puntuacion_calidad": 88.0
+    },
+    "procesamiento_aplicado": {
+      "perfil_usado": "rapido",
+      "pasos_ejecutados": 5,
+      "lista_pasos": [
+        "Inversión temprana (Caso A)",
+        "Deskew ELIMINADO (Conservación Extrema)",
+        "Mejora de contraste CLAHE",
+        "Binarización Avanzada: Adaptativo Gaussiano",
+        "Operaciones morfológicas"
+      ],
+      "tiempo_procesamiento": 0.027
+    },
+    "resultados_ocr": {
+      "caracteres_extraidos": 31,
+      "palabras_detectadas": 11,
+      "confianza_promedio": 36.73,
+      "confianza_ponderada": 29.14,
+      "calidad_extraccion": "Regular"
+    },
+    "datos_financieros": {
+      "tipo_documento": "desconocido",
+      "elementos_encontrados": 0,
+      "completitud": 0,
+      "montos_encontrados": 0,
+      "fechas_encontradas": 0
+    },
+    "rendimiento": {
+      "tiempo_total": 0,
+      "tiempo_validacion": 0.05,
+      "tiempo_mejora": 0.03,
+      "tiempo_ocr": 1.577
+    },
+    "calificacion_final": {
+      "puntuacion": 41.1,
+      "categoria": "Deficiente",
+      "componentes": {
+        "calidad_imagen": 88.0,
+        "confianza_ocr": 36.7,
+        "completitud_datos": 0.0
+      }
+    },
+    "recomendaciones": [
+      "Considerar usar perfil 'Normal' para mejor precisión",
+      "Revisar manualmente los datos críticos extraídos"
+    ]
+  },
+  "tiempo_total": 1.658
+}

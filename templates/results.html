@@ -421,8 +421,11 @@
                     </div>
                     <div class="card-body">
                         {% if etapas['3_ocr'] and etapas['3_ocr'].texto_completo %}
+                            <!-- FIX: Texto extraído en NEGRO para mejor visibilidad -->
+                            <!-- REASON: Usuario solicita que el texto se vea en negro -->
+                            <!-- IMPACT: Mejor legibilidad del texto extraído -->
                             <div class="text-content bg-light p-3 rounded">
-                                <pre class="mb-0" style="white-space: pre-wrap; font-family: monospace;">{{ etapas['3_ocr'].texto_completo }}</pre>
+                                <pre class="mb-0" style="white-space: pre-wrap; font-family: monospace; color: #000000 !important; background-color: #ffffff !important; border: 1px solid #dee2e6;">{{ etapas['3_ocr'].texto_completo }}</pre>
                             </div>
                             <div class="mt-2 text-end">
                                 <small class="text-muted">{{ etapas['3_ocr'].texto_completo|length }} caracteres extraídos</small>

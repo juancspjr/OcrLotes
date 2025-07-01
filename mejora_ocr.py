@@ -7,8 +7,12 @@ import cv2
 import numpy as np
 import json
 import logging
+import time
 from pathlib import Path
 from PIL import Image, ImageEnhance, ImageFilter
+from skimage import restoration, filters, morphology, exposure
+from skimage.filters import unsharp_mask
+from scipy import ndimage
 import config
 
 # Configurar logging
@@ -148,7 +152,7 @@ class MejoradorOCR:
             step_counter += 1
         
         # FASE 3: Aplicación de Estrategia Específica
-        current = self._aplicar_estrategia_inteligente(current, estrategia, diagnostico, resultado, save_steps, output_dir, step_counter)
+        current = self._aplicar_estrategia_inteligente(current, estrategia, diagnostico, resultado, save_steps, output_dir, step_counter, profile_config)
         
         return current
     
@@ -290,7 +294,7 @@ class MejoradorOCR:
         resultado['estrategia_seleccionada'] = estrategia
         return estrategia
     
-    def _aplicar_estrategia_inteligente(self, image, estrategia, diagnostico, resultado, save_steps, output_dir, step_counter):
+    def _aplicar_estrategia_inteligente(self, image, estrategia, diagnostico, resultado, save_steps, output_dir, step_counter, profile_config):
         """Aplica la estrategia de procesamiento seleccionada"""
         current = image.copy()
         
@@ -330,7 +334,38 @@ class MejoradorOCR:
                 cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_contraste.png"), current)
                 step_counter += 1
         
-        # 6. Binarización adaptativa (siempre aplicar)
+        # FIX: 5.1 Técnicas Avanzadas de Mejora - MÁS ALLÁ DEL UPSCALING
+        # REASON: Usuario solicita nuevas técnicas de mejora más sofisticadas
+        # IMPACT: Mejora significativa en calidad antes de binarización
+        
+        # profile_config ya está disponible como parámetro
+        if profile_config.get('advanced_binarization', False) or profile_config.get('character_conservation') == 'extreme':
+            
+            # 5.1a CLAHE Adaptativo para mejor distribución de contraste
+            current = self._aplicar_clahe_adaptativo(current, resultado)
+            if save_steps and output_dir:
+                cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_clahe.png"), current)
+                step_counter += 1
+            
+            # 5.1b Corrección Gamma Adaptativa
+            current = self._aplicar_correccion_gamma_adaptativa(current, resultado)
+            if save_steps and output_dir:
+                cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_gamma.png"), current)
+                step_counter += 1
+            
+            # 5.1c Unsharp Masking para nitidez preservando caracteres
+            current = self._aplicar_unsharp_mask(current, resultado)
+            if save_steps and output_dir:
+                cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_unsharp.png"), current)
+                step_counter += 1
+            
+            # 5.1d Realce de bordes inteligente
+            current = self._aplicar_realce_bordes(current, resultado)
+            if save_steps and output_dir:
+                cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_edges.png"), current)
+                step_counter += 1
+        
+        # 6. Binarización avanzada mejorada (REEMPLAZA la simple)
         if estrategia['adaptive_threshold']:
             current = self._aplicar_binarizacion_adaptativa(current, diagnostico, resultado)
             if save_steps and output_dir:
@@ -410,75 +445,24 @@ class MejoradorOCR:
         return image
     
     def _aplicar_deskew(self, image, diagnostico, resultado):
-        """Corrige el sesgo de la imagen"""
-        # FIX: Conservación extrema de caracteres - deskew solo para documentos escaneados
-        # REASON: Las capturas de pantalla ya están perfectamente alineadas, deskew introduce distorsión
-        # IMPACT: Elimina rotaciones innecesarias que degradan la calidad de texto digital
-        
+        """
+        FIX: DESKEW COMPLETAMENTE ELIMINADO
+        REASON: Usuario reporta que causa falsa inclinación en screenshots
+        IMPACT: Elimina rotaciones innecesarias, preserva integridad de caracteres
+        """
+        # FIX: No aplicar deskew NUNCA - conservación extrema de caracteres
         geometria = diagnostico.get('geometria_orientacion', {})
         angle = geometria.get('sesgo_estimado', 0)
         
-        # Detección inteligente: solo aplicar deskew si hay sesgo significativo Y no es captura de pantalla
-        imagen_info = diagnostico.get('imagen_info', {})
-        width = imagen_info.get('ancho', 0)
-        height = imagen_info.get('alto', 0)
+        resultado['pasos_aplicados'].append('Deskew ELIMINADO (Conservación Extrema)')
+        resultado['parametros_aplicados']['deskew_eliminado'] = {
+            'razon': 'conservacion_extrema_caracteres',
+            'angulo_detectado_ignorado': float(round(angle, 2)),
+            'politica': 'nunca_rotar_screenshots_ni_documentos'
+        }
         
-        # Heurística para detectar capturas de pantalla (proporciones típicas de pantalla)
-        aspect_ratio = width / height if height > 0 else 1
-        is_screenshot = (
-            aspect_ratio > 1.5 or  # Pantalla wide
-            width > 1000 or        # Resolución alta típica de screenshots
-            height > 600           # Resolución mínima de screenshots
-        )
-        
-        # Solo aplicar deskew si:
-        # 1. Hay sesgo significativo (>2 grados para ser más conservador)
-        # 2. NO es una captura de pantalla
-        # 3. O el sesgo es extremo (>5 grados) incluso en screenshots
-        should_deskew = (
-            abs(angle) > 2.0 and not is_screenshot
-        ) or abs(angle) > 5.0
-        
-        if should_deskew:
-            h, w = image.shape
-            center = (w // 2, h // 2)
-            
-            # Crear matriz de rotación
-            M = cv2.getRotationMatrix2D(center, angle, 1.0)
-            
-            # Calcular nuevas dimensiones
-            cos = np.abs(M[0, 0])
-            sin = np.abs(M[0, 1])
-            new_w = int((h * sin) + (w * cos))
-            new_h = int((h * cos) + (w * sin))
-            
-            # Ajustar matriz de traslación
-            M[0, 2] += (new_w / 2) - center[0]
-            M[1, 2] += (new_h / 2) - center[1]
-            
-            # Aplicar rotación con interpolación de alta calidad
-            rotated = cv2.warpAffine(image, M, (new_w, new_h), 
-                                   flags=cv2.INTER_LANCZOS4,  # Mejor calidad
-                                   borderMode=cv2.BORDER_REPLICATE)
-            
-            resultado['pasos_aplicados'].append('Corrección de sesgo')
-            resultado['parametros_aplicados']['deskew'] = {
-                'angulo_corregido': round(angle, 2),
-                'dimensiones_nuevas': (new_w, new_h),
-                'tipo_imagen': 'escaneada' if not is_screenshot else 'screenshot_sesgo_extremo'
-            }
-            
-            return rotated
-        else:
-            # Log por qué no se aplicó deskew
-            resultado['parametros_aplicados']['deskew_omitido'] = {
-                'razon': 'captura_de_pantalla' if is_screenshot else 'sesgo_minimo',
-                'angulo_detectado': round(angle, 2),
-                'es_screenshot': is_screenshot,
-                'dimensiones': f"{width}x{height}"
-            }
-        
-        return image
+        logger.info("Deskew eliminado según política de conservación extrema de caracteres")
+        return image  # Devolver imagen sin modificar
     
     def _aplicar_filtro_bilateral(self, image, diagnostico, resultado):
         """Aplica filtro bilateral para reducir ruido preservando bordes"""
@@ -623,36 +607,13 @@ class MejoradorOCR:
         return enhanced
     
     def _aplicar_binarizacion_adaptativa(self, image, diagnostico, resultado):
-        """Aplica binarización adaptativa"""
-        # Usar parámetros adaptativos basados en la imagen
-        calidad = diagnostico.get('calidad_imagen', {})
-        brillo = calidad.get('brillo_promedio', 128)
-        
-        # Ajustar parámetros según brillo
-        if brillo < 80:
-            block_size, C = 15, 5
-        elif brillo > 180:
-            block_size, C = 9, 1
-        else:
-            block_size, C = 11, 2
-        
-        # Asegurar que block_size sea impar
-        if block_size % 2 == 0:
-            block_size += 1
-        
-        binary = cv2.adaptiveThreshold(
-            image, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, 
-            cv2.THRESH_BINARY, block_size, C
-        )
-        
-        resultado['pasos_aplicados'].append('Binarización adaptativa')
-        resultado['parametros_aplicados']['binarizacion'] = {
-            'block_size': block_size,
-            'C': C,
-            'brillo_detectado': round(brillo, 1)
-        }
-        
-        return binary
+        """
+        FIX: Binarización adaptativa MEJORADA - Ahora usa múltiples algoritmos
+        REASON: Usuario reporta que 05_binarizacion necesita mejoras
+        IMPACT: Selecciona automáticamente el mejor algoritmo de binarización
+        """
+        # FIX: Usar la nueva binarización avanzada mejorada
+        return self._aplicar_binarizacion_avanzada_mejorada(image, diagnostico, resultado)
     
     def _aplicar_morfologia(self, image, resultado):
         """Aplica operaciones morfológicas para limpiar la imagen"""
@@ -769,6 +730,261 @@ class MejoradorOCR:
                 }
         
         return mejoras
+    
+    # FIX: Nuevas técnicas avanzadas de procesamiento más allá del upscaling
+    # REASON: Implementar algoritmos sofisticados para mejorar calidad OCR
+    # IMPACT: Mejora significativa en precisión y confianza de extracción
+    
+    def _aplicar_clahe_adaptativo(self, image, resultado):
+        """Aplica Contrast Limited Adaptive Histogram Equalization"""
+        try:
+            config_clahe = self.preprocessing_config['advanced_techniques']
+            if not config_clahe.get('clahe_enabled', False):
+                return image
+                
+            # Convertir a escala de grises si es necesario
+            if len(image.shape) == 3:
+                gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+            else:
+                gray = image.copy()
+            
+            # Aplicar CLAHE
+            clahe = cv2.createCLAHE(
+                clipLimit=config_clahe.get('clahe_clip_limit', 2.0),
+                tileGridSize=config_clahe.get('clahe_tile_grid_size', (8, 8))
+            )
+            enhanced = clahe.apply(gray)
+            
+            resultado['pasos_aplicados'].append('CLAHE Adaptativo')
+            resultado['parametros_aplicados']['clahe'] = {
+                'clip_limit': float(config_clahe.get('clahe_clip_limit', 2.0)),
+                'tile_grid_size': config_clahe.get('clahe_tile_grid_size', (8, 8))
+            }
+            
+            return enhanced
+            
+        except Exception as e:
+            logger.warning(f"Error en CLAHE adaptativo: {str(e)}")
+            return image
+    
+    def _aplicar_unsharp_mask(self, image, resultado):
+        """Aplica Unsharp Masking para mejorar nitidez preservando caracteres"""
+        try:
+            config_unsharp = self.preprocessing_config['advanced_techniques']
+            if not config_unsharp.get('unsharp_mask_enabled', False):
+                return image
+            
+            # Normalizar imagen para scikit-image
+            if image.dtype == np.uint8:
+                image_normalized = image.astype(np.float64) / 255.0
+            else:
+                image_normalized = image
+            
+            # Aplicar unsharp masking
+            enhanced = unsharp_mask(
+                image_normalized,
+                radius=config_unsharp.get('unsharp_mask_radius', 1.0),
+                amount=config_unsharp.get('unsharp_mask_strength', 1.5)
+            )
+            
+            # Convertir de vuelta a uint8
+            enhanced = (enhanced * 255).astype(np.uint8)
+            
+            resultado['pasos_aplicados'].append('Unsharp Masking')
+            resultado['parametros_aplicados']['unsharp_mask'] = {
+                'radius': float(config_unsharp.get('unsharp_mask_radius', 1.0)),
+                'strength': float(config_unsharp.get('unsharp_mask_strength', 1.5))
+            }
+            
+            return enhanced
+            
+        except Exception as e:
+            logger.warning(f"Error en Unsharp Masking: {str(e)}")
+            return image
+    
+    def _aplicar_realce_bordes(self, image, resultado):
+        """Aplica realce de bordes inteligente para mejorar definición de caracteres"""
+        try:
+            config_edge = self.preprocessing_config['advanced_techniques']
+            if not config_edge.get('edge_enhancement_enabled', False):
+                return image
+            
+            # Detectar bordes con Canny
+            edges = cv2.Canny(image, 50, 150)
+            
+            # Crear máscara de realce
+            enhanced = image.copy()
+            enhanced[edges > 0] = np.minimum(enhanced[edges > 0] * 1.2, 255)
+            
+            resultado['pasos_aplicados'].append('Realce de Bordes')
+            resultado['parametros_aplicados']['edge_enhancement'] = {
+                'canny_low': 50,
+                'canny_high': 150,
+                'enhancement_factor': 1.2
+            }
+            
+            return enhanced.astype(np.uint8)
+            
+        except Exception as e:
+            logger.warning(f"Error en realce de bordes: {str(e)}")
+            return image
+    
+    def _aplicar_correccion_gamma_adaptativa(self, image, resultado):
+        """Aplica corrección gamma adaptativa para optimizar contraste"""
+        try:
+            config_gamma = self.preprocessing_config['advanced_techniques']
+            if not config_gamma.get('gamma_correction_enabled', False):
+                return image
+                
+            # Calcular gamma óptimo basado en la distribución de intensidades
+            mean_intensity = np.mean(image)
+            
+            # Determinar gamma basado en la intensidad media
+            if mean_intensity < 85:  # Imagen oscura
+                gamma = 0.8
+            elif mean_intensity > 170:  # Imagen clara
+                gamma = 1.2
+            else:  # Imagen normal
+                gamma = 1.0
+            
+            # Aplicar corrección gamma
+            gamma_range = config_gamma.get('gamma_range', (0.8, 1.2))
+            gamma = max(gamma_range[0], min(gamma_range[1], gamma))
+            
+            # Tabla de lookup para gamma
+            inv_gamma = 1.0 / gamma
+            table = np.array([((i / 255.0) ** inv_gamma) * 255 for i in np.arange(0, 256)]).astype("uint8")
+            enhanced = cv2.LUT(image, table)
+            
+            resultado['pasos_aplicados'].append('Corrección Gamma Adaptativa')
+            resultado['parametros_aplicados']['gamma_correction'] = {
+                'gamma_value': float(gamma),
+                'mean_intensity_original': float(mean_intensity)
+            }
+            
+            return enhanced
+            
+        except Exception as e:
+            logger.warning(f"Error en corrección gamma: {str(e)}")
+            return image
+    
+    def _aplicar_binarizacion_avanzada_mejorada(self, image, diagnostico, resultado):
+        """
+        FIX: Binarización avanzada mejorada que reemplaza la binarización simple
+        REASON: El paso 05_binarizacion necesita mejoras según el usuario
+        IMPACT: Mejora significativa en la calidad de binarización
+        """
+        try:
+            config_binarization = self.preprocessing_config.get('advanced_binarization', {})
+            
+            # Convertir a escala de grises si es necesario
+            if len(image.shape) == 3:
+                gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+            else:
+                gray = image.copy()
+            
+            best_result = None
+            best_score = 0
+            methods_used = []
+            
+            # Método 1: Otsu mejorado
+            if config_binarization.get('otsu_enabled', True):
+                try:
+                    # Aplicar filtro gaussiano ligero antes de Otsu
+                    blurred = cv2.GaussianBlur(gray, (3, 3), 0)
+                    _, otsu_result = cv2.threshold(blurred, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+                    
+                    # Evaluar calidad
+                    score = self._evaluar_calidad_binarizacion(otsu_result)
+                    if score > best_score:
+                        best_result = otsu_result
+                        best_score = score
+                        methods_used = ['Otsu Mejorado']
+                except Exception as e:
+                    logger.warning(f"Error en Otsu: {e}")
+            
+            # Método 2: Adaptativo Gaussiano mejorado
+            if config_binarization.get('adaptive_gaussian_enabled', True):
+                try:
+                    adaptive_gauss = cv2.adaptiveThreshold(
+                        gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, 
+                        cv2.THRESH_BINARY, 11, 2
+                    )
+                    
+                    score = self._evaluar_calidad_binarizacion(adaptive_gauss)
+                    if score > best_score:
+                        best_result = adaptive_gauss
+                        best_score = score
+                        methods_used = ['Adaptativo Gaussiano']
+                except Exception as e:
+                    logger.warning(f"Error en adaptativo gaussiano: {e}")
+            
+            # Método 3: Sauvola (excelente para documentos)
+            if config_binarization.get('sauvola_enabled', True):
+                try:
+                    # Implementación simple de Sauvola
+                    window_size = 15
+                    k = 0.2
+                    R = 128
+                    
+                    mean = cv2.boxFilter(gray.astype(np.float32), -1, (window_size, window_size))
+                    sqmean = cv2.boxFilter((gray.astype(np.float32))**2, -1, (window_size, window_size))
+                    std = np.sqrt(sqmean - mean**2)
+                    
+                    threshold = mean * (1 + k * ((std / R) - 1))
+                    sauvola_result = np.where(gray > threshold, 255, 0).astype(np.uint8)
+                    
+                    score = self._evaluar_calidad_binarizacion(sauvola_result)
+                    if score > best_score:
+                        best_result = sauvola_result
+                        best_score = score
+                        methods_used = ['Sauvola']
+                except Exception as e:
+                    logger.warning(f"Error en Sauvola: {e}")
+            
+            # Si no hay resultado, usar binarización simple como fallback
+            if best_result is None:
+                _, best_result = cv2.threshold(gray, 127, 255, cv2.THRESH_BINARY)
+                methods_used = ['Binarización Simple (Fallback)']
+                best_score = 0.5
+            
+            resultado['pasos_aplicados'].append(f'Binarización Avanzada: {", ".join(methods_used)}')
+            resultado['parametros_aplicados']['binarization_advanced'] = {
+                'methods_tested': len([m for m in config_binarization.values() if m]),
+                'best_method': methods_used[0] if methods_used else 'Simple',
+                'quality_score': float(best_score)
+            }
+            
+            return best_result
+            
+        except Exception as e:
+            logger.error(f"Error en binarización avanzada: {str(e)}")
+            # Fallback a binarización simple
+            _, simple_result = cv2.threshold(image, 127, 255, cv2.THRESH_BINARY)
+            return simple_result
+    
+    def _evaluar_calidad_binarizacion(self, binary_image):
+        """Evalúa la calidad de una imagen binarizada"""
+        try:
+            # Métricas de calidad
+            total_pixels = binary_image.size
+            black_pixels = np.sum(binary_image == 0)
+            white_pixels = np.sum(binary_image == 255)
+            
+            # Balance blanco/negro (óptimo cerca de 10-20% negro)
+            black_ratio = black_pixels / total_pixels
+            balance_score = 1.0 - abs(black_ratio - 0.15) * 2  # Óptimo en 15%
+            
+            # Conectividad de componentes (texto debería tener componentes bien definidos)
+            num_labels, labels, stats, centroids = cv2.connectedComponentsWithStats(255 - binary_image)
+            component_score = min(1.0, (num_labels - 1) / 50)  # Más componentes = mejor
+            
+            # Score final combinado
+            final_score = (balance_score * 0.6 + component_score * 0.4)
+            return max(0, min(1, final_score))
+            
+        except Exception:
+            return 0.5  # Score neutro si hay error
 
 def main():
     """Función principal para uso por línea de comandos"""

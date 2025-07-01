@@ -26,9 +26,11 @@ class AplicadorOCR:
     def __init__(self):
         self.tesseract_configs = config.TESSERACT_CONFIG
         self.financial_patterns = config.FINANCIAL_PATTERNS
-        self.quality_thresholds = config.OCR_QUALITY_THRESHOLDS
+        # FIX: Usar configuración de alta confianza por defecto
+        self.confidence_config = config.OCR_CONFIDENCE_CONFIG
+        self.quality_thresholds = getattr(config, 'OCR_QUALITY_THRESHOLDS', {})
         
-    def extraer_texto(self, image_path, language='spa', config_mode='default', extract_financial=True):
+    def extraer_texto(self, image_path, language='spa', config_mode='high_confidence', extract_financial=True):
         """
         Extrae texto de una imagen usando Tesseract OCR
         
@@ -273,7 +275,7 @@ class AplicadorOCR:
         # Determinar completitud del documento
         elementos_criticos = ['amount', 'date']
         completitud = sum(1 for elem in elementos_criticos if datos_financieros.get(elem))
-        resumen['completitud_porcentaje'] = (completitud / len(elementos_criticos)) * 100
+        resumen['completitud_porcentaje'] = int((completitud / len(elementos_criticos)) * 100)
         
         return resumen
     

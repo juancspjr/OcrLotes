@@ -55,7 +55,10 @@ def upload_file():
             
             # Obtener parámetros del formulario
             language = request.form.get('language', 'spa')
-            profile = request.form.get('profile', 'rapido')
+            # FIX: Usar perfil 'normal' por defecto para mayor precisión OCR
+            # REASON: Usuario solicita mejor precisión y mayor confianza 
+            # IMPACT: Mejor calidad OCR con técnicas avanzadas de procesamiento
+            profile = request.form.get('profile', 'normal')
             save_intermediate = request.form.get('save_intermediate') == 'on'
             
             logger.info(f"Procesando archivo: {filename} con perfil: {profile}")
