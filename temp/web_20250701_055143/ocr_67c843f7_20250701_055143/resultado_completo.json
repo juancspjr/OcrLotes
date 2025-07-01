@@ -1,0 +1,317 @@
+{
+  "execution_id": "67c843f7",
+  "timestamp": "20250701_055143",
+  "input_image": "uploads/20250701_055143_Imagen_de_WhatsApp_2025-06-21_a_las_18.44.16_564ec301.jpg",
+  "temp_directory": "temp/web_20250701_055143/ocr_67c843f7_20250701_055143",
+  "parametros": {
+    "language": "spa",
+    "profile": "rapido",
+    "save_intermediate": true
+  },
+  "etapas": {
+    "1_validacion": {
+      "tiempo": 0.033,
+      "diagnostico": {
+        "imagen_info": {
+          "ancho": 288,
+          "alto": 645,
+          "resolucion_total": 185760,
+          "canales": 3,
+          "modo": "RGB",
+          "formato": "JPEG",
+          "brillo_promedio": 210.91189168819983,
+          "desviacion_brillo": 84.66307149338816,
+          "rango_dinamico": 255.0
+        },
+        "calidad_imagen": {
+          "contraste": 84.66307149338816,
+          "blur_variance": 5297.800396751622,
+          "entropy": 3.2840139865875244,
+          "gradiente_promedio": 53.97179673146332,
+          "brillo_promedio": 210.91189168819983,
+          "uniformidad_brillo": 84.66307149338816,
+          "calificacion_calidad": 85
+        },
+        "deteccion_texto": {
+          "regiones_detectadas": 13,
+          "area_total_texto": 6315,
+          "densidad_texto": 0.03399547803617571,
+          "regiones": [
+            {
+              "x": 208,
+              "y": 618,
+              "width": 16,
+              "height": 17,
+              "area": 272,
+              "aspect_ratio": 0.9411764705882353
+            },
+            {
+              "x": 63,
+              "y": 617,
+              "width": 18,
+              "height": 17,
+              "area": 306,
+              "aspect_ratio": 1.0588235294117647
+            },
+            {
+              "x": 135,
+              "y": 616,
+              "width": 18,
+              "height": 19,
+              "area": 342,
+              "aspect_ratio": 0.9473684210526315
+            },
+            {
+              "x": 242,
+              "y": 592,
+              "width": 34,
+              "height": 12,
+              "area": 408,
+              "aspect_ratio": 2.8333333333333335
+            },
+            {
+              "x": 186,
+              "y": 592,
+              "width": 30,
+              "height": 12,
+              "area": 360,
+              "aspect_ratio": 2.5
+            },
+            {
+              "x": 66,
+              "y": 592,
+              "width": 41,
+              "height": 12,
+              "area": 492,
+              "aspect_ratio": 3.4166666666666665
+            },
+            {
+              "x": 8,
+              "y": 592,
+              "width": 40,
+              "height": 12,
+              "area": 480,
+              "aspect_ratio": 3.3333333333333335
+            },
+            {
+              "x": 192,
+              "y": 568,
+              "width": 19,
+              "height": 15,
+              "area": 285,
+              "aspect_ratio": 1.2666666666666666
+            },
+            {
+              "x": 250,
+              "y": 567,
+              "width": 18,
+              "height": 17,
+              "area": 306,
+              "aspect_ratio": 1.0588235294117647
+            },
+            {
+              "x": 77,
+              "y": 567,
+              "width": 19,
+              "height": 16,
+              "area": 304,
+              "aspect_ratio": 1.1875
+            },
+            {
+              "x": 20,
+              "y": 567,
+              "width": 18,
+              "height": 17,
+              "area": 306,
+              "aspect_ratio": 1.0588235294117647
+            },
+            {
+              "x": 216,
+              "y": 7,
+              "width": 65,
+              "height": 15,
+              "area": 975,
+              "aspect_ratio": 4.333333333333333
+            },
+            {
+              "x": 8,
+              "y": 6,
+              "width": 87,
+              "height": 17,
+              "area": 1479,
+              "aspect_ratio": 5.117647058823529
+            }
+          ],
+          "cobertura_texto_porcentaje": 3.3995478036175713
+        },
+        "ruido_artefactos": {
+          "nivel_ruido": 5.917877906976744,
+          "desviacion_ruido": 17.748459588426535,
+          "porcentaje_pixeles_ruidosos": 4.861649440137812,
+          "uniformidad": 6.0878014642549525,
+          "calificacion_ruido": "Bajo"
+        },
+        "geometria_orientacion": {
+          "sesgo_estimado": -87.5,
+          "lineas_detectadas": 22,
+          "simetria_horizontal": 0.8976952433586121,
+          "relacion_aspecto": 0.44651162790697674,
+          "requiere_deskew": true,
+          "orientacion_correcta": false
+        },
+        "recomendaciones": {
+          "perfil_recomendado": "ultra_rapido",
+          "aplicar_deskew": true,
+          "nivel_denoise": "moderado",
+          "ajuste_contraste": false,
+          "filtro_bilateral": true,
+          "prioridades": [
+            "Corrección de sesgo necesaria"
+          ]
+        },
+        "puntuacion_general": {
+          "total": 64.1,
+          "calidad": 85,
+          "texto": 17.0,
+          "ruido": 100,
+          "geometria": 50,
+          "categoria": "Buena"
+        }
+      },
+      "imagen_original": "temp/web_20250701_055143/ocr_67c843f7_20250701_055143/00_imagen_original.png",
+      "archivo_diagnostico": "temp/web_20250701_055143/ocr_67c843f7_20250701_055143/diagnostico.json"
+    },
+    "2_mejora": {
+      "perfil_usado": "rapido",
+      "pasos_aplicados": [
+        "Corrección de sesgo",
+        "Filtro bilateral",
+        "Eliminación de ruido",
+        "Ecualización de histograma",
+        "Binarización adaptativa",
+        "Operaciones morfológicas"
+      ],
+      "metricas_antes": {
+        "brillo_promedio": 210.91189168819983,
+        "contraste": 84.66307149338816,
+        "nitidez": 5297.800396751622,
+        "rango_dinamico": 255.0
+      },
+      "parametros_aplicados": {
+        "deskew": {
+          "angulo_corregido": -87.5,
+          "dimensiones_nuevas": [
+            656,
+            315
+          ]
+        },
+        "filtro_bilateral": {
+          "d": 5,
+          "sigma_color": 50,
+          "sigma_space": 50
+        },
+        "eliminacion_ruido": {
+          "iteraciones": 2,
+          "kernel_size": 3
+        },
+        "mejora_contraste": {
+          "metodo": "Equalización simple"
+        },
+        "binarizacion": {
+          "block_size": 9,
+          "C": 1,
+          "brillo_detectado": 210.9
+        },
+        "morfologia": {
+          "apertura_kernel": [
+            2,
+            2
+          ],
+          "cierre_kernel": [
+            3,
+            1
+          ]
+        }
+      },
+      "tiempo_procesamiento": 0.029,
+      "metricas_despues": {
+        "brillo_promedio": 185.66477932636468,
+        "contraste": 113.45972168974899,
+        "nitidez": 22525.57301846446,
+        "rango_dinamico": 255.0
+      },
+      "imagen_mejorada": "temp/web_20250701_055143/ocr_67c843f7_20250701_055143/imagen_mejorada.png",
+      "mejora_calidad": {
+        "contraste": {
+          "antes": 84.66,
+          "despues": 113.46,
+          "cambio": 28.8,
+          "porcentaje": 34.0
+        },
+        "nitidez": {
+          "antes": 5297.8,
+          "despues": 22525.57,
+          "cambio": 17227.77,
+          "porcentaje": 325.2
+        },
+        "rango_dinamico": {
+          "antes": 255.0,
+          "despues": 255.0,
+          "cambio": 0.0,
+          "porcentaje": 0.0
+        }
+      },
+      "tiempo": 0.033,
+      "archivo_resultado": "temp/web_20250701_055143/ocr_67c843f7_20250701_055143/resultado_mejora.json"
+    },
+    "3_ocr": {
+      "texto_completo": "",
+      "estadisticas_ocr": {
+        "total_palabras": 0,
+        "palabras_validas": 0,
+        "confianza_promedio": 0,
+        "confianza_minima": 0,
+        "confianza_maxima": 0,
+        "palabras_alta_confianza": 0
+      },
+      "palabras_detectadas": [],
+      "confianza_promedio": 0,
+      "calidad_extraccion": {
+        "caracteres_totales": 0,
+        "palabras_totales": 0,
+        "densidad_informacion": 0,
+        "errores_detectados": [],
+        "puntuacion_calidad": 0,
+        "categoria": "Deficiente",
+        "recomendaciones": [
+          "Considere mejorar la calidad de la imagen de entrada",
+          "Verifique la iluminación y el contraste"
+        ]
+      },
+      "datos_financieros": {
+        "analisis_documento": {
+          "tipo": "desconocido",
+          "confianza": 0,
+          "keywords_encontradas": []
+        },
+        "resumen_extraido": {
+          "montos_encontrados": 0,
+          "fechas_encontradas": 0,
+          "referencias_encontradas": 0,
+          "cuentas_encontradas": 0,
+          "telefonos_encontrados": 0,
+          "total_elementos": 0,
+          "completitud_porcentaje": 0.0
+        }
+      },
+      "tiempo": 4.26,
+      "archivo_resultado": "temp/web_20250701_055143/ocr_67c843f7_20250701_055143/resultado_ocr.json",
+      "archivo_texto": "temp/web_20250701_055143/ocr_67c843f7_20250701_055143/texto_extraido.txt"
+    }
+  },
+  "archivos_generados": [],
+  "resumen_final": {
+    "error": "'int' object has no attribute 'get'"
+  },
+  "tiempo_total": 4.328
+}

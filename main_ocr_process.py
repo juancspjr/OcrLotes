@@ -236,26 +236,32 @@ class OrquestadorOCR:
     def _generar_resumen_final(self, resultado_completo):
         """Genera un resumen final del procesamiento"""
         try:
-            # Extraer métricas clave
-            etapas = resultado_completo['etapas']
+            # FIX: Validación segura de datos para evitar errores de acceso a atributos
+            # REASON: Algunos campos pueden ser None o tipos incorrectos causando errores 'int' object has no attribute 'get'
+            # IMPACT: Garantiza acceso seguro a todos los datos sin errores de tipo
             
-            # Información de la imagen original
-            info_original = etapas.get('1_validacion', {}).get('diagnostico', {}).get('imagen_info', {})
+            # Extraer métricas clave con validación segura
+            etapas = resultado_completo.get('etapas', {}) if isinstance(resultado_completo, dict) else {}
             
-            # Métricas de calidad
-            calidad_original = etapas.get('1_validacion', {}).get('diagnostico', {}).get('puntuacion_general', {})
+            # Métricas de calidad con validación
+            validacion_data = etapas.get('1_validacion', {}) if isinstance(etapas, dict) else {}
+            diagnostico_data = validacion_data.get('diagnostico', {}) if isinstance(validacion_data, dict) else {}
+            calidad_original = diagnostico_data.get('puntuacion_general', {}) if isinstance(diagnostico_data, dict) else {}
             
-            # Información de mejoras aplicadas
-            mejoras = etapas.get('2_mejora', {})
-            pasos_aplicados = mejoras.get('pasos_aplicados', [])
+            # Información de la imagen original con validación segura
+            info_original = diagnostico_data.get('imagen_info', {}) if isinstance(diagnostico_data, dict) else {}
             
-            # Resultados de OCR
-            ocr_resultado = etapas.get('3_ocr', {})
-            confianza_ocr = ocr_resultado.get('confianza_promedio', {})
+            # Información de mejoras aplicadas con validación
+            mejoras = etapas.get('2_mejora', {}) if isinstance(etapas.get('2_mejora'), dict) else {}
+            pasos_aplicados = mejoras.get('pasos_aplicados', []) if isinstance(mejoras, dict) else []
             
-            # Datos financieros extraídos
-            datos_financieros = ocr_resultado.get('datos_financieros', {})
-            resumen_financiero = datos_financieros.get('resumen_extraido', {})
+            # Resultados de OCR con validación
+            ocr_resultado = etapas.get('3_ocr', {}) if isinstance(etapas.get('3_ocr'), dict) else {}
+            confianza_ocr = ocr_resultado.get('confianza_promedio', {}) if isinstance(ocr_resultado, dict) else {}
+            
+            # Datos financieros extraídos con validación
+            datos_financieros = ocr_resultado.get('datos_financieros', {}) if isinstance(ocr_resultado, dict) else {}
+            resumen_financiero = datos_financieros.get('resumen_extraido', {}) if isinstance(datos_financieros, dict) else {}
             
             resumen = {
                 'imagen_original': {
@@ -302,10 +308,32 @@ class OrquestadorOCR:
     def _calcular_calificacion_final(self, etapas):
         """Calcula una calificación final del proceso"""
         try:
-            # Obtener métricas clave
-            calidad_imagen = etapas.get('1_validacion', {}).get('diagnostico', {}).get('puntuacion_general', {}).get('total', 0)
-            confianza_ocr = etapas.get('3_ocr', {}).get('confianza_promedio', {}).get('simple', 0)
-            completitud = etapas.get('3_ocr', {}).get('datos_financieros', {}).get('resumen_extraido', {}).get('completitud_porcentaje', 0)
+            # FIX: Acceso seguro a datos anidados para evitar errores de tipo
+            # REASON: Los campos pueden ser None o tipos incorrectos
+            # IMPACT: Garantiza que siempre se devuelva un diccionario válido
+            
+            # Validar que etapas sea un diccionario
+            if not isinstance(etapas, dict):
+                return {'puntuacion': 0, 'categoria': 'Error', 'componentes': {}}
+            
+            # Obtener métricas clave con validación
+            validacion = etapas.get('1_validacion', {})
+            diagnostico = validacion.get('diagnostico', {}) if isinstance(validacion, dict) else {}
+            puntuacion_gral = diagnostico.get('puntuacion_general', {}) if isinstance(diagnostico, dict) else {}
+            calidad_imagen = puntuacion_gral.get('total', 0) if isinstance(puntuacion_gral, dict) else 0
+            
+            ocr_data = etapas.get('3_ocr', {}) if isinstance(etapas, dict) else {}
+            confianza_data = ocr_data.get('confianza_promedio', {}) if isinstance(ocr_data, dict) else {}
+            confianza_ocr = confianza_data.get('simple', 0) if isinstance(confianza_data, dict) else 0
+            
+            datos_fin = ocr_data.get('datos_financieros', {}) if isinstance(ocr_data, dict) else {}
+            resumen_fin = datos_fin.get('resumen_extraido', {}) if isinstance(datos_fin, dict) else {}
+            completitud = resumen_fin.get('completitud_porcentaje', 0) if isinstance(resumen_fin, dict) else 0
+            
+            # Validar que los valores sean numéricos
+            calidad_imagen = float(calidad_imagen) if isinstance(calidad_imagen, (int, float)) else 0.0
+            confianza_ocr = float(confianza_ocr) if isinstance(confianza_ocr, (int, float)) else 0.0  
+            completitud = float(completitud) if isinstance(completitud, (int, float)) else 0.0
             
             # Calcular calificación ponderada
             calificacion = (calidad_imagen * 0.3 + confianza_ocr * 0.4 + completitud * 0.3)
@@ -329,7 +357,8 @@ class OrquestadorOCR:
                 }
             }
             
-        except Exception:
+        except Exception as e:
+            logger.error(f"Error calculando calificación final: {str(e)}")
             return {'puntuacion': 0, 'categoria': 'Error', 'componentes': {}}
     
     def _generar_recomendaciones_finales(self, etapas):

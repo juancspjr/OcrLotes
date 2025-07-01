@@ -44,11 +44,11 @@
                 </div>
                 <div class="col-md-4 text-md-end">
                     <div class="badge-container">
-                        <span class="badge bg-{{ 'success' if resumen.calificacion_final.categoria == 'Excelente' else 'warning' if resumen.calificacion_final.categoria == 'Buena' else 'danger' }} fs-6">
-                            {{ resumen.calificacion_final.categoria }}
+                        <span class="badge bg-{{ 'success' if resumen.calificacion_final.get('categoria') == 'Excelente' else 'warning' if resumen.calificacion_final.get('categoria') == 'Buena' else 'danger' }} fs-6">
+                            {{ resumen.calificacion_final.get('categoria', 'Sin calificar') }}
                         </span>
                         <div class="mt-1">
-                            <small>Puntuación: {{ resumen.calificacion_final.puntuacion }}/100</small>
+                            <small>Puntuación: {{ resumen.calificacion_final.get('puntuacion', 0) }}/100</small>
                         </div>
                     </div>
                 </div>
