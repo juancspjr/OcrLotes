@@ -31,9 +31,9 @@ class MejoradorOCR:
     
     def _convert_numpy_types(self, obj):
         """
-        FIX: Convierte tipos NumPy a tipos nativos Python para serialización JSON
-        REASON: Los valores float32/int64 de NumPy no son serializables en JSON
-        IMPACT: Evita errores de serialización manteniendo compatibilidad completa
+        FIX: Convierte TODOS los tipos NumPy y problemáticos a tipos nativos Python para serialización JSON
+        REASON: Los valores float32/int64/bool de NumPy y operaciones booleanas no son serializables en JSON
+        IMPACT: Garantiza serialización completa sin errores de tipo
         """
         if isinstance(obj, dict):
             return {key: self._convert_numpy_types(value) for key, value in obj.items()}
@@ -43,8 +43,12 @@ class MejoradorOCR:
             return int(obj)
         elif isinstance(obj, np.floating):
             return float(obj)
+        elif isinstance(obj, np.bool_):
+            return bool(obj)
         elif isinstance(obj, np.ndarray):
             return obj.tolist()
+        elif isinstance(obj, (bool, np.bool)):  # FIX: Manejar booleanos nativos y NumPy
+            return bool(obj)
         else:
             return obj
         
@@ -1063,11 +1067,11 @@ class MejoradorOCR:
                 step_counter += 1
         
         resultado['parametros_aplicados']['screenshot_processing'] = {
-            'upscaling_applied': image.shape[1] < 600,
+            'upscaling_applied': bool(image.shape[1] < 600),
             'unsharp_radius': 1.0,
             'unsharp_amount': 0.3,
-            'contrast_adjustment': abs(mean_intensity - 127.5) > 7.5,
-            'binarization_applied': edge_density < 0.015
+            'contrast_adjustment': bool(abs(mean_intensity - 127.5) > 7.5),
+            'binarization_applied': bool(edge_density < 0.015)
         }
         
         return current
@@ -1118,8 +1122,8 @@ class MejoradorOCR:
             cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_binarizacion_tradicional.png"), current)
         
         resultado['parametros_aplicados']['documento_processing'] = {
-            'redimensionamiento_aplicado': current.shape[1] < 600,
-            'filtro_bilateral': profile_config.get('bilateral_filter', True),
+            'redimensionamiento_aplicado': bool(current.shape[1] < 600),
+            'filtro_bilateral': bool(profile_config.get('bilateral_filter', True)),
             'contraste_alpha': 1.1,
             'contraste_beta': 10
         }

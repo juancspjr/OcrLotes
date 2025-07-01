@@ -1,0 +1,20 @@
+{
+  "perfil_usado": "rapido",
+  "pasos_aplicados": [
+    "00_inversion_color",
+    "03_upscaling_lanczos",
+    "04_unsharp_suave",
+    "05_contraste_suave"
+  ],
+  "metricas_antes": {
+    "brillo_promedio": 40.82880658436214,
+    "contraste": 37.11509698980526,
+    "nitidez": 5166.004909312605,
+    "rango_dinamico": 255.0
+  },
+  "parametros_aplicados": {
+    "screenshot_processing": {
+      "upscaling_applied": true,
+      "unsharp_radius": 1.0,
+      "unsharp_amount": 0.3,
+      "contrast_adjustment": 
