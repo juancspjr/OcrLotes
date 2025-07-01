@@ -24,7 +24,7 @@ TESSERACT_CONFIG = {
     'alphanumeric': '--oem 3 --psm 6 -c tessedit_char_whitelist=0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
 }
 
-# Perfiles de rendimiento
+# Perfiles de rendimiento con filosofía de conservación extrema
 PERFORMANCE_PROFILES = {
     'ultra_rapido': {
         'name': 'Ultra Rápido',
@@ -32,33 +32,56 @@ PERFORMANCE_PROFILES = {
         'gaussian_blur_kernel': 3,
         'bilateral_filter': False,
         'morphology_operations': False,
-        'adaptive_threshold': False,
-        'deskew': False,
-        'noise_removal_iterations': 1,
-        'sharpening': False
+        'adaptive_threshold': True,
+        'deskew': False,  # Nunca para screenshots
+        'noise_removal_iterations': 0,  # Eliminado para capturas digitales
+        'sharpening': False,
+        'intelligent_preprocessing': True  # Habilitado por defecto
     },
     'rapido': {
         'name': 'Rápido',
-        'description': 'Balance entre velocidad y calidad',
+        'description': 'Balance entre velocidad y calidad con conservación extrema',
         'gaussian_blur_kernel': 3,
-        'bilateral_filter': True,
+        'bilateral_filter': 'conditional',  # Solo si es necesario
         'morphology_operations': True,
         'adaptive_threshold': True,
-        'deskew': True,
-        'noise_removal_iterations': 2,
-        'sharpening': False
+        'deskew': 'conditional',  # Solo para documentos escaneados
+        'noise_removal_iterations': 0,  # Eliminado para capturas digitales
+        'sharpening': 'conditional',  # Solo si es necesario
+        'intelligent_preprocessing': True
     },
     'normal': {
         'name': 'Normal',
-        'description': 'Máxima calidad, procesamiento completo',
+        'description': 'Máxima calidad con filosofía de conservación extrema',
         'gaussian_blur_kernel': 5,
-        'bilateral_filter': True,
+        'bilateral_filter': 'conditional',
         'morphology_operations': True,
         'adaptive_threshold': True,
-        'deskew': True,
-        'noise_removal_iterations': 3,
-        'sharpening': True
+        'deskew': 'conditional',
+        'noise_removal_iterations': 0,  # Eliminado para capturas digitales
+        'sharpening': 'conditional',
+        'intelligent_preprocessing': True
     }
+}
+
+# FIX: Configuración para detección inteligente de tipo de imagen
+# REASON: Implementar la filosofía de conservación extrema
+# IMPACT: Reduce pasos innecesarios y preserva calidad del texto
+IMAGE_TYPE_DETECTION = {
+    'screenshot_indicators': {
+        'min_width': 800,
+        'min_height': 600,
+        'aspect_ratio_min': 1.3,  # Pantallas típicamente horizontales
+        'resolution_threshold': 480000,  # 800x600 mínimo
+        'ui_elements_threshold': 0.1  # Presencia de elementos de UI
+    },
+    'document_scan_indicators': {
+        'skew_threshold': 2.0,  # Grados de inclinación
+        'noise_level_threshold': 15,
+        'edge_irregularity': 0.3
+    },
+    'dark_background_threshold': 127,  # Media de intensidad
+    'inversion_confidence_threshold': 0.6  # Confianza para inversión
 }
 
 # Umbrales para validación de imagen

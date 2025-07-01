@@ -101,94 +101,264 @@ class MejoradorOCR:
             return {'error': str(e)}
     
     def _aplicar_secuencia_procesamiento(self, image, diagnostico, profile_config, resultado, save_steps, output_dir):
-        """Aplica la secuencia completa de procesamiento"""
+        """Aplica la secuencia completa de procesamiento inteligente"""
         current = image.copy()
         step_counter = 2
         
-        # FIX: CRITICAL - Detectar e invertir imágenes de fondo oscuro PRIMERO
-        # REASON: Conservación Extrema de Caracteres - no procesar texto blanco sobre fondo negro
-        # IMPACT: Evita degradación del texto al procesar colores invertidos en múltiples etapas
+        # FIX: CRITICAL - Sistema de Triage Inteligente y Conservación Extrema de Caracteres
+        # REASON: Implementar evaluación completa antes de cualquier procesamiento
+        # IMPACT: Evita transformaciones innecesarias y preserva integridad del texto
         
-        # 0. Detección temprana de inversión de colores
-        mean_intensity = np.mean(current)
-        if mean_intensity < 127:  # Imagen mayormente oscura
-            # Detectar si es realmente texto blanco sobre fondo negro
-            histogram = cv2.calcHist([current], [0], None, [256], [0, 256])
-            dark_pixels = np.sum(histogram[0:64])  # Píxeles muy oscuros
-            light_pixels = np.sum(histogram[192:256])  # Píxeles muy claros
+        # FASE 1: Evaluación Inteligente y Triage de Imágenes
+        triage_result = self._evaluacion_inteligente_triage(current, diagnostico, resultado)
+        
+        if triage_result['skip_processing']:
+            resultado['razon_skip'] = triage_result['razon']
+            return triage_result['imagen_optimizada']
+        
+        # FASE 2: Detección de Tipo de Imagen y Estrategia
+        tipo_imagen = self._detectar_tipo_imagen(current, diagnostico, resultado)
+        estrategia = self._seleccionar_estrategia_procesamiento(tipo_imagen, profile_config, resultado)
+        
+        if save_steps and output_dir:
+            cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_analisis_tipo.png"), current)
+            step_counter += 1
+        
+        # FASE 3: Aplicación de Estrategia Específica
+        current = self._aplicar_estrategia_inteligente(current, estrategia, diagnostico, resultado, save_steps, output_dir, step_counter)
+        
+        return current
+    
+    def _evaluacion_inteligente_triage(self, image, diagnostico, resultado):
+        """Evaluación inteligente inicial - Fase 1 del sistema"""
+        # FIX: Implementar evaluación de viabilidad crítica
+        # REASON: Detectar imágenes no procesables antes de desperdiciar recursos
+        # IMPACT: Eficiencia del sistema y prevención de falsos positivos
+        
+        h, w = image.shape
+        
+        # 1. Evaluación de Viabilidad y Detección de Daño Crítico
+        if h < 50 or w < 50:
+            return {
+                'skip_processing': True,
+                'razon': 'dimensiones_criticas',
+                'imagen_optimizada': image
+            }
+        
+        # 2. Detección de dispersión de píxeles (ruido extremo)
+        edges = cv2.Canny(image, 50, 150)
+        edge_density = np.sum(edges > 0) / (h * w)
+        
+        if edge_density > 0.8:  # Demasiado ruido
+            return {
+                'skip_processing': True,
+                'razon': 'dispersion_pixels_critica',
+                'imagen_optimizada': image
+            }
+        
+        # 3. Detección de contraste cero
+        min_val, max_val = np.min(image), np.max(image)
+        if max_val - min_val < 10:  # Contraste casi nulo
+            return {
+                'skip_processing': True,
+                'razon': 'contraste_cero',
+                'imagen_optimizada': image
+            }
+        
+        # 4. Análisis de estado visual para imágenes viables
+        mean_intensity = np.mean(image)
+        
+        # Detección temprana de inversión (Caso A: Fondo Oscuro, Letras Claras)
+        from config import IMAGE_TYPE_DETECTION
+        if mean_intensity < IMAGE_TYPE_DETECTION['dark_background_threshold']:
+            histogram = cv2.calcHist([image], [0], None, [256], [0, 256])
+            dark_pixels = np.sum(histogram[0:64])
+            light_pixels = np.sum(histogram[192:256])
             
-            # Si hay más píxeles oscuros que claros, es probable que sea texto blanco sobre fondo negro
-            if dark_pixels > light_pixels:
-                current = cv2.bitwise_not(current)  # Invertir colores
-                resultado['pasos_aplicados'].append('Inversión de colores (detección temprana)')
-                resultado['parametros_aplicados']['inversion_temprana'] = {
+            confidence = dark_pixels / (dark_pixels + light_pixels) if (dark_pixels + light_pixels) > 0 else 0
+            
+            if confidence > IMAGE_TYPE_DETECTION['inversion_confidence_threshold']:
+                # Inversión inmediata para conservar caracteres
+                inverted = cv2.bitwise_not(image)
+                resultado['pasos_aplicados'].append('Inversión temprana (Caso A)')
+                resultado['parametros_aplicados']['inversion_caso_a'] = {
                     'intensidad_media_original': round(mean_intensity, 2),
+                    'confianza_inversion': round(confidence, 3),
                     'pixeles_oscuros': int(dark_pixels),
-                    'pixeles_claros': int(light_pixels),
-                    'razon': 'texto_blanco_sobre_fondo_negro'
+                    'pixeles_claros': int(light_pixels)
                 }
                 
-                if save_steps and output_dir:
-                    cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_inversion_temprana.png"), current)
-                    step_counter += 1
+                return {
+                    'skip_processing': False,
+                    'razon': 'inversion_aplicada',
+                    'imagen_optimizada': inverted
+                }
+        
+        return {
+            'skip_processing': False,
+            'razon': 'procesamiento_necesario',
+            'imagen_optimizada': image
+        }
+    
+    def _detectar_tipo_imagen(self, image, diagnostico, resultado):
+        """Detecta el tipo de imagen para aplicar estrategia específica"""
+        h, w = image.shape
+        aspect_ratio = w / h if h > 0 else 1
+        
+        from config import IMAGE_TYPE_DETECTION
+        detection_config = IMAGE_TYPE_DETECTION
+        
+        # Detección de captura de pantalla
+        is_screenshot = (
+            w >= detection_config['screenshot_indicators']['min_width'] and
+            h >= detection_config['screenshot_indicators']['min_height'] and
+            aspect_ratio >= detection_config['screenshot_indicators']['aspect_ratio_min'] and
+            (w * h) >= detection_config['screenshot_indicators']['resolution_threshold']
+        )
+        
+        # Detección de documento escaneado
+        geometria = diagnostico.get('geometria_orientacion', {})
+        skew_angle = abs(geometria.get('sesgo_estimado', 0))
+        
+        is_scanned_doc = (
+            skew_angle > detection_config['document_scan_indicators']['skew_threshold'] or
+            not is_screenshot
+        )
+        
+        tipo = 'screenshot' if is_screenshot else 'documento_escaneado'
+        
+        resultado['tipo_imagen_detectado'] = {
+            'tipo': tipo,
+            'es_screenshot': is_screenshot,
+            'dimensiones': f"{w}x{h}",
+            'aspect_ratio': round(aspect_ratio, 2),
+            'sesgo_detectado': round(skew_angle, 2)
+        }
+        
+        return tipo
+    
+    def _seleccionar_estrategia_procesamiento(self, tipo_imagen, profile_config, resultado):
+        """Selecciona la estrategia de procesamiento basada en el tipo de imagen"""
+        if tipo_imagen == 'screenshot':
+            # Estrategia para capturas de pantalla - Conservación Extrema
+            estrategia = {
+                'redimensionar': profile_config.get('resize_if_needed', True),
+                'deskew': False,  # NUNCA para screenshots
+                'bilateral_filter': False,  # NUNCA para capturas digitales
+                'noise_removal': False,  # NUNCA para capturas digitales
+                'contrast_enhancement': True,
+                'adaptive_threshold': True,
+                'morphology': 'minimal',  # Solo operaciones mínimas
+                'sharpening': 'conditional'  # Solo si se detecta blur
+            }
+        else:
+            # Estrategia para documentos escaneados
+            estrategia = {
+                'redimensionar': profile_config.get('resize_if_needed', True),
+                'deskew': profile_config.get('deskew', 'conditional'),
+                'bilateral_filter': profile_config.get('bilateral_filter', 'conditional'),
+                'noise_removal': profile_config.get('noise_removal_iterations', 0) > 0,
+                'contrast_enhancement': True,
+                'adaptive_threshold': True,
+                'morphology': 'full',
+                'sharpening': profile_config.get('sharpening', 'conditional')
+            }
+        
+        resultado['estrategia_seleccionada'] = estrategia
+        return estrategia
+    
+    def _aplicar_estrategia_inteligente(self, image, estrategia, diagnostico, resultado, save_steps, output_dir, step_counter):
+        """Aplica la estrategia de procesamiento seleccionada"""
+        current = image.copy()
+        
+        # Aplicar solo los pasos necesarios según la estrategia
         
         # 1. Redimensionamiento si es necesario
-        if max(current.shape) > self.preprocessing_config['resize_max_dimension']:
+        if estrategia['redimensionar'] and max(current.shape) > self.preprocessing_config['resize_max_dimension']:
             current = self._aplicar_redimensionamiento(current, resultado)
             if save_steps and output_dir:
                 cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_redimensionado.png"), current)
                 step_counter += 1
         
-        # 2. Corrección de sesgo (deskew) si es necesario
-        if (profile_config['deskew'] and 
-            diagnostico.get('geometria_orientacion', {}).get('requiere_deskew', False)):
-            current = self._aplicar_deskew(current, diagnostico, resultado)
+        # 2. Corrección de sesgo SOLO para documentos escaneados
+        if estrategia['deskew'] and estrategia['deskew'] != False:
+            geometria = diagnostico.get('geometria_orientacion', {})
+            if geometria.get('requiere_deskew', False):
+                current = self._aplicar_deskew(current, diagnostico, resultado)
+                if save_steps and output_dir:
+                    cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_deskew.png"), current)
+                    step_counter += 1
+        
+        # 3. Filtro bilateral SOLO si se detecta ruido significativo
+        if estrategia['bilateral_filter'] and estrategia['bilateral_filter'] != False:
+            if self._evaluar_necesidad_bilateral(current, diagnostico):
+                current = self._aplicar_filtro_bilateral(current, diagnostico, resultado)
+                if save_steps and output_dir:
+                    cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_bilateral.png"), current)
+                    step_counter += 1
+        
+        # 4. Eliminación de ruido OMITIDA para capturas digitales
+        # (Los pasos 04_denoise y 05_denoise se eliminan completamente)
+        
+        # 5. Mejora de contraste (siempre necesario)
+        if estrategia['contrast_enhancement']:
+            current = self._aplicar_mejora_contraste(current, diagnostico, resultado)
             if save_steps and output_dir:
-                cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_deskew.png"), current)
+                cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_contraste.png"), current)
                 step_counter += 1
         
-        # 3. Filtro bilateral para reducir ruido preservando bordes
-        if profile_config['bilateral_filter']:
-            current = self._aplicar_filtro_bilateral(current, diagnostico, resultado)
-            if save_steps and output_dir:
-                cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_bilateral.png"), current)
-                step_counter += 1
-        
-        # 4. Eliminación de ruido gaussiano
-        if profile_config['noise_removal_iterations'] > 0:
-            current = self._aplicar_eliminacion_ruido(current, profile_config, resultado)
-            if save_steps and output_dir:
-                cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_denoise.png"), current)
-                step_counter += 1
-        
-        # 5. Mejora de contraste adaptativa
-        current = self._aplicar_mejora_contraste(current, diagnostico, resultado)
-        if save_steps and output_dir:
-            cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_contraste.png"), current)
-            step_counter += 1
-        
-        # 6. Binarización adaptativa
-        if profile_config['adaptive_threshold']:
+        # 6. Binarización adaptativa (siempre aplicar)
+        if estrategia['adaptive_threshold']:
             current = self._aplicar_binarizacion_adaptativa(current, diagnostico, resultado)
             if save_steps and output_dir:
                 cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_binarizacion.png"), current)
                 step_counter += 1
         
-        # 7. Operaciones morfológicas para limpiar
-        if profile_config['morphology_operations']:
+        # 7. Operaciones morfológicas (mínimas para screenshots)
+        if estrategia['morphology'] == 'minimal':
+            current = self._aplicar_morfologia_minimal(current, resultado)
+        elif estrategia['morphology'] == 'full':
             current = self._aplicar_morfologia(current, resultado)
-            if save_steps and output_dir:
-                cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_morfologia.png"), current)
-                step_counter += 1
         
-        # 8. Nitidez final si es necesario
-        if profile_config['sharpening']:
+        if estrategia['morphology'] != False and save_steps and output_dir:
+            cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_morfologia.png"), current)
+            step_counter += 1
+        
+        # 8. Nitidez SOLO si es necesario
+        if estrategia['sharpening'] == 'conditional' and self._evaluar_necesidad_nitidez(current, diagnostico):
             current = self._aplicar_nitidez(current, diagnostico, resultado)
             if save_steps and output_dir:
                 cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_nitidez.png"), current)
                 step_counter += 1
         
         return current
+    
+    def _evaluar_necesidad_bilateral(self, image, diagnostico):
+        """Evalúa si realmente se necesita filtro bilateral"""
+        ruido = diagnostico.get('ruido_artefactos', {})
+        noise_level = ruido.get('nivel_ruido', 0)
+        return noise_level > 15  # Solo si hay ruido significativo
+    
+    def _evaluar_necesidad_nitidez(self, image, diagnostico):
+        """Evalúa si se necesita filtro de nitidez"""
+        calidad = diagnostico.get('calidad_imagen', {})
+        blur_variance = calidad.get('blur_variance', 100)
+        return blur_variance < 50  # Solo si la imagen está borrosa
+    
+    def _aplicar_morfologia_minimal(self, image, resultado):
+        """Aplica operaciones morfológicas mínimas para screenshots"""
+        # Solo apertura muy suave para limpiar píxeles sueltos
+        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (1, 1))
+        cleaned = cv2.morphologyEx(image, cv2.MORPH_OPEN, kernel, iterations=1)
+        
+        resultado['pasos_aplicados'].append('Morfología mínima (screenshot)')
+        resultado['parametros_aplicados']['morfologia_minimal'] = {
+            'kernel_size': (1, 1),
+            'operacion': 'apertura',
+            'iteraciones': 1
+        }
+        
+        return cleaned
     
     def _aplicar_redimensionamiento(self, image, resultado):
         """Redimensiona la imagen manteniendo proporción"""
