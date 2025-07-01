@@ -12,7 +12,10 @@ from PIL import Image, ImageEnhance, ImageFilter
 import config
 
 # Configurar logging
-logging.basicConfig(**config.LOGGING_CONFIG)
+# FIX: Configuración directa para evitar problemas con tipos de datos en LOGGING_CONFIG
+# REASON: Algunos valores en config.LOGGING_CONFIG pueden no ser compatibles con logging.basicConfig
+# IMPACT: Garantiza inicialización correcta del logging sin errores de tipo
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 class MejoradorOCR:

@@ -13,7 +13,10 @@ from PIL import Image, ImageStat
 import config
 
 # Configurar logging
-logging.basicConfig(**config.LOGGING_CONFIG)
+# FIX: Configuración directa para evitar problemas con tipos de datos en LOGGING_CONFIG
+# REASON: Algunos valores en config.LOGGING_CONFIG pueden no ser compatibles con logging.basicConfig
+# IMPACT: Garantiza inicialización correcta del logging sin errores de tipo
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 class ValidadorOCR:
@@ -70,16 +73,19 @@ class ValidadorOCR:
         """Obtiene información básica de la imagen"""
         stats = ImageStat.Stat(image_pil)
         
+        # FIX: Convertir todos los valores NumPy a tipos nativos de Python para serialización JSON
+        # REASON: Los tipos uint8, int64, float64 de NumPy no son serializables por JSON
+        # IMPACT: Permite que el diagnóstico se serialice correctamente sin errores
         return {
-            'ancho': gray.shape[1],
-            'alto': gray.shape[0],
-            'resolucion_total': gray.shape[0] * gray.shape[1],
+            'ancho': int(gray.shape[1]),
+            'alto': int(gray.shape[0]),
+            'resolucion_total': int(gray.shape[0] * gray.shape[1]),
             'canales': len(image_pil.getbands()),
             'modo': image_pil.mode,
-            'formato': image_pil.format,
-            'brillo_promedio': np.mean(gray),
-            'desviacion_brillo': np.std(gray),
-            'rango_dinamico': np.max(gray) - np.min(gray)
+            'formato': image_pil.format if image_pil.format else 'unknown',
+            'brillo_promedio': float(np.mean(gray)),
+            'desviacion_brillo': float(np.std(gray)),
+            'rango_dinamico': float(np.max(gray) - np.min(gray))
         }
     
     def _analizar_calidad(self, gray):
@@ -200,9 +206,9 @@ class ValidadorOCR:
         if angles:
             angle_hist, bins = np.histogram(angles, bins=36, range=(-90, 90))
             dominant_angle_idx = np.argmax(angle_hist)
-            estimated_skew = (bins[dominant_angle_idx] + bins[dominant_angle_idx + 1]) / 2
+            estimated_skew = float((bins[dominant_angle_idx] + bins[dominant_angle_idx + 1]) / 2)
         else:
-            estimated_skew = 0
+            estimated_skew = 0.0
         
         # Detectar simetría
         height, width = gray.shape
@@ -221,8 +227,8 @@ class ValidadorOCR:
             'lineas_detectadas': len(angles),
             'simetria_horizontal': float(symmetry_score),
             'relacion_aspecto': float(gray.shape[1] / gray.shape[0]),
-            'requiere_deskew': abs(estimated_skew) > 2,
-            'orientacion_correcta': abs(estimated_skew) < 5
+            'requiere_deskew': bool(abs(estimated_skew) > 2),
+            'orientacion_correcta': bool(abs(estimated_skew) < 5)
         }
     
     def _calificar_calidad(self, contraste, blur_variance, entropy):

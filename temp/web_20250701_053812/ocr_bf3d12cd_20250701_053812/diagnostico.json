@@ -1,0 +1,11 @@
+{
+  "imagen_info": {
+    "ancho": 288,
+    "alto": 645,
+    "resolucion_total": 185760,
+    "canales": 3,
+    "modo": "RGB",
+    "formato": "JPEG",
+    "brillo_promedio": 210.91189168819983,
+    "desviacion_brillo": 84.66307149338816,
+    "rango_dinamico": 
