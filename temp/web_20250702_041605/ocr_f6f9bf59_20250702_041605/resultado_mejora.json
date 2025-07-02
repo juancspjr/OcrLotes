@@ -1,0 +1,52 @@
+{
+  "perfil_usado": "rapido",
+  "pasos_aplicados": [
+    "02_bilateral_filter",
+    "03_contraste_tradicional",
+    "04_binarizacion_tradicional"
+  ],
+  "metricas_antes": {
+    "brillo_promedio": 209.95968588041967,
+    "contraste": 48.36722337525596,
+    "nitidez": 1658.4733846098425,
+    "rango_dinamico": 255.0
+  },
+  "parametros_aplicados": {
+    "documento_processing": {
+      "redimensionamiento_aplicado": false,
+      "filtro_bilateral": true,
+      "contraste_alpha": 1.1,
+      "contraste_beta": 10
+    }
+  },
+  "tiempo_procesamiento": 0.045,
+  "estrategia_aplicada": "Documento Escaneado - Procesamiento Tradicional",
+  "metricas_despues": {
+    "brillo_promedio": 240.59963974213122,
+    "contraste": 58.861884867884875,
+    "nitidez": 6459.3472696245735,
+    "rango_dinamico": 255.0
+  },
+  "imagen_mejorada": "temp/web_20250702_041605/ocr_f6f9bf59_20250702_041605/imagen_mejorada.png",
+  "mejora_calidad": {
+    "contraste": {
+      "antes": 48.37,
+      "despues": 58.86,
+      "cambio": 10.49,
+      "porcentaje": 21.7
+    },
+    "nitidez": {
+      "antes": 1658.47,
+      "despues": 6459.35,
+      "cambio": 4800.87,
+      "porcentaje": 289.5
+    },
+    "rango_dinamico": {
+      "antes": 255.0,
+      "despues": 255.0,
+      "cambio": 0.0,
+      "porcentaje": 0.0
+    }
+  },
+  "tiempo": 0.053
+}

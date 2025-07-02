@@ -1,0 +1,381 @@
+{
+  "texto_completo": "UMmMOSe I Betutadoextosamente_. Cuentadebitada : CtaCorrienteBNC :+** 9496 Beneficiario : 0412 - 5318244 BINGOTREBOLV - 27061025 - MERCANTIL Monto : Bs .105,00 Comision : Bs .0.32 Total : Bs .105,32 Referencia : 490760968 [[) Cdigoautorizador : 282689 S C) () > e o 9",
+  "total_caracteres": 267,
+  "tiempo_procesamiento": 1.349,
+  "metodo_extraccion": "ELITE_SINGLE_PASS",
+  "configuracion_tesseract": "high_confidence",
+  "imagen_elite_valores_unicos": 2,
+  "estadisticas_ocr": {
+    "total_palabras": 48,
+    "palabras_validas": 25,
+    "confianza_promedio": 38.2,
+    "confianza_minima": 0,
+    "confianza_maxima": 94,
+    "palabras_alta_confianza": 9,
+    "palabras_baja_confianza": 13,
+    "distribucion_confianza": {
+      "excelente (90-100)": 6,
+      "buena (70-89)": 3,
+      "regular (50-69)": 2,
+      "baja (30-49)": 1,
+      "muy_baja (0-29)": 13
+    }
+  },
+  "palabras_detectadas": [
+    {
+      "texto": "282689",
+      "confianza": 94,
+      "posicion": {
+        "x": 49,
+        "y": 791,
+        "width": 65,
+        "height": 13
+      },
+      "categoria_confianza": "excelente"
+    },
+    {
+      "texto": "9",
+      "confianza": 92,
+      "posicion": {
+        "x": 310,
+        "y": 924,
+        "width": 28,
+        "height": 29
+      },
+      "categoria_confianza": "excelente"
+    },
+    {
+      "texto": "o",
+      "confianza": 91,
+      "posicion": {
+        "x": 200,
+        "y": 923,
+        "width": 32,
+        "height": 31
+      },
+      "categoria_confianza": "excelente"
+    },
+    {
+      "texto": "Beneficiario:",
+      "confianza": 90,
+      "posicion": {
+        "x": 40,
+        "y": 211,
+        "width": 103,
+        "height": 13
+      },
+      "categoria_confianza": "excelente"
+    },
+    {
+      "texto": "Monto:",
+      "confianza": 90,
+      "posicion": {
+        "x": 40,
+        "y": 342,
+        "width": 57,
+        "height": 12
+      },
+      "categoria_confianza": "excelente"
+    },
+    {
+      "texto": "Total:",
+      "confianza": 90,
+      "posicion": {
+        "x": 39,
+        "y": 540,
+        "width": 44,
+        "height": 13
+      },
+      "categoria_confianza": "excelente"
+    },
+    {
+      "texto": "Referencia:",
+      "confianza": 87,
+      "posicion": {
+        "x": 40,
+        "y": 639,
+        "width": 92,
+        "height": 13
+      },
+      "categoria_confianza": "buena"
+    },
+    {
+      "texto": "I",
+      "confianza": 83,
+      "posicion": {
+        "x": 38,
+        "y": 38,
+        "width": 6,
+        "height": 55
+      },
+      "categoria_confianza": "buena"
+    },
+    {
+      "texto": "e",
+      "confianza": 80,
+      "posicion": {
+        "x": 94,
+        "y": 924,
+        "width": 28,
+        "height": 28
+      },
+      "categoria_confianza": "buena"
+    },
+    {
+      "texto": "C)",
+      "confianza": 58,
+      "posicion": {
+        "x": 114,
+        "y": 848,
+        "width": 27,
+        "height": 33
+      },
+      "categoria_confianza": "aceptable"
+    },
+    {
+      "texto": "()",
+      "confianza": 53,
+      "posicion": {
+        "x": 287,
+        "y": 848,
+        "width": 26,
+        "height": 33
+      },
+      "categoria_confianza": "aceptable"
+    },
+    {
+      "texto": "Bs.0.32",
+      "confianza": 35,
+      "posicion": {
+        "x": 50,
+        "y": 492,
+        "width": 64,
+        "height": 13
+      },
+      "categoria_confianza": "aceptable"
+    },
+    {
+      "texto": "S",
+      "confianza": 12,
+      "posicion": {
+        "x": 33,
+        "y": 853,
+        "width": 20,
+        "height": 20
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "UMmMOSe",
+      "confianza": 0,
+      "posicion": {
+        "x": 10,
+        "y": 8,
+        "width": 154,
+        "height": 27
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "Betutadoextosamente_.",
+      "confianza": 0,
+      "posicion": {
+        "x": 56,
+        "y": 38,
+        "width": 256,
+        "height": 41
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "Cuentadebitada:",
+      "confianza": 0,
+      "posicion": {
+        "x": 39,
+        "y": 112,
+        "width": 145,
+        "height": 13
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "CtaCorrienteBNC:+**9496",
+      "confianza": 0,
+      "posicion": {
+        "x": 49,
+        "y": 163,
+        "width": 247,
+        "height": 14
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "0412-5318244BINGOTREBOLV-",
+      "confianza": 0,
+      "posicion": {
+        "x": 49,
+        "y": 259,
+        "width": 291,
+        "height": 17
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "27061025-MERCANTIL",
+      "confianza": 0,
+      "posicion": {
+        "x": 49,
+        "y": 294,
+        "width": 208,
+        "height": 13
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "Bs.105,00",
+      "confianza": 0,
+      "posicion": {
+        "x": 49,
+        "y": 393,
+        "width": 86,
+        "height": 14
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "Comision:",
+      "confianza": 0,
+      "posicion": {
+        "x": 39,
+        "y": 441,
+        "width": 82,
+        "height": 12
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "Bs.105,32",
+      "confianza": 0,
+      "posicion": {
+        "x": 49,
+        "y": 590,
+        "width": 89,
+        "height": 16
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "490760968[[)",
+      "confianza": 0,
+      "posicion": {
+        "x": 48,
+        "y": 681,
+        "width": 140,
+        "height": 28
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "Cdigoautorizador:",
+      "confianza": 0,
+      "posicion": {
+        "x": 39,
+        "y": 739,
+        "width": 166,
+        "height": 17
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": ">",
+      "confianza": 0,
+      "posicion": {
+        "x": 378,
+        "y": 853,
+        "width": 22,
+        "height": 19
+      },
+      "categoria_confianza": "baja"
+    }
+  ],
+  "confianza_promedio": {
+    "simple": 38.2,
+    "ponderada": 20.52,
+    "palabras_evaluadas": 25
+  },
+  "calidad_extraccion": {
+    "caracteres_totales": 224,
+    "palabras_totales": 44,
+    "densidad_informacion": 0.839,
+    "errores_detectados": [
+      "Caracteres sospechosos: 4"
+    ],
+    "puntuacion_calidad": 48.2,
+    "categoria": "Regular",
+    "recomendaciones": [
+      "Considere mejorar la calidad de la imagen de entrada",
+      "Verifique la iluminación y el contraste",
+      "Revisar manualmente caracteres especiales detectados"
+    ]
+  },
+  "deteccion_inteligente": {
+    "tipo_imagen": "documento_escaneado",
+    "esquema_color": "texto_oscuro_fondo_claro",
+    "inversion_requerida": false,
+    "ui_elements_detectados": false,
+    "aspect_ratio": 0.44651162790697674,
+    "calidad_digital": false,
+    "dark_percentage": 17.741172790527344,
+    "light_percentage": 82.25882720947266,
+    "edge_density": 0.05857558139534884,
+    "noise_estimate": 90.02096850339134,
+    "confianza_deteccion": 0.2
+  },
+  "datos_financieros": {
+    "amount": [
+      {
+        "valor": "949",
+        "posicion_texto": 70
+      },
+      {
+        "valor": "6",
+        "posicion_texto": 73
+      },
+      {
+        "valor": "041",
+        "posicion_texto": 90
+      },
+      {
+        "valor": "2",
+        "posicion_texto": 93
+      },
+      {
+        "valor": "531",
+        "posicion_texto": 97
+      }
+    ],
+    "reference": [
+      {
+        "valor": "erencia",
+        "posicion_texto": 202
+      }
+    ],
+    "analisis_documento": {
+      "tipo": "estado_cuenta",
+      "confianza": 25.0,
+      "keywords_encontradas": [
+        "cuenta"
+      ]
+    },
+    "resumen_extraido": {
+      "montos_encontrados": 5,
+      "fechas_encontradas": 0,
+      "referencias_encontradas": 1,
+      "cuentas_encontradas": 0,
+      "telefonos_encontrados": 0,
+      "total_elementos": 6,
+      "completitud_porcentaje": 50
+    }
+  },
+  "tiempo": 1.356
+}

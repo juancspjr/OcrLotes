@@ -93,7 +93,11 @@ class ValidadorOCR:
             'desviacion_brillo': float(np.std(gray)),
             'rango_dinamico': float(np.max(gray) - np.min(gray)),
             'histogram': histogram.tolist(),  # Convertir a lista para JSON
-            'histogram_analysis': self._analizar_histograma_para_binarizacion(histogram)
+            'histogram_analysis': self._analizar_histograma_para_binarizacion(histogram),
+            # FIX: Análisis de variaciones locales de fondo para unificación avanzada
+            # REASON: Implementa detección de fondos heterogéneos según nuevo prompt ELITE
+            # IMPACT: Permite binarización adaptativa localizada para múltiples tipos de fondo
+            'variaciones_fondo': self._analizar_variaciones_locales_fondo(gray)
         }
     
     def _analizar_calidad(self, gray):
@@ -489,6 +493,60 @@ class ValidadorOCR:
             },
             'requiere_inversion': bool(int(intensidades_oscuras > intensidades_claras)),
             'bimodal': bool(len(picos) >= 2 and picos[0][1] > total_pixels * 0.1)
+        }
+    
+    def _analizar_variaciones_locales_fondo(self, gray):
+        """
+        FIX: Analiza variaciones locales de fondo para detectar fondos heterogéneos
+        REASON: Implementa nueva estrategia de unificación de fondos múltiples
+        IMPACT: Permite binarización adaptativa localizada para imágenes con distintos tipos de fondo
+        """
+        h, w = gray.shape
+        ventana = 50  # Tamaño de ventana para análisis local
+        
+        variaciones = []
+        fondos_detectados = []
+        
+        # Analizar imagen en ventanas superpuestas
+        for y in range(0, h - ventana, ventana // 2):
+            for x in range(0, w - ventana, ventana // 2):
+                # Extraer región local
+                region = gray[y:y+ventana, x:x+ventana]
+                
+                # Calcular estadísticas locales
+                media_local = float(np.mean(region))
+                std_local = float(np.std(region))
+                
+                # Calcular histograma local
+                hist_local = cv2.calcHist([region], [0], None, [256], [0, 256]).flatten()
+                
+                # Encontrar pico principal (fondo probable)
+                pico_principal = int(np.argmax(hist_local))
+                
+                variaciones.append({
+                    'posicion': (int(x), int(y)),
+                    'media_local': media_local,
+                    'std_local': std_local,
+                    'pico_fondo': pico_principal
+                })
+                
+                fondos_detectados.append(pico_principal)
+        
+        # Analizar diversidad de fondos
+        fondos_unicos = np.unique(fondos_detectados)
+        variacion_fondos = float(np.std(fondos_detectados))
+        
+        # Detectar si hay múltiples tipos de fondo
+        fondos_heterogeneos = len(fondos_unicos) > 3 and variacion_fondos > 20
+        
+        return {
+            'total_regiones_analizadas': len(variaciones),
+            'fondos_unicos_detectados': len(fondos_unicos),
+            'variacion_fondos': variacion_fondos,
+            'fondos_heterogeneos': bool(fondos_heterogeneos),
+            'rango_fondos': (int(np.min(fondos_detectados)), int(np.max(fondos_detectados))),
+            'requiere_unificacion_avanzada': bool(fondos_heterogeneos or variacion_fondos > 15),
+            'regiones_variacion': variaciones[:10]  # Primeras 10 para referencia
         }
 
 def main():

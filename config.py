@@ -179,6 +179,23 @@ PREPROCESSING_CONFIG = {
         'metodos_disponibles': ['otsu', 'sauvola', 'adaptive_mean', 'adaptive_gaussian']
     },
     
+    # FIX: Parámetros para unificación avanzada de fondos heterogéneos
+    # REASON: Implementa nueva estrategia de fondos múltiples y nitidez absoluta
+    # IMPACT: Maneja imágenes con distintos tipos de fondo, unificándolos perfectamente
+    'unificacion_fondos_avanzada': {
+        'analisis_local_ventana': 50,  # Tamaño ventana para análisis local
+        'umbral_variacion_fondo': 20,  # Umbral para detectar variaciones de fondo
+        'metodo_binarizacion_local': 'sauvola_niblack_adaptativo',
+        'factor_k_niblack': -0.2,
+        'factor_k_sauvola': 0.34,
+        'ventana_local_min': 15,
+        'ventana_local_max': 51,
+        'nitidez_absoluta_enabled': True,
+        'nitidez_kernel_strength': 2.5,
+        'relleno_inteligente_enabled': True,
+        'unificacion_threshold': 5  # Diferencia máxima permitida en fondo unificado
+    },
+    
     # FIX: Configuración para análisis de componentes conectados (CCA)
     # REASON: Implementa purificación inteligente eliminando elementos no-textuales
     # IMPACT: OCR más limpio y eficiente sin interferencias

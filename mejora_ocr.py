@@ -1082,12 +1082,21 @@ class MejoradorOCR:
     
     def _aplicar_binarizacion_elite(self, image, diagnostico, resultado):
         """
-        FIX: Nueva binarización ELITE con fondo blanco uniforme (245-255) y texto negro nítido (0-10)
-        REASON: Implementa estrategia ELITE eliminando dual-pass OCR con binarización óptima
-        IMPACT: Calidad OCR superior con una sola pasada gracias a imagen binaria perfecta
+        FIX: Binarización ELITE AVANZADA con unificación de fondos heterogéneos y nitidez absoluta
+        REASON: Implementa nueva estrategia de fondos múltiples con binarización adaptativa localizada
+        IMPACT: Unifica fondos diversos en blanco uniforme (245-255) con texto negro nítido (0-10) y nitidez absoluta
         """
         try:
             config_binarization = self.preprocessing_config.get('advanced_binarization', {})
+            
+            # FIX: Verificar si requiere unificación avanzada de fondos heterogéneos
+            # REASON: Nueva estrategia debe detectar fondos diversos primero
+            # IMPACT: Aplica binarización específica según variaciones de fondo
+            config_elite = self.preprocessing_config.get('binarizacion_elite', {})
+            config_unificacion = self.preprocessing_config.get('unificacion_fondos_avanzada', {})
+            
+            variaciones_fondo = diagnostico.get('info_imagen', {}).get('variaciones_fondo', {})
+            requiere_unificacion = variaciones_fondo.get('requiere_unificacion_avanzada', False)
             
             # Convertir a escala de grises si es necesario
             if len(image.shape) == 3:
@@ -1095,9 +1104,38 @@ class MejoradorOCR:
             else:
                 gray = image.copy()
             
-            best_result = None
-            best_score = 0
-            methods_used = []
+            if requiere_unificacion:
+                logger.info("Aplicando binarización ELITE con unificación avanzada de fondos heterogéneos")
+                # Usar Sauvola adaptativo para fondos complejos
+                window_size = 25
+                k = 0.34
+                mean = cv2.boxFilter(gray.astype(np.float32), -1, (window_size, window_size))
+                sqmean = cv2.boxFilter((gray.astype(np.float32))**2, -1, (window_size, window_size))
+                std = np.sqrt(sqmean - mean**2)
+                R = 128
+                threshold = mean * (1 + k * ((std / R) - 1))
+                best_result = np.where(gray > threshold, 255, 0).astype(np.uint8)
+                
+                # Aplicar nitidez absoluta
+                if config_unificacion.get('nitidez_absoluta_enabled', True):
+                    kernel_nitidez = np.array([[-1, -1, -1], [-1, 12, -1], [-1, -1, -1]])
+                    best_result = cv2.filter2D(best_result, -1, kernel_nitidez)
+                    best_result[best_result > 200] = 255
+                    best_result[best_result < 55] = 0
+                    
+                # Relleno inteligente de fondo
+                if config_unificacion.get('relleno_inteligente_enabled', True):
+                    mask_fondo = best_result > 127
+                    if np.any(mask_fondo):
+                        best_result[mask_fondo] = 250
+                        
+                methods_used = ['Binarización ELITE Avanzada con Unificación de Fondos']
+                best_score = 100
+            else:
+                logger.info("Aplicando binarización ELITE estándar")
+                best_result = None
+                best_score = 0
+                methods_used = []
             
             # Método 1: Otsu mejorado
             if config_binarization.get('otsu_enabled', True):
