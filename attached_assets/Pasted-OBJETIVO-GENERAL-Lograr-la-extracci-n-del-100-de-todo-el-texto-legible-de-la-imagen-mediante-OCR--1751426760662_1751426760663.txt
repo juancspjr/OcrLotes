@@ -1,0 +1,52 @@
+OBJETIVO GENERAL:
+Lograr la extracción del 100% de todo el texto legible de la imagen mediante OCR, garantizando la captura de cada carácter sin pérdidas y maximizando la velocidad y la fiabilidad de la extracción. La imagen resultante del pre-procesamiento debe ser un lienzo óptimo con un fondo **blanco muy claro y uniforme** (con valores de píxel predominantemente en el rango de 245-255 en escala de grises) y caracteres en un **negro muy oscuro y nítido** (con valores de píxel predominantemente en el rango de 0-10 en escala de grises). Esta estandarización de tonalidades se realizará protegiendo la integridad y los detalles finos de las letras, y asegurando la eliminación inteligente de cualquier elemento gráfico no textual.
+
+RESTRICCIONES CRÍTICAS (NO NEGOCIABLES):
+- **PROHIBIDO ML/DL**: No incluir ningún componente, algoritmo o referencia a Machine Learning (ML), Deep Learning (DL), redes neuronales, aprendizaje automático supervisado o no supervisado, o modelos de IA entrenados en CUALQUIER parte del pre-procesamiento de imagen o el proceso de OCR.
+- **PROHIBIDO GPU/Hardware Especializado**: Asumir o requerir acceso a GPUs o hardware de procesamiento especializado más allá de una CPU básica de bajo consumo. El enfoque es la eficiencia en recursos básicos.
+- **PROHIBIDO Servicios en la Nube**: Proponer soluciones que dependan de servicios en la nube para el procesamiento de imágenes o OCR. La solución debe ser 100% local y autónoma.
+- **LIBRERÍAS PERMITIDAS**: Exclusivamente OpenCV, NumPy, Pillow, scikit-image (para métricas de imagen), Tesseract/pytesseract.
+- **LENGUAJES PERMITIDOS**: Python para los módulos principales. Shell Script (.sh) para el script de instalación (install_requirements.sh). Python (Flask) para web_server.py (si implementado, solo como interfaz de invocación vía subprocess.run de los scripts principales, sin lógica de procesamiento de imagen ni OCR directamente).
+
+ESTRATEGIA CENTRAL:
+El proceso se centrará en un pipeline de pre-procesamiento de imagen extremadamente eficiente y modular que produce una imagen binaria de calidad élite. Esta imagen optimizada permitirá una *única y altamente eficiente pasada de OCR* sobre ella, eliminando por completo cualquier procesamiento "dual-pass" (imagen completa + zonas grises) y minimizando operaciones redundantes. La "conservación extrema de caracteres" será la filosofía guía, priorizando la lectura completa y la integridad de la morfología del texto.
+
+PASOS DETALLADOS DEL PROCESO DESCRIPTIVO (SIN CÓDIGO - SÓLO CONCEPTO):
+
+**ETAPA 1: DIAGNÓSTICO INTELIGENTE Y PRE-NORMALIZACIÓN (`validador_ocr.py`)**
+* **Análisis Rápido de Calidad Inicial**: Evalúa métricas esenciales como contraste general, presencia de ruido, nitidez, y resolución. Esto guía la aplicación *condicional* de pasos de mejora posteriores.
+* **Detección Inmediata de Inversión de Colores**: Si la imagen presenta texto claro sobre fondo oscuro, se invierte la coloración en este punto temprano del pipeline. Esto asegura que todas las etapas subsiguientes trabajen con texto oscuro sobre fondo claro.
+* **Análisis de Histograma y Rangos de Tonalidad**: Se realiza un análisis detallado del histograma de la imagen en escala de grises para identificar los rangos de píxeles predominantes que representan el "fondo" y el "texto". Esta información es crucial para informar los umbrales de binarización adaptativa y los ajustes de normalización de niveles, permitiendo un blanco/negro *cercano al puro* de forma controlada.
+
+**ETAPA 2: PRE-PROCESAMIENTO ADAPTATIVO Y PURIFICACIÓN ELITE (`mejora_ocr.py`)**
+* **Redimensionamiento Condicional e Inteligente**: La imagen solo se redimensiona (aumenta) si su resolución es detectada como críticamente baja para OCR (ej., por debajo de 200-300 DPI). Se utiliza un algoritmo de interpolación que prioriza la conservación de los bordes del texto.
+* **Suavizado de Ruido Mínimo y Dirigido (Condicional)**: Se aplican filtros de suavizado no destructivos (ej., bilateral, suavizado gaussiano) de forma *condicional*, solo si el diagnóstico de la Etapa 1 revela la presencia de ruido significativo. Los parámetros se ajustan finamente para eliminar el ruido sin difuminar los detalles críticos del texto.
+* **Binarización Adaptativa Ultra-Precisa (Umbral Inteligente y Rango de Salida Controlado)**:
+    * Se aplica un algoritmo de binarización adaptativa (ej., Otsu o Sauvola, con un tamaño de ventana local optimizado) que utiliza la información de los rangos de tonalidad del fondo y el texto obtenidos en la Etapa 1.
+    * Este paso transforma la imagen a un estado binario, donde los píxeles del fondo son empujados al rango de **blanco muy claro y uniforme (245-255)** y los píxeles del texto al rango de **negro muy oscuro y nítido (0-10)**. Se prioriza la estandarización dentro de estos rangos para proteger la forma de las letras.
+* **Refuerzo de Bordes de Caracteres (Post-Binarización y Protección de Morfología)**: Tras la binarización, se aplica un `unsharp_mask` o un filtro de realce de bordes *ligeramente y de forma selectiva* sobre las áreas donde se ha detectado texto. Esto acentúa la nitidez de los contornos de las letras contra el fondo ya estandarizado, sin crear artefactos o sobreexponer.
+* **Purificación Inteligente por Análisis de Componentes Conectados (CCA) - Eliminación Total de No-Texto**:
+    * **Identificación Detallada de Componentes**: Todos los grupos de píxeles conectados (potenciales caracteres, ruido o gráficos) son identificados y sus propiedades (tamaño, área, perímetro, solidez, proporciones) son calculadas.
+    * **Filtrado por Heurísticas de Texto**: Se eliminan componentes que, basándose en sus propiedades geométricas:
+        * Son demasiado pequeños (ruido residual minúsculo).
+        * Son excesivamente grandes o con proporciones atípicas para caracteres o bloques de texto (ej., logotipos grandes no textuales, manchas de tinta extensas).
+    * **Detección y Eliminación Activa de Elementos Geométricos No Textuales**: Se implementan algoritmos de detección de formas básicas (líneas, rectángulos, círculos utilizando detección de contornos simples o transformadas de Hough si es óptimo en CPU) para identificar y **blanquear (rellenar con el color del fondo)** cualquier recuadro, línea divisoria, patrón de puntos o gráfico que no sea parte de un carácter o su formato (subrayado, tachado). Esto incluye la eliminación específica de cualquier marco o "caja" que haya impedido la lectura previa del "total".
+* **Operaciones Morfológicas Finales (Condicionales y Micro-Controladas)**: Se aplican operaciones morfológicas (ej., `skimage.morphology.remove_small_holes` para rellenar huecos internos en letras, o `morphology.thin` para adelgazar caracteres excesivamente gruesos) de forma *condicional y con parámetros mínimos*. Solo se ejecutan si el análisis detecta que son estrictamente necesarias para corregir caracteres rotos o pegados que no se hayan resuelto en pasos anteriores, para evitar cualquier distorsión no deseada.
+
+**ETAPA 3: EXTRACCIÓN OCR DE ALTA EFICIENCIA (`aplicador_ocr.py`)**
+* **OCR de Una Única Pasada Óptima**: La imagen, tras ser meticulosamente pre-procesada a su estado binario ideal, se envía a Tesseract para una *sola y completa extracción de texto*. Se suprime por completo la lógica del "dual-pass" y la extracción específica de "zonas grises", ya que la calidad de la imagen de entrada garantiza una lectura superior en una sola pasada.
+* **Configuración de Tesseract Sintonizada**: Se utiliza una configuración de Tesseract (ej., modos de configuración que prioricen la precisión y el rendimiento) sintonizada para aprovechar la limpieza y estandarización de la imagen de entrada, maximizando la eficiencia de la lectura.
+* **Validación de Confianza del OCR**: Se mantiene y refina un filtrado del texto extraído basado en un umbral de confianza. Solo los segmentos de texto con una alta fiabilidad se considerarán válidos, minimizando la inclusión de "lecturas fantasma".
+* **Post-Procesamiento de Cadenas de Texto Ágil**: El procesamiento posterior de las cadenas de texto extraídas se optimiza para ser lo más eficiente posible, dada la alta calidad del OCR. Se enfoca en reglas ligeras para:
+    * Correcciones menores de segmentación (ej., separar números o palabras que Tesseract pudo haber pegado, como "200008Y" a "200008 Y").
+    * Limpieza de espacios, saltos de línea y caracteres especiales no deseados.
+    * Estandarización de formatos básicos (ej., fechas, números).
+* **Extracción y Validación Reforzada de Datos Financieros**: Se aplican expresiones regulares robustas y lógicas de validación de formato sobre el texto final para identificar y extraer de forma fiable todos los elementos financieros clave (montos, fechas, números de cuenta, códigos de operación, etc.), aplicando una segunda capa de corrección si es necesario (ej. pequeñas variaciones en números).
+
+**ETAPA 4: CONSOLIDACIÓN Y REPORTE CLARO (`main_ocr_process.py`)**
+* **Consolidación Simplificada**: Dada la ausencia del "dual-pass" y la alta calidad de la única extracción OCR, la etapa de consolidación se vuelve trivial, simplemente orquestando la recepción y el empaquetado del resultado final.
+* **Generación de Reporte Detallado**: Se compila un informe JSON estructurado que incluye el texto extraído completo, los datos financieros identificados, y las métricas de calidad y confianza finales del proceso.
+* **Limpieza de Recursos**: Se asegura la eliminación eficiente de todos los archivos temporales intermedios creados durante el procesamiento.
+
+RESULTADO FINAL ESPERADO:
+La aplicación procesará imágenes con una velocidad significativamente superior y una fiabilidad del 100% en la extracción de texto. La imagen intermedia, si se guarda para auditoría, reflejará un estándar de calidad elite: un fondo **blanco muy claro y perfectamente uniforme** y caracteres en **negro muy oscuro y nítido**, facilitando la inspección visual. Esto garantiza la lectura completa para el OCR, sin perder ningún detalle del texto original (incluyendo inclinaciones, negritas, tachados o subrayados), y asegurando que el output final sea preciso, completo y absolutamente libre de redundancias o datos faltantes como el número de la aplicación o el total.
