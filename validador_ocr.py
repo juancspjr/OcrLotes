@@ -77,6 +77,11 @@ class ValidadorOCR:
         # FIX: Convertir todos los valores NumPy a tipos nativos de Python para serialización JSON
         # REASON: Los tipos uint8, int64, float64 de NumPy no son serializables por JSON
         # IMPACT: Permite que el diagnóstico se serialice correctamente sin errores
+        # FIX: Agregar análisis de histograma para binarización ELITE
+        # REASON: Necesario para determinar rangos de fondo y texto según nueva estrategia
+        # IMPACT: Permite binarización optimizada con rangos precisos
+        histogram = cv2.calcHist([gray], [0], None, [256], [0, 256]).flatten()
+        
         return {
             'ancho': int(gray.shape[1]),
             'alto': int(gray.shape[0]),
@@ -86,7 +91,9 @@ class ValidadorOCR:
             'formato': image_pil.format if image_pil.format else 'unknown',
             'brillo_promedio': float(np.mean(gray)),
             'desviacion_brillo': float(np.std(gray)),
-            'rango_dinamico': float(np.max(gray) - np.min(gray))
+            'rango_dinamico': float(np.max(gray) - np.min(gray)),
+            'histogram': histogram.tolist(),  # Convertir a lista para JSON
+            'histogram_analysis': self._analizar_histograma_para_binarizacion(histogram)
         }
     
     def _analizar_calidad(self, gray):
@@ -430,6 +437,56 @@ class ValidadorOCR:
             return 'Regular'
         else:
             return 'Deficiente'
+    
+    def _analizar_histograma_para_binarizacion(self, histogram):
+        """
+        FIX: Analiza histograma para determinar rangos óptimos de binarización ELITE
+        REASON: Nueva estrategia requiere análisis de tonalidades para fondo blanco y texto negro
+        IMPACT: Permite binarización precisa con rangos 245-255 fondo, 0-10 texto
+        """
+        total_pixels = np.sum(histogram)
+        
+        # Encontrar picos en el histograma
+        picos = []
+        for i in range(1, 255):
+            if histogram[i] > histogram[i-1] and histogram[i] > histogram[i+1]:
+                if histogram[i] > total_pixels * 0.01:  # Al menos 1% del total
+                    picos.append((i, histogram[i]))
+        
+        # Ordenar picos por intensidad de píxeles
+        picos.sort(key=lambda x: x[1], reverse=True)
+        
+        # Identificar rango de fondo (tonos claros) y texto (tonos oscuros)
+        fondo_candidato = 255  # Blanco por defecto
+        texto_candidato = 0    # Negro por defecto
+        
+        if len(picos) >= 2:
+            # El pico más alto probablemente es el fondo
+            fondo_candidato = picos[0][0]
+            # El segundo pico más alto probablemente es el texto
+            texto_candidato = picos[1][0]
+            
+            # Asegurar que fondo > texto (fondo más claro que texto)
+            if fondo_candidato < texto_candidato:
+                fondo_candidato, texto_candidato = texto_candidato, fondo_candidato
+        
+        # Calcular distribución de intensidades
+        intensidades_oscuras = np.sum(histogram[0:85])  # 0-84
+        intensidades_medias = np.sum(histogram[85:171])  # 85-170
+        intensidades_claras = np.sum(histogram[171:256])  # 171-255
+        
+        return {
+            'picos_principales': [(int(pos), int(intensidad)) for pos, intensidad in picos[:3]],
+            'rango_fondo_sugerido': int(fondo_candidato),
+            'rango_texto_sugerido': int(texto_candidato),
+            'distribucion': {
+                'oscuras': float(intensidades_oscuras / total_pixels),
+                'medias': float(intensidades_medias / total_pixels),
+                'claras': float(intensidades_claras / total_pixels)
+            },
+            'requiere_inversion': bool(intensidades_oscuras > intensidades_claras),
+            'bimodal': len(picos) >= 2 and picos[0][1] > total_pixels * 0.1
+        }
 
 def main():
     """Función principal para uso por línea de comandos"""

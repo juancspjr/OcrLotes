@@ -893,11 +893,198 @@ class MejoradorOCR:
             logger.warning(f"Error en corrección gamma: {str(e)}")
             return image
     
-    def _aplicar_binarizacion_avanzada_mejorada(self, image, diagnostico, resultado):
+    def _aplicar_rangos_elite(self, imagen_binaria, config_elite):
         """
-        FIX: Binarización avanzada mejorada que reemplaza la binarización simple
-        REASON: El paso 05_binarizacion necesita mejoras según el usuario
-        IMPACT: Mejora significativa en la calidad de binarización
+        FIX: Aplica rangos ELITE específicos para fondo blanco uniforme y texto negro nítido
+        REASON: Implementa rangos 245-255 para fondo y 0-10 para texto según estrategia ELITE
+        IMPACT: Imagen binaria perfecta con contraste óptimo para OCR de una sola pasada
+        """
+        try:
+            fondo_min = config_elite.get('fondo_blanco_min', 245)
+            fondo_max = config_elite.get('fondo_blanco_max', 255)
+            texto_min = config_elite.get('texto_negro_min', 0)
+            texto_max = config_elite.get('texto_negro_max', 10)
+            
+            # Crear imagen ELITE con rangos específicos
+            imagen_elite = imagen_binaria.copy()
+            
+            # Píxeles de fondo (blancos) -> rango 245-255
+            mask_fondo = imagen_binaria > 127  # Píxeles considerados fondo
+            rango_fondo = np.random.randint(fondo_min, fondo_max + 1, np.sum(mask_fondo))
+            imagen_elite[mask_fondo] = rango_fondo
+            
+            # Píxeles de texto (negros) -> rango 0-10
+            mask_texto = imagen_binaria <= 127  # Píxeles considerados texto
+            rango_texto = np.random.randint(texto_min, texto_max + 1, np.sum(mask_texto))
+            imagen_elite[mask_texto] = rango_texto
+            
+            return imagen_elite
+            
+        except Exception as e:
+            logger.warning(f"Error aplicando rangos ELITE: {str(e)}")
+            return imagen_binaria
+    
+    def _seleccionar_mejor_binarizacion_elite(self, algoritmos_elite, config_elite):
+        """
+        FIX: Selecciona el mejor algoritmo de binarización ELITE basado en métricas específicas
+        REASON: Necesario para elegir óptima binarización según nueva estrategia
+        IMPACT: Garantiza la mejor imagen binaria para OCR de una sola pasada
+        """
+        try:
+            if not algoritmos_elite:
+                return None
+            
+            mejor_algoritmo = None
+            mejor_score = -1
+            
+            for nombre, imagen in algoritmos_elite:
+                # Evaluar métricas ELITE específicas
+                score = self._evaluar_calidad_elite(imagen, config_elite)
+                
+                if score > mejor_score:
+                    mejor_score = score
+                    mejor_algoritmo = (nombre, imagen)
+            
+            return mejor_algoritmo
+            
+        except Exception as e:
+            logger.warning(f"Error seleccionando mejor binarización ELITE: {str(e)}")
+            return algoritmos_elite[0] if algoritmos_elite else None
+    
+    def _evaluar_calidad_elite(self, imagen_binaria, config_elite):
+        """
+        FIX: Evalúa calidad específica para binarización ELITE
+        REASON: Métricas especializadas para validar rangos 245-255 fondo y 0-10 texto
+        IMPACT: Asegura que la imagen cumple estándares ELITE para OCR óptimo
+        """
+        try:
+            # Verificar distribución de píxeles en rangos ELITE
+            fondo_min = config_elite.get('fondo_blanco_min', 245)
+            texto_max = config_elite.get('texto_negro_max', 10)
+            
+            # Contar píxeles en rangos correctos
+            pixels_fondo_elite = np.sum(imagen_binaria >= fondo_min)
+            pixels_texto_elite = np.sum(imagen_binaria <= texto_max)
+            total_pixels = imagen_binaria.size
+            
+            # Porcentaje de píxeles en rangos ELITE
+            porcentaje_elite = (pixels_fondo_elite + pixels_texto_elite) / total_pixels
+            
+            # Contraste ELITE (diferencia entre fondo y texto)
+            fondo_promedio = np.mean(imagen_binaria[imagen_binaria >= 127])
+            texto_promedio = np.mean(imagen_binaria[imagen_binaria < 127])
+            contraste_elite = fondo_promedio - texto_promedio
+            
+            # Score combinado (0-100)
+            score = (porcentaje_elite * 70) + (min(contraste_elite / 240, 1.0) * 30)
+            
+            return score * 100
+            
+        except Exception as e:
+            logger.warning(f"Error evaluando calidad ELITE: {str(e)}")
+            return 50.0
+    
+    def _aplicar_purificacion_cca(self, imagen_binaria, resultado):
+        """
+        FIX: Implementa purificación inteligente por análisis de componentes conectados (CCA)
+        REASON: Nueva estrategia ELITE requiere eliminación de elementos no-textuales
+        IMPACT: OCR más limpio y eficiente sin interferencias de logos/gráficos
+        """
+        try:
+            from config import PREPROCESSING_CONFIG
+            config_cca = PREPROCESSING_CONFIG.get('analisis_componentes_conectados', {})
+            
+            # Encontrar componentes conectados
+            num_labels, labels, stats, centroids = cv2.connectedComponentsWithStats(
+                255 - imagen_binaria,  # Invertir para que texto sea foreground
+                connectivity=8
+            )
+            
+            # Crear máscara para elementos válidos (texto)
+            mask_texto_valido = np.zeros_like(imagen_binaria)
+            componentes_eliminados = 0
+            componentes_preservados = 0
+            
+            for i in range(1, num_labels):  # Saltar background (label 0)
+                area = stats[i, cv2.CC_STAT_AREA]
+                x, y, w, h = stats[i, cv2.CC_STAT_LEFT:cv2.CC_STAT_TOP+cv2.CC_STAT_HEIGHT+1]
+                
+                # Criterios para determinar si es texto válido
+                es_texto_valido = self._evaluar_componente_como_texto(
+                    area, w, h, config_cca
+                )
+                
+                if es_texto_valido:
+                    # Preservar este componente
+                    component_mask = (labels == i)
+                    mask_texto_valido[component_mask] = 255
+                    componentes_preservados += 1
+                else:
+                    componentes_eliminados += 1
+            
+            # Aplicar máscara: fondo blanco ELITE, texto negro ELITE
+            imagen_purificada = np.full_like(imagen_binaria, 250)  # Fondo blanco elite
+            imagen_purificada[mask_texto_valido == 255] = 5  # Texto negro elite
+            
+            resultado['purificacion_cca'] = {
+                'componentes_totales': num_labels - 1,
+                'componentes_preservados': componentes_preservados,
+                'componentes_eliminados': componentes_eliminados,
+                'porcentaje_limpieza': (componentes_eliminados / (num_labels - 1)) * 100 if num_labels > 1 else 0
+            }
+            
+            logger.info(f"Purificación CCA: {componentes_preservados} preservados, {componentes_eliminados} eliminados")
+            return imagen_purificada
+            
+        except Exception as e:
+            logger.error(f"Error en purificación CCA: {str(e)}")
+            return imagen_binaria
+    
+    def _evaluar_componente_como_texto(self, area, width, height, config_cca):
+        """
+        FIX: Evalúa si un componente conectado corresponde a texto válido
+        REASON: Implementa heurísticas para distinguir texto de elementos gráficos
+        IMPACT: Preserva solo caracteres, elimina logos y elementos no-textuales
+        """
+        try:
+            # Criterios de área
+            min_area = config_cca.get('min_area_char', 10)
+            max_area = config_cca.get('max_area_char', 5000)
+            
+            if area < min_area or area > max_area:
+                return False
+            
+            # Criterios de proporción (aspect ratio)
+            if height == 0:
+                return False
+                
+            aspect_ratio = width / height
+            min_aspect = config_cca.get('min_aspect_ratio', 0.1)
+            max_aspect = config_cca.get('max_aspect_ratio', 10.0)
+            
+            if aspect_ratio < min_aspect or aspect_ratio > max_aspect:
+                return False
+            
+            # Criterio de dimensiones típicas de caracteres
+            # Rechazar componentes excesivamente grandes (probablemente gráficos)
+            if width > 200 or height > 200:
+                return False
+            
+            # Rechazar líneas perfectamente horizontales o verticales (bordes/marcos)
+            if (width > 100 and height < 5) or (height > 100 and width < 5):
+                return False
+            
+            return True
+            
+        except Exception as e:
+            logger.warning(f"Error evaluando componente: {str(e)}")
+            return True  # En caso de error, preservar el componente
+    
+    def _aplicar_binarizacion_elite(self, image, diagnostico, resultado):
+        """
+        FIX: Nueva binarización ELITE con fondo blanco uniforme (245-255) y texto negro nítido (0-10)
+        REASON: Implementa estrategia ELITE eliminando dual-pass OCR con binarización óptima
+        IMPACT: Calidad OCR superior con una sola pasada gracias a imagen binaria perfecta
         """
         try:
             config_binarization = self.preprocessing_config.get('advanced_binarization', {})

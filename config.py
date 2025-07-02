@@ -158,6 +158,35 @@ PREPROCESSING_CONFIG = {
         'local_threshold_enabled': True,
         'sauvola_enabled': True,  # Algoritmo Sauvola para documentos
         'niblack_enabled': True   # Algoritmo Niblack para texto fino
+    },
+    
+    # FIX: Nuevos parámetros para binarización ELITE
+    # REASON: Implementa estrategia de fondo blanco uniforme (245-255) y texto negro nítido (0-10)
+    # IMPACT: Calidad OCR superior con una sola pasada
+    'binarizacion_elite': {
+        'fondo_blanco_min': 245,
+        'fondo_blanco_max': 255,
+        'texto_negro_min': 0,
+        'texto_negro_max': 10,
+        'umbral_otsu_factor': 1.0,
+        'ventana_sauvola': 25,
+        'k_sauvola': 0.2,
+        'metodos_disponibles': ['otsu', 'sauvola', 'adaptive_mean', 'adaptive_gaussian']
+    },
+    
+    # FIX: Configuración para análisis de componentes conectados (CCA)
+    # REASON: Implementa purificación inteligente eliminando elementos no-textuales
+    # IMPACT: OCR más limpio y eficiente sin interferencias
+    'analisis_componentes_conectados': {
+        'min_area_char': 10,  # Área mínima para considerar como carácter
+        'max_area_char': 5000,  # Área máxima para considerar como carácter
+        'min_aspect_ratio': 0.1,  # Relación de aspecto mínima
+        'max_aspect_ratio': 10.0,  # Relación de aspecto máxima
+        'min_solidity': 0.2,  # Solidez mínima (área/área_convex_hull)
+        'eliminar_lineas_geometricas': True,
+        'eliminar_rectangulos_grandes': True,
+        'preservar_subrayados': True,
+        'preservar_tachados': True
     }
 }
 

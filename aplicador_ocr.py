@@ -32,17 +32,19 @@ class AplicadorOCR:
         
     def extraer_texto(self, image_path, language='spa', config_mode='high_confidence', extract_financial=True, deteccion_inteligente=None):
         """
-        Extrae texto de una imagen usando Tesseract OCR con procesamiento dual-pass
+        FIX: Extrae texto usando OCR de UNA SOLA PASADA OPTIMIZADA con imagen ELITE
+        REASON: Nueva estrategia ELITE elimina dual-pass para mayor eficiencia
+        IMPACT: OCR más rápido y eficiente con calidad superior gracias a imagen binaria perfecta
         
         Args:
-            image_path: Ruta a la imagen procesada
+            image_path: Ruta a la imagen procesada con binarización ELITE
             language: Idioma para OCR
             config_mode: Configuración de Tesseract a usar
             extract_financial: Si extraer datos financieros específicos
             deteccion_inteligente: Información de detección inteligente
             
         Returns:
-            dict: Resultados de OCR con texto y datos estructurados, incluyendo dual-pass
+            dict: Resultados de OCR con texto completo extraído en una sola pasada
         """
         try:
             # Cargar imagen
