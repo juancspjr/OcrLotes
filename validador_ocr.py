@@ -475,6 +475,9 @@ class ValidadorOCR:
         intensidades_medias = np.sum(histogram[85:171])  # 85-170
         intensidades_claras = np.sum(histogram[171:256])  # 171-255
         
+        # FIX: Convertir todos los valores NumPy a tipos nativos Python para JSON
+        # REASON: numpy.bool_ y otros tipos NumPy no son serializables en JSON
+        # IMPACT: Permite serialización correcta del análisis de histograma
         return {
             'picos_principales': [(int(pos), int(intensidad)) for pos, intensidad in picos[:3]],
             'rango_fondo_sugerido': int(fondo_candidato),
@@ -484,8 +487,8 @@ class ValidadorOCR:
                 'medias': float(intensidades_medias / total_pixels),
                 'claras': float(intensidades_claras / total_pixels)
             },
-            'requiere_inversion': bool(intensidades_oscuras > intensidades_claras),
-            'bimodal': len(picos) >= 2 and picos[0][1] > total_pixels * 0.1
+            'requiere_inversion': bool(int(intensidades_oscuras > intensidades_claras)),
+            'bimodal': bool(len(picos) >= 2 and picos[0][1] > total_pixels * 0.1)
         }
 
 def main():

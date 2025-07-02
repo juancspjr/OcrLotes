@@ -637,8 +637,8 @@ class MejoradorOCR:
         REASON: Usuario reporta que 05_binarizacion necesita mejoras
         IMPACT: Selecciona automáticamente el mejor algoritmo de binarización
         """
-        # FIX: Usar la nueva binarización avanzada mejorada
-        return self._aplicar_binarizacion_avanzada_mejorada(image, diagnostico, resultado)
+        # FIX: Usar la nueva binarización ELITE
+        return self._aplicar_binarizacion_elite(image, diagnostico, resultado)
     
     def _aplicar_morfologia(self, image, resultado):
         """Aplica operaciones morfológicas para limpiar la imagen"""
