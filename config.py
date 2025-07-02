@@ -25,6 +25,11 @@ TESSERACT_CONFIG = {
     'high_confidence': '--oem 3 --psm 6 -c tessedit_char_whitelist=0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,;:()*/.- -c preserve_interword_spaces=1 -c tessedit_preserve_min_wd_len=2 -c tessedit_preserve_row_whitespace=1 -c tessedit_preserve_blk_wd_gap=1',
     'screenshot_optimized': '--oem 3 --psm 6 -c tessedit_char_whitelist=0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,;:()*/.- -c textord_really_old_xheight=1 -c textord_min_xheight=10 -c preserve_interword_spaces=1 -c tessedit_preserve_min_wd_len=1',
     'dual_pass_optimized': '--oem 3 --psm 6 -c tessedit_char_whitelist=0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,;:()*/.-_@#$%&+=[]{}|\\/<>?! -c preserve_interword_spaces=1 -c tessedit_preserve_row_whitespace=1 -c tessedit_preserve_blk_wd_gap=1 -c tessedit_preserve_min_wd_len=1',
+    # FIX: Configuraciones ELITE para single-pass optimizado
+    # REASON: Implementa configuraciones especializadas para imagen binaria perfecta
+    # IMPACT: OCR ultra-eficiente aprovechando calidad ELITE (245-255 fondo, 0-10 texto)
+    'elite_binary': '--oem 3 --psm 6 -c tessedit_char_whitelist=0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,;:()*/.-_@#$%&+=[]{}|\\/<>?! -c preserve_interword_spaces=1 -c tessedit_do_invert=0 -c classify_bln_numeric_mode=1',
+    'elite_screenshot': '--oem 3 --psm 6 -c tessedit_char_whitelist=0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,;:()*/.-_@#$%&+=[]{}|\\/<>?! -c preserve_interword_spaces=1 -c tessedit_do_invert=0 -c classify_bln_numeric_mode=1 -c textord_really_old_xheight=1',
     'digits': '--oem 3 --psm 6 -c tessedit_char_whitelist=0123456789.,*/-',
     'alphanumeric': '--oem 3 --psm 6 -c tessedit_char_whitelist=0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,;:()*/-'
 }

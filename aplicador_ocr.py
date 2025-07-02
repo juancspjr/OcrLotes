@@ -8,6 +8,7 @@ import pytesseract
 import json
 import re
 import logging
+import time
 from pathlib import Path
 import numpy as np
 from PIL import Image
@@ -32,9 +33,9 @@ class AplicadorOCR:
         
     def extraer_texto(self, image_path, language='spa', config_mode='high_confidence', extract_financial=True, deteccion_inteligente=None):
         """
-        FIX: Extrae texto usando OCR de UNA SOLA PASADA OPTIMIZADA con imagen ELITE
-        REASON: Nueva estrategia ELITE elimina dual-pass para mayor eficiencia
-        IMPACT: OCR más rápido y eficiente con calidad superior gracias a imagen binaria perfecta
+        FIX: OCR ELITE de UNA SOLA PASADA OPTIMIZADA - ELIMINA COMPLETAMENTE DUAL-PASS
+        REASON: Implementa completamente la estrategia ELITE con imagen binaria perfecta
+        IMPACT: Ultra-eficiencia y velocidad superior con imagen ELITE (245-255 fondo, 0-10 texto)
         
         Args:
             image_path: Ruta a la imagen procesada con binarización ELITE
@@ -44,80 +45,102 @@ class AplicadorOCR:
             deteccion_inteligente: Información de detección inteligente
             
         Returns:
-            dict: Resultados de OCR con texto completo extraído en una sola pasada
+            dict: Resultados de OCR ELITE con texto completo extraído en una sola pasada
         """
         try:
-            # Cargar imagen
-            image = cv2.imread(str(image_path))
+            # FIX: Cargar imagen ELITE (ya binarizada perfectamente)
+            # REASON: La imagen viene del procesamiento ELITE con calidad binaria óptima
+            # IMPACT: OCR directo sobre imagen perfectamente preparada
+            image = cv2.imread(str(image_path), cv2.IMREAD_GRAYSCALE)
             if image is None:
-                raise ValueError(f"No se puede cargar la imagen: {image_path}")
+                raise ValueError(f"No se puede cargar la imagen ELITE: {image_path}")
+            
+            # Verificar características ELITE de la imagen
+            unique_values = np.unique(image)
+            logger.info(f"Imagen ELITE cargada. Valores únicos: {len(unique_values)} (esperado: binaria)")
             
             # Convertir a PIL para Tesseract
-            if len(image.shape) == 3:
-                image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-                pil_image = Image.fromarray(image_rgb)
-            else:
-                pil_image = Image.fromarray(image)
+            pil_image = Image.fromarray(image)
             
-            # FIX: Seleccionar configuración de Tesseract basada en detección inteligente
-            # REASON: Optimizar OCR según tipo de imagen detectado
-            # IMPACT: Mejora significativa en precisión para screenshots vs documentos escaneados
+            # FIX: Configuración ELITE de Tesseract optimizada para imagen binaria perfecta
+            # REASON: La imagen ELITE requiere configuración especializada para máxima eficiencia
+            # IMPACT: OCR óptimo aprovechando la calidad binaria superior
             if deteccion_inteligente and deteccion_inteligente.get('tipo_imagen') == 'screenshot_movil':
-                tesseract_config = self.tesseract_configs.get('screenshot_optimized', self.tesseract_configs['high_confidence'])
-                logger.info("Usando configuración optimizada para screenshot móvil")
+                tesseract_config = self.tesseract_configs.get('elite_screenshot', self.tesseract_configs['elite_binary'])
+                logger.info("Usando configuración ELITE para screenshot móvil")
             else:
-                tesseract_config = self.tesseract_configs.get(config_mode, self.tesseract_configs['default'])
+                tesseract_config = self.tesseract_configs.get('elite_binary', self.tesseract_configs['high_confidence'])
+                logger.info("Usando configuración ELITE binaria estándar")
             
-            logger.info(f"Iniciando OCR con idioma: {language}, modo: {config_mode}")
+            logger.info(f"Iniciando OCR ELITE SINGLE-PASS con idioma: {language}, modo: {config_mode}")
             
-            # FIX: NUEVO - Procesamiento dual-pass con detección de zonas grises
-            # REASON: Usuario requiere conservación extrema de caracteres y procesamiento especializado de zonas grises
-            # IMPACT: Maximiza extracción de texto y preserva símbolos/espacios
+            # FIX: OCR ELITE de UNA SOLA PASADA - ELIMINA COMPLETAMENTE DUAL-PASS
+            # REASON: Estrategia ELITE requiere eliminación total de procesamiento redundante
+            # IMPACT: Velocidad superior y eficiencia máxima
+            start_time = time.time()
             
-            # FIX: Usar configuración especializada para dual-pass que preserva todos los símbolos
-            # REASON: Usuario requiere conservación extrema de espacios y símbolos */.- etc.
-            # IMPACT: Máxima preservación de caracteres y símbolos en el texto extraído
-            tesseract_config_dual = self.tesseract_configs.get('dual_pass_optimized', tesseract_config)
+            # Extracción ELITE única y completa
+            texto_completo_crudo = pytesseract.image_to_string(
+                pil_image, 
+                lang=language, 
+                config=tesseract_config
+            ).strip()
             
-            # Ejecutar procesamiento dual-pass
-            resultado_dual_pass = self._procesar_dual_pass(image_path, language, config_mode, tesseract_config_dual)
+            # Obtener datos detallados para análisis ELITE
+            ocr_data = pytesseract.image_to_data(
+                pil_image, 
+                lang=language, 
+                config=tesseract_config, 
+                output_type=pytesseract.Output.DICT
+            )
             
-            # FIX: Extraer y limpiar texto principal del dual-pass
-            # REASON: Aplicar limpieza también al texto del primer pass
-            # IMPACT: Consistencia en la limpieza de todo el texto extraído
-            texto_completo_crudo = resultado_dual_pass['texto_final_concatenado']
+            ocr_time = time.time() - start_time
+            
+            # FIX: Limpiar texto con conservación extrema de caracteres
+            # REASON: Mantiene filosofía de conservación extrema en estrategia ELITE
+            # IMPACT: Preserva todos los caracteres importantes sin pérdidas
             texto_completo = self._limpiar_y_espaciar_texto(texto_completo_crudo)
             
-            # Usar datos OCR del primer pass para estadísticas detalladas
-            ocr_data = resultado_dual_pass['primer_pass']['ocr_data']
+            logger.info(f"OCR ELITE completado en {ocr_time:.2f}s")
+            logger.info(f"Texto extraído ELITE: {len(texto_completo)} caracteres")
             
-            # Procesar resultados consolidados
+            # FIX: Procesar resultados ELITE sin información dual-pass
+            # REASON: Elimina completamente referencias al sistema dual-pass anterior
+            # IMPACT: Estructura de datos limpia y consistente con estrategia ELITE
             resultado_ocr = {
                 'texto_completo': texto_completo,
-                # FIX: NUEVO - Incluir información del procesamiento dual-pass
-                'dual_pass_info': {
-                    'primer_pass_caracteres': resultado_dual_pass['primer_pass']['caracteres'],
-                    'segundo_pass_caracteres': resultado_dual_pass['segundo_pass']['caracteres_adicionales'],
-                    'zonas_grises_detectadas': resultado_dual_pass['zonas_grises_detectadas'],
-                    'zonas_procesadas': resultado_dual_pass['segundo_pass']['zonas_procesadas'],
-                    'elementos_detectados': resultado_dual_pass['elementos_detectados']
-                },
+                'total_caracteres': len(texto_completo),
+                'tiempo_procesamiento': round(ocr_time, 3),
+                'metodo_extraccion': 'ELITE_SINGLE_PASS',
+                'configuracion_tesseract': config_mode,
+                'imagen_elite_valores_unicos': int(len(unique_values)),
                 'estadisticas_ocr': self._analizar_estadisticas_ocr(ocr_data),
                 'palabras_detectadas': self._extraer_palabras_con_confianza(ocr_data),
                 'confianza_promedio': self._calcular_confianza_promedio(ocr_data),
-                'calidad_extraccion': self._evaluar_calidad_extraccion(ocr_data, texto_completo)
+                'calidad_extraccion': self._evaluar_calidad_extraccion(ocr_data, texto_completo),
+                'deteccion_inteligente': deteccion_inteligente
             }
             
             # Extraer datos financieros si se solicita
             if extract_financial:
                 resultado_ocr['datos_financieros'] = self._extraer_datos_financieros(texto_completo)
             
-            logger.info(f"OCR dual-pass completado. Texto final: {len(resultado_ocr['texto_completo'])} caracteres")
+            # FIX: Convertir tipos NumPy para serialización JSON
+            # REASON: Evita errores de serialización JSON con tipos NumPy
+            # IMPACT: Garantiza compatibilidad completa con JSON
+            resultado_ocr = self._convert_numpy_types(resultado_ocr)
+            
+            logger.info(f"OCR ELITE SINGLE-PASS completado exitosamente. Total: {len(texto_completo)} caracteres")
             return resultado_ocr
             
         except Exception as e:
-            logger.error(f"Error en OCR: {str(e)}")
-            return {'error': str(e)}
+            logger.error(f"Error en OCR ELITE: {str(e)}")
+            return {
+                'error': str(e),
+                'texto_completo': '',
+                'total_caracteres': 0,
+                'metodo_extraccion': 'ELITE_SINGLE_PASS_ERROR'
+            }
     
     def _analizar_estadisticas_ocr(self, ocr_data):
         """Analiza estadísticas detalladas de los resultados de OCR"""
@@ -698,6 +721,26 @@ class AplicadorOCR:
         texto = texto.strip()
         
         return texto
+    
+    def _convert_numpy_types(self, obj):
+        """
+        FIX: Convierte TODOS los tipos NumPy y problemáticos a tipos nativos Python para serialización JSON
+        REASON: Los valores float32/int64/bool de NumPy y operaciones booleanas no son serializables en JSON
+        IMPACT: Garantiza serialización completa sin errores de tipo
+        """
+        if isinstance(obj, dict):
+            return {key: self._convert_numpy_types(value) for key, value in obj.items()}
+        elif isinstance(obj, list):
+            return [self._convert_numpy_types(item) for item in obj]
+        elif isinstance(obj, np.integer):
+            return int(obj)
+        elif isinstance(obj, np.floating):
+            return float(obj)
+        elif isinstance(obj, np.bool_):
+            return bool(obj)
+        elif isinstance(obj, np.ndarray):
+            return obj.tolist()
+        return obj
 
 def main():
     """Función principal para uso por línea de comandos"""
