@@ -221,20 +221,26 @@ class MejoradorOCR:
                 intensidad_seccion = np.mean(seccion)
                 hist_seccion = cv2.calcHist([seccion], [0], None, [256], [0, 256])
                 
-                # Detectar texto blanco (200-255) sobre fondo oscuro (0-100)
-                pixeles_muy_claros = np.sum(hist_seccion[200:256])  # Texto blanco potencial
-                pixeles_oscuros_seccion = np.sum(hist_seccion[0:100])  # Fondo oscuro
+                # Detectar zonas oscuras que necesitan inversión (criterios más amplios)
+                pixeles_muy_claros = np.sum(hist_seccion[180:256])  # Texto claro potencial (ampliado)
+                pixeles_oscuros_seccion = np.sum(hist_seccion[0:120])  # Fondo oscuro (ampliado)
+                pixeles_grises_oscuros = np.sum(hist_seccion[50:150])  # Grises oscuros
                 total_pixeles_seccion = seccion.shape[0] * seccion.shape[1]
                 
-                porcentaje_texto_blanco = pixeles_muy_claros / total_pixeles_seccion
+                porcentaje_texto_claro = pixeles_muy_claros / total_pixeles_seccion
                 porcentaje_fondo_oscuro_seccion = pixeles_oscuros_seccion / total_pixeles_seccion
+                porcentaje_grises_oscuros = pixeles_grises_oscuros / total_pixeles_seccion
                 
-                # Invertir solo si detecta texto blanco sobre fondo oscuro en esta sección
-                if (porcentaje_texto_blanco > 0.05 and  # Al menos 5% texto blanco
-                    porcentaje_fondo_oscuro_seccion > 0.4 and  # Al menos 40% fondo oscuro
-                    intensidad_seccion < 120):  # Intensidad general oscura
-                    
-                    # Aplicar inversión solo a esta sección
+                # Criterios más amplios para detectar toda la zona oscura
+                es_zona_oscura = (
+                    intensidad_seccion < 140 and  # Intensidad más permisiva
+                    (porcentaje_fondo_oscuro_seccion > 0.3 or  # 30% fondo oscuro, o
+                     porcentaje_grises_oscuros > 0.5 or        # 50% grises oscuros, o
+                     (porcentaje_texto_claro > 0.02 and intensidad_seccion < 100))  # Texto claro con fondo muy oscuro
+                )
+                
+                # Aplicar inversión si se detecta zona oscura
+                if es_zona_oscura:
                     current[y_inicio:y_final, :] = cv2.bitwise_not(seccion)
                     zonas_invertidas += 1
             
