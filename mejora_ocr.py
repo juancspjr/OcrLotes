@@ -1372,14 +1372,13 @@ class MejoradorOCR:
                 cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_contraste_suave.png"), current)
                 step_counter += 1
         
-        # PASO 4: Binarización adaptativa solo si es necesaria
+        # PASO 4: Binarización ELITE solo si es necesaria (preserva letras finas)
         edge_density = deteccion_inteligente.get('edge_density', 0)
         if edge_density < 0.015:  # Solo si los bordes no están bien definidos
-            current = cv2.adaptiveThreshold(current, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, 
-                                          cv2.THRESH_BINARY, 11, 2)
-            resultado['pasos_aplicados'].append(f'{step_counter:02d}_binarizacion_adaptativa')
+            current = self._aplicar_binarizacion_elite(current, {}, resultado)
+            resultado['pasos_aplicados'].append(f'{step_counter:02d}_binarizacion_elite')
             if save_steps and output_dir:
-                cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_binarizacion_adaptativa.png"), current)
+                cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_binarizacion_elite.png"), current)
                 step_counter += 1
         
         resultado['parametros_aplicados']['screenshot_processing'] = {
@@ -1430,12 +1429,11 @@ class MejoradorOCR:
             cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_contraste_tradicional.png"), current)
             step_counter += 1
         
-        # PASO 4: Binarización adaptativa
-        current = cv2.adaptiveThreshold(current, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, 
-                                      cv2.THRESH_BINARY, 11, 2)
-        resultado['pasos_aplicados'].append(f'{step_counter:02d}_binarizacion_tradicional')
+        # PASO 4: Binarización ELITE (preserva letras finas)
+        current = self._aplicar_binarizacion_elite(current, {}, resultado)
+        resultado['pasos_aplicados'].append(f'{step_counter:02d}_binarizacion_elite')
         if save_steps and output_dir:
-            cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_binarizacion_tradicional.png"), current)
+            cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_binarizacion_elite.png"), current)
         
         resultado['parametros_aplicados']['documento_processing'] = {
             'redimensionamiento_aplicado': bool(current.shape[1] < 600),

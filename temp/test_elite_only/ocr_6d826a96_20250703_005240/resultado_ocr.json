@@ -1,0 +1,260 @@
+{
+  "texto_completo": "Eldinerofueenviado Bs .313,02 /4- DineroRpido 7/ BBVAProvincial Numerocelular : 04125318244 Identificacin : v 27061025 Concepto : Pago Fecha : 20/06/ 2025 Referencia : 000012071",
+  "total_caracteres": 177,
+  "tiempo_procesamiento": 5.586,
+  "metodo_extraccion": "ELITE_SINGLE_PASS",
+  "configuracion_tesseract": "high_confidence",
+  "imagen_elite_valores_unicos": 2,
+  "estadisticas_ocr": {
+    "total_palabras": 26,
+    "palabras_validas": 14,
+    "confianza_promedio": 53.86,
+    "confianza_minima": 0,
+    "confianza_maxima": 96,
+    "palabras_alta_confianza": 7,
+    "palabras_baja_confianza": 5,
+    "distribucion_confianza": {
+      "excelente (90-100)": 7,
+      "buena (70-89)": 0,
+      "regular (50-69)": 2,
+      "baja (30-49)": 0,
+      "muy_baja (0-29)": 5
+    }
+  },
+  "palabras_detectadas": [
+    {
+      "texto": "04125318244",
+      "confianza": 96,
+      "posicion": {
+        "x": 392,
+        "y": 651,
+        "width": 224,
+        "height": 28
+      },
+      "categoria_confianza": "excelente"
+    },
+    {
+      "texto": "000012071",
+      "confianza": 95,
+      "posicion": {
+        "x": 392,
+        "y": 1046,
+        "width": 182,
+        "height": 27
+      },
+      "categoria_confianza": "excelente"
+    },
+    {
+      "texto": "Concepto:",
+      "confianza": 92,
+      "posicion": {
+        "x": 44,
+        "y": 845,
+        "width": 165,
+        "height": 43
+      },
+      "categoria_confianza": "excelente"
+    },
+    {
+      "texto": "Fecha:",
+      "confianza": 92,
+      "posicion": {
+        "x": 45,
+        "y": 942,
+        "width": 100,
+        "height": 46
+      },
+      "categoria_confianza": "excelente"
+    },
+    {
+      "texto": "Referencia:",
+      "confianza": 92,
+      "posicion": {
+        "x": 45,
+        "y": 1042,
+        "width": 179,
+        "height": 38
+      },
+      "categoria_confianza": "excelente"
+    },
+    {
+      "texto": "Pago",
+      "confianza": 91,
+      "posicion": {
+        "x": 393,
+        "y": 849,
+        "width": 77,
+        "height": 35
+      },
+      "categoria_confianza": "excelente"
+    },
+    {
+      "texto": "20/06/2025",
+      "confianza": 91,
+      "posicion": {
+        "x": 392,
+        "y": 948,
+        "width": 213,
+        "height": 27
+      },
+      "categoria_confianza": "excelente"
+    },
+    {
+      "texto": "v27061025",
+      "confianza": 55,
+      "posicion": {
+        "x": 392,
+        "y": 751,
+        "width": 186,
+        "height": 27
+      },
+      "categoria_confianza": "aceptable"
+    },
+    {
+      "texto": "Bs.313,02",
+      "confianza": 50,
+      "posicion": {
+        "x": 345,
+        "y": 198,
+        "width": 323,
+        "height": 71
+      },
+      "categoria_confianza": "aceptable"
+    },
+    {
+      "texto": "Eldinerofueenviado",
+      "confianza": 0,
+      "posicion": {
+        "x": 269,
+        "y": 64,
+        "width": 484,
+        "height": 40
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "/4-DineroRpido",
+      "confianza": 0,
+      "posicion": {
+        "x": 360,
+        "y": 399,
+        "width": 295,
+        "height": 38
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "7/BBVAProvincial",
+      "confianza": 0,
+      "posicion": {
+        "x": 360,
+        "y": 432,
+        "width": 295,
+        "height": 35
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "Numerocelular:",
+      "confianza": 0,
+      "posicion": {
+        "x": 45,
+        "y": 652,
+        "width": 258,
+        "height": 27
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "Identificacin:",
+      "confianza": 0,
+      "posicion": {
+        "x": 45,
+        "y": 751,
+        "width": 227,
+        "height": 27
+      },
+      "categoria_confianza": "baja"
+    }
+  ],
+  "confianza_promedio": {
+    "simple": 53.86,
+    "ponderada": 42.35,
+    "palabras_evaluadas": 14
+  },
+  "calidad_extraccion": {
+    "caracteres_totales": 154,
+    "palabras_totales": 24,
+    "densidad_informacion": 0.87,
+    "errores_detectados": [],
+    "puntuacion_calidad": 73.85714285714286,
+    "categoria": "Buena",
+    "recomendaciones": [
+      "Calidad de extracción satisfactoria"
+    ]
+  },
+  "deteccion_inteligente": {
+    "tipo_imagen": "documento_escaneado",
+    "esquema_color": "texto_oscuro_fondo_claro",
+    "inversion_requerida": false,
+    "ui_elements_detectados": true,
+    "aspect_ratio": 0.9435185185185185,
+    "calidad_digital": false,
+    "dark_percentage": 47.04657745361328,
+    "light_percentage": 52.95342254638672,
+    "edge_density": 0.020272234943481262,
+    "noise_estimate": 57.67172958714207,
+    "confianza_deteccion": 0.4
+  },
+  "datos_financieros": {
+    "amount": [
+      {
+        "valor": "313,02",
+        "posicion_texto": 23
+      },
+      {
+        "valor": "4",
+        "posicion_texto": 31
+      },
+      {
+        "valor": "7",
+        "posicion_texto": 46
+      },
+      {
+        "valor": "041",
+        "posicion_texto": 80
+      },
+      {
+        "valor": "253",
+        "posicion_texto": 83
+      }
+    ],
+    "reference": [
+      {
+        "valor": "erencia",
+        "posicion_texto": 158
+      }
+    ],
+    "phone": [
+      {
+        "valor": "04125318244",
+        "posicion_texto": 80
+      }
+    ],
+    "analisis_documento": {
+      "tipo": "desconocido",
+      "confianza": 0,
+      "keywords_encontradas": []
+    },
+    "resumen_extraido": {
+      "montos_encontrados": 5,
+      "fechas_encontradas": 0,
+      "referencias_encontradas": 1,
+      "cuentas_encontradas": 0,
+      "telefonos_encontrados": 1,
+      "total_elementos": 7,
+      "completitud_porcentaje": 50
+    }
+  },
+  "tiempo": 5.6
+}
