@@ -1,0 +1,297 @@
+{
+  "texto_completo": "n . te?Bancamiga NUMERODEREFERENCIA : 190018901378 Q MONTODELAOPERACIN : Bs .313,602 CI / RIFBENEFICIARIO : V - 27061025 TELFBENEFICIARIO : 04125318244 BANCO : MERCANTIL FECHA : 20/06/ 2507 :00pm CONCEPTO : pagodeAdriana",
+  "total_caracteres": 220,
+  "tiempo_procesamiento": 1.916,
+  "metodo_extraccion": "ELITE_SINGLE_PASS",
+  "configuracion_tesseract": "high_confidence",
+  "imagen_elite_valores_unicos": 244,
+  "estadisticas_ocr": {
+    "total_palabras": 36,
+    "palabras_validas": 17,
+    "confianza_promedio": 37.06,
+    "confianza_minima": 0,
+    "confianza_maxima": 96,
+    "palabras_alta_confianza": 6,
+    "palabras_baja_confianza": 9,
+    "distribucion_confianza": {
+      "excelente (90-100)": 4,
+      "buena (70-89)": 2,
+      "regular (50-69)": 1,
+      "baja (30-49)": 1,
+      "muy_baja (0-29)": 9
+    }
+  },
+  "palabras_detectadas": [
+    {
+      "texto": "04125318244",
+      "confianza": 96,
+      "posicion": {
+        "x": 94,
+        "y": 733,
+        "width": 250,
+        "height": 27
+      },
+      "categoria_confianza": "excelente"
+    },
+    {
+      "texto": "BANCO:",
+      "confianza": 91,
+      "posicion": {
+        "x": 95,
+        "y": 798,
+        "width": 117,
+        "height": 23
+      },
+      "categoria_confianza": "excelente"
+    },
+    {
+      "texto": "MERCANTIL",
+      "confianza": 91,
+      "posicion": {
+        "x": 95,
+        "y": 860,
+        "width": 210,
+        "height": 27
+      },
+      "categoria_confianza": "excelente"
+    },
+    {
+      "texto": "CONCEPTO:",
+      "confianza": 91,
+      "posicion": {
+        "x": 94,
+        "y": 1052,
+        "width": 177,
+        "height": 23
+      },
+      "categoria_confianza": "excelente"
+    },
+    {
+      "texto": "FECHA:",
+      "confianza": 88,
+      "posicion": {
+        "x": 95,
+        "y": 925,
+        "width": 108,
+        "height": 23
+      },
+      "categoria_confianza": "buena"
+    },
+    {
+      "texto": ".",
+      "confianza": 72,
+      "posicion": {
+        "x": 610,
+        "y": 67,
+        "width": 12,
+        "height": 13
+      },
+      "categoria_confianza": "buena"
+    },
+    {
+      "texto": "V-27061025",
+      "confianza": 63,
+      "posicion": {
+        "x": 93,
+        "y": 606,
+        "width": 221,
+        "height": 27
+      },
+      "categoria_confianza": "aceptable"
+    },
+    {
+      "texto": "n",
+      "confianza": 38,
+      "posicion": {
+        "x": 214,
+        "y": 50,
+        "width": 75,
+        "height": 35
+      },
+      "categoria_confianza": "aceptable"
+    },
+    {
+      "texto": "te?Bancamiga",
+      "confianza": 0,
+      "posicion": {
+        "x": 206,
+        "y": 61,
+        "width": 507,
+        "height": 88
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "NUMERODEREFERENCIA:",
+      "confianza": 0,
+      "posicion": {
+        "x": 264,
+        "y": 231,
+        "width": 394,
+        "height": 23
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "190018901378Q",
+      "confianza": 0,
+      "posicion": {
+        "x": 195,
+        "y": 296,
+        "width": 493,
+        "height": 50
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "MONTODELAOPERACIN:",
+      "confianza": 0,
+      "posicion": {
+        "x": 254,
+        "y": 381,
+        "width": 414,
+        "height": 30
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "Bs.313,602",
+      "confianza": 0,
+      "posicion": {
+        "x": 328,
+        "y": 455,
+        "width": 266,
+        "height": 46
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "CI/RIFBENEFICIARIO:",
+      "confianza": 0,
+      "posicion": {
+        "x": 94,
+        "y": 543,
+        "width": 322,
+        "height": 26
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "TELFBENEFICIARIO:",
+      "confianza": 0,
+      "posicion": {
+        "x": 92,
+        "y": 671,
+        "width": 303,
+        "height": 23
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "20/06/2507:00pm",
+      "confianza": 0,
+      "posicion": {
+        "x": 95,
+        "y": 986,
+        "width": 330,
+        "height": 35
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "pagodeAdriana",
+      "confianza": 0,
+      "posicion": {
+        "x": 95,
+        "y": 1114,
+        "width": 276,
+        "height": 34
+      },
+      "categoria_confianza": "baja"
+    }
+  ],
+  "confianza_promedio": {
+    "simple": 37.06,
+    "ponderada": 23.85,
+    "palabras_evaluadas": 17
+  },
+  "calidad_extraccion": {
+    "caracteres_totales": 189,
+    "palabras_totales": 32,
+    "densidad_informacion": 0.859,
+    "errores_detectados": [],
+    "puntuacion_calidad": 57.05882352941177,
+    "categoria": "Regular",
+    "recomendaciones": [
+      "Calidad de extracción satisfactoria"
+    ]
+  },
+  "deteccion_inteligente": {
+    "tipo_imagen": "screenshot_movil",
+    "esquema_color": "texto_oscuro_fondo_claro",
+    "inversion_requerida": false,
+    "ui_elements_detectados": true,
+    "aspect_ratio": 0.7415185783521809,
+    "calidad_digital": false,
+    "dark_percentage": 3.0692028999328613,
+    "light_percentage": 96.93079376220703,
+    "edge_density": 0.022118217238430105,
+    "noise_estimate": 68.51417769289004,
+    "confianza_deteccion": 0.6000000000000001
+  },
+  "datos_financieros": {
+    "amount": [
+      {
+        "valor": "190",
+        "posicion_texto": 38
+      },
+      {
+        "valor": "018",
+        "posicion_texto": 41
+      },
+      {
+        "valor": "901",
+        "posicion_texto": 44
+      },
+      {
+        "valor": "378",
+        "posicion_texto": 47
+      },
+      {
+        "valor": "313,60",
+        "posicion_texto": 77
+      }
+    ],
+    "reference": [
+      {
+        "valor": "ERENCIA",
+        "posicion_texto": 28
+      }
+    ],
+    "phone": [
+      {
+        "valor": "19001890137",
+        "posicion_texto": 38
+      },
+      {
+        "valor": "04125318244",
+        "posicion_texto": 140
+      }
+    ],
+    "analisis_documento": {
+      "tipo": "desconocido",
+      "confianza": 0,
+      "keywords_encontradas": []
+    },
+    "resumen_extraido": {
+      "montos_encontrados": 5,
+      "fechas_encontradas": 0,
+      "referencias_encontradas": 1,
+      "cuentas_encontradas": 0,
+      "telefonos_encontrados": 2,
+      "total_elementos": 8,
+      "completitud_porcentaje": 50
+    }
+  },
+  "tiempo": 1.926
+}

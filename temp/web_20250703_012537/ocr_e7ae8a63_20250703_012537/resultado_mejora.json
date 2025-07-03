@@ -1,0 +1,53 @@
+{
+  "perfil_usado": "rapido",
+  "pasos_aplicados": [
+    "00_maxima_claridad_letras",
+    "03_unsharp_suave",
+    "04_contraste_suave"
+  ],
+  "metricas_antes": {
+    "brillo_promedio": 247.2532838121786,
+    "contraste": 33.32472861494132,
+    "nitidez": 580.5021258548295,
+    "rango_dinamico": 231.0
+  },
+  "parametros_aplicados": {
+    "screenshot_processing": {
+      "upscaling_applied": false,
+      "unsharp_radius": 1.0,
+      "unsharp_amount": 0.3,
+      "contrast_adjustment": true,
+      "binarization_applied": false
+    }
+  },
+  "tiempo_procesamiento": 0.082,
+  "estrategia_aplicada": "Screenshot Móvil - Conservación Extrema",
+  "metricas_despues": {
+    "brillo_promedio": 246.91147961607908,
+    "contraste": 38.859237046584866,
+    "nitidez": 1868.8876570193686,
+    "rango_dinamico": 255.0
+  },
+  "imagen_mejorada": "temp/web_20250703_012537/ocr_e7ae8a63_20250703_012537/imagen_mejorada.png",
+  "mejora_calidad": {
+    "contraste": {
+      "antes": 33.32,
+      "despues": 38.86,
+      "cambio": 5.53,
+      "porcentaje": 16.6
+    },
+    "nitidez": {
+      "antes": 580.5,
+      "despues": 1868.89,
+      "cambio": 1288.39,
+      "porcentaje": 221.9
+    },
+    "rango_dinamico": {
+      "antes": 231.0,
+      "despues": 255.0,
+      "cambio": 24.0,
+      "porcentaje": 10.4
+    }
+  },
+  "tiempo": 0.098
+}
