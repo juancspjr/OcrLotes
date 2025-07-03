@@ -451,9 +451,11 @@ class AplicadorOCR:
             # REASON: La zona gris principal "104,54 Bs" requiere un rango más amplio de detección
             # IMPACT: Captura correcta de todas las zonas grises, incluyendo la zona principal
             
-            # Detectar zonas grises con rango ampliado (80-200) para capturar más variaciones
+            # FIX: Rangos optimizados para preservar texto (0-99) y solo procesar grises puros (100-220)
+            # REASON: Evitar procesar texto oscuro (80-99) que puede ser válido
+            # IMPACT: Mejor preservación de texto mientras se capturan fondos grises
             gray_mask_primary = np.zeros_like(gray)
-            gray_mask_primary[(gray >= 80) & (gray <= 200)] = 255
+            gray_mask_primary[(gray >= 100) & (gray <= 220)] = 255
             
             # Detectar zonas grises específicas (rango medio 120-170 para zonas típicas)
             gray_mask_secondary = np.zeros_like(gray)

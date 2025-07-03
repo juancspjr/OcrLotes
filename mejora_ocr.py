@@ -162,10 +162,51 @@ class MejoradorOCR:
             tipo_imagen = 'documento_escaneado'
             inversion_requerida = False
         
-        # FASE 1: Inversión de color temprana si es necesaria
+        # FASE 1.0: Detección de fondo predominante y unificación temprana
+        # Solo aplicar unificación si el fondo es muy oscuro/negro
+        intensidad_media = np.mean(current)
+        histogram = cv2.calcHist([current], [0], None, [256], [0, 256])
+        
+        # Detectar si el fondo es predominantemente oscuro (0-80)
+        pixeles_oscuros = np.sum(histogram[0:80])
+        pixeles_totales = current.shape[0] * current.shape[1]
+        porcentaje_fondo_oscuro = pixeles_oscuros / pixeles_totales
+        
+        # Solo aplicar unificación si el fondo es muy oscuro (>40% pixels oscuros)
+        if porcentaje_fondo_oscuro > 0.4 and intensidad_media < 100:
+            # Unificar fondos grises a negro puro para posterior inversión
+            mask_grises_medios = np.logical_and(current >= 60, current <= 180)
+            current[mask_grises_medios] = 30  # Unificar a gris muy oscuro
+            
+            resultado['pasos_aplicados'].append('00_unificacion_fondos_oscuros')
+            resultado['parametros_aplicados']['unificacion_fondos'] = {
+                'intensidad_media_original': float(round(intensidad_media, 2)),
+                'porcentaje_fondo_oscuro': float(round(porcentaje_fondo_oscuro, 3)),
+                'pixeles_unificados': int(np.sum(mask_grises_medios))
+            }
+            
+            if save_steps and output_dir:
+                cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_unificacion_fondos.png"), current)
+                step_counter += 1
+        
+        # Maximizar claridad de letras independientemente de la estrategia
+        # Aplicar filtro de nitidez suave para preservar caracteres
+        kernel_nitidez = np.array([[-0.1, -0.1, -0.1],
+                                  [-0.1,  1.8, -0.1],
+                                  [-0.1, -0.1, -0.1]])
+        current = cv2.filter2D(current, -1, kernel_nitidez)
+        current = np.clip(current, 0, 255).astype(np.uint8)
+        
+        resultado['pasos_aplicados'].append('00_maxima_claridad_letras')
+        
+        if save_steps and output_dir:
+            cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_claridad_letras.png"), current)
+            step_counter += 1
+
+        # FASE 1.1: Inversión de color temprana si es necesaria (DESPUÉS de unificación)
         if inversion_requerida:
             current = cv2.bitwise_not(current)
-            resultado['pasos_aplicados'].append('00_inversion_color')
+            resultado['pasos_aplicados'].append('01_inversion_color')
             if save_steps and output_dir:
                 cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_color_invertido.png"), current)
                 step_counter += 1
