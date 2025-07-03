@@ -229,7 +229,7 @@ TEMP_FILE_CONFIG = {
     'prefix': 'ocr_process_',
     'image_format': 'png',
     'keep_temp_files': False,  # Cambiar a True para depuración
-    'max_temp_age_hours': 24
+    'max_temp_age_hours': 4
 }
 
 # Configuración del servidor web
