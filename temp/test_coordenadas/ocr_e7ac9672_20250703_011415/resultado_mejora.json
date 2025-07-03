@@ -1,0 +1,66 @@
+{
+  "perfil_usado": "rapido",
+  "pasos_aplicados": [
+    "00_maxima_claridad_letras",
+    "01_inversion_localizada",
+    "04_bilateral_filter",
+    "05_contraste_adaptativo",
+    "06_binarizacion_tradicional"
+  ],
+  "metricas_antes": {
+    "brillo_promedio": 160.1375595173191,
+    "contraste": 98.57317257981079,
+    "nitidez": 682.5306717903944,
+    "rango_dinamico": 255.0
+  },
+  "parametros_aplicados": {
+    "inversion_localizada": {
+      "zonas_detectadas": 5,
+      "total_secciones": 10,
+      "porcentaje_zonas_invertidas": 0.5
+    },
+    "contraste_adaptativo": {
+      "alpha_calculado": 1.1,
+      "beta_calculado": -5,
+      "intensidad_promedio": 215.86,
+      "desviacion_estandar": 54.55,
+      "estrategia": "adaptativo_preservando_letras"
+    },
+    "documento_processing": {
+      "redimensionamiento_aplicado": false,
+      "filtro_bilateral": true,
+      "contraste_alpha": 1.1,
+      "contraste_beta": 10
+    }
+  },
+  "tiempo_procesamiento": 0.099,
+  "estrategia_aplicada": "Documento Escaneado - Procesamiento Tradicional",
+  "metricas_despues": {
+    "brillo_promedio": 246.25531566895648,
+    "contraste": 46.405010509281176,
+    "nitidez": 4709.95788354596,
+    "rango_dinamico": 255.0
+  },
+  "imagen_mejorada": "temp/test_coordenadas/ocr_e7ac9672_20250703_011415/imagen_mejorada.png",
+  "mejora_calidad": {
+    "contraste": {
+      "antes": 98.57,
+      "despues": 46.41,
+      "cambio": -52.17,
+      "porcentaje": -52.9
+    },
+    "nitidez": {
+      "antes": 682.53,
+      "despues": 4709.96,
+      "cambio": 4027.43,
+      "porcentaje": 590.1
+    },
+    "rango_dinamico": {
+      "antes": 255.0,
+      "despues": 255.0,
+      "cambio": 0.0,
+      "porcentaje": 0.0
+    }
+  },
+  "tiempo": 0.121
+}

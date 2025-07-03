@@ -1,0 +1,1045 @@
+{
+  "execution_id": "432c08c3",
+  "timestamp": "20250703_010454",
+  "input_image": "uploads/20250703_010454_Imagen_de_WhatsApp_2025-06-21_a_las_18.44.16_1197a1f0.jpg",
+  "temp_directory": "temp/web_20250703_010454/ocr_432c08c3_20250703_010454",
+  "parametros": {
+    "language": "spa",
+    "profile": "rapido",
+    "save_intermediate": true
+  },
+  "etapas": {
+    "1_validacion": {
+      "tiempo": 0.08,
+      "diagnostico": {
+        "imagen_info": {
+          "ancho": 720,
+          "alto": 777,
+          "resolucion_total": 559440,
+          "canales": 3,
+          "modo": "RGB",
+          "formato": "JPEG",
+          "brillo_promedio": 216.25975797225797,
+          "desviacion_brillo": 32.26108526814381,
+          "rango_dinamico": 255.0,
+          "histogram": [
+            130.0,
+            21.0,
+            17.0,
+            37.0,
+            32.0,
+            36.0,
+            51.0,
+            65.0,
+            56.0,
+            55.0,
+            78.0,
+            78.0,
+            66.0,
+            90.0,
+            121.0,
+            111.0,
+            132.0,
+            120.0,
+            155.0,
+            161.0,
+            152.0,
+            217.0,
+            239.0,
+            247.0,
+            276.0,
+            247.0,
+            313.0,
+            358.0,
+            336.0,
+            308.0,
+            350.0,
+            1077.0,
+            374.0,
+            360.0,
+            305.0,
+            270.0,
+            262.0,
+            303.0,
+            297.0,
+            255.0,
+            214.0,
+            190.0,
+            208.0,
+            209.0,
+            172.0,
+            207.0,
+            164.0,
+            151.0,
+            135.0,
+            149.0,
+            135.0,
+            114.0,
+            109.0,
+            100.0,
+            95.0,
+            104.0,
+            92.0,
+            81.0,
+            101.0,
+            89.0,
+            96.0,
+            91.0,
+            84.0,
+            103.0,
+            100.0,
+            84.0,
+            79.0,
+            93.0,
+            108.0,
+            100.0,
+            119.0,
+            107.0,
+            127.0,
+            125.0,
+            139.0,
+            133.0,
+            189.0,
+            165.0,
+            168.0,
+            185.0,
+            190.0,
+            464.0,
+            218.0,
+            729.0,
+            431.0,
+            287.0,
+            825.0,
+            176.0,
+            180.0,
+            133.0,
+            136.0,
+            123.0,
+            123.0,
+            114.0,
+            92.0,
+            90.0,
+            83.0,
+            80.0,
+            102.0,
+            94.0,
+            83.0,
+            78.0,
+            70.0,
+            100.0,
+            92.0,
+            73.0,
+            109.0,
+            88.0,
+            73.0,
+            70.0,
+            81.0,
+            89.0,
+            94.0,
+            83.0,
+            117.0,
+            87.0,
+            87.0,
+            81.0,
+            83.0,
+            62.0,
+            74.0,
+            75.0,
+            61.0,
+            65.0,
+            89.0,
+            75.0,
+            61.0,
+            64.0,
+            65.0,
+            88.0,
+            93.0,
+            89.0,
+            76.0,
+            75.0,
+            98.0,
+            74.0,
+            96.0,
+            80.0,
+            100.0,
+            88.0,
+            93.0,
+            80.0,
+            74.0,
+            96.0,
+            80.0,
+            97.0,
+            78.0,
+            91.0,
+            104.0,
+            77.0,
+            90.0,
+            85.0,
+            95.0,
+            90.0,
+            112.0,
+            90.0,
+            142.0,
+            116.0,
+            103.0,
+            110.0,
+            85.0,
+            103.0,
+            107.0,
+            116.0,
+            82.0,
+            109.0,
+            107.0,
+            112.0,
+            96.0,
+            103.0,
+            104.0,
+            95.0,
+            105.0,
+            123.0,
+            112.0,
+            109.0,
+            95.0,
+            79.0,
+            88.0,
+            89.0,
+            125.0,
+            118.0,
+            103.0,
+            98.0,
+            117.0,
+            94.0,
+            94.0,
+            92.0,
+            121.0,
+            123.0,
+            134.0,
+            122.0,
+            138.0,
+            118.0,
+            114.0,
+            126.0,
+            129.0,
+            144.0,
+            148.0,
+            150.0,
+            131.0,
+            223.0,
+            199.0,
+            196.0,
+            246.0,
+            367.0,
+            460.0,
+            1719.0,
+            541.0,
+            488.0,
+            598.0,
+            657.0,
+            1364.0,
+            3246.0,
+            41992.0,
+            2500.0,
+            1768.0,
+            1305.0,
+            1463.0,
+            2851.0,
+            1916.0,
+            2195.0,
+            3515.0,
+            2778.0,
+            440239.0,
+            2547.0,
+            2227.0,
+            2031.0,
+            1685.0,
+            1484.0,
+            1342.0,
+            1118.0,
+            1003.0,
+            819.0,
+            707.0,
+            611.0,
+            473.0,
+            440.0,
+            397.0,
+            290.0,
+            258.0,
+            230.0,
+            187.0,
+            162.0,
+            146.0,
+            103.0,
+            92.0,
+            92.0,
+            72.0,
+            58.0,
+            43.0,
+            41.0,
+            34.0,
+            22.0,
+            24.0,
+            87.0
+          ],
+          "histogram_analysis": {
+            "picos_principales": [
+              [
+                224,
+                440239
+              ],
+              [
+                214,
+                41992
+              ]
+            ],
+            "rango_fondo_sugerido": 224,
+            "rango_texto_sugerido": 214,
+            "distribucion": {
+              "oscuras": 0.02753467671573162,
+              "medias": 0.0159999281167984,
+              "claras": 0.9564654231071472
+            },
+            "requiere_inversion": false,
+            "bimodal": true
+          },
+          "variaciones_fondo": {
+            "total_regiones_analizadas": 810,
+            "fondos_unicos_detectados": 5,
+            "variacion_fondos": 7.497662187082379,
+            "fondos_heterogeneos": false,
+            "rango_fondos": [
+              83,
+              224
+            ],
+            "requiere_unificacion_avanzada": false,
+            "regiones_variacion": [
+              {
+                "posicion": [
+                  0,
+                  0
+                ],
+                "media_local": 224.0,
+                "std_local": 0.0,
+                "pico_fondo": 224
+              },
+              {
+                "posicion": [
+                  25,
+                  0
+                ],
+                "media_local": 224.0,
+                "std_local": 0.0,
+                "pico_fondo": 224
+              },
+              {
+                "posicion": [
+                  50,
+                  0
+                ],
+                "media_local": 224.0,
+                "std_local": 0.0,
+                "pico_fondo": 224
+              },
+              {
+                "posicion": [
+                  75,
+                  0
+                ],
+                "media_local": 224.0,
+                "std_local": 0.0,
+                "pico_fondo": 224
+              },
+              {
+                "posicion": [
+                  100,
+                  0
+                ],
+                "media_local": 224.0,
+                "std_local": 0.0,
+                "pico_fondo": 224
+              },
+              {
+                "posicion": [
+                  125,
+                  0
+                ],
+                "media_local": 224.0,
+                "std_local": 0.0,
+                "pico_fondo": 224
+              },
+              {
+                "posicion": [
+                  150,
+                  0
+                ],
+                "media_local": 224.0,
+                "std_local": 0.0,
+                "pico_fondo": 224
+              },
+              {
+                "posicion": [
+                  175,
+                  0
+                ],
+                "media_local": 224.0,
+                "std_local": 0.0,
+                "pico_fondo": 224
+              },
+              {
+                "posicion": [
+                  200,
+                  0
+                ],
+                "media_local": 224.0,
+                "std_local": 0.0,
+                "pico_fondo": 224
+              },
+              {
+                "posicion": [
+                  225,
+                  0
+                ],
+                "media_local": 224.0,
+                "std_local": 0.0,
+                "pico_fondo": 224
+              }
+            ]
+          }
+        },
+        "calidad_imagen": {
+          "contraste": 32.26108526814381,
+          "blur_variance": 1111.5762254256463,
+          "entropy": 1.8827695846557617,
+          "gradiente_promedio": 34.54986821219665,
+          "brillo_promedio": 216.25975797225797,
+          "uniformidad_brillo": 32.26108526814381,
+          "calificacion_calidad": 65
+        },
+        "deteccion_texto": {
+          "regiones_detectadas": 25,
+          "area_total_texto": 77367,
+          "densidad_texto": 0.1382936507936508,
+          "regiones": [
+            {
+              "x": 410,
+              "y": 689,
+              "width": 96,
+              "height": 25,
+              "area": 2400,
+              "aspect_ratio": 3.84
+            },
+            {
+              "x": 319,
+              "y": 689,
+              "width": 67,
+              "height": 25,
+              "area": 1675,
+              "aspect_ratio": 2.68
+            },
+            {
+              "x": 55,
+              "y": 689,
+              "width": 83,
+              "height": 25,
+              "area": 2075,
+              "aspect_ratio": 3.32
+            },
+            {
+              "x": 512,
+              "y": 686,
+              "width": 154,
+              "height": 28,
+              "area": 4312,
+              "aspect_ratio": 5.5
+            },
+            {
+              "x": 584,
+              "y": 632,
+              "width": 81,
+              "height": 25,
+              "area": 2025,
+              "aspect_ratio": 3.24
+            },
+            {
+              "x": 534,
+              "y": 632,
+              "width": 50,
+              "height": 25,
+              "area": 1250,
+              "aspect_ratio": 2.0
+            },
+            {
+              "x": 485,
+              "y": 632,
+              "width": 49,
+              "height": 26,
+              "area": 1274,
+              "aspect_ratio": 1.8846153846153846
+            },
+            {
+              "x": 55,
+              "y": 632,
+              "width": 102,
+              "height": 25,
+              "area": 2550,
+              "aspect_ratio": 4.08
+            },
+            {
+              "x": 633,
+              "y": 575,
+              "width": 32,
+              "height": 25,
+              "area": 800,
+              "aspect_ratio": 1.28
+            },
+            {
+              "x": 504,
+              "y": 574,
+              "width": 128,
+              "height": 27,
+              "area": 3456,
+              "aspect_ratio": 4.7407407407407405
+            },
+            {
+              "x": 485,
+              "y": 574,
+              "width": 18,
+              "height": 25,
+              "area": 450,
+              "aspect_ratio": 0.72
+            },
+            {
+              "x": 55,
+              "y": 574,
+              "width": 90,
+              "height": 30,
+              "area": 2700,
+              "aspect_ratio": 3.0
+            },
+            {
+              "x": 534,
+              "y": 516,
+              "width": 131,
+              "height": 25,
+              "area": 3275,
+              "aspect_ratio": 5.24
+            },
+            {
+              "x": 55,
+              "y": 515,
+              "width": 167,
+              "height": 28,
+              "area": 4676,
+              "aspect_ratio": 5.964285714285714
+            },
+            {
+              "x": 434,
+              "y": 458,
+              "width": 195,
+              "height": 25,
+              "area": 4875,
+              "aspect_ratio": 7.8
+            },
+            {
+              "x": 55,
+              "y": 457,
+              "width": 132,
+              "height": 30,
+              "area": 3960,
+              "aspect_ratio": 4.4
+            },
+            {
+              "x": 640,
+              "y": 448,
+              "width": 33,
+              "height": 37,
+              "area": 1221,
+              "aspect_ratio": 0.8918918918918919
+            },
+            {
+              "x": 55,
+              "y": 400,
+              "width": 79,
+              "height": 26,
+              "area": 2054,
+              "aspect_ratio": 3.0384615384615383
+            },
+            {
+              "x": 519,
+              "y": 398,
+              "width": 146,
+              "height": 29,
+              "area": 4234,
+              "aspect_ratio": 5.0344827586206895
+            },
+            {
+              "x": 402,
+              "y": 308,
+              "width": 43,
+              "height": 32,
+              "area": 1376,
+              "aspect_ratio": 1.34375
+            }
+          ],
+          "cobertura_texto_porcentaje": 13.82936507936508
+        },
+        "ruido_artefactos": {
+          "nivel_ruido": 2.7583386958386957,
+          "desviacion_ruido": 10.727119621830765,
+          "porcentaje_pixeles_ruidosos": 4.484663234663235,
+          "uniformidad": 2.753810953810954,
+          "calificacion_ruido": "Bajo"
+        },
+        "geometria_orientacion": {
+          "sesgo_estimado": 2.5,
+          "lineas_detectadas": 40,
+          "simetria_horizontal": 0.35683900117874146,
+          "relacion_aspecto": 0.9266409266409267,
+          "requiere_deskew": true,
+          "orientacion_correcta": true
+        },
+        "deteccion_inteligente": {
+          "tipo_imagen": "documento_escaneado",
+          "esquema_color": "texto_oscuro_fondo_claro",
+          "inversion_requerida": false,
+          "ui_elements_detectados": true,
+          "aspect_ratio": 0.9266409266409267,
+          "calidad_digital": false,
+          "dark_percentage": 3.6297011375427246,
+          "light_percentage": 96.37030029296875,
+          "edge_density": 0.025577363077363077,
+          "noise_estimate": 60.6119043546338,
+          "confianza_deteccion": 0.4
+        },
+        "recomendaciones": {
+          "perfil_recomendado": "rapido",
+          "aplicar_deskew": true,
+          "nivel_denoise": "moderado",
+          "ajuste_contraste": false,
+          "filtro_bilateral": true,
+          "prioridades": [
+            "Corrección de sesgo necesaria"
+          ]
+        },
+        "puntuacion_general": {
+          "total": 76.7,
+          "calidad": 65,
+          "texto": 69.1,
+          "ruido": 100,
+          "geometria": 100,
+          "categoria": "Buena"
+        }
+      },
+      "imagen_original": "temp/web_20250703_010454/ocr_432c08c3_20250703_010454/00_imagen_original.png",
+      "archivo_diagnostico": "temp/web_20250703_010454/ocr_432c08c3_20250703_010454/diagnostico.json"
+    },
+    "2_mejora": {
+      "perfil_usado": "rapido",
+      "pasos_aplicados": [
+        "00_maxima_claridad_letras",
+        "03_bilateral_filter",
+        "04_contraste_adaptativo",
+        "05_binarizacion_tradicional"
+      ],
+      "metricas_antes": {
+        "brillo_promedio": 216.25975797225797,
+        "contraste": 32.26108526814381,
+        "nitidez": 1111.5762254256463,
+        "rango_dinamico": 255.0
+      },
+      "parametros_aplicados": {
+        "contraste_adaptativo": {
+          "alpha_calculado": 1.1,
+          "beta_calculado": -5,
+          "intensidad_promedio": 216.52,
+          "desviacion_estandar": 32.77,
+          "estrategia": "adaptativo_preservando_letras"
+        },
+        "documento_processing": {
+          "redimensionamiento_aplicado": false,
+          "filtro_bilateral": true,
+          "contraste_alpha": 1.1,
+          "contraste_beta": 10
+        }
+      },
+      "tiempo_procesamiento": 0.033,
+      "estrategia_aplicada": "Documento Escaneado - Procesamiento Tradicional",
+      "metricas_despues": {
+        "brillo_promedio": 245.58016945516945,
+        "contraste": 48.0970225839237,
+        "nitidez": 7312.763916011985,
+        "rango_dinamico": 255.0
+      },
+      "imagen_mejorada": "temp/web_20250703_010454/ocr_432c08c3_20250703_010454/imagen_mejorada.png",
+      "mejora_calidad": {
+        "contraste": {
+          "antes": 32.26,
+          "despues": 48.1,
+          "cambio": 15.84,
+          "porcentaje": 49.1
+        },
+        "nitidez": {
+          "antes": 1111.58,
+          "despues": 7312.76,
+          "cambio": 6201.19,
+          "porcentaje": 557.9
+        },
+        "rango_dinamico": {
+          "antes": 255.0,
+          "despues": 255.0,
+          "cambio": 0.0,
+          "porcentaje": 0.0
+        }
+      },
+      "tiempo": 0.04,
+      "archivo_resultado": "temp/web_20250703_010454/ocr_432c08c3_20250703_010454/resultado_mejora.json"
+    },
+    "3_ocr": {
+      "texto_completo": "$.7=V PagomovilBDVPersonas 104,52Bs , Fecha : 20/06/ 2025 Operacin : 003039243692 I_|:| Identificacin : 27061025 Origen : 0102 **** 2716 Destino : 04125318244 Banco : 0105 - BANCOMERCANTIL",
+      "total_caracteres": 188,
+      "tiempo_procesamiento": 0.954,
+      "metodo_extraccion": "ELITE_SINGLE_PASS",
+      "configuracion_tesseract": "high_confidence",
+      "imagen_elite_valores_unicos": 2,
+      "estadisticas_ocr": {
+        "total_palabras": 30,
+        "palabras_validas": 17,
+        "confianza_promedio": 54.65,
+        "confianza_minima": 0,
+        "confianza_maxima": 96,
+        "palabras_alta_confianza": 9,
+        "palabras_baja_confianza": 7,
+        "distribucion_confianza": {
+          "excelente (90-100)": 7,
+          "buena (70-89)": 2,
+          "regular (50-69)": 1,
+          "baja (30-49)": 0,
+          "muy_baja (0-29)": 7
+        }
+      },
+      "palabras_detectadas": [
+        {
+          "texto": "003039243692",
+          "confianza": 96,
+          "posicion": {
+            "x": 437,
+            "y": 461,
+            "width": 190,
+            "height": 19
+          },
+          "categoria_confianza": "excelente"
+        },
+        {
+          "texto": "04125318244",
+          "confianza": 96,
+          "posicion": {
+            "x": 488,
+            "y": 635,
+            "width": 175,
+            "height": 19
+          },
+          "categoria_confianza": "excelente"
+        },
+        {
+          "texto": "27061025",
+          "confianza": 94,
+          "posicion": {
+            "x": 536,
+            "y": 513,
+            "width": 126,
+            "height": 31
+          },
+          "categoria_confianza": "excelente"
+        },
+        {
+          "texto": "Fecha:",
+          "confianza": 93,
+          "posicion": {
+            "x": 58,
+            "y": 395,
+            "width": 73,
+            "height": 38
+          },
+          "categoria_confianza": "excelente"
+        },
+        {
+          "texto": "Destino:",
+          "confianza": 93,
+          "posicion": {
+            "x": 58,
+            "y": 625,
+            "width": 96,
+            "height": 39
+          },
+          "categoria_confianza": "excelente"
+        },
+        {
+          "texto": "20/06/2025",
+          "confianza": 92,
+          "posicion": {
+            "x": 521,
+            "y": 398,
+            "width": 142,
+            "height": 27
+          },
+          "categoria_confianza": "excelente"
+        },
+        {
+          "texto": "Origen:",
+          "confianza": 92,
+          "posicion": {
+            "x": 57,
+            "y": 573,
+            "width": 86,
+            "height": 33
+          },
+          "categoria_confianza": "excelente"
+        },
+        {
+          "texto": "Banco:",
+          "confianza": 89,
+          "posicion": {
+            "x": 58,
+            "y": 683,
+            "width": 78,
+            "height": 39
+          },
+          "categoria_confianza": "buena"
+        },
+        {
+          "texto": ",",
+          "confianza": 73,
+          "posicion": {
+            "x": 671,
+            "y": 345,
+            "width": 1,
+            "height": 5
+          },
+          "categoria_confianza": "buena"
+        },
+        {
+          "texto": "I_|:|",
+          "confianza": 60,
+          "posicion": {
+            "x": 642,
+            "y": 450,
+            "width": 28,
+            "height": 33
+          },
+          "categoria_confianza": "aceptable"
+        },
+        {
+          "texto": "$.7=V",
+          "confianza": 26,
+          "posicion": {
+            "x": 315,
+            "y": 50,
+            "width": 86,
+            "height": 70
+          },
+          "categoria_confianza": "baja"
+        },
+        {
+          "texto": "0102****2716",
+          "confianza": 25,
+          "posicion": {
+            "x": 488,
+            "y": 577,
+            "width": 175,
+            "height": 25
+          },
+          "categoria_confianza": "baja"
+        },
+        {
+          "texto": "PagomovilBDVPersonas",
+          "confianza": 0,
+          "posicion": {
+            "x": 161,
+            "y": 164,
+            "width": 399,
+            "height": 36
+          },
+          "categoria_confianza": "baja"
+        },
+        {
+          "texto": "104,52Bs",
+          "confianza": 0,
+          "posicion": {
+            "x": 280,
+            "y": 310,
+            "width": 162,
+            "height": 32
+          },
+          "categoria_confianza": "baja"
+        },
+        {
+          "texto": "Operacin:",
+          "confianza": 0,
+          "posicion": {
+            "x": 57,
+            "y": 455,
+            "width": 127,
+            "height": 34
+          },
+          "categoria_confianza": "baja"
+        },
+        {
+          "texto": "Identificacin:",
+          "confianza": 0,
+          "posicion": {
+            "x": 58,
+            "y": 509,
+            "width": 162,
+            "height": 39
+          },
+          "categoria_confianza": "baja"
+        },
+        {
+          "texto": "0105-BANCOMERCANTIL",
+          "confianza": 0,
+          "posicion": {
+            "x": 321,
+            "y": 686,
+            "width": 343,
+            "height": 27
+          },
+          "categoria_confianza": "baja"
+        }
+      ],
+      "confianza_promedio": {
+        "simple": 54.65,
+        "ponderada": 44.49,
+        "palabras_evaluadas": 17
+      },
+      "calidad_extraccion": {
+        "caracteres_totales": 161,
+        "palabras_totales": 28,
+        "densidad_informacion": 0.856,
+        "errores_detectados": [
+          "Caracteres sospechosos: 4"
+        ],
+        "puntuacion_calidad": 64.64705882352942,
+        "categoria": "Buena",
+        "recomendaciones": [
+          "Revisar manualmente caracteres especiales detectados"
+        ]
+      },
+      "deteccion_inteligente": {
+        "tipo_imagen": "documento_escaneado",
+        "esquema_color": "texto_oscuro_fondo_claro",
+        "inversion_requerida": false,
+        "ui_elements_detectados": true,
+        "aspect_ratio": 0.9266409266409267,
+        "calidad_digital": false,
+        "dark_percentage": 3.6297011375427246,
+        "light_percentage": 96.37030029296875,
+        "edge_density": 0.025577363077363077,
+        "noise_estimate": 60.6119043546338,
+        "confianza_deteccion": 0.4
+      },
+      "datos_financieros": {
+        "amount": [
+          {
+            "valor": "7",
+            "posicion_texto": 2
+          },
+          {
+            "valor": "104,52",
+            "posicion_texto": 27
+          },
+          {
+            "valor": "20",
+            "posicion_texto": 46
+          },
+          {
+            "valor": "06",
+            "posicion_texto": 49
+          },
+          {
+            "valor": "202",
+            "posicion_texto": 53
+          }
+        ],
+        "phone": [
+          {
+            "valor": "00303924369",
+            "posicion_texto": 69
+          },
+          {
+            "valor": "04125318244",
+            "posicion_texto": 147
+          }
+        ],
+        "analisis_documento": {
+          "tipo": "desconocido",
+          "confianza": 0,
+          "keywords_encontradas": []
+        },
+        "resumen_extraido": {
+          "montos_encontrados": 5,
+          "fechas_encontradas": 0,
+          "referencias_encontradas": 0,
+          "cuentas_encontradas": 0,
+          "telefonos_encontrados": 2,
+          "total_elementos": 7,
+          "completitud_porcentaje": 50
+        }
+      },
+      "tiempo": 0.959,
+      "archivo_resultado": "temp/web_20250703_010454/ocr_432c08c3_20250703_010454/resultado_ocr.json",
+      "archivo_texto": "temp/web_20250703_010454/ocr_432c08c3_20250703_010454/texto_extraido.txt"
+    }
+  },
+  "archivos_generados": [],
+  "resumen_final": {
+    "imagen_original": {
+      "dimensiones": "720x777",
+      "calidad_inicial": "Buena",
+      "puntuacion_calidad": 76.7
+    },
+    "procesamiento_aplicado": {
+      "perfil_usado": "rapido",
+      "pasos_ejecutados": 4,
+      "lista_pasos": [
+        "00_maxima_claridad_letras",
+        "03_bilateral_filter",
+        "04_contraste_adaptativo",
+        "05_binarizacion_tradicional"
+      ],
+      "tiempo_procesamiento": 0.033
+    },
+    "resultados_ocr": {
+      "caracteres_extraidos": 188,
+      "palabras_detectadas": 17,
+      "confianza_promedio": 54.65,
+      "confianza_ponderada": 44.49,
+      "calidad_extraccion": "Buena"
+    },
+    "datos_financieros": {
+      "tipo_documento": "desconocido",
+      "elementos_encontrados": 7,
+      "completitud": 50,
+      "montos_encontrados": 5,
+      "fechas_encontradas": 0
+    },
+    "rendimiento": {
+      "tiempo_total": 0,
+      "tiempo_validacion": 0.08,
+      "tiempo_mejora": 0.04,
+      "tiempo_ocr": 0.959
+    },
+    "calificacion_final": {
+      "puntuacion": 59.9,
+      "categoria": "Regular",
+      "componentes": {
+        "calidad_imagen": 76.7,
+        "confianza_ocr": 54.6,
+        "completitud_datos": 50.0
+      }
+    },
+    "recomendaciones": [
+      "Considerar usar perfil 'Normal' para mejor precisión",
+      "Revisar manualmente los datos críticos extraídos"
+    ]
+  },
+  "tiempo_total": 1.082
+}

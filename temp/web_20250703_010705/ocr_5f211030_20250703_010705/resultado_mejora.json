@@ -1,0 +1,60 @@
+{
+  "perfil_usado": "rapido",
+  "pasos_aplicados": [
+    "00_maxima_claridad_letras",
+    "03_bilateral_filter",
+    "04_contraste_adaptativo",
+    "05_binarizacion_tradicional"
+  ],
+  "metricas_antes": {
+    "brillo_promedio": 246.3826706535751,
+    "contraste": 45.947246390237595,
+    "nitidez": 3631.0563942234435,
+    "rango_dinamico": 255.0
+  },
+  "parametros_aplicados": {
+    "contraste_adaptativo": {
+      "alpha_calculado": 1.1,
+      "beta_calculado": -5,
+      "intensidad_promedio": 246.38,
+      "desviacion_estandar": 45.87,
+      "estrategia": "adaptativo_preservando_letras"
+    },
+    "documento_processing": {
+      "redimensionamiento_aplicado": false,
+      "filtro_bilateral": true,
+      "contraste_alpha": 1.1,
+      "contraste_beta": 10
+    }
+  },
+  "tiempo_procesamiento": 0.093,
+  "estrategia_aplicada": "Documento Escaneado - Procesamiento Tradicional",
+  "metricas_despues": {
+    "brillo_promedio": 246.39298190170373,
+    "contraste": 46.05115475773814,
+    "nitidez": 3667.2964939337776,
+    "rango_dinamico": 255.0
+  },
+  "imagen_mejorada": "temp/web_20250703_010705/ocr_5f211030_20250703_010705/imagen_mejorada.png",
+  "mejora_calidad": {
+    "contraste": {
+      "antes": 45.95,
+      "despues": 46.05,
+      "cambio": 0.1,
+      "porcentaje": 0.2
+    },
+    "nitidez": {
+      "antes": 3631.06,
+      "despues": 3667.3,
+      "cambio": 36.24,
+      "porcentaje": 1.0
+    },
+    "rango_dinamico": {
+      "antes": 255.0,
+      "despues": 255.0,
+      "cambio": 0.0,
+      "porcentaje": 0.0
+    }
+  },
+  "tiempo": 0.108
+}

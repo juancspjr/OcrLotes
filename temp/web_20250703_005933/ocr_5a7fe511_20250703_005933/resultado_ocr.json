@@ -1,0 +1,355 @@
+{
+  "texto_completo": "0412 - 5318244 TREBOLV - 27061025 - MERCANTIL Monto : Bs .104,54 Comisin : Bs,0,31 Total : Bs .104,85 Referencia : 490760890 [[) Codigoautorizador : 282413 Concepto : 90 CEmitirPago . =_ (eOay - OA,ENC Xe PEO e e S",
+  "total_caracteres": 214,
+  "tiempo_procesamiento": 1.431,
+  "metodo_extraccion": "ELITE_SINGLE_PASS",
+  "configuracion_tesseract": "high_confidence",
+  "imagen_elite_valores_unicos": 244,
+  "estadisticas_ocr": {
+    "total_palabras": 44,
+    "palabras_validas": 23,
+    "confianza_promedio": 43.13,
+    "confianza_minima": 0,
+    "confianza_maxima": 93,
+    "palabras_alta_confianza": 8,
+    "palabras_baja_confianza": 10,
+    "distribucion_confianza": {
+      "excelente (90-100)": 7,
+      "buena (70-89)": 1,
+      "regular (50-69)": 3,
+      "baja (30-49)": 2,
+      "muy_baja (0-29)": 10
+    }
+  },
+  "palabras_detectadas": [
+    {
+      "texto": "Total:",
+      "confianza": 93,
+      "posicion": {
+        "x": 86,
+        "y": 772,
+        "width": 98,
+        "height": 28
+      },
+      "categoria_confianza": "excelente"
+    },
+    {
+      "texto": "282413",
+      "confianza": 93,
+      "posicion": {
+        "x": 109,
+        "y": 1333,
+        "width": 131,
+        "height": 29
+      },
+      "categoria_confianza": "excelente"
+    },
+    {
+      "texto": "90",
+      "confianza": 93,
+      "posicion": {
+        "x": 109,
+        "y": 1554,
+        "width": 48,
+        "height": 28
+      },
+      "categoria_confianza": "excelente"
+    },
+    {
+      "texto": "MERCANTIL",
+      "confianza": 92,
+      "posicion": {
+        "x": 112,
+        "y": 222,
+        "width": 240,
+        "height": 29
+      },
+      "categoria_confianza": "excelente"
+    },
+    {
+      "texto": "Referencia:",
+      "confianza": 92,
+      "posicion": {
+        "x": 90,
+        "y": 993,
+        "width": 206,
+        "height": 29
+      },
+      "categoria_confianza": "excelente"
+    },
+    {
+      "texto": "Concepto:",
+      "confianza": 92,
+      "posicion": {
+        "x": 88,
+        "y": 1442,
+        "width": 188,
+        "height": 34
+      },
+      "categoria_confianza": "excelente"
+    },
+    {
+      "texto": "Monto:",
+      "confianza": 91,
+      "posicion": {
+        "x": 90,
+        "y": 330,
+        "width": 126,
+        "height": 27
+      },
+      "categoria_confianza": "excelente"
+    },
+    {
+      "texto": "e",
+      "confianza": 82,
+      "posicion": {
+        "x": 460,
+        "y": 2074,
+        "width": 44,
+        "height": 44
+      },
+      "categoria_confianza": "buena"
+    },
+    {
+      "texto": "S",
+      "confianza": 63,
+      "posicion": {
+        "x": 704,
+        "y": 2076,
+        "width": 38,
+        "height": 40
+      },
+      "categoria_confianza": "aceptable"
+    },
+    {
+      "texto": "e",
+      "confianza": 61,
+      "posicion": {
+        "x": 221,
+        "y": 2076,
+        "width": 40,
+        "height": 38
+      },
+      "categoria_confianza": "aceptable"
+    },
+    {
+      "texto": ".",
+      "confianza": 54,
+      "posicion": {
+        "x": 74,
+        "y": 1906,
+        "width": 240,
+        "height": 42
+      },
+      "categoria_confianza": "aceptable"
+    },
+    {
+      "texto": "=_",
+      "confianza": 45,
+      "posicion": {
+        "x": 650,
+        "y": 1905,
+        "width": 242,
+        "height": 43
+      },
+      "categoria_confianza": "aceptable"
+    },
+    {
+      "texto": "PEO",
+      "confianza": 38,
+      "posicion": {
+        "x": 819,
+        "y": 1994,
+        "width": 98,
+        "height": 18
+      },
+      "categoria_confianza": "aceptable"
+    },
+    {
+      "texto": "Xe",
+      "confianza": 3,
+      "posicion": {
+        "x": 632,
+        "y": 1994,
+        "width": 84,
+        "height": 18
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "0412-5318244TREBOLV-27061025-",
+      "confianza": 0,
+      "posicion": {
+        "x": 110,
+        "y": 152,
+        "width": 707,
+        "height": 29
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "Bs.104,54",
+      "confianza": 0,
+      "posicion": {
+        "x": 112,
+        "y": 444,
+        "width": 192,
+        "height": 33
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "Comisin:",
+      "confianza": 0,
+      "posicion": {
+        "x": 88,
+        "y": 550,
+        "width": 183,
+        "height": 28
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "Bs,0,31",
+      "confianza": 0,
+      "posicion": {
+        "x": 112,
+        "y": 664,
+        "width": 133,
+        "height": 35
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "Bs.104,85",
+      "confianza": 0,
+      "posicion": {
+        "x": 110,
+        "y": 884,
+        "width": 205,
+        "height": 36
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "490760890[[)",
+      "confianza": 0,
+      "posicion": {
+        "x": 108,
+        "y": 1087,
+        "width": 314,
+        "height": 61
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "Codigoautorizador:",
+      "confianza": 0,
+      "posicion": {
+        "x": 88,
+        "y": 1218,
+        "width": 369,
+        "height": 35
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "CEmitirPago",
+      "confianza": 0,
+      "posicion": {
+        "x": 341,
+        "y": 1777,
+        "width": 281,
+        "height": 39
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "(eOay-OA,ENC",
+      "confianza": 0,
+      "posicion": {
+        "x": 36,
+        "y": 1975,
+        "width": 492,
+        "height": 37
+      },
+      "categoria_confianza": "baja"
+    }
+  ],
+  "confianza_promedio": {
+    "simple": 43.13,
+    "ponderada": 28.49,
+    "palabras_evaluadas": 23
+  },
+  "calidad_extraccion": {
+    "caracteres_totales": 175,
+    "palabras_totales": 40,
+    "densidad_informacion": 0.818,
+    "errores_detectados": [
+      "Caracteres sospechosos: 2"
+    ],
+    "puntuacion_calidad": 53.130434782608695,
+    "categoria": "Regular",
+    "recomendaciones": [
+      "Revisar manualmente caracteres especiales detectados"
+    ]
+  },
+  "deteccion_inteligente": {
+    "tipo_imagen": "screenshot_movil",
+    "esquema_color": "texto_oscuro_fondo_claro",
+    "inversion_requerida": false,
+    "ui_elements_detectados": false,
+    "aspect_ratio": 0.4462962962962963,
+    "calidad_digital": false,
+    "dark_percentage": 17.086406707763672,
+    "light_percentage": 82.9135971069336,
+    "edge_density": 0.03415936683571538,
+    "noise_estimate": 79.66334582458597,
+    "confianza_deteccion": 0.2
+  },
+  "datos_financieros": {
+    "amount": [
+      {
+        "valor": "041",
+        "posicion_texto": 0
+      },
+      {
+        "valor": "2",
+        "posicion_texto": 3
+      },
+      {
+        "valor": "531",
+        "posicion_texto": 7
+      },
+      {
+        "valor": "824",
+        "posicion_texto": 10
+      },
+      {
+        "valor": "4",
+        "posicion_texto": 1
+      }
+    ],
+    "reference": [
+      {
+        "valor": "erencia",
+        "posicion_texto": 105
+      }
+    ],
+    "analisis_documento": {
+      "tipo": "desconocido",
+      "confianza": 0,
+      "keywords_encontradas": []
+    },
+    "resumen_extraido": {
+      "montos_encontrados": 5,
+      "fechas_encontradas": 0,
+      "referencias_encontradas": 1,
+      "cuentas_encontradas": 0,
+      "telefonos_encontrados": 0,
+      "total_elementos": 6,
+      "completitud_porcentaje": 50
+    }
+  },
+  "tiempo": 1.452
+}
