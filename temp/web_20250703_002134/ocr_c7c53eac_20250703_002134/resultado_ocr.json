@@ -1,0 +1,230 @@
+{
+  "texto_completo": "Eldinerofueenviado Bs .313,02 I)i|1&| 0 Rpido BBVAProvincial BANCOMERCANTIL NimeroehdazOMZEEZ Idaniiicadin VE7OSINES Fechee 20/03/ 2025 CUOOO",
+  "total_caracteres": 141,
+  "tiempo_procesamiento": 1.59,
+  "metodo_extraccion": "ELITE_SINGLE_PASS",
+  "configuracion_tesseract": "high_confidence",
+  "imagen_elite_valores_unicos": 2,
+  "estadisticas_ocr": {
+    "total_palabras": 24,
+    "palabras_validas": 12,
+    "confianza_promedio": 15.92,
+    "confianza_minima": 0,
+    "confianza_maxima": 78,
+    "palabras_alta_confianza": 1,
+    "palabras_baja_confianza": 9,
+    "distribucion_confianza": {
+      "excelente (90-100)": 0,
+      "buena (70-89)": 1,
+      "regular (50-69)": 0,
+      "baja (30-49)": 2,
+      "muy_baja (0-29)": 9
+    }
+  },
+  "palabras_detectadas": [
+    {
+      "texto": "Bs.313,02",
+      "confianza": 78,
+      "posicion": {
+        "x": 345,
+        "y": 198,
+        "width": 323,
+        "height": 71
+      },
+      "categoria_confianza": "buena"
+    },
+    {
+      "texto": "I)i|1&| 0",
+      "confianza": 46,
+      "posicion": {
+        "x": 359,
+        "y": 399,
+        "width": 178,
+        "height": 69
+      },
+      "categoria_confianza": "aceptable"
+    },
+    {
+      "texto": "VE7OSINES",
+      "confianza": 31,
+      "posicion": {
+        "x": 391,
+        "y": 750,
+        "width": 188,
+        "height": 28
+      },
+      "categoria_confianza": "aceptable"
+    },
+    {
+      "texto": "CUOOO",
+      "confianza": 21,
+      "posicion": {
+        "x": 392,
+        "y": 1046,
+        "width": 182,
+        "height": 28
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "Fechee",
+      "confianza": 15,
+      "posicion": {
+        "x": 36,
+        "y": 933,
+        "width": 117,
+        "height": 52
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "Eldinerofueenviado",
+      "confianza": 0,
+      "posicion": {
+        "x": 269,
+        "y": 64,
+        "width": 484,
+        "height": 40
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "Rpido",
+      "confianza": 0,
+      "posicion": {
+        "x": 548,
+        "y": 406,
+        "width": 107,
+        "height": 31
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "BBVAProvincial",
+      "confianza": 0,
+      "posicion": {
+        "x": 436,
+        "y": 439,
+        "width": 219,
+        "height": 25
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "BANCOMERCANTIL",
+      "confianza": 0,
+      "posicion": {
+        "x": 393,
+        "y": 548,
+        "width": 342,
+        "height": 38
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "NimeroehdazOMZEEZ",
+      "confianza": 0,
+      "posicion": {
+        "x": 40,
+        "y": 646,
+        "width": 577,
+        "height": 38
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "Idaniiicadin",
+      "confianza": 0,
+      "posicion": {
+        "x": 45,
+        "y": 750,
+        "width": 227,
+        "height": 28
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "20/03/2025",
+      "confianza": 0,
+      "posicion": {
+        "x": 391,
+        "y": 941,
+        "width": 214,
+        "height": 35
+      },
+      "categoria_confianza": "baja"
+    }
+  ],
+  "confianza_promedio": {
+    "simple": 15.92,
+    "ponderada": 12.42,
+    "palabras_evaluadas": 12
+  },
+  "calidad_extraccion": {
+    "caracteres_totales": 127,
+    "palabras_totales": 15,
+    "densidad_informacion": 0.901,
+    "errores_detectados": [
+      "Caracteres sospechosos: 2"
+    ],
+    "puntuacion_calidad": 25.916666666666664,
+    "categoria": "Deficiente",
+    "recomendaciones": [
+      "Considere mejorar la calidad de la imagen de entrada",
+      "Verifique la iluminación y el contraste",
+      "Revisar manualmente caracteres especiales detectados"
+    ]
+  },
+  "deteccion_inteligente": {
+    "tipo_imagen": "documento_escaneado",
+    "esquema_color": "texto_oscuro_fondo_claro",
+    "inversion_requerida": false,
+    "ui_elements_detectados": true,
+    "aspect_ratio": 0.9435185185185185,
+    "calidad_digital": false,
+    "dark_percentage": 47.04657745361328,
+    "light_percentage": 52.95342254638672,
+    "edge_density": 0.020272234943481262,
+    "noise_estimate": 57.67172958714207,
+    "confianza_deteccion": 0.4
+  },
+  "datos_financieros": {
+    "amount": [
+      {
+        "valor": "313,02",
+        "posicion_texto": 23
+      },
+      {
+        "valor": "1",
+        "posicion_texto": 24
+      },
+      {
+        "valor": "0",
+        "posicion_texto": 27
+      },
+      {
+        "valor": "7",
+        "posicion_texto": 109
+      },
+      {
+        "valor": "20",
+        "posicion_texto": 124
+      }
+    ],
+    "analisis_documento": {
+      "tipo": "desconocido",
+      "confianza": 0,
+      "keywords_encontradas": []
+    },
+    "resumen_extraido": {
+      "montos_encontrados": 5,
+      "fechas_encontradas": 0,
+      "referencias_encontradas": 0,
+      "cuentas_encontradas": 0,
+      "telefonos_encontrados": 0,
+      "total_elementos": 5,
+      "completitud_porcentaje": 50
+    }
+  },
+  "tiempo": 1.601
+}

@@ -162,36 +162,15 @@ class MejoradorOCR:
             tipo_imagen = 'documento_escaneado'
             inversion_requerida = False
         
-        # FASE 1.0: Detección avanzada de fondo e inversión para casos mixtos
-        # Análisis completo de histograma para detectar imágenes mixtas
+        # FASE 1.0: Detección inteligente de fondos - SOLO procesar zonas oscuras
+        # Análisis de histograma para detectar zonas que necesitan procesamiento
         intensidad_media = np.mean(current)
         histogram = cv2.calcHist([current], [0], None, [256], [0, 256])
         
-        # Detectar zonas oscuras y claras para casos mixtos
-        pixeles_muy_oscuros = np.sum(histogram[0:60])    # Negro/gris muy oscuro
-        pixeles_oscuros = np.sum(histogram[0:80])        # Rango oscuro amplio
-        pixeles_medios = np.sum(histogram[80:176])       # Grises medios
-        pixeles_claros = np.sum(histogram[176:256])      # Blancos/claros
+        # Detectar si el fondo es predominantemente oscuro (0-80)
+        pixeles_oscuros = np.sum(histogram[0:80])
         pixeles_totales = current.shape[0] * current.shape[1]
-        
-        porcentaje_muy_oscuros = pixeles_muy_oscuros / pixeles_totales
         porcentaje_fondo_oscuro = pixeles_oscuros / pixeles_totales
-        porcentaje_medios = pixeles_medios / pixeles_totales
-        porcentaje_claros = pixeles_claros / pixeles_totales
-        
-        # Detectar imagen mixta (parte oscura + parte clara significativas)
-        es_imagen_mixta = (porcentaje_muy_oscuros > 0.25 and porcentaje_claros > 0.25)
-        
-        # Para imágenes mixtas, forzar inversión si hay texto blanco sobre fondo oscuro
-        if es_imagen_mixta and not inversion_requerida:
-            inversion_requerida = True
-            resultado['pasos_aplicados'].append('00_deteccion_mixta_forzar_inversion')
-            resultado['parametros_aplicados']['deteccion_mixta'] = {
-                'porcentaje_muy_oscuros': float(round(porcentaje_muy_oscuros, 3)),
-                'porcentaje_claros': float(round(porcentaje_claros, 3)),
-                'imagen_mixta_detectada': True,
-                'inversion_forzada': True
-            }
         
         # Solo aplicar unificación si el fondo es muy oscuro (>40% pixels oscuros)
         if porcentaje_fondo_oscuro > 0.4 and intensidad_media < 100:
@@ -224,13 +203,22 @@ class MejoradorOCR:
             cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_claridad_letras.png"), current)
             step_counter += 1
 
-        # FASE 1.1: Inversión de color temprana si es necesaria (DESPUÉS de unificación)
-        if inversion_requerida:
+        # FASE 1.1: INVERSIÓN SELECTIVA - Solo para zonas verdaderamente oscuras
+        # NO aplicar inversión global que dañe letras ya correctas
+        if inversion_requerida and porcentaje_fondo_oscuro > 0.6:  # Solo si >60% es realmente oscuro
             current = cv2.bitwise_not(current)
-            resultado['pasos_aplicados'].append('01_inversion_color')
+            resultado['pasos_aplicados'].append('01_inversion_color_selectiva')
             if save_steps and output_dir:
-                cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_color_invertido.png"), current)
+                cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_inversion_selectiva.png"), current)
                 step_counter += 1
+        elif inversion_requerida:
+            # Si había inversión requerida pero no es predominantemente oscura, no aplicar
+            resultado['pasos_aplicados'].append('01_inversion_omitida_preservar_letras')
+            resultado['parametros_aplicados']['inversion_omitida'] = {
+                'razon': 'preservar_letras_correctas',
+                'porcentaje_oscuro': float(round(porcentaje_fondo_oscuro, 3)),
+                'umbral_requerido': 0.6
+            }
         
         # FASE 2: Aplicar estrategia especializada según tipo de imagen
         if tipo_imagen == "screenshot_movil":
