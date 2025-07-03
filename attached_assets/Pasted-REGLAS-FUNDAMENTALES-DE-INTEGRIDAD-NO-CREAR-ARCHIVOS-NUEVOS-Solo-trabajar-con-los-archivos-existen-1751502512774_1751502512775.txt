@@ -1,0 +1,43 @@
+REGLAS FUNDAMENTALES DE INTEGRIDAD
+NO CREAR ARCHIVOS NUEVOS - Solo trabajar con los archivos existentes
+NO CAMBIAR NOMBRES - Mantener todos los nombres de archivos, funciones y variables exactamente como están
+PRESERVAR CONEXIONES - Asegurar que todas las importaciones y llamadas entre módulos sigan funcionando
+CONSERVAR FUNCIONALIDAD - Nunca romper características que ya funcionan
+ARQUITECTURA EXISTENTE A RESPETAR
+main.py - Punto de entrada Flask
+app.py - Configuración de la aplicación web
+routes.py - Rutas y controladores web
+config.py - Configuraciones centralizadas
+validador_ocr.py - Validación y diagnóstico de imágenes
+mejora_ocr.py - Mejora y preprocesamiento adaptativo
+aplicador_ocr.py - Aplicación de OCR con Tesseract
+main_ocr_process.py - Orquestador principal
+METODOLOGÍA DE MEJORAS SEGURAS
+ANÁLISIS PREVIO: Revisar el código existente antes de cualquier cambio
+MEJORAS INCREMENTALES: Solo agregar funcionalidad a funciones existentes
+PRESERVAR FIRMAS: Mantener parámetros y valores de retorno originales
+COMPATIBILIDAD: Asegurar que cambios sean retrocompatibles
+VALIDACIÓN: Verificar que el flujo completo sigue funcionando
+PATRONES DE MEJORA PERMITIDOS
+Optimizar algoritmos existentes SIN cambiar interfaces
+Agregar parámetros opcionales (con valores por defecto)
+Mejorar logging y diagnósticos internos
+Optimizar performance manteniendo resultados
+Agregar validaciones adicionales sin afectar flujo principal
+CONEXIONES CRÍTICAS A PRESERVAR
+OrquestadorOCR → ValidadorOCR → MejoradorOCR → AplicadorOCR
+Flask routes → main_ocr_process.py
+Configuraciones en config.py usadas por todos los módulos
+Formatos de retorno JSON esperados por la interfaz web
+PROHIBICIONES ESTRICTAS
+❌ Crear nuevos archivos .py
+❌ Renombrar funciones, clases o variables existentes
+❌ Cambiar estructuras de datos de retorno
+❌ Modificar interfaces públicas de las clases
+❌ Alterar flujo principal de procesamiento
+❌ Romper importaciones entre módulos
+ANTES DE CUALQUIER CAMBIO
+Identificar exactamente qué función/módulo mejorar
+Entender cómo se conecta con el resto del sistema
+Planificar mejoras que sean aditivas, no destructivas
+Verificar que no se rompen tests/funcionalidad existente

@@ -203,22 +203,57 @@ class MejoradorOCR:
             cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_claridad_letras.png"), current)
             step_counter += 1
 
-        # FASE 1.1: INVERSIÓN SELECTIVA - Solo para zonas verdaderamente oscuras
-        # NO aplicar inversión global que dañe letras ya correctas
-        if inversion_requerida and porcentaje_fondo_oscuro > 0.6:  # Solo si >60% es realmente oscuro
-            current = cv2.bitwise_not(current)
-            resultado['pasos_aplicados'].append('01_inversion_color_selectiva')
-            if save_steps and output_dir:
-                cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_inversion_selectiva.png"), current)
-                step_counter += 1
-        elif inversion_requerida:
-            # Si había inversión requerida pero no es predominantemente oscura, no aplicar
-            resultado['pasos_aplicados'].append('01_inversion_omitida_preservar_letras')
-            resultado['parametros_aplicados']['inversion_omitida'] = {
-                'razon': 'preservar_letras_correctas',
-                'porcentaje_oscuro': float(round(porcentaje_fondo_oscuro, 3)),
-                'umbral_requerido': 0.6
-            }
+        # FASE 1.1: INVERSIÓN LOCALIZADA - Solo en secciones con letras blancas sobre fondo oscuro
+        # Detectar y procesar solo las zonas que requieren inversión
+        zonas_invertidas = 0
+        if inversion_requerida or porcentaje_fondo_oscuro > 0.25:  # Detectar zonas mixtas
+            # Dividir imagen en secciones horizontales para análisis localizado
+            h, w = current.shape
+            num_secciones = min(10, h // 50)  # Máximo 10 secciones, mínimo 50px cada una
+            alto_seccion = h // num_secciones
+            
+            for i in range(num_secciones):
+                y_inicio = i * alto_seccion
+                y_final = (i + 1) * alto_seccion if i < num_secciones - 1 else h
+                seccion = current[y_inicio:y_final, :]
+                
+                # Analizar si esta sección tiene letras blancas sobre fondo oscuro
+                intensidad_seccion = np.mean(seccion)
+                hist_seccion = cv2.calcHist([seccion], [0], None, [256], [0, 256])
+                
+                # Detectar texto blanco (200-255) sobre fondo oscuro (0-100)
+                pixeles_muy_claros = np.sum(hist_seccion[200:256])  # Texto blanco potencial
+                pixeles_oscuros_seccion = np.sum(hist_seccion[0:100])  # Fondo oscuro
+                total_pixeles_seccion = seccion.shape[0] * seccion.shape[1]
+                
+                porcentaje_texto_blanco = pixeles_muy_claros / total_pixeles_seccion
+                porcentaje_fondo_oscuro_seccion = pixeles_oscuros_seccion / total_pixeles_seccion
+                
+                # Invertir solo si detecta texto blanco sobre fondo oscuro en esta sección
+                if (porcentaje_texto_blanco > 0.05 and  # Al menos 5% texto blanco
+                    porcentaje_fondo_oscuro_seccion > 0.4 and  # Al menos 40% fondo oscuro
+                    intensidad_seccion < 120):  # Intensidad general oscura
+                    
+                    # Aplicar inversión solo a esta sección
+                    current[y_inicio:y_final, :] = cv2.bitwise_not(seccion)
+                    zonas_invertidas += 1
+            
+            if zonas_invertidas > 0:
+                resultado['pasos_aplicados'].append('01_inversion_localizada')
+                resultado['parametros_aplicados']['inversion_localizada'] = {
+                    'zonas_detectadas': int(zonas_invertidas),
+                    'total_secciones': int(num_secciones),
+                    'porcentaje_zonas_invertidas': float(round(zonas_invertidas / num_secciones, 3))
+                }
+                if save_steps and output_dir:
+                    cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_inversion_localizada.png"), current)
+                    step_counter += 1
+            else:
+                resultado['pasos_aplicados'].append('01_no_inversion_necesaria')
+                resultado['parametros_aplicados']['no_inversion'] = {
+                    'razon': 'no_texto_blanco_detectado',
+                    'secciones_analizadas': int(num_secciones)
+                }
         
         # FASE 2: Aplicar estrategia especializada según tipo de imagen
         if tipo_imagen == "screenshot_movil":
