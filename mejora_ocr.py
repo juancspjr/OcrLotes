@@ -1171,6 +1171,50 @@ class MejoradorOCR:
             logger.warning(f"Error evaluando componente: {str(e)}")
             return True  # En caso de error, preservar el componente
     
+    def _aplicar_contraste_adaptativo_preservando_letras(self, image, resultado):
+        """
+        FIX: Contraste adaptativo que preserva letras finas y no reduce contraste
+        REASON: El contraste tradicional fijo (alpha=1.1, beta=10) reduce contraste en lugar de mejorarlo
+        IMPACT: Mantiene contraste original mientras mejora definición de letras finas
+        """
+        import numpy as np
+        import cv2
+        
+        # Analizar la imagen para determinar parámetros adaptativos
+        mean_intensity = np.mean(image)
+        std_intensity = np.std(image)
+        
+        # Calcular parámetros adaptativos basados en el contenido
+        if mean_intensity < 100:  # Imagen oscura
+            alpha = 1.3  # Más contraste
+            beta = 20    # Más brillo
+        elif mean_intensity > 180:  # Imagen muy clara
+            alpha = 1.1  # Contraste conservador
+            beta = -5    # Reducir brillo ligeramente
+        else:  # Imagen normal
+            alpha = 1.2  # Contraste moderado
+            beta = 5     # Brillo ligero
+        
+        # Ajustar alpha basado en desviación estándar (variabilidad)
+        if std_intensity < 30:  # Bajo contraste natural
+            alpha += 0.2  # Aumentar más el contraste
+        elif std_intensity > 80:  # Alto contraste natural
+            alpha -= 0.1  # Ser más conservador
+        
+        # Aplicar contraste adaptativo
+        enhanced = cv2.convertScaleAbs(image, alpha=alpha, beta=beta)
+        
+        # Registrar parámetros usados
+        resultado['parametros_aplicados']['contraste_adaptativo'] = {
+            'alpha_calculado': float(round(alpha, 2)),
+            'beta_calculado': int(beta),
+            'intensidad_promedio': float(round(mean_intensity, 2)),
+            'desviacion_estandar': float(round(std_intensity, 2)),
+            'estrategia': 'adaptativo_preservando_letras'
+        }
+        
+        return enhanced
+    
     def _aplicar_binarizacion_elite(self, image, diagnostico, resultado):
         """
         FIX: Binarización ELITE AVANZADA con unificación de fondos heterogéneos y nitidez absoluta
@@ -1372,13 +1416,14 @@ class MejoradorOCR:
                 cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_contraste_suave.png"), current)
                 step_counter += 1
         
-        # PASO 4: Binarización ELITE solo si es necesaria (preserva letras finas)
+        # PASO 4: Binarización adaptativa solo si es necesaria
         edge_density = deteccion_inteligente.get('edge_density', 0)
         if edge_density < 0.015:  # Solo si los bordes no están bien definidos
-            current = self._aplicar_binarizacion_elite(current, {}, resultado)
-            resultado['pasos_aplicados'].append(f'{step_counter:02d}_binarizacion_elite')
+            current = cv2.adaptiveThreshold(current, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, 
+                                          cv2.THRESH_BINARY, 11, 2)
+            resultado['pasos_aplicados'].append(f'{step_counter:02d}_binarizacion_adaptativa')
             if save_steps and output_dir:
-                cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_binarizacion_elite.png"), current)
+                cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_binarizacion_adaptativa.png"), current)
                 step_counter += 1
         
         resultado['parametros_aplicados']['screenshot_processing'] = {
@@ -1422,18 +1467,19 @@ class MejoradorOCR:
                 cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_bilateral_filter.png"), current)
                 step_counter += 1
         
-        # PASO 3: Mejora de contraste
-        current = cv2.convertScaleAbs(current, alpha=1.1, beta=10)
-        resultado['pasos_aplicados'].append(f'{step_counter:02d}_contraste_tradicional')
+        # PASO 3: Mejora de contraste adaptativo (preserva letras finas)
+        current = self._aplicar_contraste_adaptativo_preservando_letras(current, resultado)
+        resultado['pasos_aplicados'].append(f'{step_counter:02d}_contraste_adaptativo')
         if save_steps and output_dir:
-            cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_contraste_tradicional.png"), current)
+            cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_contraste_adaptativo.png"), current)
             step_counter += 1
         
-        # PASO 4: Binarización ELITE (preserva letras finas)
-        current = self._aplicar_binarizacion_elite(current, {}, resultado)
-        resultado['pasos_aplicados'].append(f'{step_counter:02d}_binarizacion_elite')
+        # PASO 4: Binarización adaptativa
+        current = cv2.adaptiveThreshold(current, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, 
+                                      cv2.THRESH_BINARY, 11, 2)
+        resultado['pasos_aplicados'].append(f'{step_counter:02d}_binarizacion_tradicional')
         if save_steps and output_dir:
-            cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_binarizacion_elite.png"), current)
+            cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_binarizacion_tradicional.png"), current)
         
         resultado['parametros_aplicados']['documento_processing'] = {
             'redimensionamiento_aplicado': bool(current.shape[1] < 600),

@@ -1,0 +1,377 @@
+{
+  "texto_completo": "FAC C) Cuentadebitada TaCoren : BNCTtir, Beneficiano ALOaANOTRER .- TURSCAPIXAYTI Monto Taa Comision Total Bs .105,32 Referencia 490760968 (C) Codigoautonizador [ ] [ P EA o [ O o] )",
+  "total_caracteres": 182,
+  "tiempo_procesamiento": 1.029,
+  "metodo_extraccion": "ELITE_SINGLE_PASS",
+  "configuracion_tesseract": "high_confidence",
+  "imagen_elite_valores_unicos": 2,
+  "estadisticas_ocr": {
+    "total_palabras": 45,
+    "palabras_validas": 25,
+    "confianza_promedio": 24.56,
+    "confianza_minima": 0,
+    "confianza_maxima": 65,
+    "palabras_alta_confianza": 0,
+    "palabras_baja_confianza": 13,
+    "distribucion_confianza": {
+      "excelente (90-100)": 0,
+      "buena (70-89)": 0,
+      "regular (50-69)": 4,
+      "baja (30-49)": 8,
+      "muy_baja (0-29)": 13
+    }
+  },
+  "palabras_detectadas": [
+    {
+      "texto": "O",
+      "confianza": 65,
+      "posicion": {
+        "x": 99,
+        "y": 930,
+        "width": 18,
+        "height": 17
+      },
+      "categoria_confianza": "aceptable"
+    },
+    {
+      "texto": "Referencia",
+      "confianza": 64,
+      "posicion": {
+        "x": 40,
+        "y": 639,
+        "width": 88,
+        "height": 12
+      },
+      "categoria_confianza": "aceptable"
+    },
+    {
+      "texto": "o]",
+      "confianza": 61,
+      "posicion": {
+        "x": 206,
+        "y": 924,
+        "width": 24,
+        "height": 33
+      },
+      "categoria_confianza": "aceptable"
+    },
+    {
+      "texto": "[",
+      "confianza": 58,
+      "posicion": {
+        "x": 34,
+        "y": 853,
+        "width": 18,
+        "height": 19
+      },
+      "categoria_confianza": "aceptable"
+    },
+    {
+      "texto": "[",
+      "confianza": 46,
+      "posicion": {
+        "x": 367,
+        "y": 893,
+        "width": 43,
+        "height": 8
+      },
+      "categoria_confianza": "aceptable"
+    },
+    {
+      "texto": "Monto",
+      "confianza": 45,
+      "posicion": {
+        "x": 40,
+        "y": 343,
+        "width": 53,
+        "height": 11
+      },
+      "categoria_confianza": "aceptable"
+    },
+    {
+      "texto": "C)",
+      "confianza": 41,
+      "posicion": {
+        "x": 328,
+        "y": 15,
+        "width": 89,
+        "height": 14
+      },
+      "categoria_confianza": "aceptable"
+    },
+    {
+      "texto": "P",
+      "confianza": 39,
+      "posicion": {
+        "x": 378,
+        "y": 854,
+        "width": 21,
+        "height": 19
+      },
+      "categoria_confianza": "aceptable"
+    },
+    {
+      "texto": ")",
+      "confianza": 38,
+      "posicion": {
+        "x": 317,
+        "y": 930,
+        "width": 15,
+        "height": 17
+      },
+      "categoria_confianza": "aceptable"
+    },
+    {
+      "texto": "Comision",
+      "confianza": 37,
+      "posicion": {
+        "x": 39,
+        "y": 441,
+        "width": 78,
+        "height": 12
+      },
+      "categoria_confianza": "aceptable"
+    },
+    {
+      "texto": "]",
+      "confianza": 36,
+      "posicion": {
+        "x": 119,
+        "y": 855,
+        "width": 22,
+        "height": 16
+      },
+      "categoria_confianza": "aceptable"
+    },
+    {
+      "texto": "Total",
+      "confianza": 31,
+      "posicion": {
+        "x": 40,
+        "y": 541,
+        "width": 38,
+        "height": 11
+      },
+      "categoria_confianza": "aceptable"
+    },
+    {
+      "texto": "FAC",
+      "confianza": 24,
+      "posicion": {
+        "x": 16,
+        "y": 14,
+        "width": 143,
+        "height": 16
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "o",
+      "confianza": 13,
+      "posicion": {
+        "x": 283,
+        "y": 892,
+        "width": 38,
+        "height": 9
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "[",
+      "confianza": 11,
+      "posicion": {
+        "x": 291,
+        "y": 855,
+        "width": 22,
+        "height": 14
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "EA",
+      "confianza": 5,
+      "posicion": {
+        "x": 16,
+        "y": 892,
+        "width": 141,
+        "height": 9
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "Cuentadebitada",
+      "confianza": 0,
+      "posicion": {
+        "x": 39,
+        "y": 113,
+        "width": 141,
+        "height": 11
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "TaCoren:BNCTtir,",
+      "confianza": 0,
+      "posicion": {
+        "x": 62,
+        "y": 163,
+        "width": 231,
+        "height": 13
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "Beneficiano",
+      "confianza": 0,
+      "posicion": {
+        "x": 40,
+        "y": 211,
+        "width": 99,
+        "height": 12
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "ALOaANOTRER.-",
+      "confianza": 0,
+      "posicion": {
+        "x": 67,
+        "y": 262,
+        "width": 263,
+        "height": 14
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "TURSCAPIXAYTI",
+      "confianza": 0,
+      "posicion": {
+        "x": 56,
+        "y": 294,
+        "width": 194,
+        "height": 12
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "Taa",
+      "confianza": 0,
+      "posicion": {
+        "x": 51,
+        "y": 393,
+        "width": 84,
+        "height": 11
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "Bs.105,32",
+      "confianza": 0,
+      "posicion": {
+        "x": 49,
+        "y": 591,
+        "width": 88,
+        "height": 14
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "490760968(C)",
+      "confianza": 0,
+      "posicion": {
+        "x": 49,
+        "y": 681,
+        "width": 139,
+        "height": 27
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "Codigoautonizador",
+      "confianza": 0,
+      "posicion": {
+        "x": 39,
+        "y": 740,
+        "width": 161,
+        "height": 16
+      },
+      "categoria_confianza": "baja"
+    }
+  ],
+  "confianza_promedio": {
+    "simple": 24.56,
+    "ponderada": 12.47,
+    "palabras_evaluadas": 25
+  },
+  "calidad_extraccion": {
+    "caracteres_totales": 153,
+    "palabras_totales": 30,
+    "densidad_informacion": 0.841,
+    "errores_detectados": [
+      "Caracteres sospechosos: 2"
+    ],
+    "puntuacion_calidad": 34.56,
+    "categoria": "Deficiente",
+    "recomendaciones": [
+      "Considere mejorar la calidad de la imagen de entrada",
+      "Verifique la iluminación y el contraste",
+      "Revisar manualmente caracteres especiales detectados"
+    ]
+  },
+  "deteccion_inteligente": {
+    "tipo_imagen": "documento_escaneado",
+    "esquema_color": "texto_oscuro_fondo_claro",
+    "inversion_requerida": false,
+    "ui_elements_detectados": false,
+    "aspect_ratio": 0.44651162790697674,
+    "calidad_digital": false,
+    "dark_percentage": 17.741172790527344,
+    "light_percentage": 82.25882720947266,
+    "edge_density": 0.05857558139534884,
+    "noise_estimate": 90.02096850339134,
+    "confianza_deteccion": 0.2
+  },
+  "datos_financieros": {
+    "amount": [
+      {
+        "valor": "105,32",
+        "posicion_texto": 111
+      },
+      {
+        "valor": "490",
+        "posicion_texto": 129
+      },
+      {
+        "valor": "760",
+        "posicion_texto": 132
+      },
+      {
+        "valor": "968",
+        "posicion_texto": 135
+      }
+    ],
+    "reference": [
+      {
+        "valor": "erencia",
+        "posicion_texto": 121
+      }
+    ],
+    "analisis_documento": {
+      "tipo": "estado_cuenta",
+      "confianza": 25.0,
+      "keywords_encontradas": [
+        "cuenta"
+      ]
+    },
+    "resumen_extraido": {
+      "montos_encontrados": 4,
+      "fechas_encontradas": 0,
+      "referencias_encontradas": 1,
+      "cuentas_encontradas": 0,
+      "telefonos_encontrados": 0,
+      "total_elementos": 5,
+      "completitud_porcentaje": 50
+    }
+  },
+  "tiempo": 1.036
+}
