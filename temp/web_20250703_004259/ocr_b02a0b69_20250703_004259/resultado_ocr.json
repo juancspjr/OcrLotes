@@ -1,0 +1,337 @@
+{
+  "texto_completo": "UEMOSo ee I Ejecutadoexitosamente Cuentadebitada : Cta . CorrienteBNC :***949%6 Beneficiario : 0412 - 5318244 BINGOTREBOLV - 27061025 - MERCANTIL Monto : 8s .105,00 Comision : Bs .0,32 Total : Bs .105,32 Referencia : 490760968 [[) Cdigoautorizador : 282689 e_Ee 9",
+  "total_caracteres": 263,
+  "tiempo_procesamiento": 0.976,
+  "metodo_extraccion": "ELITE_SINGLE_PASS",
+  "configuracion_tesseract": "high_confidence",
+  "imagen_elite_valores_unicos": 2,
+  "estadisticas_ocr": {
+    "total_palabras": 43,
+    "palabras_validas": 21,
+    "confianza_promedio": 30.52,
+    "confianza_minima": 0,
+    "confianza_maxima": 92,
+    "palabras_alta_confianza": 6,
+    "palabras_baja_confianza": 13,
+    "distribucion_confianza": {
+      "excelente (90-100)": 2,
+      "buena (70-89)": 4,
+      "regular (50-69)": 1,
+      "baja (30-49)": 1,
+      "muy_baja (0-29)": 13
+    }
+  },
+  "palabras_detectadas": [
+    {
+      "texto": "Referencia:",
+      "confianza": 92,
+      "posicion": {
+        "x": 40,
+        "y": 638,
+        "width": 92,
+        "height": 14
+      },
+      "categoria_confianza": "excelente"
+    },
+    {
+      "texto": "Monto:",
+      "confianza": 91,
+      "posicion": {
+        "x": 40,
+        "y": 342,
+        "width": 57,
+        "height": 12
+      },
+      "categoria_confianza": "excelente"
+    },
+    {
+      "texto": "I",
+      "confianza": 88,
+      "posicion": {
+        "x": 38,
+        "y": 38,
+        "width": 6,
+        "height": 55
+      },
+      "categoria_confianza": "buena"
+    },
+    {
+      "texto": "Beneficiario:",
+      "confianza": 88,
+      "posicion": {
+        "x": 40,
+        "y": 211,
+        "width": 103,
+        "height": 13
+      },
+      "categoria_confianza": "buena"
+    },
+    {
+      "texto": "9",
+      "confianza": 81,
+      "posicion": {
+        "x": 311,
+        "y": 924,
+        "width": 27,
+        "height": 29
+      },
+      "categoria_confianza": "buena"
+    },
+    {
+      "texto": "282689",
+      "confianza": 78,
+      "posicion": {
+        "x": 49,
+        "y": 791,
+        "width": 64,
+        "height": 13
+      },
+      "categoria_confianza": "buena"
+    },
+    {
+      "texto": "Total:",
+      "confianza": 58,
+      "posicion": {
+        "x": 39,
+        "y": 540,
+        "width": 44,
+        "height": 13
+      },
+      "categoria_confianza": "aceptable"
+    },
+    {
+      "texto": "Bs.0,32",
+      "confianza": 44,
+      "posicion": {
+        "x": 49,
+        "y": 492,
+        "width": 66,
+        "height": 14
+      },
+      "categoria_confianza": "aceptable"
+    },
+    {
+      "texto": "ee",
+      "confianza": 21,
+      "posicion": {
+        "x": 102,
+        "y": 45,
+        "width": 210,
+        "height": 8
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "UEMOSo",
+      "confianza": 0,
+      "posicion": {
+        "x": 11,
+        "y": 8,
+        "width": 153,
+        "height": 27
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "Ejecutadoexitosamente",
+      "confianza": 0,
+      "posicion": {
+        "x": 55,
+        "y": 63,
+        "width": 220,
+        "height": 17
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "Cuentadebitada:",
+      "confianza": 0,
+      "posicion": {
+        "x": 39,
+        "y": 112,
+        "width": 146,
+        "height": 13
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "Cta.CorrienteBNC:***949%6",
+      "confianza": 0,
+      "posicion": {
+        "x": 49,
+        "y": 163,
+        "width": 247,
+        "height": 14
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "0412-5318244BINGOTREBOLV-",
+      "confianza": 0,
+      "posicion": {
+        "x": 49,
+        "y": 259,
+        "width": 291,
+        "height": 17
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "27061025-MERCANTIL",
+      "confianza": 0,
+      "posicion": {
+        "x": 49,
+        "y": 294,
+        "width": 209,
+        "height": 13
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "8s.105,00",
+      "confianza": 0,
+      "posicion": {
+        "x": 49,
+        "y": 393,
+        "width": 86,
+        "height": 15
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "Comision:",
+      "confianza": 0,
+      "posicion": {
+        "x": 39,
+        "y": 440,
+        "width": 83,
+        "height": 13
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "Bs.105,32",
+      "confianza": 0,
+      "posicion": {
+        "x": 49,
+        "y": 590,
+        "width": 89,
+        "height": 16
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "490760968[[)",
+      "confianza": 0,
+      "posicion": {
+        "x": 48,
+        "y": 681,
+        "width": 140,
+        "height": 27
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "Cdigoautorizador:",
+      "confianza": 0,
+      "posicion": {
+        "x": 39,
+        "y": 739,
+        "width": 166,
+        "height": 17
+      },
+      "categoria_confianza": "baja"
+    },
+    {
+      "texto": "e_Ee",
+      "confianza": 0,
+      "posicion": {
+        "x": 94,
+        "y": 923,
+        "width": 137,
+        "height": 30
+      },
+      "categoria_confianza": "baja"
+    }
+  ],
+  "confianza_promedio": {
+    "simple": 30.52,
+    "ponderada": 18.1,
+    "palabras_evaluadas": 21
+  },
+  "calidad_extraccion": {
+    "caracteres_totales": 223,
+    "palabras_totales": 41,
+    "densidad_informacion": 0.848,
+    "errores_detectados": [
+      "Caracteres sospechosos: 3"
+    ],
+    "puntuacion_calidad": 40.523809523809526,
+    "categoria": "Regular",
+    "recomendaciones": [
+      "Considere mejorar la calidad de la imagen de entrada",
+      "Verifique la iluminación y el contraste",
+      "Revisar manualmente caracteres especiales detectados"
+    ]
+  },
+  "deteccion_inteligente": {
+    "tipo_imagen": "documento_escaneado",
+    "esquema_color": "texto_oscuro_fondo_claro",
+    "inversion_requerida": false,
+    "ui_elements_detectados": false,
+    "aspect_ratio": 0.44651162790697674,
+    "calidad_digital": false,
+    "dark_percentage": 17.741172790527344,
+    "light_percentage": 82.25882720947266,
+    "edge_density": 0.05857558139534884,
+    "noise_estimate": 90.02096850339134,
+    "confianza_deteccion": 0.2
+  },
+  "datos_financieros": {
+    "amount": [
+      {
+        "valor": "949",
+        "posicion_texto": 74
+      },
+      {
+        "valor": "6",
+        "posicion_texto": 78
+      },
+      {
+        "valor": "041",
+        "posicion_texto": 95
+      },
+      {
+        "valor": "2",
+        "posicion_texto": 98
+      },
+      {
+        "valor": "531",
+        "posicion_texto": 102
+      }
+    ],
+    "reference": [
+      {
+        "valor": "erencia",
+        "posicion_texto": 207
+      }
+    ],
+    "analisis_documento": {
+      "tipo": "estado_cuenta",
+      "confianza": 25.0,
+      "keywords_encontradas": [
+        "cuenta"
+      ]
+    },
+    "resumen_extraido": {
+      "montos_encontrados": 5,
+      "fechas_encontradas": 0,
+      "referencias_encontradas": 1,
+      "cuentas_encontradas": 0,
+      "telefonos_encontrados": 0,
+      "total_elementos": 6,
+      "completitud_porcentaje": 50
+    }
+  },
+  "tiempo": 0.98
+}
