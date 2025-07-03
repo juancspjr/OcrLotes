@@ -162,15 +162,36 @@ class MejoradorOCR:
             tipo_imagen = 'documento_escaneado'
             inversion_requerida = False
         
-        # FASE 1.0: Detección de fondo predominante y unificación temprana
-        # Solo aplicar unificación si el fondo es muy oscuro/negro
+        # FASE 1.0: Detección avanzada de fondo e inversión para casos mixtos
+        # Análisis completo de histograma para detectar imágenes mixtas
         intensidad_media = np.mean(current)
         histogram = cv2.calcHist([current], [0], None, [256], [0, 256])
         
-        # Detectar si el fondo es predominantemente oscuro (0-80)
-        pixeles_oscuros = np.sum(histogram[0:80])
+        # Detectar zonas oscuras y claras para casos mixtos
+        pixeles_muy_oscuros = np.sum(histogram[0:60])    # Negro/gris muy oscuro
+        pixeles_oscuros = np.sum(histogram[0:80])        # Rango oscuro amplio
+        pixeles_medios = np.sum(histogram[80:176])       # Grises medios
+        pixeles_claros = np.sum(histogram[176:256])      # Blancos/claros
         pixeles_totales = current.shape[0] * current.shape[1]
+        
+        porcentaje_muy_oscuros = pixeles_muy_oscuros / pixeles_totales
         porcentaje_fondo_oscuro = pixeles_oscuros / pixeles_totales
+        porcentaje_medios = pixeles_medios / pixeles_totales
+        porcentaje_claros = pixeles_claros / pixeles_totales
+        
+        # Detectar imagen mixta (parte oscura + parte clara significativas)
+        es_imagen_mixta = (porcentaje_muy_oscuros > 0.25 and porcentaje_claros > 0.25)
+        
+        # Para imágenes mixtas, forzar inversión si hay texto blanco sobre fondo oscuro
+        if es_imagen_mixta and not inversion_requerida:
+            inversion_requerida = True
+            resultado['pasos_aplicados'].append('00_deteccion_mixta_forzar_inversion')
+            resultado['parametros_aplicados']['deteccion_mixta'] = {
+                'porcentaje_muy_oscuros': float(round(porcentaje_muy_oscuros, 3)),
+                'porcentaje_claros': float(round(porcentaje_claros, 3)),
+                'imagen_mixta_detectada': True,
+                'inversion_forzada': True
+            }
         
         # Solo aplicar unificación si el fondo es muy oscuro (>40% pixels oscuros)
         if porcentaje_fondo_oscuro > 0.4 and intensidad_media < 100:
