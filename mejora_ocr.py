@@ -238,68 +238,18 @@ class MejoradorOCR:
     
     def _aplicar_mejora_minimal(self, image, diagnostico, profile_config, resultado, save_steps, output_dir):
         """
-        FIX: Implementa mejora mínima con solo nitidez suave y ajustes de brillo/contraste
-        REASON: Usuario solicita procesamiento mínimo sin degradación agresiva de calidad
-        IMPACT: Preserva calidad original mientras mejora legibilidad de texto
+        FIX: MEJORA MÍNIMA COMPLETAMENTE ELIMINADA
+        REASON: Usuario solicita eliminar todo procesamiento que daña calidad
+        IMPACT: Preserva la imagen completamente original sin ninguna modificación
         """
-        current = image.copy()
-        step_counter = 2
-        
-        # Detectar si necesita inversión de colores (solo para fondos muy oscuros)
-        mean_intensity = np.mean(current)
-        if mean_intensity < 80:  # Solo para imágenes muy oscuras
-            current = cv2.bitwise_not(current)
-            resultado['pasos_aplicados'].append('01_inversion_colores')
-            if save_steps and output_dir:
-                cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_inversion.png"), current)
-                step_counter += 1
-        
-        # Paso 1: Ampliar imagen suavemente (solo si es pequeña)
-        h, w = current.shape
-        if h < 1000 or w < 1000:
-            scale_factor = min(2.0, 1500 / max(h, w))  # Ampliar hasta máximo 1500px
-            new_h, new_w = int(h * scale_factor), int(w * scale_factor)
-            current = cv2.resize(current, (new_w, new_h), interpolation=cv2.INTER_CUBIC)
-            resultado['pasos_aplicados'].append('02_ampliacion_suave')
-            resultado['parametros_aplicados']['ampliacion'] = {
-                'factor': float(round(scale_factor, 2)),
-                'tamano_original': [int(h), int(w)],
-                'tamano_nuevo': [int(new_h), int(new_w)]
-            }
-            if save_steps and output_dir:
-                cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_ampliacion.png"), current)
-                step_counter += 1
-        
-        # Paso 2: Ajuste suave de brillo y contraste
-        brightness = 10  # Aumentar brillo ligeramente
-        contrast = 1.1   # Aumentar contraste muy suavemente
-        current = cv2.convertScaleAbs(current, alpha=contrast, beta=brightness)
-        resultado['pasos_aplicados'].append('03_ajuste_suave_brillo_contraste')
-        resultado['parametros_aplicados']['ajuste_brillo_contraste'] = {
-            'brillo': int(brightness),
-            'contraste': float(contrast)
+        # NO SE APLICA NINGUNA MEJORA MÍNIMA
+        resultado['pasos_aplicados'].append('00_sin_procesamiento')
+        resultado['parametros_aplicados']['mejora_minimal_eliminada'] = {
+            'razon': 'eliminado_por_solicitud_usuario',
+            'impacto': 'preserva_imagen_original_completamente'
         }
-        if save_steps and output_dir:
-            cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_brillo_contraste.png"), current)
-            step_counter += 1
         
-        # Paso 3: Nitidez suave (solo si es necesario)
-        # Detectar si la imagen necesita nitidez
-        laplacian_var = cv2.Laplacian(current, cv2.CV_64F).var()
-        if laplacian_var < 100:  # Solo si está desenfocada
-            # Aplicar nitidez suave con kernel personalizado
-            kernel = np.array([[-0.5, -0.5, -0.5],
-                              [-0.5,  5.0, -0.5],
-                              [-0.5, -0.5, -0.5]])
-            current = cv2.filter2D(current, -1, kernel)
-            resultado['pasos_aplicados'].append('04_nitidez_suave')
-            resultado['parametros_aplicados']['nitidez'] = {
-                'metodo': 'kernel_suave',
-                'desenfoque_detectado': float(round(laplacian_var, 2))
-            }
-            if save_steps and output_dir:
-                cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_nitidez_suave.png"), current)
-                step_counter += 1
+        return image
         
         # Paso 4: Eliminación muy suave de ruido (solo si hay ruido significativo)
         noise_level = np.std(current)
@@ -482,54 +432,23 @@ class MejoradorOCR:
                     cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_deskew.png"), current)
                     step_counter += 1
         
-        # 3. Filtro bilateral SOLO si se detecta ruido significativo
-        if estrategia['bilateral_filter'] and estrategia['bilateral_filter'] != False:
-            if self._evaluar_necesidad_bilateral(current, diagnostico):
-                current = self._aplicar_filtro_bilateral(current, diagnostico, resultado)
-                if save_steps and output_dir:
-                    cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_bilateral.png"), current)
-                    step_counter += 1
+        # 3. FIX: FILTRO BILATERAL COMPLETAMENTE ELIMINADO
+        # REASON: Usuario solicita eliminar bilateral filter que daña calidad
+        # IMPACT: Preserva calidad original sin filtro bilateral
+        # NO SE APLICA FILTRO BILATERAL
         
         # 4. Eliminación de ruido OMITIDA para capturas digitales
         # (Los pasos 04_denoise y 05_denoise se eliminan completamente)
         
-        # 5. Mejora de contraste (siempre necesario)
-        if estrategia['contrast_enhancement']:
-            current = self._aplicar_mejora_contraste(current, diagnostico, resultado)
-            if save_steps and output_dir:
-                cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_contraste.png"), current)
-                step_counter += 1
+        # 5. FIX: MEJORA DE CONTRASTE COMPLETAMENTE ELIMINADA
+        # REASON: Usuario solicita eliminar contraste adaptativo que daña calidad
+        # IMPACT: Preserva contraste original sin modificaciones
+        # NO SE APLICA MEJORA DE CONTRASTE
         
-        # FIX: 5.1 Técnicas Avanzadas de Mejora - MÁS ALLÁ DEL UPSCALING
-        # REASON: Usuario solicita nuevas técnicas de mejora más sofisticadas
-        # IMPACT: Mejora significativa en calidad antes de binarización
-        
-        # profile_config ya está disponible como parámetro
-        if profile_config.get('advanced_binarization', False) or profile_config.get('character_conservation') == 'extreme':
-            
-            # 5.1a CLAHE Adaptativo para mejor distribución de contraste
-            current = self._aplicar_clahe_adaptativo(current, resultado)
-            if save_steps and output_dir:
-                cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_clahe.png"), current)
-                step_counter += 1
-            
-            # 5.1b Corrección Gamma Adaptativa
-            current = self._aplicar_correccion_gamma_adaptativa(current, resultado)
-            if save_steps and output_dir:
-                cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_gamma.png"), current)
-                step_counter += 1
-            
-            # 5.1c Unsharp Masking para nitidez preservando caracteres
-            current = self._aplicar_unsharp_mask(current, resultado)
-            if save_steps and output_dir:
-                cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_unsharp.png"), current)
-                step_counter += 1
-            
-            # 5.1d Realce de bordes inteligente
-            current = self._aplicar_realce_bordes(current, resultado)
-            if save_steps and output_dir:
-                cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_edges.png"), current)
-                step_counter += 1
+        # FIX: TÉCNICAS AVANZADAS DE MEJORA COMPLETAMENTE ELIMINADAS
+        # REASON: Usuario solicita eliminar todo procesamiento que daña calidad
+        # IMPACT: Preserva calidad original sin aplicar CLAHE, gamma, unsharp mask, ni realce de bordes
+        # NO SE APLICAN TÉCNICAS AVANZADAS
         
         # 6. BINARIZACIÓN ELIMINADA - Por solicitud del usuario
         # FIX: Eliminación completa del proceso de binarización
@@ -538,22 +457,15 @@ class MejoradorOCR:
         if False:  # Deshabilitado permanentemente
             pass
         
-        # 7. Operaciones morfológicas (mínimas para screenshots)
-        if estrategia['morphology'] == 'minimal':
-            current = self._aplicar_morfologia_minimal(current, resultado)
-        elif estrategia['morphology'] == 'full':
-            current = self._aplicar_morfologia(current, resultado)
+        # 7. FIX: OPERACIONES MORFOLÓGICAS COMPLETAMENTE ELIMINADAS
+        # REASON: Usuario solicita eliminar todo procesamiento que daña calidad
+        # IMPACT: Preserva estructura original sin operaciones morfológicas
+        # NO SE APLICAN OPERACIONES MORFOLÓGICAS
         
-        if estrategia['morphology'] != False and save_steps and output_dir:
-            cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_morfologia.png"), current)
-            step_counter += 1
-        
-        # 8. Nitidez SOLO si es necesario
-        if estrategia['sharpening'] == 'conditional' and self._evaluar_necesidad_nitidez(current, diagnostico):
-            current = self._aplicar_nitidez(current, diagnostico, resultado)
-            if save_steps and output_dir:
-                cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_nitidez.png"), current)
-                step_counter += 1
+        # 8. FIX: NITIDEZ COMPLETAMENTE ELIMINADA
+        # REASON: Usuario solicita eliminar toda nitidez que puede dañar calidad
+        # IMPACT: Preserva suavidad original sin filtros de nitidez
+        # NO SE APLICA NITIDEZ
         
         return current
     
@@ -631,71 +543,17 @@ class MejoradorOCR:
         return image  # Devolver imagen sin modificar
     
     def _aplicar_filtro_bilateral(self, image, diagnostico, resultado):
-        """Aplica filtro bilateral para reducir ruido preservando bordes"""
-        # FIX: Conservación extrema de caracteres - bilateral solo cuando realmente hay ruido
-        # REASON: Las capturas de pantalla digitales no necesitan bilateral, causa difuminación
-        # IMPACT: Preserva la nitidez original del texto digital
+        """
+        FIX: FILTRO BILATERAL COMPLETAMENTE ELIMINADO
+        REASON: Usuario reporta que bilateral filter daña la calidad de la imagen
+        IMPACT: Preserva la calidad original sin aplicar ningún filtro bilateral
+        """
+        # NO SE APLICA NINGÚN FILTRO BILATERAL
+        resultado['parametros_aplicados']['bilateral_eliminado'] = {
+            'razon': 'eliminado_por_solicitud_usuario',
+            'impacto': 'preserva_calidad_original'
+        }
         
-        ruido = diagnostico.get('ruido_artefactos', {})
-        noise_level = ruido.get('nivel_ruido', 10)
-        
-        # Detectar tipo de imagen
-        imagen_info = diagnostico.get('imagen_info', {})
-        width = imagen_info.get('ancho', 0)
-        height = imagen_info.get('alto', 0)
-        aspect_ratio = width / height if height > 0 else 1
-        
-        is_screenshot = (
-            aspect_ratio > 1.5 or
-            width > 1000 or
-            height > 600
-        )
-        
-        # Solo aplicar filtro bilateral si:
-        # 1. Hay ruido significativo (>15 para screenshots, >10 para documentos escaneados)
-        # 2. O no es screenshot y hay ruido moderado
-        noise_threshold = 15 if is_screenshot else 10
-        should_apply_bilateral = noise_level > noise_threshold
-        
-        # Inicializar parámetros por defecto
-        d, sigma_color, sigma_space = 5, 50, 50
-        
-        if should_apply_bilateral:
-            # Parámetros más conservadores para capturas de pantalla
-            if is_screenshot:
-                # Para screenshots: parámetros mínimos que preserven nitidez
-                if noise_level > 25:
-                    d, sigma_color, sigma_space = 5, 30, 30
-                else:
-                    d, sigma_color, sigma_space = 3, 20, 20
-            else:
-                # Para documentos escaneados: parámetros normales
-                if noise_level > 20:
-                    d, sigma_color, sigma_space = 9, 100, 100
-                elif noise_level > 10:
-                    d, sigma_color, sigma_space = 7, 75, 75
-                else:
-                    d, sigma_color, sigma_space = 5, 50, 50
-            
-            filtered = cv2.bilateralFilter(image, d, sigma_color, sigma_space)
-            
-            resultado['pasos_aplicados'].append('Filtro bilateral')
-            resultado['parametros_aplicados']['filtro_bilateral'] = {
-                'd': d, 'sigma_color': sigma_color, 'sigma_space': sigma_space,
-                'tipo_imagen': 'screenshot' if is_screenshot else 'escaneada',
-                'nivel_ruido': noise_level
-            }
-            
-            return filtered
-        else:
-            # Log por qué no se aplicó bilateral
-            resultado['parametros_aplicados']['bilateral_omitido'] = {
-                'razon': 'preservacion_nitidez',
-                'nivel_ruido': noise_level,
-                'umbral_requerido': noise_threshold,
-                'tipo_imagen': 'screenshot' if is_screenshot else 'escaneada'
-            }
-            
         return image
     
     def _aplicar_eliminacion_ruido(self, image, profile_config, resultado):
@@ -746,40 +604,32 @@ class MejoradorOCR:
         return denoised
     
     def _aplicar_mejora_contraste(self, image, diagnostico, resultado):
-        """Aplica mejora de contraste adaptativa"""
-        calidad = diagnostico.get('calidad_imagen', {})
-        contraste_actual = calidad.get('contraste', 50)
+        """
+        FIX: MEJORA DE CONTRASTE COMPLETAMENTE ELIMINADA
+        REASON: Usuario reporta que contraste adaptativo daña la calidad de la imagen
+        IMPACT: Preserva el contraste original sin aplicar ninguna mejora
+        """
+        # NO SE APLICA NINGUNA MEJORA DE CONTRASTE
+        resultado['parametros_aplicados']['contraste_eliminado'] = {
+            'razon': 'eliminado_por_solicitud_usuario',
+            'impacto': 'preserva_contraste_original'
+        }
         
-        if contraste_actual < 40:
-            # CLAHE (Contrast Limited Adaptive Histogram Equalization)
-            clahe = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8, 8))
-            enhanced = clahe.apply(image)
-            
-            resultado['pasos_aplicados'].append('Mejora de contraste CLAHE')
-            resultado['parametros_aplicados']['mejora_contraste'] = {
-                'metodo': 'CLAHE',
-                'clip_limit': 3.0,
-                'tile_size': (8, 8)
-            }
-        else:
-            # Ecualización histograma simple
-            enhanced = cv2.equalizeHist(image)
-            
-            resultado['pasos_aplicados'].append('Ecualización de histograma')
-            resultado['parametros_aplicados']['mejora_contraste'] = {
-                'metodo': 'Equalización simple'
-            }
-        
-        return enhanced
+        return image
     
     def _aplicar_binarizacion_adaptativa(self, image, diagnostico, resultado):
         """
-        FIX: Binarización adaptativa MEJORADA - Ahora usa múltiples algoritmos
-        REASON: Usuario reporta que 05_binarizacion necesita mejoras
-        IMPACT: Selecciona automáticamente el mejor algoritmo de binarización
+        FIX: BINARIZACIÓN COMPLETAMENTE ELIMINADA
+        REASON: Usuario reporta que binarización daña la calidad de la imagen
+        IMPACT: Preserva la imagen en escala de grises para OnnxTR
         """
-        # FIX: Usar la nueva binarización ELITE
-        return self._aplicar_binarizacion_elite(image, diagnostico, resultado)
+        # NO SE APLICA NINGUNA BINARIZACIÓN
+        resultado['parametros_aplicados']['binarizacion_eliminada'] = {
+            'razon': 'eliminado_por_solicitud_usuario',
+            'impacto': 'preserva_escala_grises_para_onnxtr'
+        }
+        
+        return image
     
     def _aplicar_morfologia(self, image, resultado):
         """Aplica operaciones morfológicas para limpiar la imagen"""
@@ -1223,47 +1073,17 @@ class MejoradorOCR:
     
     def _aplicar_contraste_adaptativo_preservando_letras(self, image, resultado):
         """
-        FIX: Contraste adaptativo que preserva letras finas y no reduce contraste
-        REASON: El contraste tradicional fijo (alpha=1.1, beta=10) reduce contraste en lugar de mejorarlo
-        IMPACT: Mantiene contraste original mientras mejora definición de letras finas
+        FIX: CONTRASTE ADAPTATIVO COMPLETAMENTE ELIMINADO
+        REASON: Usuario reporta que contraste adaptativo daña la calidad de la imagen
+        IMPACT: Preserva el contraste original sin aplicar ninguna modificación
         """
-        import numpy as np
-        import cv2
-        
-        # Analizar la imagen para determinar parámetros adaptativos
-        mean_intensity = np.mean(image)
-        std_intensity = np.std(image)
-        
-        # Calcular parámetros adaptativos basados en el contenido
-        if mean_intensity < 100:  # Imagen oscura
-            alpha = 1.3  # Más contraste
-            beta = 20    # Más brillo
-        elif mean_intensity > 180:  # Imagen muy clara
-            alpha = 1.1  # Contraste conservador
-            beta = -5    # Reducir brillo ligeramente
-        else:  # Imagen normal
-            alpha = 1.2  # Contraste moderado
-            beta = 5     # Brillo ligero
-        
-        # Ajustar alpha basado en desviación estándar (variabilidad)
-        if std_intensity < 30:  # Bajo contraste natural
-            alpha += 0.2  # Aumentar más el contraste
-        elif std_intensity > 80:  # Alto contraste natural
-            alpha -= 0.1  # Ser más conservador
-        
-        # Aplicar contraste adaptativo
-        enhanced = cv2.convertScaleAbs(image, alpha=alpha, beta=beta)
-        
-        # Registrar parámetros usados
-        resultado['parametros_aplicados']['contraste_adaptativo'] = {
-            'alpha_calculado': float(round(alpha, 2)),
-            'beta_calculado': int(beta),
-            'intensidad_promedio': float(round(mean_intensity, 2)),
-            'desviacion_estandar': float(round(std_intensity, 2)),
-            'estrategia': 'adaptativo_preservando_letras'
+        # NO SE APLICA NINGÚN CONTRASTE ADAPTATIVO
+        resultado['parametros_aplicados']['contraste_adaptativo_eliminado'] = {
+            'razon': 'eliminado_por_solicitud_usuario',
+            'impacto': 'preserva_contraste_original'
         }
         
-        return enhanced
+        return image
     
     def _aplicar_binarizacion_elite(self, image, diagnostico, resultado):
         """
@@ -1423,109 +1243,43 @@ class MejoradorOCR:
     
     def _procesar_screenshot_movil(self, image, deteccion_inteligente, profile_config, resultado, save_steps, output_dir, step_counter):
         """
-        FIX: Procesamiento ULTRA-CONSERVATIVO para screenshots móviles - CALIDAD MÁXIMA
-        REASON: Usuario reporta degradación de calidad, eliminando procesamiento agresivo
-        IMPACT: Preserva calidad original de screenshots digitales sin pérdida
+        FIX: PROCESAMIENTO DE SCREENSHOT COMPLETAMENTE ELIMINADO
+        REASON: Usuario solicita eliminar todo procesamiento que daña calidad
+        IMPACT: Preserva la imagen original sin ningún procesamiento
         """
-        current = image.copy()
-        resultado['estrategia_aplicada'] = 'Screenshot Móvil - ULTRA CONSERVATIVO'
-        
-        # PASO 1: Solo ampliar si la imagen es muy pequeña (menos agresivo)
-        if image.shape[1] < 400 or image.shape[0] < 400:  # Solo imágenes muy pequeñas
-            scale_factor = 1.5  # Factor más conservativo
-            new_width = int(current.shape[1] * scale_factor)
-            new_height = int(current.shape[0] * scale_factor)
-            current = cv2.resize(current, (new_width, new_height), interpolation=cv2.INTER_CUBIC)
-            resultado['pasos_aplicados'].append(f'{step_counter:02d}_ampliacion_conservativa')
-            if save_steps and output_dir:
-                cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_ampliacion_conservativa.png"), current)
-                step_counter += 1
-        
-        # PASO 2: ELIMINAR unsharp masking - puede causar artefactos
-        # REASON: Usuario reporta que se daña la calidad
-        # NO SE APLICA NINGÚN FILTRO DE NITIDEZ
-        
-        # PASO 3: Ajuste de brillo MÍNIMO solo si es extremadamente necesario
-        mean_intensity = np.mean(current)
-        if mean_intensity < 60 or mean_intensity > 200:  # Solo casos extremos
-            if mean_intensity < 60:
-                beta = 20  # Aumentar brillo solo para imágenes muy oscuras
-                current = cv2.convertScaleAbs(current, alpha=1.0, beta=beta)
-                resultado['pasos_aplicados'].append(f'{step_counter:02d}_brillo_minimo')
-                if save_steps and output_dir:
-                    cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_brillo_minimo.png"), current)
-                    step_counter += 1
-        
-        # PASO 4: NO aplicar binarización - mantener escala de grises original
-        # REASON: La binarización puede eliminar información útil
-        # La imagen se mantiene en escala de grises para OCR
-        
-        resultado['parametros_aplicados']['screenshot_processing_ultra_conservativo'] = {
-            'upscaling_applied': bool(image.shape[1] < 400 and image.shape[0] < 400),
-            'scale_factor': 1.5 if (image.shape[1] < 400 and image.shape[0] < 400) else 1.0,
-            'unsharp_masking': False,  # ELIMINADO
-            'contrast_adjustment': False,  # ELIMINADO
-            'binarization_applied': False,  # ELIMINADO
-            'brightness_adjustment': bool(mean_intensity < 60),
-            'filosofia': 'conservacion_maxima_sin_procesamiento_agresivo'
+        # NO SE APLICA NINGÚN PROCESAMIENTO A SCREENSHOTS
+        resultado['estrategia_aplicada'] = 'Screenshot Móvil - SIN PROCESAMIENTO'
+        resultado['pasos_aplicados'].append(f'{step_counter:02d}_sin_procesamiento')
+        resultado['parametros_aplicados']['screenshot_processing_eliminado'] = {
+            'razon': 'eliminado_por_solicitud_usuario',
+            'upscaling': False,
+            'unsharp_masking': False,
+            'contrast_adjustment': False,
+            'binarization': False,
+            'brightness_adjustment': False,
+            'impacto': 'preserva_imagen_original_completamente'
         }
         
-        return current
+        return image
     
     def _procesar_documento_escaneado(self, image, diagnostico, profile_config, resultado, save_steps, output_dir, step_counter):
         """
-        FIX: Procesamiento tradicional mejorado para documentos escaneados
-        REASON: Los documentos escaneados requieren más procesamiento debido a artefactos físicos
-        IMPACT: Mantiene el procesamiento tradicional pero optimizado
+        FIX: PROCESAMIENTO DE DOCUMENTO COMPLETAMENTE ELIMINADO
+        REASON: Usuario solicita eliminar todo procesamiento que daña calidad
+        IMPACT: Preserva la imagen original sin ningún procesamiento
         """
-        current = image.copy()
-        resultado['estrategia_aplicada'] = 'Documento Escaneado - Procesamiento Tradicional'
-        
-        # Aplicar la secuencia tradicional pero mejorada
-        # Para documentos escaneados, aplicamos el procesamiento tradicional existente
-        
-        # PASO 1: Redimensionamiento si es necesario
-        if current.shape[1] < 600:  # Si es muy pequeña
-            scale_factor = 1.5
-            new_width = int(current.shape[1] * scale_factor)
-            new_height = int(current.shape[0] * scale_factor)
-            current = cv2.resize(current, (new_width, new_height), interpolation=cv2.INTER_CUBIC)
-            resultado['pasos_aplicados'].append(f'{step_counter:02d}_redimensionamiento')
-            if save_steps and output_dir:
-                cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_redimensionamiento.png"), current)
-                step_counter += 1
-        
-        # PASO 2: Filtro bilateral para reducir ruido
-        if profile_config.get('bilateral_filter', True):
-            current = cv2.bilateralFilter(current, 9, 75, 75)
-            resultado['pasos_aplicados'].append(f'{step_counter:02d}_bilateral_filter')
-            if save_steps and output_dir:
-                cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_bilateral_filter.png"), current)
-                step_counter += 1
-        
-        # PASO 3: Mejora de contraste adaptativo (preserva letras finas)
-        current = self._aplicar_contraste_adaptativo_preservando_letras(current, resultado)
-        resultado['pasos_aplicados'].append(f'{step_counter:02d}_contraste_adaptativo')
-        if save_steps and output_dir:
-            cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_contraste_adaptativo.png"), current)
-            step_counter += 1
-        
-        # PASO 4: BINARIZACIÓN ELIMINADA TAMBIÉN EN DOCUMENTOS ESCANEADOS
-        # FIX: Eliminación completa de binarización en todos los tipos de documento
-        # REASON: Usuario solicita eliminar toda binarización del sistema
-        # IMPACT: OnnxTR funcionará con escala de grises en lugar de binario
-        resultado['pasos_aplicados'].append(f'{step_counter:02d}_sin_binarizacion')
-        if save_steps and output_dir:
-            cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_sin_binarizacion.png"), current)
-        
-        resultado['parametros_aplicados']['documento_processing'] = {
-            'redimensionamiento_aplicado': bool(current.shape[1] < 600),
-            'filtro_bilateral': bool(profile_config.get('bilateral_filter', True)),
-            'contraste_alpha': 1.1,
-            'contraste_beta': 10
+        # NO SE APLICA NINGÚN PROCESAMIENTO A DOCUMENTOS ESCANEADOS
+        resultado['estrategia_aplicada'] = 'Documento Escaneado - SIN PROCESAMIENTO'
+        resultado['pasos_aplicados'].append(f'{step_counter:02d}_sin_procesamiento')
+        resultado['parametros_aplicados']['documento_processing_eliminado'] = {
+            'razon': 'eliminado_por_solicitud_usuario',
+            'bilateral_filter': False,
+            'contraste_adaptativo': False,
+            'binarizacion': False,
+            'impacto': 'preserva_imagen_original_completamente'
         }
         
-        return current
+        return image
 
 def main():
     """Función principal para uso por línea de comandos"""

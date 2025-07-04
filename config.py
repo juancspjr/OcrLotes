@@ -89,14 +89,16 @@ PERFORMANCE_PROFILES = {
     'ultra_rapido': {
         'name': 'Ultra Rápido',
         'description': 'Mínimo procesamiento, máxima velocidad',
-        'gaussian_blur_kernel': 3,
-        'bilateral_filter': False,
+        'gaussian_blur_kernel': 0,  # FIX: Eliminado blur completamente
+        'bilateral_filter': False,  # FIX: Eliminado filtro bilateral
         'morphology_operations': False,
-        'adaptive_threshold': True,
+        'adaptive_threshold': False,  # FIX: Eliminada umbralización adaptativa
         'deskew': False,  # Nunca para screenshots
         'noise_removal_iterations': 0,  # Eliminado para capturas digitales
         'sharpening': False,
-        'intelligent_preprocessing': True  # Habilitado por defecto
+        'intelligent_preprocessing': False,  # FIX: Deshabilitado procesamiento inteligente
+        'binarization': False,  # FIX: Eliminada binarización
+        'adaptive_contrast': False  # FIX: Eliminado contraste adaptativo
     },
     'minimal_enhancement': {
         'name': 'Mejora Mínima',
@@ -107,39 +109,45 @@ PERFORMANCE_PROFILES = {
         'adaptive_threshold': False,  # Sin umbralización adaptativa
         'deskew': False,  # Sin corrección de inclinación
         'noise_removal_iterations': 0,  # Sin eliminación de ruido
-        'sharpening': 'gentle',  # Solo nitidez suave
+        'sharpening': False,  # FIX: Eliminada nitidez completamente
         'intelligent_preprocessing': False,  # Sin preprocesamiento inteligente
         'resize_enhancement': True,  # Solo ampliación y mejora básica
-        'brightness_adjustment': 'gentle',  # Solo ajuste suave de brillo
-        'contrast_adjustment': 'gentle',  # Solo ajuste suave de contraste
-        'character_conservation': 'maximum'  # Máxima conservación de caracteres
+        'brightness_adjustment': False,  # FIX: Eliminado ajuste de brillo
+        'contrast_adjustment': False,  # FIX: Eliminado ajuste de contraste
+        'character_conservation': 'maximum',  # Máxima conservación de caracteres
+        'binarization': False,  # FIX: Eliminada binarización
+        'adaptive_contrast': False  # FIX: Eliminado contraste adaptativo
     },
     'rapido': {
         'name': 'Rápido',
         'description': 'Balance entre velocidad y calidad con conservación extrema',
-        'gaussian_blur_kernel': 3,
-        'bilateral_filter': 'conditional',  # Solo si es necesario
-        'morphology_operations': True,
-        'adaptive_threshold': True,
-        'deskew': 'conditional',  # Solo para documentos escaneados
+        'gaussian_blur_kernel': 0,  # FIX: Eliminado blur completamente
+        'bilateral_filter': False,  # FIX: Eliminado filtro bilateral
+        'morphology_operations': False,  # FIX: Eliminadas operaciones morfológicas
+        'adaptive_threshold': False,  # FIX: Eliminada umbralización adaptativa
+        'deskew': False,  # FIX: Eliminado deskew
         'noise_removal_iterations': 0,  # Eliminado para capturas digitales
-        'sharpening': 'conditional',  # Solo si es necesario
-        'intelligent_preprocessing': True
+        'sharpening': False,  # FIX: Eliminada nitidez
+        'intelligent_preprocessing': False,  # FIX: Eliminado procesamiento inteligente
+        'binarization': False,  # FIX: Eliminada binarización
+        'adaptive_contrast': False  # FIX: Eliminado contraste adaptativo
     },
     'normal': {
         'name': 'Normal',
         'description': 'Máxima precisión OCR con filosofía de conservación extrema',
-        'gaussian_blur_kernel': 5,
-        'bilateral_filter': 'conditional',
-        'morphology_operations': True,
-        'adaptive_threshold': True,
+        'gaussian_blur_kernel': 0,  # FIX: Eliminado blur completamente
+        'bilateral_filter': False,  # FIX: Eliminado filtro bilateral
+        'morphology_operations': False,  # FIX: Eliminadas operaciones morfológicas
+        'adaptive_threshold': False,  # FIX: Eliminada umbralización adaptativa
         'deskew': False,  # FIX: ELIMINADO - Causa falsa inclinación en screenshots
         'noise_removal_iterations': 0,  # Eliminado para capturas digitales
-        'sharpening': 'adaptive',  # FIX: Nitidez adaptativa para mejor definición
-        'intelligent_preprocessing': True,
-        'advanced_binarization': True,  # FIX: Binarización avanzada mejorada
-        'contrast_enhancement': 'adaptive',  # FIX: Mejora de contraste adaptativo
-        'character_conservation': 'extreme'  # FIX: Máxima conservación de caracteres
+        'sharpening': False,  # FIX: Eliminada nitidez completamente
+        'intelligent_preprocessing': False,  # FIX: Eliminado procesamiento inteligente
+        'advanced_binarization': False,  # FIX: Eliminada binarización avanzada
+        'contrast_enhancement': False,  # FIX: Eliminado contraste adaptativo
+        'character_conservation': 'extreme',  # FIX: Máxima conservación de caracteres
+        'binarization': False,  # FIX: Eliminada binarización
+        'adaptive_contrast': False  # FIX: Eliminado contraste adaptativo
     },
     'conservativo': {
         'name': 'Conservativo',
@@ -150,10 +158,12 @@ PERFORMANCE_PROFILES = {
         'adaptive_threshold': False,
         'deskew': False,
         'noise_removal_iterations': 0,
-        'sharpening': 'gentle',
+        'sharpening': False,  # FIX: Eliminada nitidez completamente
         'intelligent_preprocessing': False,
-        'minimal_enhancement': True,
-        'character_conservation': 'maximum'
+        'minimal_enhancement': False,  # FIX: Eliminada mejora mínima
+        'character_conservation': 'maximum',
+        'binarization': False,  # FIX: Eliminada binarización
+        'adaptive_contrast': False  # FIX: Eliminado contraste adaptativo
     }
 }
 
