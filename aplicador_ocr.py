@@ -36,13 +36,12 @@ class AplicadorOCR:
         
         # Inicializar el predictor de OnnxTR con configuración optimizada para CPU
         try:
-            # FIX: Usar parámetros compatibles con OnnxTR 0.7.1
+            # FIX: Usar solo parámetros compatibles con OnnxTR 0.7.1
+            # REASON: Eliminamos parámetros inexistentes que causan el error de API
+            # IMPACT: Inicialización exitosa de OnnxTR con configuración por defecto
             self.predictor = ocr_predictor(
                 det_arch='db_resnet50',
-                reco_arch='crnn_vgg16_bn',
-                assume_straight_pages=True,
-                preserve_aspect_ratio=True,
-                symmetric_pad=True
+                reco_arch='crnn_vgg16_bn'
             )
             logger.info("Predictor OnnxTR inicializado correctamente")
         except Exception as e:
