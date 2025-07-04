@@ -172,6 +172,7 @@ PYTHON_PACKAGES=(
     "gunicorn>=21.0.0"
     "psycopg2-binary>=2.9.0"
     "email-validator>=2.0.0"
+    "requests>=2.25.0"
 )
 
 for package in "${PYTHON_PACKAGES[@]}"; do
@@ -194,6 +195,14 @@ if [ -f "requirements_onnxtr.txt" ]; then
 fi
 
 print_success "Todas las dependencias Python instaladas"
+
+# Descargar modelos ONNX para independencia
+print_status "Descargando modelos ONNX para almacenamiento local..."
+if python download_models.py --download; then
+    print_success "Modelos ONNX descargados exitosamente"
+else
+    print_warning "No se pudieron descargar algunos modelos ONNX (continuando con cache del sistema)"
+fi
 
 # Verificar instalaciones
 print_status "Verificando instalaciones..."

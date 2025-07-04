@@ -120,6 +120,23 @@ source venv_ocr/bin/activate
 - Multiple performance profiles for different hardware capabilities
 - Efficient memory management with temporary file cleanup
 - Minimal dependencies to reduce resource footprint
+- **Local ONNX model management** for independence from external sources
+
+### Model Management
+The system includes local ONNX model management to ensure installation independence:
+
+```bash
+# Verify local models
+python download_models.py --verify
+
+# Download models to local repository
+python download_models.py --download
+
+# Force re-download all models
+python download_models.py --download --force
+```
+
+Models are stored in `models/onnxtr/` directory and automatically managed during installation.
 
 ## Changelog
 
@@ -300,6 +317,17 @@ Changelog:
   * COMPREHENSIVE USAGE GUIDE: Complete web local and command-line documentation for n8n integration
   * AUTOMATIC GITHUB DETECTION: install_requirements.sh now detects missing project files and offers GitHub installation
   * IMPACT: Stable installation process with multiple deployment options and comprehensive documentation
+- July 04, 2025. ONNXTR API COMPATIBILITY AND LOCAL MODEL MANAGEMENT:
+  * FIXED ONNXTR API COMPATIBILITY: Updated aplicador_ocr.py to use correct parameters for OnnxTR 0.7.1
+  * ELIMINATED DEPRECATED PARAMETERS: Removed 'pretrained' and other non-existent parameters
+  * CREATED LOCAL MODEL MANAGEMENT: Added download_models.py script for ONNX model independence
+  * LOCAL MODEL STORAGE: Models stored in models/onnxtr/ directory for repository independence
+  * ENHANCED ERROR HANDLING: Added automatic cleanup on installation failures
+  * ARCHITECTURAL MODULES UPDATED:
+    - aplicador_ocr.py: Fixed ocr_predictor initialization with compatible parameters
+    - download_models.py: New script for local ONNX model management
+    - install_requirements.sh: Added automatic model download and error cleanup
+  * IMPACT: Complete ONNX model independence with proper API compatibility for stable OCR functionality
 ```
 
 ## User Preferences

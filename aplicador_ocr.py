@@ -36,21 +36,21 @@ class AplicadorOCR:
         
         # Inicializar el predictor de OnnxTR con configuración optimizada para CPU
         try:
+            # FIX: Usar parámetros compatibles con OnnxTR 0.7.1
             self.predictor = ocr_predictor(
-                det_arch=self.onnxtr_config['detection_model'],
-                reco_arch=self.onnxtr_config['recognition_model'],
-                assume_straight_pages=self.onnxtr_config['assume_straight_pages']
+                det_arch='db_resnet50',
+                reco_arch='crnn_vgg16_bn',
+                assume_straight_pages=True,
+                preserve_aspect_ratio=True,
+                symmetric_pad=True
             )
             logger.info("Predictor OnnxTR inicializado correctamente")
         except Exception as e:
             logger.error(f"Error inicializando OnnxTR: {e}")
-            # Fallback a configuración básica sin parámetros problemáticos
+            # Fallback a configuración mínima
             try:
-                self.predictor = ocr_predictor(
-                    det_arch='db_resnet50',
-                    reco_arch='crnn_vgg16_bn'
-                )
-                logger.warning("Usando configuración básica de OnnxTR como fallback")
+                self.predictor = ocr_predictor()
+                logger.warning("Usando configuración por defecto de OnnxTR como fallback")
             except Exception as e2:
                 logger.error(f"Error en fallback de OnnxTR: {e2}")
                 # Último recurso - configuración mínima
