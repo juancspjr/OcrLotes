@@ -102,10 +102,16 @@ class MejoradorOCR:
                 cv2.imwrite(str(Path(output_dir) / "01_original_gray.png"), current_image)
             
             # Aplicar secuencia de mejoras según perfil y diagnóstico
-            current_image = self._aplicar_secuencia_procesamiento(
-                current_image, diagnostico, profile_config, 
-                resultado_procesamiento, save_steps, output_dir
-            )
+            if perfil == 'minimal_enhancement':
+                current_image = self._aplicar_mejora_minimal(
+                    current_image, diagnostico, profile_config, 
+                    resultado_procesamiento, save_steps, output_dir
+                )
+            else:
+                current_image = self._aplicar_secuencia_procesamiento(
+                    current_image, diagnostico, profile_config, 
+                    resultado_procesamiento, save_steps, output_dir
+                )
             
             # Guardar imagen final
             output_path = Path(output_dir) / "imagen_mejorada.png" if output_dir else Path("imagen_mejorada.png")
@@ -269,6 +275,92 @@ class MejoradorOCR:
         
         if save_steps and output_dir:
             cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_procesamiento_final.png"), current)
+        
+        return current
+    
+    def _aplicar_mejora_minimal(self, image, diagnostico, profile_config, resultado, save_steps, output_dir):
+        """
+        FIX: Implementa mejora mínima con solo nitidez suave y ajustes de brillo/contraste
+        REASON: Usuario solicita procesamiento mínimo sin degradación agresiva de calidad
+        IMPACT: Preserva calidad original mientras mejora legibilidad de texto
+        """
+        current = image.copy()
+        step_counter = 2
+        
+        # Detectar si necesita inversión de colores (solo para fondos muy oscuros)
+        mean_intensity = np.mean(current)
+        if mean_intensity < 80:  # Solo para imágenes muy oscuras
+            current = cv2.bitwise_not(current)
+            resultado['pasos_aplicados'].append('01_inversion_colores')
+            if save_steps and output_dir:
+                cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_inversion.png"), current)
+                step_counter += 1
+        
+        # Paso 1: Ampliar imagen suavemente (solo si es pequeña)
+        h, w = current.shape
+        if h < 1000 or w < 1000:
+            scale_factor = min(2.0, 1500 / max(h, w))  # Ampliar hasta máximo 1500px
+            new_h, new_w = int(h * scale_factor), int(w * scale_factor)
+            current = cv2.resize(current, (new_w, new_h), interpolation=cv2.INTER_CUBIC)
+            resultado['pasos_aplicados'].append('02_ampliacion_suave')
+            resultado['parametros_aplicados']['ampliacion'] = {
+                'factor': float(round(scale_factor, 2)),
+                'tamano_original': [int(h), int(w)],
+                'tamano_nuevo': [int(new_h), int(new_w)]
+            }
+            if save_steps and output_dir:
+                cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_ampliacion.png"), current)
+                step_counter += 1
+        
+        # Paso 2: Ajuste suave de brillo y contraste
+        brightness = 10  # Aumentar brillo ligeramente
+        contrast = 1.1   # Aumentar contraste muy suavemente
+        current = cv2.convertScaleAbs(current, alpha=contrast, beta=brightness)
+        resultado['pasos_aplicados'].append('03_ajuste_suave_brillo_contraste')
+        resultado['parametros_aplicados']['ajuste_brillo_contraste'] = {
+            'brillo': int(brightness),
+            'contraste': float(contrast)
+        }
+        if save_steps and output_dir:
+            cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_brillo_contraste.png"), current)
+            step_counter += 1
+        
+        # Paso 3: Nitidez suave (solo si es necesario)
+        # Detectar si la imagen necesita nitidez
+        laplacian_var = cv2.Laplacian(current, cv2.CV_64F).var()
+        if laplacian_var < 100:  # Solo si está desenfocada
+            # Aplicar nitidez suave con kernel personalizado
+            kernel = np.array([[-0.5, -0.5, -0.5],
+                              [-0.5,  5.0, -0.5],
+                              [-0.5, -0.5, -0.5]])
+            current = cv2.filter2D(current, -1, kernel)
+            resultado['pasos_aplicados'].append('04_nitidez_suave')
+            resultado['parametros_aplicados']['nitidez'] = {
+                'metodo': 'kernel_suave',
+                'desenfoque_detectado': float(round(laplacian_var, 2))
+            }
+            if save_steps and output_dir:
+                cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_nitidez_suave.png"), current)
+                step_counter += 1
+        
+        # Paso 4: Eliminación muy suave de ruido (solo si hay ruido significativo)
+        noise_level = np.std(current)
+        if noise_level > 30:  # Solo si hay ruido considerable
+            current = cv2.bilateralFilter(current, 5, 20, 20)  # Filtro muy suave
+            resultado['pasos_aplicados'].append('05_eliminacion_ruido_suave')
+            resultado['parametros_aplicados']['eliminacion_ruido'] = {
+                'metodo': 'bilateral_suave',
+                'nivel_ruido_detectado': float(round(noise_level, 2))
+            }
+            if save_steps and output_dir:
+                cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_ruido_suave.png"), current)
+                step_counter += 1
+        
+        resultado['pasos_aplicados'].append('06_mejora_minimal_completada')
+        resultado['parametros_aplicados']['mejora_minimal'] = {
+            'filosofia': 'conservacion_maxima_caracteres',
+            'procesamiento': 'minimal_sin_degradacion'
+        }
         
         return current
     

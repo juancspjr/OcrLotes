@@ -98,6 +98,22 @@ PERFORMANCE_PROFILES = {
         'sharpening': False,
         'intelligent_preprocessing': True  # Habilitado por defecto
     },
+    'minimal_enhancement': {
+        'name': 'Mejora Mínima',
+        'description': 'Solo mejora de nitidez y brillo, sin procesamiento agresivo',
+        'gaussian_blur_kernel': 0,  # Sin blur
+        'bilateral_filter': False,  # Sin filtro bilateral
+        'morphology_operations': False,  # Sin operaciones morfológicas
+        'adaptive_threshold': False,  # Sin umbralización adaptativa
+        'deskew': False,  # Sin corrección de inclinación
+        'noise_removal_iterations': 0,  # Sin eliminación de ruido
+        'sharpening': 'gentle',  # Solo nitidez suave
+        'intelligent_preprocessing': False,  # Sin preprocesamiento inteligente
+        'resize_enhancement': True,  # Solo ampliación y mejora básica
+        'brightness_adjustment': 'gentle',  # Solo ajuste suave de brillo
+        'contrast_adjustment': 'gentle',  # Solo ajuste suave de contraste
+        'character_conservation': 'maximum'  # Máxima conservación de caracteres
+    },
     'rapido': {
         'name': 'Rápido',
         'description': 'Balance entre velocidad y calidad con conservación extrema',
@@ -124,6 +140,20 @@ PERFORMANCE_PROFILES = {
         'advanced_binarization': True,  # FIX: Binarización avanzada mejorada
         'contrast_enhancement': 'adaptive',  # FIX: Mejora de contraste adaptativo
         'character_conservation': 'extreme'  # FIX: Máxima conservación de caracteres
+    },
+    'conservativo': {
+        'name': 'Conservativo',
+        'description': 'Procesamiento ultra-conservativo para máxima preservación',
+        'gaussian_blur_kernel': 0,
+        'bilateral_filter': False,
+        'morphology_operations': False,
+        'adaptive_threshold': False,
+        'deskew': False,
+        'noise_removal_iterations': 0,
+        'sharpening': 'gentle',
+        'intelligent_preprocessing': False,
+        'minimal_enhancement': True,
+        'character_conservation': 'maximum'
     }
 }
 
