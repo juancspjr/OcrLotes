@@ -168,32 +168,27 @@ class MejoradorOCR:
             tipo_imagen = 'documento_escaneado'
             inversion_requerida = False
         
-        # FASE 1.0: Detección inteligente de fondos - SOLO procesar zonas oscuras
-        # Análisis de histograma para detectar zonas que necesitan procesamiento
+        # FIX: ELIMINAR COMPLETAMENTE la fase de unificación de fondos
+        # REASON: Usuario reporta que esta fase daña la calidad de la imagen
+        # IMPACT: Preserva la calidad original de la imagen sin procesamiento agresivo
+        
+        # FASE 1.0: Análisis simple sin modificar la imagen
         intensidad_media = np.mean(current)
         histogram = cv2.calcHist([current], [0], None, [256], [0, 256])
         
-        # Detectar si el fondo es predominantemente oscuro (0-80)
+        # Detectar si el fondo es predominantemente oscuro (solo para análisis)
         pixeles_oscuros = np.sum(histogram[0:80])
         pixeles_totales = current.shape[0] * current.shape[1]
         porcentaje_fondo_oscuro = pixeles_oscuros / pixeles_totales
         
-        # Solo aplicar unificación si el fondo es muy oscuro (>40% pixels oscuros)
-        if porcentaje_fondo_oscuro > 0.4 and intensidad_media < 100:
-            # Unificar fondos grises a negro puro para posterior inversión
-            mask_grises_medios = np.logical_and(current >= 60, current <= 180)
-            current[mask_grises_medios] = 30  # Unificar a gris muy oscuro
-            
-            resultado['pasos_aplicados'].append('00_unificacion_fondos_oscuros')
-            resultado['parametros_aplicados']['unificacion_fondos'] = {
-                'intensidad_media_original': float(round(intensidad_media, 2)),
-                'porcentaje_fondo_oscuro': float(round(porcentaje_fondo_oscuro, 3)),
-                'pixeles_unificados': int(np.sum(mask_grises_medios))
-            }
-            
-            if save_steps and output_dir:
-                cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_unificacion_fondos.png"), current)
-                step_counter += 1
+        # NO aplicar unificación - solo registrar las métricas
+        resultado['pasos_aplicados'].append('00_analisis_sin_unificacion')
+        resultado['parametros_aplicados']['analisis_fondos'] = {
+            'intensidad_media_original': float(round(intensidad_media, 2)),
+            'porcentaje_fondo_oscuro': float(round(porcentaje_fondo_oscuro, 3)),
+            'unificacion_aplicada': False,  # Siempre False ahora
+            'razon_no_unificacion': 'preservacion_calidad_usuario'
+        }
         
         # Maximizar claridad de letras independientemente de la estrategia
         # Aplicar filtro de nitidez suave para preservar caracteres
@@ -209,64 +204,27 @@ class MejoradorOCR:
             cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_claridad_letras.png"), current)
             step_counter += 1
 
-        # FASE 1.1: INVERSIÓN LOCALIZADA - Solo en secciones con letras blancas sobre fondo oscuro
-        # Detectar y procesar solo las zonas que requieren inversión
-        zonas_invertidas = 0
-        if inversion_requerida or porcentaje_fondo_oscuro > 0.25:  # Detectar zonas mixtas
-            # Dividir imagen en secciones horizontales para análisis localizado
-            h, w = current.shape
-            num_secciones = min(10, h // 50)  # Máximo 10 secciones, mínimo 50px cada una
-            alto_seccion = h // num_secciones
-            
-            for i in range(num_secciones):
-                y_inicio = i * alto_seccion
-                y_final = (i + 1) * alto_seccion if i < num_secciones - 1 else h
-                seccion = current[y_inicio:y_final, :]
-                
-                # Analizar si esta sección tiene letras blancas sobre fondo oscuro
-                intensidad_seccion = np.mean(seccion)
-                hist_seccion = cv2.calcHist([seccion], [0], None, [256], [0, 256])
-                
-                # Detectar zonas oscuras que necesitan inversión (criterios más amplios)
-                pixeles_muy_claros = np.sum(hist_seccion[180:256])  # Texto claro potencial (ampliado)
-                pixeles_oscuros_seccion = np.sum(hist_seccion[0:120])  # Fondo oscuro (ampliado)
-                pixeles_grises_oscuros = np.sum(hist_seccion[50:150])  # Grises oscuros
-                total_pixeles_seccion = seccion.shape[0] * seccion.shape[1]
-                
-                porcentaje_texto_claro = pixeles_muy_claros / total_pixeles_seccion
-                porcentaje_fondo_oscuro_seccion = pixeles_oscuros_seccion / total_pixeles_seccion
-                porcentaje_grises_oscuros = pixeles_grises_oscuros / total_pixeles_seccion
-                
-                # Criterios más amplios para detectar toda la zona oscura
-                es_zona_oscura = (
-                    intensidad_seccion < 140 and  # Intensidad más permisiva
-                    (porcentaje_fondo_oscuro_seccion > 0.3 or  # 30% fondo oscuro, o
-                     porcentaje_grises_oscuros > 0.5 or        # 50% grises oscuros, o
-                     (porcentaje_texto_claro > 0.02 and intensidad_seccion < 100))  # Texto claro con fondo muy oscuro
-                )
-                
-                # Aplicar inversión si se detecta zona oscura
-                if es_zona_oscura:
-                    current[y_inicio:y_final, :] = cv2.bitwise_not(seccion)
-                    zonas_invertidas += 1
-            
-            if zonas_invertidas > 0:
-                resultado['pasos_aplicados'].append('01_inversion_localizada')
-                resultado['parametros_aplicados']['inversion_localizada'] = {
-                    'zonas_detectadas': int(zonas_invertidas),
-                    'total_secciones': int(num_secciones),
-                    'porcentaje_zonas_invertidas': float(round(zonas_invertidas / num_secciones, 3))
-                }
-                if save_steps and output_dir:
-                    cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_inversion_localizada.png"), current)
-                    step_counter += 1
-            else:
-                resultado['pasos_aplicados'].append('01_no_inversion_necesaria')
-                resultado['parametros_aplicados']['no_inversion'] = {
-                    'razon': 'no_texto_blanco_detectado',
-                    'secciones_analizadas': int(num_secciones)
-                }
+        # FIX: ELIMINAR inversión localizada - aplicar solo inversión global si es necesario
+        # REASON: Simplificar procesamiento y evitar degradación de calidad
+        # IMPACT: Procesamiento más limpio y preservación de calidad original
         
+        # FASE 1.1: Inversión simple y directa solo para imágenes muy oscuras
+        if intensidad_media < 80:  # Solo para imágenes muy oscuras
+            current = cv2.bitwise_not(current)
+            resultado['pasos_aplicados'].append('01_inversion_global_simple')
+            resultado['parametros_aplicados']['inversion_global'] = {
+                'intensidad_media_original': float(round(intensidad_media, 2)),
+                'razon': 'imagen_muy_oscura_necesita_inversion'
+            }
+            if save_steps and output_dir:
+                cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_inversion_global.png"), current)
+                step_counter += 1
+        else:
+            resultado['pasos_aplicados'].append('01_no_inversion_necesaria')
+            resultado['parametros_aplicados']['no_inversion'] = {
+                'razon': 'imagen_suficientemente_clara',
+                'intensidad_media': float(round(intensidad_media, 2))
+            }
         # FASE 2: Aplicar estrategia especializada según tipo de imagen
         if tipo_imagen == "screenshot_movil":
             current = self._procesar_screenshot_movil(current, deteccion_inteligente, profile_config, resultado, save_steps, output_dir, step_counter)
@@ -1465,65 +1423,51 @@ class MejoradorOCR:
     
     def _procesar_screenshot_movil(self, image, deteccion_inteligente, profile_config, resultado, save_steps, output_dir, step_counter):
         """
-        FIX: Procesamiento especializado para screenshots móviles con conservación extrema de caracteres
-        REASON: Los screenshots requieren procesamiento mínimo y conservativo para preservar calidad digital
-        IMPACT: Mejora dramática en OCR de screenshots al evitar procesamiento destructivo
+        FIX: Procesamiento ULTRA-CONSERVATIVO para screenshots móviles - CALIDAD MÁXIMA
+        REASON: Usuario reporta degradación de calidad, eliminando procesamiento agresivo
+        IMPACT: Preserva calidad original de screenshots digitales sin pérdida
         """
         current = image.copy()
-        resultado['estrategia_aplicada'] = 'Screenshot Móvil - Conservación Extrema'
+        resultado['estrategia_aplicada'] = 'Screenshot Móvil - ULTRA CONSERVATIVO'
         
-        # PASO 1: Upscaling inteligente para mejorar resolución
-        if image.shape[1] < 600 or image.shape[0] < 800:  # Si es baja resolución
-            scale_factor = 2.0
+        # PASO 1: Solo ampliar si la imagen es muy pequeña (menos agresivo)
+        if image.shape[1] < 400 or image.shape[0] < 400:  # Solo imágenes muy pequeñas
+            scale_factor = 1.5  # Factor más conservativo
             new_width = int(current.shape[1] * scale_factor)
             new_height = int(current.shape[0] * scale_factor)
-            current = cv2.resize(current, (new_width, new_height), interpolation=cv2.INTER_LANCZOS4)
-            resultado['pasos_aplicados'].append(f'{step_counter:02d}_upscaling_lanczos')
+            current = cv2.resize(current, (new_width, new_height), interpolation=cv2.INTER_CUBIC)
+            resultado['pasos_aplicados'].append(f'{step_counter:02d}_ampliacion_conservativa')
             if save_steps and output_dir:
-                cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_upscaling_lanczos.png"), current)
+                cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_ampliacion_conservativa.png"), current)
                 step_counter += 1
         
-        # PASO 2: Unsharp masking muy suave para realzar caracteres sin dañarlos
-        try:
-            from skimage.filters import unsharp_mask
-            # Parámetros muy conservadores para screenshots
-            current_normalized = current.astype(np.float64) / 255.0
-            enhanced = unsharp_mask(current_normalized, radius=1.0, amount=0.3, preserve_range=False)
-            current = (enhanced * 255).astype(np.uint8)
-            resultado['pasos_aplicados'].append(f'{step_counter:02d}_unsharp_suave')
-            if save_steps and output_dir:
-                cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_unsharp_suave.png"), current)
-                step_counter += 1
-        except Exception as e:
-            logger.warning(f"Error en unsharp masking: {e}")
+        # PASO 2: ELIMINAR unsharp masking - puede causar artefactos
+        # REASON: Usuario reporta que se daña la calidad
+        # NO SE APLICA NINGÚN FILTRO DE NITIDEZ
         
-        # PASO 3: Ajuste de contraste muy suave si es necesario
+        # PASO 3: Ajuste de brillo MÍNIMO solo si es extremadamente necesario
         mean_intensity = np.mean(current)
-        if mean_intensity < 120 or mean_intensity > 135:  # Solo si no está en rango óptimo
-            alpha = 1.05  # Contraste muy suave
-            beta = 5 if mean_intensity < 120 else -5  # Brillo mínimo
-            current = cv2.convertScaleAbs(current, alpha=alpha, beta=beta)
-            resultado['pasos_aplicados'].append(f'{step_counter:02d}_contraste_suave')
-            if save_steps and output_dir:
-                cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_contraste_suave.png"), current)
-                step_counter += 1
+        if mean_intensity < 60 or mean_intensity > 200:  # Solo casos extremos
+            if mean_intensity < 60:
+                beta = 20  # Aumentar brillo solo para imágenes muy oscuras
+                current = cv2.convertScaleAbs(current, alpha=1.0, beta=beta)
+                resultado['pasos_aplicados'].append(f'{step_counter:02d}_brillo_minimo')
+                if save_steps and output_dir:
+                    cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_brillo_minimo.png"), current)
+                    step_counter += 1
         
-        # PASO 4: Binarización adaptativa solo si es necesaria
-        edge_density = deteccion_inteligente.get('edge_density', 0)
-        if edge_density < 0.015:  # Solo si los bordes no están bien definidos
-            current = cv2.adaptiveThreshold(current, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, 
-                                          cv2.THRESH_BINARY, 11, 2)
-            resultado['pasos_aplicados'].append(f'{step_counter:02d}_binarizacion_adaptativa')
-            if save_steps and output_dir:
-                cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_binarizacion_adaptativa.png"), current)
-                step_counter += 1
+        # PASO 4: NO aplicar binarización - mantener escala de grises original
+        # REASON: La binarización puede eliminar información útil
+        # La imagen se mantiene en escala de grises para OCR
         
-        resultado['parametros_aplicados']['screenshot_processing'] = {
-            'upscaling_applied': bool(image.shape[1] < 600),
-            'unsharp_radius': 1.0,
-            'unsharp_amount': 0.3,
-            'contrast_adjustment': bool(abs(mean_intensity - 127.5) > 7.5),
-            'binarization_applied': bool(edge_density < 0.015)
+        resultado['parametros_aplicados']['screenshot_processing_ultra_conservativo'] = {
+            'upscaling_applied': bool(image.shape[1] < 400 and image.shape[0] < 400),
+            'scale_factor': 1.5 if (image.shape[1] < 400 and image.shape[0] < 400) else 1.0,
+            'unsharp_masking': False,  # ELIMINADO
+            'contrast_adjustment': False,  # ELIMINADO
+            'binarization_applied': False,  # ELIMINADO
+            'brightness_adjustment': bool(mean_intensity < 60),
+            'filosofia': 'conservacion_maxima_sin_procesamiento_agresivo'
         }
         
         return current
