@@ -78,11 +78,15 @@ This is a Python-based OCR (Optical Character Recognition) system designed for p
 - Development server on `0.0.0.0:5000`
 - Auto-creation of required directories (`uploads`, `temp`, `static`)
 
-### Production Considerations
-- WSGI-ready Flask application
+### Production Deployment (Ubuntu Server)
+- Automated installation script: `install-ubuntu.sh`
+- Systemd service configuration for automatic startup
+- WSGI-ready Flask application with Gunicorn
 - ProxyFix middleware for reverse proxy support
 - Environment-based configuration with `SESSION_SECRET`
 - File size limits (16MB max) for security
+- Complete documentation in `UBUNTU_INSTALLATION.md`
+- Quick start guide in `README_DEPLOYMENT.md`
 
 ### Resource Optimization
 - No GPU requirements - CPU-only processing
