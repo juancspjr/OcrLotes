@@ -2,7 +2,7 @@
 
 ## Overview
 
-This is a Python-based OCR (Optical Character Recognition) system designed for processing financial documents with low-resource requirements. The system focuses on pre-processing images to improve OCR accuracy without using machine learning or cloud services. It features a modular architecture with both web interface and command-line capabilities.
+This is a Python-based OCR (Optical Character Recognition) system designed for processing financial documents with low-resource requirements. The system uses **OnnxTR**, a lightweight ONNX-based OCR engine optimized for CPU efficiency. It features a modular architecture with both web interface and command-line capabilities, offering superior performance compared to traditional Tesseract-based systems.
 
 ## System Architecture
 
@@ -40,7 +40,7 @@ This is a Python-based OCR (Optical Character Recognition) system designed for p
 ### Configuration System
 - **Centralized Config** (`config.py`): All system constants and settings
 - **Performance Profiles**: Different processing modes (ultra_rapido, rapido, etc.)
-- **Tesseract Configurations**: OCR engine parameter sets
+- **OnnxTR Configurations**: ONNX-based OCR engine parameter sets optimized for CPU
 
 ## Data Flow
 
@@ -66,9 +66,10 @@ This is a Python-based OCR (Optical Character Recognition) system designed for p
 - **Werkzeug**: WSGI utilities and security helpers
 
 ### System Requirements
-- **Tesseract OCR**: Must be installed at system level
 - **Python 3.7+**: Core runtime environment
+- **ONNX Runtime**: Automatically installed via pip (CPU-only)
 - **Ubuntu/Linux**: Optimized for Ubuntu but portable
+- **No GPU Required**: Fully optimized for CPU-only inference
 
 ## Deployment Strategy
 
