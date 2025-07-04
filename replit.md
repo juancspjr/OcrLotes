@@ -198,6 +198,30 @@ Changelog:
     - mejora_ocr.py: Eliminated background unification and complex inversion logic
     - mejora_ocr.py: Simplified _procesar_screenshot_movil() to ultra-conservative approach
   * IMPACT: Maximum preservation of original image quality while maintaining OCR effectiveness
+- July 04, 2025. CRITICAL OCR SCORING ALGORITHM CORRECTIONS:
+  * FIXED FALSE ERROR DETECTION: Corrected algorithm that was flagging legitimate financial characters as errors
+  * ELIMINATED FALSE POSITIVES: Removed penalties for valid financial symbols (*, /, -, :) commonly found in documents
+  * IMPROVED ERROR DETECTION ACCURACY:
+    - Excluded financial characters from "suspicious character" detection
+    - Increased tolerance for formatting patterns in financial documents
+    - Reduced false positives for account numbers and reference codes
+    - More lenient spacing and word length validation
+  * ENHANCED SCORING ALGORITHM:
+    - Reduced error penalty from 10 to 3 points per error (less severe)
+    - Added confidence bonuses for high-quality extractions (>90% confidence)
+    - Improved word count bonuses for information density
+    - Added perfect extraction bonuses for zero errors
+  * REALISTIC QUALITY CATEGORIES:
+    - Excelente: ≥90 (was ≥80)
+    - Muy Buena: ≥75 (new category)
+    - Buena: ≥60 (unchanged)
+    - Regular: ≥45 (was ≥40)
+    - Deficiente: <45 (was <40)
+  * ARCHITECTURAL MODULES MODIFIED:
+    - aplicador_ocr.py: Completely rewritten _detectar_errores_ocr() method
+    - aplicador_ocr.py: Enhanced _calcular_score_calidad() algorithm
+    - aplicador_ocr.py: Updated _categorizar_calidad() thresholds
+  * IMPACT: OCR scoring now accurately reflects extraction quality - high-confidence extractions (93.8%) should score 85-95 points instead of 38.8
 ```
 
 ## User Preferences

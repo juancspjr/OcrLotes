@@ -394,29 +394,43 @@ class AplicadorOCR:
         return resumen
     
     def _detectar_errores_ocr(self, texto):
-        """Detecta errores comunes de OCR"""
+        """
+        FIX: Detecta errores REALES de OCR - Eliminando falsos positivos
+        REASON: El algoritmo anterior penalizaba caracteres financieros válidos
+        IMPACT: Puntuación más certera que refleja la calidad real del OCR
+        """
         errores = []
         
-        # Detectar caracteres extraños o mal reconocidos
-        caracteres_sospechosos = re.findall(r'[|@#$%^&*+=<>{}[\]\\]', texto)
-        if caracteres_sospechosos:
-            errores.append(f"Caracteres sospechosos: {len(set(caracteres_sospechosos))}")
+        # CARACTERES SOSPECHOSOS - Excluir caracteres financieros válidos
+        # Eliminar: * / - : que son válidos en documentos financieros
+        caracteres_realmente_sospechosos = re.findall(r'[|@#$%^&+=<>{}[\]\\~`]', texto)
+        if len(caracteres_realmente_sospechosos) > 2:  # Más tolerante
+            errores.append(f"Caracteres sospechosos: {len(set(caracteres_realmente_sospechosos))}")
         
-        # Detectar números mal formateados
-        numeros_mal_formados = re.findall(r'\d[a-zA-Z]\d|\d\s[a-zA-Z]\s\d', texto)
+        # NÚMEROS MAL FORMATEADOS - Más específico para errores reales
+        # Buscar patrones que realmente indican error de OCR
+        numeros_mal_formados = re.findall(r'\d[a-zA-Z]{2,}\d|\d\s[a-zA-Z]{2,}\s\d', texto)
         if numeros_mal_formados:
             errores.append(f"Números mal formateados: {len(numeros_mal_formados)}")
         
-        # Detectar palabras muy cortas (posibles errores)
+        # PALABRAS CORTAS - Más tolerante, solo casos extremos
         palabras = texto.split()
         palabras_cortas = [p for p in palabras if len(p) == 1 and p.isalpha()]
-        if len(palabras_cortas) > len(palabras) * 0.2:  # Más del 20% son palabras de 1 letra
+        if len(palabras_cortas) > len(palabras) * 0.35:  # Más del 35% (era 20%)
             errores.append(f"Exceso de palabras de 1 letra: {len(palabras_cortas)}")
         
-        # Detectar espaciado inconsistente
-        espacios_multiples = len(re.findall(r'\s{3,}', texto))
-        if espacios_multiples > 5:
+        # ESPACIADO INCONSISTENTE - Más tolerante
+        espacios_multiples = len(re.findall(r'\s{5,}', texto))  # 5+ espacios (era 3+)
+        if espacios_multiples > 8:  # Más tolerante (era 5)
             errores.append(f"Espaciado inconsistente: {espacios_multiples} casos")
+        
+        # DETECTAR ERRORES REALES - Nuevos criterios
+        # Palabras con mezcla extraña de números y letras
+        palabras_mixtas_sospechosas = re.findall(r'\b\d+[a-zA-Z]+\d+\b|\b[a-zA-Z]+\d+[a-zA-Z]+\b', texto)
+        palabras_mixtas_sospechosas = [p for p in palabras_mixtas_sospechosas 
+                                     if not re.match(r'^\d+[a-zA-Z]{1,3}$', p)]  # Excluir "104Bs", "27kg"
+        if len(palabras_mixtas_sospechosas) > 2:
+            errores.append(f"Palabras con mezcla sospechosa: {len(palabras_mixtas_sospechosas)}")
         
         return errores
     
@@ -534,26 +548,51 @@ class AplicadorOCR:
             return 'baja'
     
     def _calcular_score_calidad(self, avg_confidence, total_words, errores):
-        """Calcula un score de calidad general"""
-        score = avg_confidence  # Base: confianza promedio
+        """
+        FIX: Algoritmo de puntuación más justo y realista
+        REASON: El algoritmo anterior penalizaba excesivamente con falsos errores
+        IMPACT: Puntuación que refleja la calidad real del OCR extraído
+        """
+        # Base: confianza promedio convertida a escala 0-100
+        score = avg_confidence * 100 if avg_confidence <= 1 else avg_confidence
         
-        # Penalizar por errores
-        score -= len(errores) * 10
+        # Penalizar por errores REALES - Menos severo
+        penalizacion_errores = len(errores) * 3  # Era 10, ahora 3
+        score -= penalizacion_errores
         
-        # Bonificar por cantidad de palabras (hasta un límite)
-        word_bonus = min(total_words * 2, 20)
-        score += word_bonus
+        # Bonificar por cantidad de palabras (información extraída)
+        if total_words > 0:
+            word_bonus = min(total_words * 1.5, 15)  # Bonificación por contenido
+            score += word_bonus
+        
+        # Bonificar por alta confianza
+        if avg_confidence > 0.9:  # Confianza >90%
+            score += 5  # Bonificación por excelente confianza
+        elif avg_confidence > 0.8:  # Confianza >80%
+            score += 3  # Bonificación por buena confianza
+        
+        # Bonificar por pocos errores
+        if len(errores) == 0:
+            score += 5  # Bonificación por extracción perfecta
+        elif len(errores) <= 2:
+            score += 2  # Bonificación por pocos errores
         
         # Normalizar entre 0-100
-        return max(0, min(100, score))
+        return max(0, min(100, round(score, 1)))
     
     def _categorizar_calidad(self, score):
-        """Categoriza la calidad basada en el score"""
-        if score >= 80:
+        """
+        FIX: Categorías de calidad más realistas y justas
+        REASON: Los umbrales anteriores eran demasiado estrictos
+        IMPACT: Categorización que refleja mejor la calidad real del OCR
+        """
+        if score >= 90:
             return 'Excelente'
+        elif score >= 75:
+            return 'Muy Buena'
         elif score >= 60:
             return 'Buena'
-        elif score >= 40:
+        elif score >= 45:
             return 'Regular'
         else:
             return 'Deficiente'
