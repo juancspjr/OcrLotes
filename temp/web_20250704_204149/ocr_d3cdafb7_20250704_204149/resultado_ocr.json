@@ -1,0 +1,333 @@
+{
+  "texto_completo": "Comprobante de operacion PagomoVilBDV Personas 104,34 Bs Fecha : Operacion : 003039096498 27061025 Origen : Destino : 04125318244 Banco : 0105 - BANCO MERCANTIL Concepto : pago Crear Acceso directo",
+  "total_caracteres": 197,
+  "tiempo_procesamiento": 2.191,
+  "metodo_extraccion": "ONNXTR_SINGLE_PASS",
+  "configuracion_onnxtr": "high_confidence",
+  "total_palabras_detectadas": 24,
+  "palabras_detectadas": [
+    {
+      "texto": "Comprobante",
+      "confianza": 0.9522897601127625,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 0,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "de",
+      "confianza": 0.9998088479042053,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 0,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "operacion",
+      "confianza": 0.9955216646194458,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 0,
+        "palabra": 2
+      }
+    },
+    {
+      "texto": "PagomoVilBDV",
+      "confianza": 0.9503241181373596,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 1,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Personas",
+      "confianza": 0.9997095465660095,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 1,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "104,34",
+      "confianza": 0.9999203681945801,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 2,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Bs",
+      "confianza": 0.9995916485786438,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 2,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "Fecha:",
+      "confianza": 0.9472509622573853,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 3,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Operacion:",
+      "confianza": 0.9994426369667053,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 5,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "003039096498",
+      "confianza": 0.954774409532547,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 6,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "27061025",
+      "confianza": 0.9934201836585999,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 8,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Origen:",
+      "confianza": 0.9584898352622986,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 9,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Destino:",
+      "confianza": 0.999894380569458,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 11,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "04125318244",
+      "confianza": 0.9987903237342834,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 12,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Banco:",
+      "confianza": 0.9987254738807678,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 13,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "0105",
+      "confianza": 0.9997707009315491,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 14,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "-",
+      "confianza": 0.8404271006584167,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 14,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "BANCO",
+      "confianza": 0.9952687621116638,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 14,
+        "palabra": 2
+      }
+    },
+    {
+      "texto": "MERCANTIL",
+      "confianza": 0.9834205508232117,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 14,
+        "palabra": 3
+      }
+    },
+    {
+      "texto": "Concepto:",
+      "confianza": 0.9719816446304321,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 15,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "pago",
+      "confianza": 0.9998437166213989,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 16,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Crear",
+      "confianza": 0.9875400066375732,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 17,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Acceso",
+      "confianza": 0.9994066953659058,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 17,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "directo",
+      "confianza": 0.9974536299705505,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 17,
+        "palabra": 2
+      }
+    }
+  ],
+  "confianza_promedio": 0.98,
+  "estadisticas_onnxtr": {
+    "paginas_procesadas": 1,
+    "palabras_alta_confianza": 24,
+    "palabras_media_confianza": 0,
+    "palabras_baja_confianza": 0,
+    "min_confianza_aplicada": 0.8
+  },
+  "calidad_extraccion": {
+    "score_calidad": 89.2,
+    "categoria": "excelente",
+    "confianza_promedio": 0.98,
+    "palabras_alta_confianza": 24,
+    "total_palabras": 24,
+    "longitud_texto": 197,
+    "recomendaciones": [
+      "Calidad de extracción satisfactoria"
+    ]
+  },
+  "deteccion_inteligente": {
+    "tipo_imagen": "documento_escaneado",
+    "esquema_color": "texto_oscuro_fondo_claro",
+    "inversion_requerida": false,
+    "ui_elements_detectados": false,
+    "aspect_ratio": 0.5103969754253308,
+    "calidad_digital": false,
+    "dark_percentage": 2.3510468006134033,
+    "light_percentage": 97.64895629882812,
+    "edge_density": 0.02084296016243086,
+    "noise_estimate": 54.502954555364205,
+    "confianza_deteccion": 0.2
+  },
+  "datos_financieros": {
+    "amount": [
+      {
+        "valor": "104,34",
+        "posicion_texto": 47
+      },
+      {
+        "valor": "003",
+        "posicion_texto": 77
+      },
+      {
+        "valor": "039",
+        "posicion_texto": 80
+      },
+      {
+        "valor": "096",
+        "posicion_texto": 83
+      },
+      {
+        "valor": "498",
+        "posicion_texto": 86
+      }
+    ],
+    "phone": [
+      {
+        "valor": "00303909649",
+        "posicion_texto": 77
+      },
+      {
+        "valor": "04125318244",
+        "posicion_texto": 118
+      }
+    ],
+    "analisis_documento": {
+      "tipo": "recibo_pago",
+      "confianza": 25.0,
+      "keywords_encontradas": [
+        "comprobante"
+      ]
+    },
+    "resumen_extraido": {
+      "montos_encontrados": 5,
+      "fechas_encontradas": 0,
+      "referencias_encontradas": 0,
+      "cuentas_encontradas": 0,
+      "telefonos_encontrados": 2,
+      "total_elementos": 7,
+      "completitud_porcentaje": 50
+    }
+  },
+  "tiempo": 2.196
+}
