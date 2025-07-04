@@ -335,37 +335,67 @@ class OrquestadorOCR:
             puntuacion_gral = diagnostico.get('puntuacion_general', {}) if isinstance(diagnostico, dict) else {}
             calidad_imagen = puntuacion_gral.get('total', 0) if isinstance(puntuacion_gral, dict) else 0
             
-            # FIX: Adaptación para estructura de datos de OnnxTR en calificación final
-            # REASON: OnnxTR devuelve confianza_promedio como float directo, no como dict
-            # IMPACT: Evita errores 'float' object has no attribute 'get'
+            # FIX: Algoritmo de calificación final corregido para OnnxTR
+            # REASON: La confianza se estaba convirtiendo mal y completitud era muy baja
+            # IMPACT: Puntuación final que refleja la verdadera calidad del OCR
             ocr_data = etapas.get('3_ocr', {}) if isinstance(etapas, dict) else {}
             confianza_promedio_raw = ocr_data.get('confianza_promedio', 0) if isinstance(ocr_data, dict) else 0
             
-            # Manejar tanto estructura antigua (dict) como nueva (float) de OnnxTR
+            # Convertir confianza a escala 0-100 correctamente
             if isinstance(confianza_promedio_raw, (int, float)):
-                confianza_ocr = float(confianza_promedio_raw)
+                # Si la confianza está en escala 0-1, convertir a 0-100
+                if 0 <= confianza_promedio_raw <= 1:
+                    confianza_ocr = float(confianza_promedio_raw) * 100
+                else:
+                    confianza_ocr = float(confianza_promedio_raw)
             elif isinstance(confianza_promedio_raw, dict):
-                confianza_ocr = confianza_promedio_raw.get('simple', 0)
+                confianza_ocr = confianza_promedio_raw.get('simple', 0) * 100
             else:
                 confianza_ocr = 0
             
+            # Obtener calidad del OCR directamente si existe
+            calidad_extraccion = ocr_data.get('calidad_extraccion', {}) if isinstance(ocr_data, dict) else {}
+            score_ocr_directo = calidad_extraccion.get('score_calidad', 0) if isinstance(calidad_extraccion, dict) else 0
+            
+            # Usar el score directo del OCR si está disponible (más preciso)
+            if score_ocr_directo > 0:
+                confianza_ocr = float(score_ocr_directo)
+            
+            # Completitud de datos - Más flexible para documentos financieros
             datos_fin = ocr_data.get('datos_financieros', {}) if isinstance(ocr_data, dict) else {}
             resumen_fin = datos_fin.get('resumen_extraido', {}) if isinstance(datos_fin, dict) else {}
-            completitud = resumen_fin.get('completitud_porcentaje', 0) if isinstance(resumen_fin, dict) else 0
+            completitud_raw = resumen_fin.get('completitud_porcentaje', 0) if isinstance(resumen_fin, dict) else 0
             
-            # Validar que los valores sean numéricos
+            # Mejorar cálculo de completitud basado en datos extraídos
+            total_elementos = resumen_fin.get('total_elementos', 0) if isinstance(resumen_fin, dict) else 0
+            total_palabras = ocr_data.get('total_palabras_detectadas', 0) if isinstance(ocr_data, dict) else 0
+            
+            # Bonificar si hay buen texto extraído aunque no sean datos financieros perfectos
+            if total_palabras > 15:  # Si hay buen contenido de texto
+                completitud = max(completitud_raw, 75.0)  # Mínimo 75% por buen contenido
+            elif total_palabras > 10:
+                completitud = max(completitud_raw, 60.0)  # Mínimo 60% por contenido aceptable
+            else:
+                completitud = float(completitud_raw)
+            
+            # Validar que los valores sean numéricos y estén en rango correcto
             calidad_imagen = float(calidad_imagen) if isinstance(calidad_imagen, (int, float)) else 0.0
             confianza_ocr = float(confianza_ocr) if isinstance(confianza_ocr, (int, float)) else 0.0  
             completitud = float(completitud) if isinstance(completitud, (int, float)) else 0.0
             
-            # Calcular calificación ponderada
-            calificacion = (calidad_imagen * 0.3 + confianza_ocr * 0.4 + completitud * 0.3)
+            # Calcular calificación ponderada - Dar más peso a la confianza OCR
+            calificacion = (calidad_imagen * 0.2 + confianza_ocr * 0.6 + completitud * 0.2)
             
-            if calificacion >= 80:
+            # FIX: Categorías consistentes con aplicador_ocr.py
+            # REASON: Mantener coherencia en todo el sistema
+            # IMPACT: Mismas categorías y umbrales en toda la aplicación
+            if calificacion >= 90:
                 categoria = 'Excelente'
-            elif calificacion >= 65:
+            elif calificacion >= 75:
+                categoria = 'Muy Buena'
+            elif calificacion >= 60:
                 categoria = 'Buena'
-            elif calificacion >= 50:
+            elif calificacion >= 45:
                 categoria = 'Regular'
             else:
                 categoria = 'Deficiente'
