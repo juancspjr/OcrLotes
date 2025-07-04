@@ -50,14 +50,9 @@ fi
 INSTALL_DIR="$HOME/OcrAcorazado"
 if [ -d "$INSTALL_DIR" ]; then
     print_warning "El directorio $INSTALL_DIR ya existe"
-    echo "¿Desea eliminar y reinstalar? (y/n)"
-    read -r response
-    if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
-        rm -rf "$INSTALL_DIR"
-    else
-        print_error "Instalación cancelada"
-        exit 1
-    fi
+    print_status "Eliminando directorio existente automáticamente..."
+    rm -rf "$INSTALL_DIR"
+    print_success "Directorio eliminado"
 fi
 
 # Clonar repositorio
