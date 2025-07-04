@@ -531,12 +531,12 @@ class MejoradorOCR:
                 cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_edges.png"), current)
                 step_counter += 1
         
-        # 6. Binarización avanzada mejorada (REEMPLAZA la simple)
-        if estrategia['adaptive_threshold']:
-            current = self._aplicar_binarizacion_adaptativa(current, diagnostico, resultado)
-            if save_steps and output_dir:
-                cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_binarizacion.png"), current)
-                step_counter += 1
+        # 6. BINARIZACIÓN ELIMINADA - Por solicitud del usuario
+        # FIX: Eliminación completa del proceso de binarización
+        # REASON: Usuario solicita eliminar binarización para preservar calidad original
+        # IMPACT: Mantiene imagen en escala de grises para mejor compatibilidad con OnnxTR
+        if False:  # Deshabilitado permanentemente
+            pass
         
         # 7. Operaciones morfológicas (mínimas para screenshots)
         if estrategia['morphology'] == 'minimal':
@@ -1510,12 +1510,13 @@ class MejoradorOCR:
             cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_contraste_adaptativo.png"), current)
             step_counter += 1
         
-        # PASO 4: Binarización adaptativa
-        current = cv2.adaptiveThreshold(current, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, 
-                                      cv2.THRESH_BINARY, 11, 2)
-        resultado['pasos_aplicados'].append(f'{step_counter:02d}_binarizacion_tradicional')
+        # PASO 4: BINARIZACIÓN ELIMINADA TAMBIÉN EN DOCUMENTOS ESCANEADOS
+        # FIX: Eliminación completa de binarización en todos los tipos de documento
+        # REASON: Usuario solicita eliminar toda binarización del sistema
+        # IMPACT: OnnxTR funcionará con escala de grises en lugar de binario
+        resultado['pasos_aplicados'].append(f'{step_counter:02d}_sin_binarizacion')
         if save_steps and output_dir:
-            cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_binarizacion_tradicional.png"), current)
+            cv2.imwrite(str(Path(output_dir) / f"{step_counter:02d}_sin_binarizacion.png"), current)
         
         resultado['parametros_aplicados']['documento_processing'] = {
             'redimensionamiento_aplicado': bool(current.shape[1] < 600),

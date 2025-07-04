@@ -1,0 +1,72 @@
+{
+  "perfil_usado": "rapido",
+  "pasos_aplicados": [
+    "00_analisis_sin_unificacion",
+    "00_maxima_claridad_letras",
+    "01_no_inversion_necesaria",
+    "03_bilateral_filter",
+    "04_contraste_adaptativo",
+    "05_binarizacion_tradicional"
+  ],
+  "metricas_antes": {
+    "brillo_promedio": 160.1375595173191,
+    "contraste": 98.57317257981079,
+    "nitidez": 682.5306717903944,
+    "rango_dinamico": 255.0
+  },
+  "parametros_aplicados": {
+    "analisis_fondos": {
+      "intensidad_media_original": 160.14,
+      "porcentaje_fondo_oscuro": 0.46299999952316284,
+      "unificacion_aplicada": false,
+      "razon_no_unificacion": "preservacion_calidad_usuario"
+    },
+    "no_inversion": {
+      "razon": "imagen_suficientemente_clara",
+      "intensidad_media": 160.14
+    },
+    "contraste_adaptativo": {
+      "alpha_calculado": 1.1,
+      "beta_calculado": 5,
+      "intensidad_promedio": 160.13,
+      "desviacion_estandar": 98.59,
+      "estrategia": "adaptativo_preservando_letras"
+    },
+    "documento_processing": {
+      "redimensionamiento_aplicado": false,
+      "filtro_bilateral": true,
+      "contraste_alpha": 1.1,
+      "contraste_beta": 10
+    }
+  },
+  "tiempo_procesamiento": 0.084,
+  "estrategia_aplicada": "Documento Escaneado - Procesamiento Tradicional",
+  "metricas_despues": {
+    "brillo_promedio": 242.96458946679752,
+    "contraste": 54.07567456133962,
+    "nitidez": 5653.911105659143,
+    "rango_dinamico": 255.0
+  },
+  "imagen_mejorada": "temp/web_20250704_173802/ocr_0f51ee66_20250704_173802/imagen_mejorada.png",
+  "mejora_calidad": {
+    "contraste": {
+      "antes": 98.57,
+      "despues": 54.08,
+      "cambio": -44.5,
+      "porcentaje": -45.1
+    },
+    "nitidez": {
+      "antes": 682.53,
+      "despues": 5653.91,
+      "cambio": 4971.38,
+      "porcentaje": 728.4
+    },
+    "rango_dinamico": {
+      "antes": 255.0,
+      "despues": 255.0,
+      "cambio": 0.0,
+      "porcentaje": 0.0
+    }
+  },
+  "tiempo": 0.099
+}

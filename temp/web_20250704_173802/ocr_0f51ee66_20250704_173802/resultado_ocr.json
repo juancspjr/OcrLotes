@@ -1,0 +1,233 @@
+{
+  "texto_completo": "fue Bs . 313 Banco : BANCO celular : 04125318244 V 27061025 Concepto : Pago Fecha : 20/06/ 2025 Referencia : 000012071",
+  "total_caracteres": 118,
+  "tiempo_procesamiento": 1.6,
+  "metodo_extraccion": "ONNXTR_SINGLE_PASS",
+  "configuracion_onnxtr": "high_confidence",
+  "total_palabras_detectadas": 14,
+  "palabras_detectadas": [
+    {
+      "texto": "fue",
+      "confianza": 0.9644565582275391,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 0,
+        "palabra": 2
+      }
+    },
+    {
+      "texto": "Bs.",
+      "confianza": 0.9264816045761108,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 1,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "313",
+      "confianza": 0.8532774448394775,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 1,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "Banco:",
+      "confianza": 0.9831174612045288,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 4,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "BANCO",
+      "confianza": 0.9998672008514404,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 5,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "celular:",
+      "confianza": 0.888628363609314,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 6,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "04125318244",
+      "confianza": 0.9997351765632629,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 7,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "V27061025",
+      "confianza": 0.9998569488525391,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 9,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Concepto:",
+      "confianza": 0.9995092153549194,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 10,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Pago",
+      "confianza": 0.9908451437950134,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 11,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Fecha:",
+      "confianza": 0.9914826154708862,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 12,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "20/06/2025",
+      "confianza": 0.9527234435081482,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 13,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Referencia:",
+      "confianza": 0.9993550181388855,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 14,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "000012071",
+      "confianza": 0.9998863935470581,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 15,
+        "palabra": 0
+      }
+    }
+  ],
+  "confianza_promedio": 0.968,
+  "estadisticas_onnxtr": {
+    "paginas_procesadas": 1,
+    "palabras_alta_confianza": 14,
+    "palabras_media_confianza": 0,
+    "palabras_baja_confianza": 0,
+    "min_confianza_aplicada": 0.8
+  },
+  "calidad_extraccion": {
+    "score_calidad": 83.7,
+    "categoria": "excelente",
+    "confianza_promedio": 0.968,
+    "palabras_alta_confianza": 14,
+    "total_palabras": 14,
+    "longitud_texto": 118,
+    "recomendaciones": [
+      "Calidad de extracción satisfactoria"
+    ]
+  },
+  "deteccion_inteligente": {
+    "tipo_imagen": "documento_escaneado",
+    "esquema_color": "texto_oscuro_fondo_claro",
+    "inversion_requerida": false,
+    "ui_elements_detectados": true,
+    "aspect_ratio": 0.9435185185185185,
+    "calidad_digital": false,
+    "dark_percentage": 47.04657745361328,
+    "light_percentage": 52.95342254638672,
+    "edge_density": 0.020272234943481262,
+    "noise_estimate": 57.67172958714207,
+    "confianza_deteccion": 0.4
+  },
+  "datos_financieros": {
+    "amount": [
+      {
+        "valor": "313",
+        "posicion_texto": 9
+      },
+      {
+        "valor": "041",
+        "posicion_texto": 37
+      },
+      {
+        "valor": "253",
+        "posicion_texto": 40
+      },
+      {
+        "valor": "182",
+        "posicion_texto": 43
+      },
+      {
+        "valor": "44",
+        "posicion_texto": 46
+      }
+    ],
+    "reference": [
+      {
+        "valor": "erencia",
+        "posicion_texto": 99
+      }
+    ],
+    "phone": [
+      {
+        "valor": "04125318244",
+        "posicion_texto": 37
+      }
+    ],
+    "analisis_documento": {
+      "tipo": "desconocido",
+      "confianza": 0,
+      "keywords_encontradas": []
+    },
+    "resumen_extraido": {
+      "montos_encontrados": 5,
+      "fechas_encontradas": 0,
+      "referencias_encontradas": 1,
+      "cuentas_encontradas": 0,
+      "telefonos_encontrados": 1,
+      "total_elementos": 7,
+      "completitud_porcentaje": 50
+    }
+  },
+  "tiempo": 1.609
+}

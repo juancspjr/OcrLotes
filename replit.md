@@ -233,6 +233,15 @@ Changelog:
   * CATEGORY CONSISTENCY: All modules now use same thresholds (Excelente ≥90, Muy Buena ≥75, Buena ≥60, Regular ≥45)
   * VERIFICATION PROCEDURE: Test with same financial document should now score ~85-90 instead of 41.8
   * IMPACT: Complete resolution of false "Deficient" ratings for high-quality OCR extractions
+- July 04, 2025. BINARIZATION ELIMINATION FOR QUALITY PRESERVATION:
+  * USER REQUEST: Complete removal of binarization process from image preprocessing pipeline
+  * ELIMINATED BINARIZATION: Removed all binarization steps from both mobile screenshots and scanned documents
+  * GRAYSCALE PRESERVATION: Images now processed in grayscale format for optimal OnnxTR compatibility
+  * ARCHITECTURAL MODULES MODIFIED:
+    - mejora_ocr.py: Disabled adaptive binarization in main processing sequence (line 538)
+    - mejora_ocr.py: Removed traditional binarization from scanned document processing (line 1514)
+  * RATIONALE: Binarization can degrade text quality and remove subtle character details needed for accurate OCR
+  * IMPACT: OnnxTR now processes images in their natural grayscale state, preserving maximum character definition and edge information
 ```
 
 ## User Preferences
