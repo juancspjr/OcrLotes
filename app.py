@@ -12,7 +12,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 # Crear aplicación Flask
 app = Flask(__name__)
-app.secret_key = os.environ.get("SESSION_SECRET") or "ocr-system-dev-key-2025-secure"
+app.secret_key = os.environ.get("SESSION_SECRET")
 app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
 # Configuración de la aplicación
