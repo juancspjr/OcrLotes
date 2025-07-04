@@ -259,9 +259,17 @@ class OrquestadorOCR:
             mejoras = etapas.get('2_mejora', {}) if isinstance(etapas.get('2_mejora'), dict) else {}
             pasos_aplicados = mejoras.get('pasos_aplicados', []) if isinstance(mejoras, dict) else []
             
-            # Resultados de OCR con validación
+            # FIX: Adaptación para nueva estructura de datos de OnnxTR
+            # REASON: OnnxTR usa estructura diferente a Tesseract para confianza y datos financieros
+            # IMPACT: Garantiza compatibilidad con la nueva estructura de datos de OnnxTR
             ocr_resultado = etapas.get('3_ocr', {}) if isinstance(etapas.get('3_ocr'), dict) else {}
-            confianza_ocr = ocr_resultado.get('confianza_promedio', {}) if isinstance(ocr_resultado, dict) else {}
+            
+            # OnnxTR devuelve confianza_promedio como float directo, no como diccionario
+            confianza_promedio = ocr_resultado.get('confianza_promedio', 0)
+            if isinstance(confianza_promedio, (int, float)):
+                confianza_ocr = {'simple': confianza_promedio, 'ponderada': confianza_promedio}
+            else:
+                confianza_ocr = confianza_promedio if isinstance(confianza_promedio, dict) else {'simple': 0, 'ponderada': 0}
             
             # Datos financieros extraídos con validación
             datos_financieros = ocr_resultado.get('datos_financieros', {}) if isinstance(ocr_resultado, dict) else {}
@@ -281,10 +289,11 @@ class OrquestadorOCR:
                 },
                 'resultados_ocr': {
                     'caracteres_extraidos': len(ocr_resultado.get('texto_completo', '')),
-                    'palabras_detectadas': len(ocr_resultado.get('palabras_detectadas', [])),
+                    'palabras_detectadas': ocr_resultado.get('total_palabras_detectadas', len(ocr_resultado.get('palabras_detectadas', []))),
                     'confianza_promedio': confianza_ocr.get('simple', 0),
                     'confianza_ponderada': confianza_ocr.get('ponderada', 0),
-                    'calidad_extraccion': ocr_resultado.get('calidad_extraccion', {}).get('categoria', 'Desconocida')
+                    # FIX: Adaptar para estructura de calidad de OnnxTR
+                    'calidad_extraccion': ocr_resultado.get('calidad_extraccion', {}).get('categoria', 'Desconocida') if isinstance(ocr_resultado.get('calidad_extraccion'), dict) else 'Desconocida'
                 },
                 'datos_financieros': {
                     'tipo_documento': datos_financieros.get('analisis_documento', {}).get('tipo', 'desconocido'),
@@ -326,9 +335,19 @@ class OrquestadorOCR:
             puntuacion_gral = diagnostico.get('puntuacion_general', {}) if isinstance(diagnostico, dict) else {}
             calidad_imagen = puntuacion_gral.get('total', 0) if isinstance(puntuacion_gral, dict) else 0
             
+            # FIX: Adaptación para estructura de datos de OnnxTR en calificación final
+            # REASON: OnnxTR devuelve confianza_promedio como float directo, no como dict
+            # IMPACT: Evita errores 'float' object has no attribute 'get'
             ocr_data = etapas.get('3_ocr', {}) if isinstance(etapas, dict) else {}
-            confianza_data = ocr_data.get('confianza_promedio', {}) if isinstance(ocr_data, dict) else {}
-            confianza_ocr = confianza_data.get('simple', 0) if isinstance(confianza_data, dict) else 0
+            confianza_promedio_raw = ocr_data.get('confianza_promedio', 0) if isinstance(ocr_data, dict) else 0
+            
+            # Manejar tanto estructura antigua (dict) como nueva (float) de OnnxTR
+            if isinstance(confianza_promedio_raw, (int, float)):
+                confianza_ocr = float(confianza_promedio_raw)
+            elif isinstance(confianza_promedio_raw, dict):
+                confianza_ocr = confianza_promedio_raw.get('simple', 0)
+            else:
+                confianza_ocr = 0
             
             datos_fin = ocr_data.get('datos_financieros', {}) if isinstance(ocr_data, dict) else {}
             resumen_fin = datos_fin.get('resumen_extraido', {}) if isinstance(datos_fin, dict) else {}

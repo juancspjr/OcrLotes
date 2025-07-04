@@ -29,7 +29,7 @@ This is a Python-based OCR (Optical Character Recognition) system designed for p
 ### Core Processing Modules
 - **ValidadorOCR**: Analyzes image quality, resolution, contrast, text regions
 - **MejoradorOCR**: Applies adaptive image enhancements based on performance profiles
-- **AplicadorOCR**: Executes OCR with Tesseract and extracts structured data
+- **AplicadorOCR**: Executes OCR with OnnxTR (ONNX runtime) and extracts structured data
 - **OrquestadorOCR**: Main coordinator that manages the complete workflow
 
 ### Web Interface
@@ -56,7 +56,8 @@ This is a Python-based OCR (Optical Character Recognition) system designed for p
 ### Core Libraries
 - **OpenCV**: Image processing and computer vision operations
 - **Pillow (PIL)**: Image manipulation and format handling
-- **pytesseract**: Python wrapper for Tesseract OCR engine
+- **OnnxTR**: ONNX-based OCR engine optimized for CPU inference
+- **ONNX Runtime**: Optimized inference engine for ONNX models
 - **scikit-image**: Additional image processing utilities
 - **NumPy**: Numerical operations for image arrays
 
@@ -157,6 +158,17 @@ Changelog:
     - mejora_ocr.py: Added early background analysis and conditional unification in processing pipeline
     - aplicador_ocr.py: Optimized gray zone detection ranges for better text preservation
   * IMPACT: Dramatic quality improvement by processing backgrounds intelligently before color operations
+- July 04, 2025. MAJOR MIGRATION TO ONNXTR FOR ENHANCED CPU PERFORMANCE:
+  * COMPLETE TESSERACT REPLACEMENT: Successfully migrated from Tesseract to OnnxTR for superior CPU efficiency
+  * ONNX RUNTIME INTEGRATION: Implemented CPU-optimized ONNX models with 8-bit quantization for faster inference
+  * ARCHITECTURAL TRANSFORMATION:
+    - config.py: Replaced TESSERACT_CONFIG with ONNXTR_CONFIG containing optimized model configurations
+    - aplicador_ocr.py: Complete rewrite of OCR engine using OnnxTR DocumentFile and ocr_predictor
+    - main_ocr_process.py: Updated data structure handling for OnnxTR output format compatibility
+  * PERFORMANCE IMPROVEMENTS: Significantly faster OCR processing with lower memory usage
+  * DEPENDENCY CLEANUP: Removed pytesseract dependency, added onnxtr, onnx, and onnxruntime
+  * REPLIT COMPATIBILITY: Full integration with Replit environment using CPU-only inference
+  * IMPACT: Dramatically improved processing speed and resource efficiency while maintaining OCR accuracy
 ```
 
 ## User Preferences
