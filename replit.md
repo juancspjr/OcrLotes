@@ -293,6 +293,13 @@ Changelog:
   * MAINTAINED PROJECT INTEGRITY: Preserved all core functionality files without modifications per user requirements
   * STREAMLINED DOCUMENTATION: Updated replit.md with clear, consolidated installation instructions
   * IMPACT: Clean project structure with no duplicated functionality or documentation files
+- July 04, 2025. DEPENDENCY VERSION FIX AND ONE-LINE INSTALLATION:
+  * FIXED ONNXTR VERSION: Corrected onnxtr dependency from >=0.9.0 to ==0.7.1 (latest stable version)
+  * CREATED ONE-LINE INSTALLER: Added install.sh script for direct GitHub installation
+  * ENHANCED INSTALLATION OPTIONS: Three installation methods (one-line, manual clone, local)
+  * COMPREHENSIVE USAGE GUIDE: Complete web local and command-line documentation for n8n integration
+  * AUTOMATIC GITHUB DETECTION: install_requirements.sh now detects missing project files and offers GitHub installation
+  * IMPACT: Stable installation process with multiple deployment options and comprehensive documentation
 ```
 
 ## User Preferences
