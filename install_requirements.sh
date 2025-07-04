@@ -9,6 +9,11 @@ echo "==================================================================="
 echo "  🔧 INSTALACIÓN DEL SISTEMA OCR DE BAJOS RECURSOS"
 echo "  🚀 Nuevo Motor: OnnxTR para CPU Optimizado"
 echo "==================================================================="
+echo ""
+echo "🌟 ${YELLOW}INSTALACIÓN CON UNA SOLA LÍNEA DESDE GITHUB:${NC}"
+echo "curl -fsSL https://raw.githubusercontent.com/juancspjr/OcrAcorazado/main/install.sh | bash"
+echo ""
+echo "==================================================================="
 
 # Colores para output
 RED='\033[0;31m'
@@ -33,6 +38,53 @@ print_warning() {
 print_error() {
     echo -e "${RED}[ERROR]${NC} $1"
 }
+
+# Función para instalación desde GitHub
+install_from_github() {
+    echo "==================================================================="
+    echo "  📥 INSTALACIÓN DESDE GITHUB"
+    echo "==================================================================="
+    
+    # Verificar si git está instalado
+    if ! command -v git &> /dev/null; then
+        print_status "Instalando Git..."
+        sudo apt-get update
+        sudo apt-get install -y git
+    fi
+    
+    # Clonar repositorio
+    print_status "Clonando repositorio desde GitHub..."
+    git clone https://github.com/juancspjr/OcrAcorazado.git
+    cd OcrAcorazado
+    
+    print_success "Repositorio clonado exitosamente"
+    
+    # Hacer ejecutable el script de instalación
+    chmod +x install_requirements.sh
+    
+    # Ejecutar instalación
+    print_status "Iniciando instalación automática..."
+    ./install_requirements.sh --skip-github
+    
+    exit 0
+}
+
+# Verificar si se está ejecutando desde GitHub
+if [ "$1" != "--skip-github" ]; then
+    # Verificar si estamos en un directorio vacío o sin el proyecto
+    if [ ! -f "main.py" ] || [ ! -f "config.py" ]; then
+        print_warning "No se detectaron archivos del proyecto OCR"
+        echo ""
+        echo "¿Desea instalar desde GitHub? (y/n)"
+        read -r response
+        if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
+            install_from_github
+        else
+            print_error "Instalación cancelada. Asegúrese de estar en el directorio del proyecto."
+            exit 1
+        fi
+    fi
+fi
 
 # Verificar si se ejecuta como root
 if [[ $EUID -eq 0 ]]; then

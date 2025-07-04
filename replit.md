@@ -75,17 +75,29 @@ This is a Python-based OCR (Optical Character Recognition) system designed for p
 
 ### Ubuntu Server Installation (Production)
 
-1. **Automated Setup**: Run the installation script
-   ```bash
-   chmod +x install_requirements.sh
-   ./install_requirements.sh
-   ```
+**Option 1: One-Line Installation from GitHub**
+```bash
+curl -fsSL https://raw.githubusercontent.com/juancspjr/OcrAcorazado/main/install.sh | bash
+```
 
-2. **Activate Environment**: 
-   ```bash
-   source venv_ocr/bin/activate
-   # or use: ./activate_ocr.sh
-   ```
+**Option 2: Manual Clone and Install**
+```bash
+git clone https://github.com/juancspjr/OcrAcorazado.git
+cd OcrAcorazado
+chmod +x install_requirements.sh
+./install_requirements.sh
+```
+
+**Option 3: Local Installation (if you already have the files)**
+```bash
+chmod +x install_requirements.sh
+./install_requirements.sh
+```
+
+**Activate Environment**: 
+```bash
+source venv_ocr/bin/activate
+```
 
 3. **Run Application**:
    ```bash
