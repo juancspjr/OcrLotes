@@ -1,0 +1,435 @@
+{
+  "texto_completo": "7:17 P M . M - 51 60 0412 - 5318244 TREBOL V - 27061025 - MERCANTIL Monto : Bs . 104,54 Comision : Bs . 0,31 Bs . 104,85 Referencia : 490760890 Codigo autorizador : 282413 Concepto : 90 Emitir Pago CUENTAS TARJETAS BMC PAGOS DIVISAS",
+  "total_caracteres": 232,
+  "tiempo_procesamiento": 5.989,
+  "metodo_extraccion": "ONNXTR_SINGLE_PASS",
+  "configuracion_onnxtr": "high_confidence",
+  "total_palabras_detectadas": 34,
+  "palabras_detectadas": [
+    {
+      "texto": "7:17",
+      "confianza": 0.9999052286148071,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 0,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "P",
+      "confianza": 0.9536393284797668,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 0,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "M.",
+      "confianza": 0.9997965693473816,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 0,
+        "palabra": 2
+      }
+    },
+    {
+      "texto": "M",
+      "confianza": 0.846185028553009,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 1,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "-",
+      "confianza": 0.7443262934684753,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 2,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "51",
+      "confianza": 0.9129608869552612,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 3,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "60",
+      "confianza": 0.9844980835914612,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 3,
+        "palabra": 2
+      }
+    },
+    {
+      "texto": "0412-5318244",
+      "confianza": 0.9635423123836517,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 4,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "TREBOL",
+      "confianza": 0.9994403719902039,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 4,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "V-27061025",
+      "confianza": 0.9974363446235657,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 4,
+        "palabra": 2
+      }
+    },
+    {
+      "texto": "-",
+      "confianza": 0.9992266893386841,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 4,
+        "palabra": 3
+      }
+    },
+    {
+      "texto": "MERCANTIL",
+      "confianza": 0.9723699688911438,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 5,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Monto:",
+      "confianza": 0.9993688464164734,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 6,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Bs.",
+      "confianza": 0.9857690930366516,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 7,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "104,54",
+      "confianza": 0.9638343453407288,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 7,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "Comision:",
+      "confianza": 0.9959660768508911,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 8,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Bs.",
+      "confianza": 0.9867078065872192,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 9,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "0,31",
+      "confianza": 0.9960693120956421,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 9,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "Bs.",
+      "confianza": 0.9829216003417969,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 11,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "104,85",
+      "confianza": 0.9998395442962646,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 11,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "Referencia:",
+      "confianza": 0.995080828666687,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 12,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "490760890",
+      "confianza": 0.9997850060462952,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 13,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Codigo",
+      "confianza": 0.9995098114013672,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 14,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "autorizador:",
+      "confianza": 0.9942843317985535,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 14,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "282413",
+      "confianza": 0.9987579584121704,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 15,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Concepto:",
+      "confianza": 0.9997428059577942,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 16,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "90",
+      "confianza": 0.9984649419784546,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 17,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Emitir",
+      "confianza": 0.9847403168678284,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 18,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Pago",
+      "confianza": 0.999736487865448,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 18,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "CUENTAS",
+      "confianza": 0.7503299117088318,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 19,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "TARJETAS",
+      "confianza": 0.7439980506896973,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 20,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "BMC",
+      "confianza": 0.9179593324661255,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 21,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "PAGOS",
+      "confianza": 0.9748511910438538,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 22,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "DIVISAS",
+      "confianza": 0.922544538974762,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 23,
+        "palabra": 0
+      }
+    }
+  ],
+  "confianza_promedio": 0.958,
+  "estadisticas_onnxtr": {
+    "paginas_procesadas": 1,
+    "palabras_alta_confianza": 31,
+    "palabras_media_confianza": 3,
+    "palabras_baja_confianza": 0,
+    "min_confianza_aplicada": 0.7
+  },
+  "calidad_extraccion": {
+    "score_calidad": 85.7,
+    "categoria": "excelente",
+    "confianza_promedio": 0.958,
+    "palabras_alta_confianza": 31,
+    "total_palabras": 34,
+    "longitud_texto": 232,
+    "recomendaciones": [
+      "Calidad de extracción satisfactoria"
+    ]
+  },
+  "deteccion_inteligente": {
+    "tipo_imagen": "screenshot_movil",
+    "esquema_color": "texto_oscuro_fondo_claro",
+    "inversion_requerida": false,
+    "ui_elements_detectados": false,
+    "aspect_ratio": 0.4462962962962963,
+    "calidad_digital": false,
+    "dark_percentage": 17.086406707763672,
+    "light_percentage": 82.9135971069336,
+    "edge_density": 0.03415936683571538,
+    "noise_estimate": 79.66334582458597,
+    "confianza_deteccion": 0.2
+  },
+  "datos_financieros": {
+    "amount": [
+      {
+        "valor": "7",
+        "posicion_texto": 0
+      },
+      {
+        "valor": "17",
+        "posicion_texto": 2
+      },
+      {
+        "valor": "51",
+        "posicion_texto": 15
+      },
+      {
+        "valor": "60",
+        "posicion_texto": 18
+      },
+      {
+        "valor": "041",
+        "posicion_texto": 21
+      }
+    ],
+    "time": [
+      {
+        "valor": "7:17",
+        "posicion_texto": 0
+      }
+    ],
+    "reference": [
+      {
+        "valor": "erencia",
+        "posicion_texto": 124
+      }
+    ],
+    "analisis_documento": {
+      "tipo": "estado_cuenta",
+      "confianza": 25.0,
+      "keywords_encontradas": [
+        "cuenta"
+      ]
+    },
+    "resumen_extraido": {
+      "montos_encontrados": 5,
+      "fechas_encontradas": 0,
+      "referencias_encontradas": 1,
+      "cuentas_encontradas": 0,
+      "telefonos_encontrados": 0,
+      "total_elementos": 6,
+      "completitud_porcentaje": 50
+    }
+  },
+  "tiempo": 5.996
+}

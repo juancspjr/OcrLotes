@@ -1,0 +1,1199 @@
+{
+  "execution_id": "9dd751c6",
+  "timestamp": "20250704_202350",
+  "input_image": "uploads/20250704_202350_Imagen_de_WhatsApp_2025-06-21_a_las_18.44.16_52111da8.jpg",
+  "temp_directory": "temp/web_20250704_202350/ocr_9dd751c6_20250704_202350",
+  "parametros": {
+    "language": "spa",
+    "profile": "normal",
+    "save_intermediate": true
+  },
+  "etapas": {
+    "1_validacion": {
+      "tiempo": 0.15,
+      "diagnostico": {
+        "imagen_info": {
+          "ancho": 482,
+          "alto": 1080,
+          "resolucion_total": 520560,
+          "canales": 3,
+          "modo": "RGB",
+          "formato": "JPEG",
+          "brillo_promedio": 212.22229329952359,
+          "desviacion_brillo": 83.3261225082898,
+          "rango_dinamico": 255.0,
+          "histogram": [
+            6.0,
+            1.0,
+            1.0,
+            14.0,
+            34.0,
+            68.0,
+            90.0,
+            78.0,
+            50.0,
+            73.0,
+            96.0,
+            95.0,
+            135.0,
+            144.0,
+            164.0,
+            188.0,
+            218.0,
+            214.0,
+            305.0,
+            330.0,
+            360.0,
+            429.0,
+            542.0,
+            588.0,
+            709.0,
+            765.0,
+            70241.0,
+            873.0,
+            522.0,
+            448.0,
+            377.0,
+            321.0,
+            334.0,
+            253.0,
+            258.0,
+            199.0,
+            184.0,
+            162.0,
+            161.0,
+            140.0,
+            138.0,
+            129.0,
+            114.0,
+            115.0,
+            104.0,
+            107.0,
+            88.0,
+            78.0,
+            77.0,
+            87.0,
+            88.0,
+            81.0,
+            72.0,
+            76.0,
+            76.0,
+            60.0,
+            65.0,
+            83.0,
+            65.0,
+            67.0,
+            85.0,
+            78.0,
+            73.0,
+            80.0,
+            77.0,
+            82.0,
+            77.0,
+            104.0,
+            90.0,
+            94.0,
+            82.0,
+            87.0,
+            98.0,
+            112.0,
+            76.0,
+            95.0,
+            113.0,
+            105.0,
+            111.0,
+            105.0,
+            122.0,
+            117.0,
+            132.0,
+            547.0,
+            127.0,
+            102.0,
+            115.0,
+            128.0,
+            106.0,
+            131.0,
+            98.0,
+            128.0,
+            117.0,
+            110.0,
+            141.0,
+            113.0,
+            108.0,
+            108.0,
+            117.0,
+            107.0,
+            89.0,
+            103.0,
+            98.0,
+            97.0,
+            89.0,
+            111.0,
+            89.0,
+            96.0,
+            93.0,
+            79.0,
+            89.0,
+            73.0,
+            63.0,
+            106.0,
+            85.0,
+            68.0,
+            74.0,
+            82.0,
+            74.0,
+            86.0,
+            81.0,
+            101.0,
+            74.0,
+            88.0,
+            96.0,
+            70.0,
+            65.0,
+            88.0,
+            82.0,
+            79.0,
+            87.0,
+            101.0,
+            89.0,
+            85.0,
+            97.0,
+            80.0,
+            89.0,
+            86.0,
+            99.0,
+            97.0,
+            91.0,
+            93.0,
+            70.0,
+            68.0,
+            81.0,
+            57.0,
+            82.0,
+            83.0,
+            99.0,
+            91.0,
+            80.0,
+            90.0,
+            106.0,
+            76.0,
+            84.0,
+            84.0,
+            62.0,
+            90.0,
+            82.0,
+            79.0,
+            74.0,
+            87.0,
+            100.0,
+            77.0,
+            87.0,
+            85.0,
+            93.0,
+            88.0,
+            77.0,
+            79.0,
+            81.0,
+            77.0,
+            61.0,
+            90.0,
+            83.0,
+            69.0,
+            77.0,
+            72.0,
+            81.0,
+            67.0,
+            81.0,
+            77.0,
+            76.0,
+            73.0,
+            94.0,
+            90.0,
+            75.0,
+            946.0,
+            79.0,
+            95.0,
+            82.0,
+            947.0,
+            95.0,
+            97.0,
+            970.0,
+            69.0,
+            92.0,
+            85.0,
+            67.0,
+            70.0,
+            130.0,
+            84.0,
+            83.0,
+            1019.0,
+            116.0,
+            87.0,
+            85.0,
+            77.0,
+            97.0,
+            92.0,
+            836.0,
+            106.0,
+            87.0,
+            100.0,
+            124.0,
+            107.0,
+            91.0,
+            109.0,
+            131.0,
+            107.0,
+            116.0,
+            510.0,
+            123.0,
+            128.0,
+            147.0,
+            151.0,
+            1472.0,
+            151.0,
+            153.0,
+            136.0,
+            1052.0,
+            175.0,
+            202.0,
+            997.0,
+            269.0,
+            1556.0,
+            1615.0,
+            765.0,
+            2982.0,
+            1801.0,
+            2748.0,
+            35153.0,
+            9480.0,
+            5446.0,
+            2393.0,
+            2160.0,
+            1405.0,
+            1842.0,
+            1526.0,
+            2046.0,
+            3080.0,
+            4725.0,
+            5850.0,
+            5768.0,
+            301305.0,
+            19935.0
+          ],
+          "histogram_analysis": {
+            "picos_principales": [
+              [
+                254,
+                301305
+              ],
+              [
+                26,
+                70241
+              ],
+              [
+                241,
+                35153
+              ]
+            ],
+            "rango_fondo_sugerido": 254,
+            "rango_texto_sugerido": 26,
+            "distribucion": {
+              "oscuras": 0.16291877627372742,
+              "medias": 0.014951206743717194,
+              "claras": 0.822130024433136
+            },
+            "requiere_inversion": false,
+            "bimodal": true
+          },
+          "variaciones_fondo": {
+            "total_regiones_analizadas": 756,
+            "fondos_unicos_detectados": 4,
+            "variacion_fondos": 81.60827389334274,
+            "fondos_heterogeneos": true,
+            "rango_fondos": [
+              26,
+              255
+            ],
+            "requiere_unificacion_avanzada": true,
+            "regiones_variacion": [
+              {
+                "posicion": [
+                  0,
+                  0
+                ],
+                "media_local": 45.7792,
+                "std_local": 58.044769336780035,
+                "pico_fondo": 26
+              },
+              {
+                "posicion": [
+                  25,
+                  0
+                ],
+                "media_local": 49.6104,
+                "std_local": 63.19296330953312,
+                "pico_fondo": 26
+              },
+              {
+                "posicion": [
+                  50,
+                  0
+                ],
+                "media_local": 52.1472,
+                "std_local": 66.31112675984325,
+                "pico_fondo": 26
+              },
+              {
+                "posicion": [
+                  75,
+                  0
+                ],
+                "media_local": 55.6728,
+                "std_local": 68.14400149800422,
+                "pico_fondo": 26
+              },
+              {
+                "posicion": [
+                  100,
+                  0
+                ],
+                "media_local": 53.5692,
+                "std_local": 65.97126959033001,
+                "pico_fondo": 26
+              },
+              {
+                "posicion": [
+                  125,
+                  0
+                ],
+                "media_local": 46.762,
+                "std_local": 59.83287186822976,
+                "pico_fondo": 26
+              },
+              {
+                "posicion": [
+                  150,
+                  0
+                ],
+                "media_local": 38.42,
+                "std_local": 48.431663196714595,
+                "pico_fondo": 26
+              },
+              {
+                "posicion": [
+                  175,
+                  0
+                ],
+                "media_local": 34.5,
+                "std_local": 41.716303767232304,
+                "pico_fondo": 26
+              },
+              {
+                "posicion": [
+                  200,
+                  0
+                ],
+                "media_local": 34.5,
+                "std_local": 41.716303767232304,
+                "pico_fondo": 26
+              },
+              {
+                "posicion": [
+                  225,
+                  0
+                ],
+                "media_local": 34.5,
+                "std_local": 41.716303767232304,
+                "pico_fondo": 26
+              }
+            ]
+          }
+        },
+        "calidad_imagen": {
+          "contraste": 83.3261225082898,
+          "blur_variance": 1250.6443207091677,
+          "entropy": 2.8441529273986816,
+          "gradiente_promedio": 36.52052642706808,
+          "brillo_promedio": 212.22229329952359,
+          "uniformidad_brillo": 83.3261225082898,
+          "calificacion_calidad": 85
+        },
+        "deteccion_texto": {
+          "regiones_detectadas": 20,
+          "area_total_texto": 14271,
+          "densidad_texto": 0.02741470723835869,
+          "regiones": [
+            {
+              "x": 350,
+              "y": 1036,
+              "width": 23,
+              "height": 25,
+              "area": 575,
+              "aspect_ratio": 0.92
+            },
+            {
+              "x": 108,
+              "y": 1036,
+              "width": 25,
+              "height": 24,
+              "area": 600,
+              "aspect_ratio": 1.0416666666666667
+            },
+            {
+              "x": 227,
+              "y": 1034,
+              "width": 28,
+              "height": 27,
+              "area": 756,
+              "aspect_ratio": 1.037037037037037
+            },
+            {
+              "x": 310,
+              "y": 994,
+              "width": 51,
+              "height": 15,
+              "area": 765,
+              "aspect_ratio": 3.4
+            },
+            {
+              "x": 15,
+              "y": 994,
+              "width": 65,
+              "height": 16,
+              "area": 1040,
+              "aspect_ratio": 4.0625
+            },
+            {
+              "x": 407,
+              "y": 993,
+              "width": 54,
+              "height": 16,
+              "area": 864,
+              "aspect_ratio": 3.375
+            },
+            {
+              "x": 111,
+              "y": 992,
+              "width": 67,
+              "height": 17,
+              "area": 1139,
+              "aspect_ratio": 3.9411764705882355
+            },
+            {
+              "x": 323,
+              "y": 953,
+              "width": 29,
+              "height": 21,
+              "area": 609,
+              "aspect_ratio": 1.380952380952381
+            },
+            {
+              "x": 416,
+              "y": 951,
+              "width": 32,
+              "height": 27,
+              "area": 864,
+              "aspect_ratio": 1.1851851851851851
+            },
+            {
+              "x": 130,
+              "y": 951,
+              "width": 29,
+              "height": 25,
+              "area": 725,
+              "aspect_ratio": 1.16
+            },
+            {
+              "x": 35,
+              "y": 950,
+              "width": 29,
+              "height": 26,
+              "area": 754,
+              "aspect_ratio": 1.1153846153846154
+            },
+            {
+              "x": 361,
+              "y": 15,
+              "width": 47,
+              "height": 19,
+              "area": 893,
+              "aspect_ratio": 2.473684210526316
+            },
+            {
+              "x": 56,
+              "y": 15,
+              "width": 43,
+              "height": 19,
+              "area": 817,
+              "aspect_ratio": 2.263157894736842
+            },
+            {
+              "x": 15,
+              "y": 15,
+              "width": 40,
+              "height": 19,
+              "area": 760,
+              "aspect_ratio": 2.1052631578947367
+            },
+            {
+              "x": 432,
+              "y": 14,
+              "width": 37,
+              "height": 20,
+              "area": 740,
+              "aspect_ratio": 1.85
+            },
+            {
+              "x": 315,
+              "y": 14,
+              "width": 23,
+              "height": 20,
+              "area": 460,
+              "aspect_ratio": 1.15
+            },
+            {
+              "x": 133,
+              "y": 14,
+              "width": 24,
+              "height": 20,
+              "area": 480,
+              "aspect_ratio": 1.2
+            },
+            {
+              "x": 412,
+              "y": 13,
+              "width": 18,
+              "height": 23,
+              "area": 414,
+              "aspect_ratio": 0.782608695652174
+            },
+            {
+              "x": 339,
+              "y": 13,
+              "width": 22,
+              "height": 20,
+              "area": 440,
+              "aspect_ratio": 1.1
+            },
+            {
+              "x": 104,
+              "y": 12,
+              "width": 24,
+              "height": 24,
+              "area": 576,
+              "aspect_ratio": 1.0
+            }
+          ],
+          "cobertura_texto_porcentaje": 2.741470723835869
+        },
+        "ruido_artefactos": {
+          "nivel_ruido": 3.181602504994621,
+          "desviacion_ruido": 10.903178858446914,
+          "porcentaje_pixeles_ruidosos": 4.279429844782542,
+          "uniformidad": 3.480926310127555,
+          "calificacion_ruido": "Bajo"
+        },
+        "geometria_orientacion": {
+          "sesgo_estimado": 2.5,
+          "lineas_detectadas": 50,
+          "simetria_horizontal": 0.9283684492111206,
+          "relacion_aspecto": 0.4462962962962963,
+          "requiere_deskew": true,
+          "orientacion_correcta": true
+        },
+        "deteccion_inteligente": {
+          "tipo_imagen": "screenshot_movil",
+          "esquema_color": "texto_oscuro_fondo_claro",
+          "inversion_requerida": false,
+          "ui_elements_detectados": false,
+          "aspect_ratio": 0.4462962962962963,
+          "calidad_digital": false,
+          "dark_percentage": 17.086406707763672,
+          "light_percentage": 82.9135971069336,
+          "edge_density": 0.03415936683571538,
+          "noise_estimate": 79.66334582458597,
+          "confianza_deteccion": 0.2
+        },
+        "recomendaciones": {
+          "perfil_recomendado": "ultra_rapido",
+          "aplicar_deskew": true,
+          "nivel_denoise": "moderado",
+          "ajuste_contraste": false,
+          "filtro_bilateral": true,
+          "prioridades": [
+            "Corrección de sesgo necesaria"
+          ]
+        },
+        "puntuacion_general": {
+          "total": 68.1,
+          "calidad": 85,
+          "texto": 13.7,
+          "ruido": 100,
+          "geometria": 100,
+          "categoria": "Buena"
+        }
+      },
+      "imagen_original": "temp/web_20250704_202350/ocr_9dd751c6_20250704_202350/00_imagen_original.png",
+      "archivo_diagnostico": "temp/web_20250704_202350/ocr_9dd751c6_20250704_202350/diagnostico.json"
+    },
+    "2_mejora": {
+      "perfil_usado": "normal",
+      "pasos_aplicados": [
+        "00_analisis_sin_unificacion",
+        "00_maxima_claridad_letras",
+        "01_no_inversion_necesaria",
+        "03_sin_procesamiento"
+      ],
+      "metricas_antes": {
+        "brillo_promedio": 212.22229329952359,
+        "contraste": 83.3261225082898,
+        "nitidez": 1250.6443207091677,
+        "rango_dinamico": 255.0
+      },
+      "parametros_aplicados": {
+        "analisis_fondos": {
+          "intensidad_media_original": 212.22,
+          "porcentaje_fondo_oscuro": 0.16099999845027924,
+          "unificacion_aplicada": false,
+          "razon_no_unificacion": "preservacion_calidad_usuario"
+        },
+        "no_inversion": {
+          "razon": "imagen_suficientemente_clara",
+          "intensidad_media": 212.22
+        },
+        "screenshot_processing_eliminado": {
+          "razon": "eliminado_por_solicitud_usuario",
+          "upscaling": false,
+          "unsharp_masking": false,
+          "contrast_adjustment": false,
+          "binarization": false,
+          "brightness_adjustment": false,
+          "impacto": "preserva_imagen_original_completamente"
+        }
+      },
+      "tiempo_procesamiento": 0.038,
+      "estrategia_aplicada": "Screenshot Móvil - SIN PROCESAMIENTO",
+      "metricas_despues": {
+        "brillo_promedio": 211.69989050253574,
+        "contraste": 84.8616836545511,
+        "nitidez": 2831.1954430797723,
+        "rango_dinamico": 255.0
+      },
+      "imagen_mejorada": "temp/web_20250704_202350/ocr_9dd751c6_20250704_202350/imagen_mejorada.png",
+      "mejora_calidad": {
+        "contraste": {
+          "antes": 83.33,
+          "despues": 84.86,
+          "cambio": 1.54,
+          "porcentaje": 1.8
+        },
+        "nitidez": {
+          "antes": 1250.64,
+          "despues": 2831.2,
+          "cambio": 1580.55,
+          "porcentaje": 126.4
+        },
+        "rango_dinamico": {
+          "antes": 255.0,
+          "despues": 255.0,
+          "cambio": 0.0,
+          "porcentaje": 0.0
+        }
+      },
+      "tiempo": 0.05,
+      "archivo_resultado": "temp/web_20250704_202350/ocr_9dd751c6_20250704_202350/resultado_mejora.json"
+    },
+    "3_ocr": {
+      "texto_completo": "7:17 P M . M - 51 60 0412 - 5318244 TREBOL V - 27061025 - MERCANTIL Monto : Bs . 104,54 Comision : Bs . 0,31 Bs . 104,85 Referencia : 490760890 Codigo autorizador : 282413 Concepto : 90 Emitir Pago CUENTAS TARJETAS BMC PAGOS DIVISAS",
+      "total_caracteres": 232,
+      "tiempo_procesamiento": 5.989,
+      "metodo_extraccion": "ONNXTR_SINGLE_PASS",
+      "configuracion_onnxtr": "high_confidence",
+      "total_palabras_detectadas": 34,
+      "palabras_detectadas": [
+        {
+          "texto": "7:17",
+          "confianza": 0.9999052286148071,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 0,
+            "palabra": 0
+          }
+        },
+        {
+          "texto": "P",
+          "confianza": 0.9536393284797668,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 0,
+            "palabra": 1
+          }
+        },
+        {
+          "texto": "M.",
+          "confianza": 0.9997965693473816,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 0,
+            "palabra": 2
+          }
+        },
+        {
+          "texto": "M",
+          "confianza": 0.846185028553009,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 1,
+            "palabra": 0
+          }
+        },
+        {
+          "texto": "-",
+          "confianza": 0.7443262934684753,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 2,
+            "palabra": 0
+          }
+        },
+        {
+          "texto": "51",
+          "confianza": 0.9129608869552612,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 3,
+            "palabra": 0
+          }
+        },
+        {
+          "texto": "60",
+          "confianza": 0.9844980835914612,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 3,
+            "palabra": 2
+          }
+        },
+        {
+          "texto": "0412-5318244",
+          "confianza": 0.9635423123836517,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 4,
+            "palabra": 0
+          }
+        },
+        {
+          "texto": "TREBOL",
+          "confianza": 0.9994403719902039,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 4,
+            "palabra": 1
+          }
+        },
+        {
+          "texto": "V-27061025",
+          "confianza": 0.9974363446235657,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 4,
+            "palabra": 2
+          }
+        },
+        {
+          "texto": "-",
+          "confianza": 0.9992266893386841,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 4,
+            "palabra": 3
+          }
+        },
+        {
+          "texto": "MERCANTIL",
+          "confianza": 0.9723699688911438,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 5,
+            "palabra": 0
+          }
+        },
+        {
+          "texto": "Monto:",
+          "confianza": 0.9993688464164734,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 6,
+            "palabra": 0
+          }
+        },
+        {
+          "texto": "Bs.",
+          "confianza": 0.9857690930366516,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 7,
+            "palabra": 0
+          }
+        },
+        {
+          "texto": "104,54",
+          "confianza": 0.9638343453407288,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 7,
+            "palabra": 1
+          }
+        },
+        {
+          "texto": "Comision:",
+          "confianza": 0.9959660768508911,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 8,
+            "palabra": 0
+          }
+        },
+        {
+          "texto": "Bs.",
+          "confianza": 0.9867078065872192,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 9,
+            "palabra": 0
+          }
+        },
+        {
+          "texto": "0,31",
+          "confianza": 0.9960693120956421,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 9,
+            "palabra": 1
+          }
+        },
+        {
+          "texto": "Bs.",
+          "confianza": 0.9829216003417969,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 11,
+            "palabra": 0
+          }
+        },
+        {
+          "texto": "104,85",
+          "confianza": 0.9998395442962646,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 11,
+            "palabra": 1
+          }
+        },
+        {
+          "texto": "Referencia:",
+          "confianza": 0.995080828666687,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 12,
+            "palabra": 0
+          }
+        },
+        {
+          "texto": "490760890",
+          "confianza": 0.9997850060462952,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 13,
+            "palabra": 0
+          }
+        },
+        {
+          "texto": "Codigo",
+          "confianza": 0.9995098114013672,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 14,
+            "palabra": 0
+          }
+        },
+        {
+          "texto": "autorizador:",
+          "confianza": 0.9942843317985535,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 14,
+            "palabra": 1
+          }
+        },
+        {
+          "texto": "282413",
+          "confianza": 0.9987579584121704,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 15,
+            "palabra": 0
+          }
+        },
+        {
+          "texto": "Concepto:",
+          "confianza": 0.9997428059577942,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 16,
+            "palabra": 0
+          }
+        },
+        {
+          "texto": "90",
+          "confianza": 0.9984649419784546,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 17,
+            "palabra": 0
+          }
+        },
+        {
+          "texto": "Emitir",
+          "confianza": 0.9847403168678284,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 18,
+            "palabra": 0
+          }
+        },
+        {
+          "texto": "Pago",
+          "confianza": 0.999736487865448,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 18,
+            "palabra": 1
+          }
+        },
+        {
+          "texto": "CUENTAS",
+          "confianza": 0.7503299117088318,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 19,
+            "palabra": 0
+          }
+        },
+        {
+          "texto": "TARJETAS",
+          "confianza": 0.7439980506896973,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 20,
+            "palabra": 0
+          }
+        },
+        {
+          "texto": "BMC",
+          "confianza": 0.9179593324661255,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 21,
+            "palabra": 0
+          }
+        },
+        {
+          "texto": "PAGOS",
+          "confianza": 0.9748511910438538,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 22,
+            "palabra": 0
+          }
+        },
+        {
+          "texto": "DIVISAS",
+          "confianza": 0.922544538974762,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 23,
+            "palabra": 0
+          }
+        }
+      ],
+      "confianza_promedio": 0.958,
+      "estadisticas_onnxtr": {
+        "paginas_procesadas": 1,
+        "palabras_alta_confianza": 31,
+        "palabras_media_confianza": 3,
+        "palabras_baja_confianza": 0,
+        "min_confianza_aplicada": 0.7
+      },
+      "calidad_extraccion": {
+        "score_calidad": 85.7,
+        "categoria": "excelente",
+        "confianza_promedio": 0.958,
+        "palabras_alta_confianza": 31,
+        "total_palabras": 34,
+        "longitud_texto": 232,
+        "recomendaciones": [
+          "Calidad de extracción satisfactoria"
+        ]
+      },
+      "deteccion_inteligente": {
+        "tipo_imagen": "screenshot_movil",
+        "esquema_color": "texto_oscuro_fondo_claro",
+        "inversion_requerida": false,
+        "ui_elements_detectados": false,
+        "aspect_ratio": 0.4462962962962963,
+        "calidad_digital": false,
+        "dark_percentage": 17.086406707763672,
+        "light_percentage": 82.9135971069336,
+        "edge_density": 0.03415936683571538,
+        "noise_estimate": 79.66334582458597,
+        "confianza_deteccion": 0.2
+      },
+      "datos_financieros": {
+        "amount": [
+          {
+            "valor": "7",
+            "posicion_texto": 0
+          },
+          {
+            "valor": "17",
+            "posicion_texto": 2
+          },
+          {
+            "valor": "51",
+            "posicion_texto": 15
+          },
+          {
+            "valor": "60",
+            "posicion_texto": 18
+          },
+          {
+            "valor": "041",
+            "posicion_texto": 21
+          }
+        ],
+        "time": [
+          {
+            "valor": "7:17",
+            "posicion_texto": 0
+          }
+        ],
+        "reference": [
+          {
+            "valor": "erencia",
+            "posicion_texto": 124
+          }
+        ],
+        "analisis_documento": {
+          "tipo": "estado_cuenta",
+          "confianza": 25.0,
+          "keywords_encontradas": [
+            "cuenta"
+          ]
+        },
+        "resumen_extraido": {
+          "montos_encontrados": 5,
+          "fechas_encontradas": 0,
+          "referencias_encontradas": 1,
+          "cuentas_encontradas": 0,
+          "telefonos_encontrados": 0,
+          "total_elementos": 6,
+          "completitud_porcentaje": 50
+        }
+      },
+      "tiempo": 5.996,
+      "archivo_resultado": "temp/web_20250704_202350/ocr_9dd751c6_20250704_202350/resultado_ocr.json",
+      "archivo_texto": "temp/web_20250704_202350/ocr_9dd751c6_20250704_202350/texto_extraido.txt"
+    }
+  },
+  "archivos_generados": [
+    "temp/web_20250704_202350/ocr_9dd751c6_20250704_202350/resultado_completo.json",
+    "temp/web_20250704_202350/ocr_9dd751c6_20250704_202350/reporte.html"
+  ],
+  "resumen_final": {
+    "imagen_original": {
+      "dimensiones": "482x1080",
+      "calidad_inicial": "Buena",
+      "puntuacion_calidad": 68.1
+    },
+    "procesamiento_aplicado": {
+      "perfil_usado": "normal",
+      "pasos_ejecutados": 4,
+      "lista_pasos": [
+        "00_analisis_sin_unificacion",
+        "00_maxima_claridad_letras",
+        "01_no_inversion_necesaria",
+        "03_sin_procesamiento"
+      ],
+      "tiempo_procesamiento": 0.038
+    },
+    "resultados_ocr": {
+      "caracteres_extraidos": 232,
+      "palabras_detectadas": 34,
+      "confianza_promedio": 0.958,
+      "confianza_ponderada": 0.958,
+      "calidad_extraccion": "excelente"
+    },
+    "datos_financieros": {
+      "tipo_documento": "estado_cuenta",
+      "elementos_encontrados": 6,
+      "completitud": 50,
+      "montos_encontrados": 5,
+      "fechas_encontradas": 0
+    },
+    "rendimiento": {
+      "tiempo_total": 0,
+      "tiempo_validacion": 0.15,
+      "tiempo_mejora": 0.05,
+      "tiempo_ocr": 5.996
+    },
+    "calificacion_final": {
+      "puntuacion": 80.0,
+      "categoria": "Muy Buena",
+      "componentes": {
+        "calidad_imagen": 68.1,
+        "confianza_ocr": 85.7,
+        "completitud_datos": 75.0
+      }
+    },
+    "recomendaciones": [
+      "Error generando recomendaciones"
+    ]
+  },
+  "tiempo_total": 6.201
+}
