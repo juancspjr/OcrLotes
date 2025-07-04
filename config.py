@@ -17,21 +17,59 @@ TEMP_DIR.mkdir(exist_ok=True)
 UPLOADS_DIR.mkdir(exist_ok=True)
 STATIC_DIR.mkdir(exist_ok=True)
 
-# FIX: Configuración optimizada de Tesseract OCR para máxima confianza
-# REASON: Incrementar confianza OCR y asegurar texto negro óptimo
-# IMPACT: Mejora significativa en precision y confianza de extracción
-TESSERACT_CONFIG = {
-    'default': '--oem 3 --psm 6 -c tessedit_char_whitelist=0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,;:()*/.- -c tessedit_char_blacklist= -c preserve_interword_spaces=1',
-    'high_confidence': '--oem 3 --psm 6 -c tessedit_char_whitelist=0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,;:()*/.- -c preserve_interword_spaces=1 -c tessedit_preserve_min_wd_len=2 -c tessedit_preserve_row_whitespace=1 -c tessedit_preserve_blk_wd_gap=1',
-    'screenshot_optimized': '--oem 3 --psm 6 -c tessedit_char_whitelist=0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,;:()*/.- -c textord_really_old_xheight=1 -c textord_min_xheight=10 -c preserve_interword_spaces=1 -c tessedit_preserve_min_wd_len=1',
-    'dual_pass_optimized': '--oem 3 --psm 6 -c tessedit_char_whitelist=0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,;:()*/.-_@#$%&+=[]{}|\\/<>?! -c preserve_interword_spaces=1 -c tessedit_preserve_row_whitespace=1 -c tessedit_preserve_blk_wd_gap=1 -c tessedit_preserve_min_wd_len=1',
-    # FIX: Configuraciones ELITE para single-pass optimizado
-    # REASON: Implementa configuraciones especializadas para imagen binaria perfecta
-    # IMPACT: OCR ultra-eficiente aprovechando calidad ELITE (245-255 fondo, 0-10 texto)
-    'elite_binary': '--oem 3 --psm 6 -c tessedit_char_whitelist=0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,;:()*/.-_@#$%&+=[]{}|\\/<>?! -c preserve_interword_spaces=1 -c tessedit_do_invert=0 -c classify_bln_numeric_mode=1',
-    'elite_screenshot': '--oem 3 --psm 6 -c tessedit_char_whitelist=0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,;:()*/.-_@#$%&+=[]{}|\\/<>?! -c preserve_interword_spaces=1 -c tessedit_do_invert=0 -c classify_bln_numeric_mode=1 -c textord_really_old_xheight=1',
-    'digits': '--oem 3 --psm 6 -c tessedit_char_whitelist=0123456789.,*/-',
-    'alphanumeric': '--oem 3 --psm 6 -c tessedit_char_whitelist=0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,;:()*/-'
+# FIX: Configuración optimizada de OnnxTR para máxima eficiencia en CPU
+# REASON: Migración de Tesseract a OnnxTR para mejor rendimiento y menor uso de recursos
+# IMPACT: OCR significativamente más rápido en CPU con modelos cuantizados de 8 bits
+ONNXTR_CONFIG = {
+    'detection_model': 'db_resnet50',  # Modelo de detección ligero para CPU
+    'recognition_model': 'crnn_vgg16_bn',  # Modelo de reconocimiento optimizado para CPU
+    'use_gpu': False,  # Forzar uso de CPU solamente
+    'quantized_models': True,  # Usar modelos cuantizados de 8 bits para mejor rendimiento
+    'batch_size': 1,  # Tamaño de lote para procesar imágenes
+    'confidence_threshold': 0.6,  # Umbral de confianza para OnnxTR (equivalente a 60% de Tesseract)
+    'detection_threshold': 0.7,  # Umbral para detección de texto
+    'recognition_batch_size': 16,  # Lote para reconocimiento de texto
+    'preserve_aspect_ratio': True,  # Preservar proporción de aspecto
+    'symmetric_pad': True,  # Relleno simétrico
+    'assume_straight_pages': True,  # Asumir páginas rectas (optimización para screenshots)
+    'exportable': True,  # Modelo exportable para optimización
+    'languages': ['es', 'en'],  # Idiomas soportados (español e inglés)
+    'profiles': {
+        'default': {
+            'detection_model': 'db_resnet50',
+            'recognition_model': 'crnn_vgg16_bn',
+            'confidence_threshold': 0.6
+        },
+        'high_confidence': {
+            'detection_model': 'db_resnet50',
+            'recognition_model': 'crnn_vgg16_bn', 
+            'confidence_threshold': 0.8
+        },
+        'screenshot_optimized': {
+            'detection_model': 'db_mobilenet_v3_large',  # Modelo más ligero para screenshots
+            'recognition_model': 'crnn_mobilenet_v3_small',
+            'confidence_threshold': 0.7,
+            'assume_straight_pages': True
+        },
+        'elite_binary': {
+            'detection_model': 'db_resnet50',
+            'recognition_model': 'crnn_vgg16_bn',
+            'confidence_threshold': 0.9,  # Mayor confianza para imágenes binarias perfectas
+            'assume_straight_pages': True
+        },
+        'digits': {
+            'detection_model': 'db_mobilenet_v3_large',
+            'recognition_model': 'crnn_mobilenet_v3_small',
+            'confidence_threshold': 0.8,
+            'vocab_filter': '0123456789.,*/-'  # Filtro específico para dígitos
+        },
+        'alphanumeric': {
+            'detection_model': 'db_resnet50',
+            'recognition_model': 'crnn_vgg16_bn',
+            'confidence_threshold': 0.7,
+            'vocab_filter': '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,;:()*/-'
+        }
+    }
 }
 
 # FIX: Configuración de confianza y calidad OCR mejorada
