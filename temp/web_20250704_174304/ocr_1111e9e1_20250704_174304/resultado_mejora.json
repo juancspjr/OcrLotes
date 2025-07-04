@@ -1,0 +1,72 @@
+{
+  "perfil_usado": "rapido",
+  "pasos_aplicados": [
+    "00_analisis_sin_unificacion",
+    "00_maxima_claridad_letras",
+    "01_no_inversion_necesaria",
+    "03_bilateral_filter",
+    "04_contraste_adaptativo",
+    "05_sin_binarizacion"
+  ],
+  "metricas_antes": {
+    "brillo_promedio": 160.1375595173191,
+    "contraste": 98.57317257981079,
+    "nitidez": 682.5306717903944,
+    "rango_dinamico": 255.0
+  },
+  "parametros_aplicados": {
+    "analisis_fondos": {
+      "intensidad_media_original": 160.14,
+      "porcentaje_fondo_oscuro": 0.46299999952316284,
+      "unificacion_aplicada": false,
+      "razon_no_unificacion": "preservacion_calidad_usuario"
+    },
+    "no_inversion": {
+      "razon": "imagen_suficientemente_clara",
+      "intensidad_media": 160.14
+    },
+    "contraste_adaptativo": {
+      "alpha_calculado": 1.1,
+      "beta_calculado": 5,
+      "intensidad_promedio": 160.13,
+      "desviacion_estandar": 98.59,
+      "estrategia": "adaptativo_preservando_letras"
+    },
+    "documento_processing": {
+      "redimensionamiento_aplicado": false,
+      "filtro_bilateral": true,
+      "contraste_alpha": 1.1,
+      "contraste_beta": 10
+    }
+  },
+  "tiempo_procesamiento": 0.063,
+  "estrategia_aplicada": "Documento Escaneado - Procesamiento Tradicional",
+  "metricas_despues": {
+    "brillo_promedio": 166.06122015047433,
+    "contraste": 93.72879053438538,
+    "nitidez": 1367.5621433504161,
+    "rango_dinamico": 248.0
+  },
+  "imagen_mejorada": "temp/web_20250704_174304/ocr_1111e9e1_20250704_174304/imagen_mejorada.png",
+  "mejora_calidad": {
+    "contraste": {
+      "antes": 98.57,
+      "despues": 93.73,
+      "cambio": -4.84,
+      "porcentaje": -4.9
+    },
+    "nitidez": {
+      "antes": 682.53,
+      "despues": 1367.56,
+      "cambio": 685.03,
+      "porcentaje": 100.4
+    },
+    "rango_dinamico": {
+      "antes": 255.0,
+      "despues": 248.0,
+      "cambio": -7.0,
+      "porcentaje": -2.7
+    }
+  },
+  "tiempo": 0.076
+}
