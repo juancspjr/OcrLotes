@@ -71,22 +71,35 @@ This is a Python-based OCR (Optical Character Recognition) system designed for p
 - **Ubuntu/Linux**: Optimized for Ubuntu but portable
 - **No GPU Required**: Fully optimized for CPU-only inference
 
-## Deployment Strategy
+## Installation & Deployment
+
+### Ubuntu Server Installation (Production)
+
+1. **Automated Setup**: Run the installation script
+   ```bash
+   chmod +x install_requirements.sh
+   ./install_requirements.sh
+   ```
+
+2. **Activate Environment**: 
+   ```bash
+   source venv_ocr/bin/activate
+   # or use: ./activate_ocr.sh
+   ```
+
+3. **Run Application**:
+   ```bash
+   # Development
+   python main.py
+   
+   # Production
+   gunicorn --bind 0.0.0.0:5000 main:app
+   ```
 
 ### Local Development
-- Direct Python execution with `python app.py`
+- Direct Python execution with `python main.py`
 - Development server on `0.0.0.0:5000`
 - Auto-creation of required directories (`uploads`, `temp`, `static`)
-
-### Production Deployment (Ubuntu Server)
-- Automated installation script: `install-ubuntu.sh`
-- Systemd service configuration for automatic startup
-- WSGI-ready Flask application with Gunicorn
-- ProxyFix middleware for reverse proxy support
-- Environment-based configuration with `SESSION_SECRET`
-- File size limits (16MB max) for security
-- Complete documentation in `UBUNTU_INSTALLATION.md`
-- Quick start guide in `README_DEPLOYMENT.md`
 
 ### Resource Optimization
 - No GPU requirements - CPU-only processing
@@ -260,6 +273,12 @@ Changelog:
   * MAXIMUM QUALITY PRESERVATION: System now preserves original image quality completely without any degrading transformations
   * ONNXTR COMPATIBILITY: Images passed to OnnxTR in their original state for optimal text recognition
   * IMPACT: Complete elimination of quality-damaging processing while maintaining OCR functionality through OnnxTR's advanced capabilities
+- July 04, 2025. DOCUMENTATION CONSOLIDATION AND PROJECT INTEGRITY:
+  * ELIMINATED DUPLICATE FILES: Removed README_DEPLOYMENT.md, README_ONNXTR.md, UBUNTU_INSTALLATION.md, MIGRACION_ONNXTR.md, install-ubuntu.sh
+  * CONSOLIDATED INSTALLATION GUIDE: Enhanced existing install_requirements.sh as the single source for Ubuntu installation
+  * MAINTAINED PROJECT INTEGRITY: Preserved all core functionality files without modifications per user requirements
+  * STREAMLINED DOCUMENTATION: Updated replit.md with clear, consolidated installation instructions
+  * IMPACT: Clean project structure with no duplicated functionality or documentation files
 ```
 
 ## User Preferences
