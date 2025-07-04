@@ -140,13 +140,23 @@ print_success "Entorno virtual creado y activado"
 print_status "Actualizando pip..."
 pip install --upgrade pip
 
+# Función para limpiar instalación fallida
+cleanup_failed_install() {
+    print_warning "Limpiando instalación fallida..."
+    rm -rf venv_ocr
+    rm -rf __pycache__
+    rm -rf *.pyc
+    rm -rf .pytest_cache
+    print_success "Limpieza completada"
+}
+
 # Instalar dependencias Python
 print_status "Instalando dependencias Python..."
 
 # Lista de paquetes Python necesarios
 PYTHON_PACKAGES=(
     "opencv-python>=4.5.0"
-    "onnxtr>=0.9.0"
+    "onnxtr==0.7.1"
     "onnx>=1.15.0"
     "onnxruntime>=1.17.0"
     "Pillow>=9.0.0"
@@ -166,13 +176,21 @@ PYTHON_PACKAGES=(
 
 for package in "${PYTHON_PACKAGES[@]}"; do
     print_status "Instalando $package..."
-    pip install "$package"
+    if ! pip install "$package"; then
+        print_error "Error instalando $package"
+        cleanup_failed_install
+        exit 1
+    fi
 done
 
 # Instalar desde archivo requirements si existe
 if [ -f "requirements_onnxtr.txt" ]; then
     print_status "Instalando dependencias adicionales desde requirements_onnxtr.txt..."
-    pip install -r requirements_onnxtr.txt
+    if ! pip install -r requirements_onnxtr.txt; then
+        print_error "Error instalando desde requirements_onnxtr.txt"
+        cleanup_failed_install
+        exit 1
+    fi
 fi
 
 print_success "Todas las dependencias Python instaladas"
