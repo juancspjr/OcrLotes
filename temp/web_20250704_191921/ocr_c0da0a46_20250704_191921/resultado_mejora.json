@@ -1,0 +1,73 @@
+{
+  "perfil_usado": "rapido",
+  "pasos_aplicados": [
+    "00_analisis_sin_unificacion",
+    "00_maxima_claridad_letras",
+    "01_no_inversion_necesaria",
+    "03_redimensionamiento",
+    "04_bilateral_filter",
+    "05_contraste_adaptativo",
+    "06_sin_binarizacion"
+  ],
+  "metricas_antes": {
+    "brillo_promedio": 210.91189168819983,
+    "contraste": 84.66307149338816,
+    "nitidez": 5297.800396751622,
+    "rango_dinamico": 255.0
+  },
+  "parametros_aplicados": {
+    "analisis_fondos": {
+      "intensidad_media_original": 210.91,
+      "porcentaje_fondo_oscuro": 0.16500000655651093,
+      "unificacion_aplicada": false,
+      "razon_no_unificacion": "preservacion_calidad_usuario"
+    },
+    "no_inversion": {
+      "razon": "imagen_suficientemente_clara",
+      "intensidad_media": 210.91
+    },
+    "contraste_adaptativo": {
+      "alpha_calculado": 1.0,
+      "beta_calculado": -5,
+      "intensidad_promedio": 209.75,
+      "desviacion_estandar": 83.95,
+      "estrategia": "adaptativo_preservando_letras"
+    },
+    "documento_processing": {
+      "redimensionamiento_aplicado": true,
+      "filtro_bilateral": true,
+      "contraste_alpha": 1.1,
+      "contraste_beta": 10
+    }
+  },
+  "tiempo_procesamiento": 0.049,
+  "estrategia_aplicada": "Documento Escaneado - Procesamiento Tradicional",
+  "metricas_despues": {
+    "brillo_promedio": 204.7538923359761,
+    "contraste": 83.9460569622346,
+    "nitidez": 1402.5094835644845,
+    "rango_dinamico": 238.0
+  },
+  "imagen_mejorada": "temp/web_20250704_191921/ocr_c0da0a46_20250704_191921/imagen_mejorada.png",
+  "mejora_calidad": {
+    "contraste": {
+      "antes": 84.66,
+      "despues": 83.95,
+      "cambio": -0.72,
+      "porcentaje": -0.8
+    },
+    "nitidez": {
+      "antes": 5297.8,
+      "despues": 1402.51,
+      "cambio": -3895.29,
+      "porcentaje": -73.5
+    },
+    "rango_dinamico": {
+      "antes": 255.0,
+      "despues": 238.0,
+      "cambio": -17.0,
+      "porcentaje": -6.7
+    }
+  },
+  "tiempo": 0.052
+}

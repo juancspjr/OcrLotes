@@ -1,0 +1,281 @@
+{
+  "texto_completo": "PagomoVilBDV Personas 105,00 Bs Fecha : Operacion : 003039298732 Identificacion : 27061025 Origen : 0102 **** 7105 Destino : 04125318244 Banco : 0105 BANCO MERCANTIL Concepto : 61",
+  "total_caracteres": 179,
+  "tiempo_procesamiento": 2.25,
+  "metodo_extraccion": "ONNXTR_SINGLE_PASS",
+  "configuracion_onnxtr": "high_confidence",
+  "total_palabras_detectadas": 19,
+  "palabras_detectadas": [
+    {
+      "texto": "PagomoVilBDV",
+      "confianza": 0.875990092754364,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 0,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Personas",
+      "confianza": 0.9996738433837891,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 0,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "105,00",
+      "confianza": 0.9949182868003845,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 1,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Bs",
+      "confianza": 0.9983812570571899,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 1,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "Fecha:",
+      "confianza": 0.9997640252113342,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 2,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Operacion:",
+      "confianza": 0.958634078502655,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 4,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "003039298732",
+      "confianza": 0.9896788199742635,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 5,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Identificacion:",
+      "confianza": 0.7987474799156189,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 6,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "27061025",
+      "confianza": 0.9989660978317261,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 7,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Origen:",
+      "confianza": 0.999488115310669,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 8,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "0102****7105",
+      "confianza": 0.9982767105102539,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 9,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Destino:",
+      "confianza": 0.9999513626098633,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 10,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "04125318244",
+      "confianza": 0.9996720850467682,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 11,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Banco:",
+      "confianza": 0.9947538375854492,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 12,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "0105",
+      "confianza": 0.9999576807022095,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 13,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "BANCO",
+      "confianza": 0.9987127780914307,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 13,
+        "palabra": 2
+      }
+    },
+    {
+      "texto": "MERCANTIL",
+      "confianza": 0.9797664880752563,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 13,
+        "palabra": 3
+      }
+    },
+    {
+      "texto": "Concepto:",
+      "confianza": 0.9987213015556335,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 14,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "61",
+      "confianza": 0.9999949932098389,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 15,
+        "palabra": 0
+      }
+    }
+  ],
+  "confianza_promedio": 0.978,
+  "estadisticas_onnxtr": {
+    "paginas_procesadas": 1,
+    "palabras_alta_confianza": 18,
+    "palabras_media_confianza": 1,
+    "palabras_baja_confianza": 0,
+    "min_confianza_aplicada": 0.7
+  },
+  "calidad_extraccion": {
+    "score_calidad": 82.5,
+    "categoria": "excelente",
+    "confianza_promedio": 0.978,
+    "palabras_alta_confianza": 18,
+    "total_palabras": 19,
+    "longitud_texto": 179,
+    "recomendaciones": [
+      "Calidad de extracción satisfactoria"
+    ]
+  },
+  "deteccion_inteligente": {
+    "tipo_imagen": "screenshot_movil",
+    "esquema_color": "texto_claro_fondo_oscuro",
+    "inversion_requerida": true,
+    "ui_elements_detectados": true,
+    "aspect_ratio": 0.8585055643879174,
+    "calidad_digital": false,
+    "dark_percentage": 96.76013946533203,
+    "light_percentage": 3.2398574352264404,
+    "edge_density": 0.016561414355532003,
+    "noise_estimate": 50.45563251215197,
+    "confianza_deteccion": 0.7
+  },
+  "datos_financieros": {
+    "amount": [
+      {
+        "valor": "105,00",
+        "posicion_texto": 22
+      },
+      {
+        "valor": "003",
+        "posicion_texto": 52
+      },
+      {
+        "valor": "039",
+        "posicion_texto": 55
+      },
+      {
+        "valor": "298",
+        "posicion_texto": 58
+      },
+      {
+        "valor": "732",
+        "posicion_texto": 61
+      }
+    ],
+    "phone": [
+      {
+        "valor": "00303929873",
+        "posicion_texto": 52
+      },
+      {
+        "valor": "04125318244",
+        "posicion_texto": 125
+      }
+    ],
+    "analisis_documento": {
+      "tipo": "desconocido",
+      "confianza": 0,
+      "keywords_encontradas": []
+    },
+    "resumen_extraido": {
+      "montos_encontrados": 5,
+      "fechas_encontradas": 0,
+      "referencias_encontradas": 0,
+      "cuentas_encontradas": 0,
+      "telefonos_encontrados": 2,
+      "total_elementos": 7,
+      "completitud_porcentaje": 50
+    }
+  },
+  "tiempo": 2.263
+}

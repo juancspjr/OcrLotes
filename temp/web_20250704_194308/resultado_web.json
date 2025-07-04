@@ -1,0 +1,1260 @@
+{
+  "execution_id": "203f9975",
+  "timestamp": "20250704_194308",
+  "input_image": "uploads/20250704_194308_Imagen_de_WhatsApp_2025-06-21_a_las_18.44.16_196e15e0.jpg",
+  "temp_directory": "temp/web_20250704_194308/ocr_203f9975_20250704_194308",
+  "parametros": {
+    "language": "spa",
+    "profile": "rapido",
+    "save_intermediate": true
+  },
+  "etapas": {
+    "1_validacion": {
+      "tiempo": 0.108,
+      "diagnostico": {
+        "imagen_info": {
+          "ancho": 816,
+          "alto": 1056,
+          "resolucion_total": 861696,
+          "canales": 3,
+          "modo": "RGB",
+          "formato": "JPEG",
+          "brillo_promedio": 251.86037419229055,
+          "desviacion_brillo": 20.33515088147026,
+          "rango_dinamico": 255.0,
+          "histogram": [
+            249.0,
+            11.0,
+            13.0,
+            21.0,
+            26.0,
+            8.0,
+            11.0,
+            12.0,
+            14.0,
+            15.0,
+            25.0,
+            12.0,
+            16.0,
+            11.0,
+            11.0,
+            23.0,
+            20.0,
+            18.0,
+            21.0,
+            20.0,
+            20.0,
+            29.0,
+            20.0,
+            21.0,
+            26.0,
+            26.0,
+            32.0,
+            25.0,
+            41.0,
+            50.0,
+            52.0,
+            50.0,
+            59.0,
+            33.0,
+            56.0,
+            43.0,
+            61.0,
+            53.0,
+            86.0,
+            79.0,
+            76.0,
+            77.0,
+            88.0,
+            81.0,
+            101.0,
+            94.0,
+            91.0,
+            131.0,
+            98.0,
+            123.0,
+            114.0,
+            102.0,
+            104.0,
+            115.0,
+            114.0,
+            101.0,
+            109.0,
+            112.0,
+            135.0,
+            117.0,
+            116.0,
+            105.0,
+            100.0,
+            109.0,
+            109.0,
+            115.0,
+            118.0,
+            100.0,
+            98.0,
+            97.0,
+            110.0,
+            84.0,
+            99.0,
+            84.0,
+            96.0,
+            105.0,
+            93.0,
+            103.0,
+            95.0,
+            79.0,
+            76.0,
+            98.0,
+            85.0,
+            83.0,
+            83.0,
+            69.0,
+            81.0,
+            90.0,
+            93.0,
+            77.0,
+            65.0,
+            76.0,
+            81.0,
+            77.0,
+            75.0,
+            81.0,
+            86.0,
+            72.0,
+            63.0,
+            82.0,
+            76.0,
+            83.0,
+            61.0,
+            55.0,
+            75.0,
+            78.0,
+            75.0,
+            57.0,
+            64.0,
+            63.0,
+            70.0,
+            75.0,
+            52.0,
+            55.0,
+            60.0,
+            68.0,
+            62.0,
+            72.0,
+            50.0,
+            76.0,
+            62.0,
+            77.0,
+            65.0,
+            60.0,
+            75.0,
+            66.0,
+            71.0,
+            61.0,
+            55.0,
+            54.0,
+            53.0,
+            56.0,
+            72.0,
+            68.0,
+            54.0,
+            68.0,
+            57.0,
+            49.0,
+            43.0,
+            70.0,
+            62.0,
+            52.0,
+            54.0,
+            46.0,
+            57.0,
+            49.0,
+            66.0,
+            38.0,
+            48.0,
+            60.0,
+            52.0,
+            43.0,
+            54.0,
+            67.0,
+            53.0,
+            47.0,
+            52.0,
+            58.0,
+            43.0,
+            73.0,
+            61.0,
+            54.0,
+            62.0,
+            55.0,
+            58.0,
+            56.0,
+            74.0,
+            50.0,
+            55.0,
+            54.0,
+            64.0,
+            71.0,
+            62.0,
+            64.0,
+            44.0,
+            64.0,
+            53.0,
+            67.0,
+            51.0,
+            45.0,
+            47.0,
+            57.0,
+            52.0,
+            48.0,
+            58.0,
+            48.0,
+            51.0,
+            53.0,
+            55.0,
+            60.0,
+            50.0,
+            55.0,
+            35.0,
+            60.0,
+            63.0,
+            69.0,
+            49.0,
+            51.0,
+            60.0,
+            54.0,
+            55.0,
+            52.0,
+            76.0,
+            59.0,
+            56.0,
+            64.0,
+            70.0,
+            57.0,
+            77.0,
+            65.0,
+            70.0,
+            71.0,
+            72.0,
+            73.0,
+            68.0,
+            90.0,
+            58.0,
+            83.0,
+            84.0,
+            78.0,
+            91.0,
+            78.0,
+            104.0,
+            97.0,
+            115.0,
+            123.0,
+            116.0,
+            119.0,
+            118.0,
+            144.0,
+            136.0,
+            149.0,
+            163.0,
+            175.0,
+            959.0,
+            1045.0,
+            1082.0,
+            1102.0,
+            21796.0,
+            1931.0,
+            261.0,
+            234.0,
+            239.0,
+            1042.0,
+            1113.0,
+            323.0,
+            350.0,
+            421.0,
+            601.0,
+            610.0,
+            814.0,
+            1359.0,
+            1587.0,
+            3411.0,
+            10440.0,
+            794884.0
+          ],
+          "histogram_analysis": {
+            "picos_principales": [
+              [
+                238,
+                21796
+              ]
+            ],
+            "rango_fondo_sugerido": 255,
+            "rango_texto_sugerido": 0,
+            "distribucion": {
+              "oscuras": 0.006895703263580799,
+              "medias": 0.006322415545582771,
+              "claras": 0.986781895160675
+            },
+            "requiere_inversion": false,
+            "bimodal": false
+          },
+          "variaciones_fondo": {
+            "total_regiones_analizadas": 1271,
+            "fondos_unicos_detectados": 3,
+            "variacion_fondos": 2.622477153886162,
+            "fondos_heterogeneos": false,
+            "rango_fondos": [
+              238,
+              255
+            ],
+            "requiere_unificacion_avanzada": false,
+            "regiones_variacion": [
+              {
+                "posicion": [
+                  0,
+                  0
+                ],
+                "media_local": 254.9996,
+                "std_local": 0.01999599959991998,
+                "pico_fondo": 255
+              },
+              {
+                "posicion": [
+                  25,
+                  0
+                ],
+                "media_local": 254.986,
+                "std_local": 0.11749042514179613,
+                "pico_fondo": 255
+              },
+              {
+                "posicion": [
+                  50,
+                  0
+                ],
+                "media_local": 254.9636,
+                "std_local": 0.20168053946774342,
+                "pico_fondo": 255
+              },
+              {
+                "posicion": [
+                  75,
+                  0
+                ],
+                "media_local": 254.9772,
+                "std_local": 0.16697353083647723,
+                "pico_fondo": 255
+              },
+              {
+                "posicion": [
+                  100,
+                  0
+                ],
+                "media_local": 255.0,
+                "std_local": 0.0,
+                "pico_fondo": 255
+              },
+              {
+                "posicion": [
+                  125,
+                  0
+                ],
+                "media_local": 255.0,
+                "std_local": 0.0,
+                "pico_fondo": 255
+              },
+              {
+                "posicion": [
+                  150,
+                  0
+                ],
+                "media_local": 254.9856,
+                "std_local": 0.12566877098149723,
+                "pico_fondo": 255
+              },
+              {
+                "posicion": [
+                  175,
+                  0
+                ],
+                "media_local": 254.8464,
+                "std_local": 3.438430897953309,
+                "pico_fondo": 255
+              },
+              {
+                "posicion": [
+                  200,
+                  0
+                ],
+                "media_local": 253.0924,
+                "std_local": 18.682651370723587,
+                "pico_fondo": 255
+              },
+              {
+                "posicion": [
+                  225,
+                  0
+                ],
+                "media_local": 253.2148,
+                "std_local": 18.37615468371988,
+                "pico_fondo": 255
+              }
+            ]
+          }
+        },
+        "calidad_imagen": {
+          "contraste": 20.33515088147026,
+          "blur_variance": 1160.6415209076054,
+          "entropy": 0.772429347038269,
+          "gradiente_promedio": 16.1143441445348,
+          "brillo_promedio": 251.86037419229055,
+          "uniformidad_brillo": 20.33515088147026,
+          "calificacion_calidad": 50
+        },
+        "deteccion_texto": {
+          "regiones_detectadas": 31,
+          "area_total_texto": 45215,
+          "densidad_texto": 0.05247210153000594,
+          "regiones": [
+            {
+              "x": 636,
+              "y": 385,
+              "width": 64,
+              "height": 17,
+              "area": 1088,
+              "aspect_ratio": 3.764705882352941
+            },
+            {
+              "x": 539,
+              "y": 385,
+              "width": 96,
+              "height": 18,
+              "area": 1728,
+              "aspect_ratio": 5.333333333333333
+            },
+            {
+              "x": 281,
+              "y": 385,
+              "width": 101,
+              "height": 17,
+              "area": 1717,
+              "aspect_ratio": 5.9411764705882355
+            },
+            {
+              "x": 23,
+              "y": 385,
+              "width": 51,
+              "height": 17,
+              "area": 867,
+              "aspect_ratio": 3.0
+            },
+            {
+              "x": 540,
+              "y": 362,
+              "width": 94,
+              "height": 19,
+              "area": 1786,
+              "aspect_ratio": 4.947368421052632
+            },
+            {
+              "x": 281,
+              "y": 362,
+              "width": 33,
+              "height": 16,
+              "area": 528,
+              "aspect_ratio": 2.0625
+            },
+            {
+              "x": 22,
+              "y": 362,
+              "width": 72,
+              "height": 18,
+              "area": 1296,
+              "aspect_ratio": 4.0
+            },
+            {
+              "x": 316,
+              "y": 361,
+              "width": 79,
+              "height": 17,
+              "area": 1343,
+              "aspect_ratio": 4.647058823529412
+            },
+            {
+              "x": 539,
+              "y": 315,
+              "width": 93,
+              "height": 16,
+              "area": 1488,
+              "aspect_ratio": 5.8125
+            },
+            {
+              "x": 539,
+              "y": 293,
+              "width": 78,
+              "height": 20,
+              "area": 1560,
+              "aspect_ratio": 3.9
+            },
+            {
+              "x": 539,
+              "y": 273,
+              "width": 61,
+              "height": 16,
+              "area": 976,
+              "aspect_ratio": 3.8125
+            },
+            {
+              "x": 539,
+              "y": 229,
+              "width": 99,
+              "height": 17,
+              "area": 1683,
+              "aspect_ratio": 5.823529411764706
+            },
+            {
+              "x": 281,
+              "y": 229,
+              "width": 51,
+              "height": 19,
+              "area": 969,
+              "aspect_ratio": 2.6842105263157894
+            },
+            {
+              "x": 93,
+              "y": 207,
+              "width": 52,
+              "height": 15,
+              "area": 780,
+              "aspect_ratio": 3.466666666666667
+            },
+            {
+              "x": 539,
+              "y": 206,
+              "width": 18,
+              "height": 15,
+              "area": 270,
+              "aspect_ratio": 1.2
+            },
+            {
+              "x": 281,
+              "y": 206,
+              "width": 21,
+              "height": 16,
+              "area": 336,
+              "aspect_ratio": 1.3125
+            },
+            {
+              "x": 71,
+              "y": 206,
+              "width": 21,
+              "height": 15,
+              "area": 315,
+              "aspect_ratio": 1.4
+            },
+            {
+              "x": 558,
+              "y": 205,
+              "width": 88,
+              "height": 17,
+              "area": 1496,
+              "aspect_ratio": 5.176470588235294
+            },
+            {
+              "x": 303,
+              "y": 205,
+              "width": 42,
+              "height": 17,
+              "area": 714,
+              "aspect_ratio": 2.4705882352941178
+            },
+            {
+              "x": 22,
+              "y": 205,
+              "width": 48,
+              "height": 17,
+              "area": 816,
+              "aspect_ratio": 2.823529411764706
+            }
+          ],
+          "cobertura_texto_porcentaje": 5.247210153000594
+        },
+        "ruido_artefactos": {
+          "nivel_ruido": 1.609408654560309,
+          "desviacion_ruido": 9.60246465774745,
+          "porcentaje_pixeles_ruidosos": 2.628653260546643,
+          "uniformidad": 1.7543228702465834,
+          "calificacion_ruido": "Bajo"
+        },
+        "geometria_orientacion": {
+          "sesgo_estimado": 2.5,
+          "lineas_detectadas": 50,
+          "simetria_horizontal": 0.1365356147289276,
+          "relacion_aspecto": 0.7727272727272727,
+          "requiere_deskew": true,
+          "orientacion_correcta": true
+        },
+        "deteccion_inteligente": {
+          "tipo_imagen": "documento_escaneado",
+          "esquema_color": "texto_oscuro_fondo_claro",
+          "inversion_requerida": false,
+          "ui_elements_detectados": false,
+          "aspect_ratio": 0.7727272727272727,
+          "calidad_digital": false,
+          "dark_percentage": 1.041434645652771,
+          "light_percentage": 98.95856475830078,
+          "edge_density": 0.014473781937017231,
+          "noise_estimate": 43.930168578506034,
+          "confianza_deteccion": 0.2
+        },
+        "recomendaciones": {
+          "perfil_recomendado": "rapido",
+          "aplicar_deskew": true,
+          "nivel_denoise": "moderado",
+          "ajuste_contraste": true,
+          "filtro_bilateral": true,
+          "prioridades": [
+            "Corrección de sesgo necesaria",
+            "Mejorar contraste"
+          ]
+        },
+        "puntuacion_general": {
+          "total": 57.9,
+          "calidad": 50,
+          "texto": 26.2,
+          "ruido": 100,
+          "geometria": 100,
+          "categoria": "Regular"
+        }
+      },
+      "imagen_original": "temp/web_20250704_194308/ocr_203f9975_20250704_194308/00_imagen_original.png",
+      "archivo_diagnostico": "temp/web_20250704_194308/ocr_203f9975_20250704_194308/diagnostico.json"
+    },
+    "2_mejora": {
+      "perfil_usado": "rapido",
+      "pasos_aplicados": [
+        "00_analisis_sin_unificacion",
+        "00_maxima_claridad_letras",
+        "01_no_inversion_necesaria",
+        "03_bilateral_filter",
+        "04_contraste_adaptativo",
+        "05_sin_binarizacion"
+      ],
+      "metricas_antes": {
+        "brillo_promedio": 251.86037419229055,
+        "contraste": 20.33515088147026,
+        "nitidez": 1160.6415209076054,
+        "rango_dinamico": 255.0
+      },
+      "parametros_aplicados": {
+        "analisis_fondos": {
+          "intensidad_media_original": 251.86,
+          "porcentaje_fondo_oscuro": 0.006000000052154064,
+          "unificacion_aplicada": false,
+          "razon_no_unificacion": "preservacion_calidad_usuario"
+        },
+        "no_inversion": {
+          "razon": "imagen_suficientemente_clara",
+          "intensidad_media": 251.86
+        },
+        "contraste_adaptativo": {
+          "alpha_calculado": 1.3,
+          "beta_calculado": -5,
+          "intensidad_promedio": 251.65,
+          "desviacion_estandar": 22.43,
+          "estrategia": "adaptativo_preservando_letras"
+        },
+        "documento_processing": {
+          "redimensionamiento_aplicado": false,
+          "filtro_bilateral": true,
+          "contraste_alpha": 1.1,
+          "contraste_beta": 10
+        }
+      },
+      "tiempo_procesamiento": 0.041,
+      "estrategia_aplicada": "Documento Escaneado - Procesamiento Tradicional",
+      "metricas_despues": {
+        "brillo_promedio": 252.73637454508318,
+        "contraste": 21.208140516478164,
+        "nitidez": 2246.462905711527,
+        "rango_dinamico": 255.0
+      },
+      "imagen_mejorada": "temp/web_20250704_194308/ocr_203f9975_20250704_194308/imagen_mejorada.png",
+      "mejora_calidad": {
+        "contraste": {
+          "antes": 20.34,
+          "despues": 21.21,
+          "cambio": 0.87,
+          "porcentaje": 4.3
+        },
+        "nitidez": {
+          "antes": 1160.64,
+          "despues": 2246.46,
+          "cambio": 1085.82,
+          "porcentaje": 93.6
+        },
+        "rango_dinamico": {
+          "antes": 255.0,
+          "despues": 255.0,
+          "cambio": 0.0,
+          "porcentaje": 0.0
+        }
+      },
+      "tiempo": 0.05,
+      "archivo_resultado": "temp/web_20250704_194308/ocr_203f9975_20250704_194308/resultado_mejora.json"
+    },
+    "3_ocr": {
+      "texto_completo": "20/06/ 2025 - 06:50:24 pm Mercantil Envio de Tpago Operacion realizada Desde cuenta Se Envio (Bs .) beneficiario de Ahorro 210,00 0412 -244 C . A . Banco Universal Bin Concepto Nro . Referencia Fecha y hora 106 93 48371746148 20/06/ 2025 - 06:50:20 La en",
+      "total_caracteres": 254,
+      "tiempo_procesamiento": 2.155,
+      "metodo_extraccion": "ONNXTR_SINGLE_PASS",
+      "configuracion_onnxtr": "high_confidence",
+      "total_palabras_detectadas": 39,
+      "palabras_detectadas": [
+        {
+          "texto": "20/06/2025",
+          "confianza": 0.9917260408401489,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 0,
+            "palabra": 0
+          }
+        },
+        {
+          "texto": "-",
+          "confianza": 0.9984440207481384,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 0,
+            "palabra": 1
+          }
+        },
+        {
+          "texto": "06:50:24",
+          "confianza": 0.9994851350784302,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 0,
+            "palabra": 2
+          }
+        },
+        {
+          "texto": "pm",
+          "confianza": 0.9962913990020752,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 0,
+            "palabra": 3
+          }
+        },
+        {
+          "texto": "Mercantil",
+          "confianza": 0.9593685269355774,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 1,
+            "palabra": 0
+          }
+        },
+        {
+          "texto": "Envio",
+          "confianza": 0.9993109703063965,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 2,
+            "palabra": 0
+          }
+        },
+        {
+          "texto": "de",
+          "confianza": 0.9999011754989624,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 2,
+            "palabra": 1
+          }
+        },
+        {
+          "texto": "Tpago",
+          "confianza": 0.9969882369041443,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 2,
+            "palabra": 2
+          }
+        },
+        {
+          "texto": "Operacion",
+          "confianza": 0.9892256855964661,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 3,
+            "palabra": 0
+          }
+        },
+        {
+          "texto": "realizada",
+          "confianza": 0.9666768312454224,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 3,
+            "palabra": 1
+          }
+        },
+        {
+          "texto": "Desde",
+          "confianza": 0.9999209642410278,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 4,
+            "palabra": 0
+          }
+        },
+        {
+          "texto": "cuenta",
+          "confianza": 0.998198926448822,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 4,
+            "palabra": 2
+          }
+        },
+        {
+          "texto": "Se",
+          "confianza": 0.9999518394470215,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 5,
+            "palabra": 0
+          }
+        },
+        {
+          "texto": "Envio",
+          "confianza": 0.9795255661010742,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 5,
+            "palabra": 1
+          }
+        },
+        {
+          "texto": "(Bs.)",
+          "confianza": 0.9864288568496704,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 5,
+            "palabra": 2
+          }
+        },
+        {
+          "texto": "beneficiario",
+          "confianza": 0.9976668357849121,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 6,
+            "palabra": 1
+          }
+        },
+        {
+          "texto": "de",
+          "confianza": 0.9993102550506592,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 7,
+            "palabra": 1
+          }
+        },
+        {
+          "texto": "Ahorro",
+          "confianza": 0.9906850457191467,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 7,
+            "palabra": 2
+          }
+        },
+        {
+          "texto": "210,00",
+          "confianza": 0.9934672713279724,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 8,
+            "palabra": 0
+          }
+        },
+        {
+          "texto": "0412",
+          "confianza": 0.9969160556793213,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 9,
+            "palabra": 0
+          }
+        },
+        {
+          "texto": "-244",
+          "confianza": 0.9244822859764099,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 9,
+            "palabra": 1
+          }
+        },
+        {
+          "texto": "C.A.",
+          "confianza": 0.8713105916976929,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 10,
+            "palabra": 2
+          }
+        },
+        {
+          "texto": "Banco",
+          "confianza": 0.8856008648872375,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 10,
+            "palabra": 4
+          }
+        },
+        {
+          "texto": "Universal",
+          "confianza": 0.9912358522415161,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 11,
+            "palabra": 0
+          }
+        },
+        {
+          "texto": "Bin",
+          "confianza": 0.9913899302482605,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 12,
+            "palabra": 0
+          }
+        },
+        {
+          "texto": "Concepto",
+          "confianza": 0.9999719858169556,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 14,
+            "palabra": 0
+          }
+        },
+        {
+          "texto": "Nro.",
+          "confianza": 0.9986681938171387,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 15,
+            "palabra": 0
+          }
+        },
+        {
+          "texto": "Referencia",
+          "confianza": 0.9985623955726624,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 15,
+            "palabra": 1
+          }
+        },
+        {
+          "texto": "Fecha",
+          "confianza": 0.9999483823776245,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 16,
+            "palabra": 0
+          }
+        },
+        {
+          "texto": "y",
+          "confianza": 0.9331977367401123,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 16,
+            "palabra": 1
+          }
+        },
+        {
+          "texto": "hora",
+          "confianza": 0.9999048709869385,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 16,
+            "palabra": 2
+          }
+        },
+        {
+          "texto": "106",
+          "confianza": 0.8390725255012512,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 17,
+            "palabra": 0
+          }
+        },
+        {
+          "texto": "93",
+          "confianza": 0.9998980760574341,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 17,
+            "palabra": 1
+          }
+        },
+        {
+          "texto": "48371746148",
+          "confianza": 0.9309191107749939,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 18,
+            "palabra": 0
+          }
+        },
+        {
+          "texto": "20/06/2025",
+          "confianza": 0.9447209239006042,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 19,
+            "palabra": 0
+          }
+        },
+        {
+          "texto": "-",
+          "confianza": 0.9998953342437744,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 19,
+            "palabra": 1
+          }
+        },
+        {
+          "texto": "06:50:20",
+          "confianza": 0.9938638210296631,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 19,
+            "palabra": 2
+          }
+        },
+        {
+          "texto": "La",
+          "confianza": 0.9946979284286499,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 20,
+            "palabra": 0
+          }
+        },
+        {
+          "texto": "en",
+          "confianza": 0.9946277737617493,
+          "posicion": {
+            "pagina": 0,
+            "bloque": 0,
+            "linea": 20,
+            "palabra": 3
+          }
+        }
+      ],
+      "confianza_promedio": 0.978,
+      "estadisticas_onnxtr": {
+        "paginas_procesadas": 1,
+        "palabras_alta_confianza": 39,
+        "palabras_media_confianza": 0,
+        "palabras_baja_confianza": 0,
+        "min_confianza_aplicada": 0.8
+      },
+      "calidad_extraccion": {
+        "score_calidad": 89.1,
+        "categoria": "excelente",
+        "confianza_promedio": 0.978,
+        "palabras_alta_confianza": 39,
+        "total_palabras": 39,
+        "longitud_texto": 254,
+        "recomendaciones": [
+          "Calidad de extracción satisfactoria"
+        ]
+      },
+      "deteccion_inteligente": {
+        "tipo_imagen": "documento_escaneado",
+        "esquema_color": "texto_oscuro_fondo_claro",
+        "inversion_requerida": false,
+        "ui_elements_detectados": false,
+        "aspect_ratio": 0.7727272727272727,
+        "calidad_digital": false,
+        "dark_percentage": 1.041434645652771,
+        "light_percentage": 98.95856475830078,
+        "edge_density": 0.014473781937017231,
+        "noise_estimate": 43.930168578506034,
+        "confianza_deteccion": 0.2
+      },
+      "datos_financieros": {
+        "amount": [
+          {
+            "valor": "20",
+            "posicion_texto": 0
+          },
+          {
+            "valor": "06",
+            "posicion_texto": 3
+          },
+          {
+            "valor": "202",
+            "posicion_texto": 7
+          },
+          {
+            "valor": "5",
+            "posicion_texto": 10
+          },
+          {
+            "valor": "06",
+            "posicion_texto": 3
+          }
+        ],
+        "time": [
+          {
+            "valor": "06:50:24 pm",
+            "posicion_texto": 14
+          },
+          {
+            "valor": "06:50:20",
+            "posicion_texto": 240
+          }
+        ],
+        "reference": [
+          {
+            "valor": "erencia",
+            "posicion_texto": 186
+          }
+        ],
+        "phone": [
+          {
+            "valor": "48371746148",
+            "posicion_texto": 214
+          }
+        ],
+        "analisis_documento": {
+          "tipo": "transferencia",
+          "confianza": 25.0,
+          "keywords_encontradas": [
+            "envio"
+          ]
+        },
+        "resumen_extraido": {
+          "montos_encontrados": 5,
+          "fechas_encontradas": 0,
+          "referencias_encontradas": 1,
+          "cuentas_encontradas": 0,
+          "telefonos_encontrados": 1,
+          "total_elementos": 7,
+          "completitud_porcentaje": 50
+        }
+      },
+      "tiempo": 2.161,
+      "archivo_resultado": "temp/web_20250704_194308/ocr_203f9975_20250704_194308/resultado_ocr.json",
+      "archivo_texto": "temp/web_20250704_194308/ocr_203f9975_20250704_194308/texto_extraido.txt"
+    }
+  },
+  "archivos_generados": [
+    "temp/web_20250704_194308/ocr_203f9975_20250704_194308/resultado_completo.json",
+    "temp/web_20250704_194308/ocr_203f9975_20250704_194308/reporte.html"
+  ],
+  "resumen_final": {
+    "imagen_original": {
+      "dimensiones": "816x1056",
+      "calidad_inicial": "Regular",
+      "puntuacion_calidad": 57.9
+    },
+    "procesamiento_aplicado": {
+      "perfil_usado": "rapido",
+      "pasos_ejecutados": 6,
+      "lista_pasos": [
+        "00_analisis_sin_unificacion",
+        "00_maxima_claridad_letras",
+        "01_no_inversion_necesaria",
+        "03_bilateral_filter",
+        "04_contraste_adaptativo",
+        "05_sin_binarizacion"
+      ],
+      "tiempo_procesamiento": 0.041
+    },
+    "resultados_ocr": {
+      "caracteres_extraidos": 254,
+      "palabras_detectadas": 39,
+      "confianza_promedio": 0.978,
+      "confianza_ponderada": 0.978,
+      "calidad_extraccion": "excelente"
+    },
+    "datos_financieros": {
+      "tipo_documento": "transferencia",
+      "elementos_encontrados": 7,
+      "completitud": 50,
+      "montos_encontrados": 5,
+      "fechas_encontradas": 0
+    },
+    "rendimiento": {
+      "tiempo_total": 0,
+      "tiempo_validacion": 0.108,
+      "tiempo_mejora": 0.05,
+      "tiempo_ocr": 2.161
+    },
+    "calificacion_final": {
+      "puntuacion": 80.0,
+      "categoria": "Muy Buena",
+      "componentes": {
+        "calidad_imagen": 57.9,
+        "confianza_ocr": 89.1,
+        "completitud_datos": 75.0
+      }
+    },
+    "recomendaciones": [
+      "Error generando recomendaciones"
+    ]
+  },
+  "tiempo_total": 2.321
+}
