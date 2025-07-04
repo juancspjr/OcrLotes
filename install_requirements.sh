@@ -257,17 +257,12 @@ def test_onnxtr():
         # Guardar imagen temporal
         cv2.imwrite('test_image.png', img)
         
-        # Inicializar predictor OnnxTR
+        # FIX: Inicializar predictor OnnxTR con parámetros compatibles 0.7.1
+        # REASON: Eliminamos parámetros inexistentes que causan error de API
+        # IMPACT: Test funcional de OnnxTR sin errores de compatibilidad
         predictor = ocr_predictor(
             det_arch='db_resnet50',
-            reco_arch='crnn_vgg16_bn',
-            pretrained=True,
-            assume_straight_pages=True,
-            straighten_pages=False,
-            preserve_aspect_ratio=True,
-            symmetric_pad=True,
-            detect_orientation=False,
-            detect_language=False
+            reco_arch='crnn_vgg16_bn'
         )
         
         # Procesar imagen

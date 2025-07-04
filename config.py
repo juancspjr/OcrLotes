@@ -11,11 +11,13 @@ BASE_DIR = Path(__file__).parent.absolute()
 TEMP_DIR = BASE_DIR / "temp"
 UPLOADS_DIR = BASE_DIR / "uploads"
 STATIC_DIR = BASE_DIR / "static"
+MODELS_DIR = BASE_DIR / "models" / "onnxtr"  # Directorio para modelos ONNX locales
 
 # Crear directorios si no existen
 TEMP_DIR.mkdir(exist_ok=True)
 UPLOADS_DIR.mkdir(exist_ok=True)
 STATIC_DIR.mkdir(exist_ok=True)
+MODELS_DIR.mkdir(parents=True, exist_ok=True)
 
 # FIX: Configuración optimizada de OnnxTR para máxima eficiencia en CPU
 # REASON: Migración de Tesseract a OnnxTR para mejor rendimiento y menor uso de recursos
