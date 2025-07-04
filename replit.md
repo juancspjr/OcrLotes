@@ -89,11 +89,13 @@ This is a Python-based OCR (Optical Character Recognition) system designed for p
 
 3. **Run Application**:
    ```bash
-   # Development
-   python main.py
+   # Web Interface
+   python main.py                              # Local development
+   gunicorn --bind 0.0.0.0:5000 main:app      # Production
    
-   # Production
-   gunicorn --bind 0.0.0.0:5000 main:app
+   # Command Line Interface
+   python main_ocr_process.py imagen.jpg --json-only    # Basic OCR
+   python main_ocr_process.py --help                    # View all options
    ```
 
 ### Local Development
