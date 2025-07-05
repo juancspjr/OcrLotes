@@ -14,19 +14,42 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# URLs y configuración de modelos
+# FIX: URLs desde GitHub personal para garantizar disponibilidad
+# REASON: Evitar dependencia de repositorios externos que pueden cambiar o desaparecer
+# IMPACT: Control total sobre modelos y disponibilidad garantizada
+GITHUB_REPO_BASE = 'https://github.com/juancspjr/OcrAcorazado/raw/main/models/onnxtr/'
+
 MODELS_CONFIG = {
     'db_resnet50': {
-        'url': 'https://github.com/felixdittrich92/OnnxTR/releases/download/v0.0.1/db_resnet50-69ba0015.onnx',
+        'url': f'{GITHUB_REPO_BASE}db_resnet50-69ba0015.onnx',
         'filename': 'db_resnet50-69ba0015.onnx',
-        'sha256': '69ba0015',  # Identificador del archivo
-        'description': 'Modelo de detección de texto'
+        'sha256': '69ba0015',
+        'description': 'Modelo de detección ResNet50 (alta precisión)',
+        'size_mb': 96.2
     },
     'crnn_vgg16_bn': {
-        'url': 'https://github.com/felixdittrich92/OnnxTR/releases/download/v0.0.1/crnn_vgg16_bn-662979cc.onnx',
+        'url': f'{GITHUB_REPO_BASE}crnn_vgg16_bn-662979cc.onnx',
         'filename': 'crnn_vgg16_bn-662979cc.onnx',
-        'sha256': '662979cc',  # Identificador del archivo
-        'description': 'Modelo de reconocimiento de caracteres'
+        'sha256': '662979cc',
+        'description': 'Modelo de reconocimiento VGG16 (alta precisión)',
+        'size_mb': 60.3
+    },
+    # FIX: Agregar modelos MobileNet para perfiles ultra_rapido y rapido
+    # REASON: Necesarios para las optimizaciones de velocidad implementadas
+    # IMPACT: Modelos livianos para procesamiento ultra-rápido desde GitHub propio
+    'db_mobilenet_v3_large': {
+        'url': f'{GITHUB_REPO_BASE}db_mobilenet_v3_large-4987e7bd.onnx',
+        'filename': 'db_mobilenet_v3_large-4987e7bd.onnx',
+        'sha256': '4987e7bd',
+        'description': 'Modelo de detección MobileNet (ultra rápido)',
+        'size_mb': 16.1
+    },
+    'crnn_mobilenet_v3_small': {
+        'url': f'{GITHUB_REPO_BASE}crnn_mobilenet_v3_small-bded4d49.onnx',
+        'filename': 'crnn_mobilenet_v3_small-bded4d49.onnx',
+        'sha256': 'bded4d49',
+        'description': 'Modelo de reconocimiento MobileNet (ultra rápido)',
+        'size_mb': 8.3
     }
 }
 
@@ -42,11 +65,21 @@ def download_model(model_name, model_config, force=False):
         return True
     
     try:
-        logger.info(f"Descargando {model_config['description']}...")
-        logger.info(f"URL: {model_config['url']}")
+        size_mb = model_config.get('size_mb', 0)
+        logger.info(f"Descargando {model_config['description']} ({size_mb}MB)...")
+        logger.info(f"Desde GitHub personal: {model_config['url']}")
         
+        # FIX: Descarga con progreso y mejor manejo de errores
+        # REASON: Proporcionar feedback al usuario durante descargas grandes
+        # IMPACT: Mejor experiencia de usuario y debugging más fácil
         response = requests.get(model_config['url'], stream=True)
         response.raise_for_status()
+        
+        # Verificar que efectivamente es un archivo ONNX
+        content_type = response.headers.get('content-type', '')
+        if 'application/octet-stream' not in content_type and 'binary' not in content_type:
+            logger.warning(f"Tipo de contenido inesperado: {content_type}")
+            # Continuar de todas formas, ya que GitHub puede retornar diferentes tipos
         
         total_size = int(response.headers.get('content-length', 0))
         downloaded = 0
@@ -90,10 +123,22 @@ def verify_models():
     return all_present
 
 def download_all_models(force=False):
-    """Descarga todos los modelos necesarios"""
-    logger.info("Iniciando descarga de modelos ONNX...")
+    """
+    FIX: Descarga todos los modelos necesarios desde GitHub personal
+    REASON: Garantizar disponibilidad de modelos incluyendo los nuevos MobileNet para ultra_rapido
+    IMPACT: Sistema completamente autosuficiente sin dependencias externas
+    """
+    logger.info("Iniciando descarga de modelos ONNX desde GitHub personal...")
+    logger.info(f"Repositorio: {GITHUB_REPO_BASE}")
+    
+    # Crear directorio si no existe
+    models_dir = Path('models/onnxtr')
+    models_dir.mkdir(parents=True, exist_ok=True)
     
     success_count = 0
+    total_size = sum(model['size_mb'] for model in MODELS_CONFIG.values())
+    logger.info(f"Total a descargar: {len(MODELS_CONFIG)} modelos ({total_size:.1f}MB)")
+    
     for model_name, model_config in MODELS_CONFIG.items():
         if download_model(model_name, model_config, force):
             success_count += 1

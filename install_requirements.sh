@@ -196,12 +196,18 @@ fi
 
 print_success "Todas las dependencias Python instaladas"
 
-# Descargar modelos ONNX para independencia
-print_status "Descargando modelos ONNX para almacenamiento local..."
+# FIX: Descargar modelos ONNX desde GitHub personal para independencia total
+# REASON: Garantizar disponibilidad controlada de todos los modelos necesarios
+# IMPACT: Sistema completamente autosuficiente sin dependencias externas
+print_status "Descargando modelos ONNX desde GitHub personal (OcrAcorazado)..."
+print_status "Repositorio: https://github.com/juancspjr/OcrAcorazado/raw/main/models/onnxtr/"
+print_status "Incluyendo modelos ultra_rapido (MobileNet) y normales (ResNet50)..."
 if python download_models.py --download; then
-    print_success "Modelos ONNX descargados exitosamente"
+    print_success "✅ Todos los modelos ONNX descargados desde GitHub personal"
+    print_success "   - ResNet50 (alta precisión): db_resnet50, crnn_vgg16_bn"
+    print_success "   - MobileNet (ultra rápido): db_mobilenet_v3_large, crnn_mobilenet_v3_small"
 else
-    print_warning "No se pudieron descargar algunos modelos ONNX (continuando con cache del sistema)"
+    print_warning "⚠️  Algunos modelos no se descargaron (el sistema usará cache de OnnxTR como fallback)"
 fi
 
 # Verificar instalaciones
