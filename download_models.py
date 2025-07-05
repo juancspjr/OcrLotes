@@ -54,7 +54,11 @@ MODELS_CONFIG = {
 }
 
 def download_model(model_name, model_config, force=False):
-    """Descarga un modelo ONNX si no existe localmente"""
+    """
+    FIX: Sistema híbrido de descarga de modelos 
+    REASON: Intentar GitHub personal primero, fallback a fuentes originales
+    IMPACT: Máxima disponibilidad garantizada con control total cuando es posible
+    """
     models_dir = Path('models/onnxtr')
     models_dir.mkdir(parents=True, exist_ok=True)
     
@@ -64,44 +68,75 @@ def download_model(model_name, model_config, force=False):
         logger.info(f"Modelo {model_name} ya existe: {model_path}")
         return True
     
-    try:
-        size_mb = model_config.get('size_mb', 0)
-        logger.info(f"Descargando {model_config['description']} ({size_mb}MB)...")
-        logger.info(f"Desde GitHub personal: {model_config['url']}")
-        
-        # FIX: Descarga con progreso y mejor manejo de errores
-        # REASON: Proporcionar feedback al usuario durante descargas grandes
-        # IMPACT: Mejor experiencia de usuario y debugging más fácil
-        response = requests.get(model_config['url'], stream=True)
-        response.raise_for_status()
-        
-        # Verificar que efectivamente es un archivo ONNX
-        content_type = response.headers.get('content-type', '')
-        if 'application/octet-stream' not in content_type and 'binary' not in content_type:
-            logger.warning(f"Tipo de contenido inesperado: {content_type}")
-            # Continuar de todas formas, ya que GitHub puede retornar diferentes tipos
-        
-        total_size = int(response.headers.get('content-length', 0))
-        downloaded = 0
-        
-        with open(model_path, 'wb') as f:
-            for chunk in response.iter_content(chunk_size=8192):
-                if chunk:
-                    f.write(chunk)
-                    downloaded += len(chunk)
-                    if total_size > 0:
-                        progress = (downloaded / total_size) * 100
-                        print(f"\rProgreso: {progress:.1f}%", end='', flush=True)
-        
-        print()  # Nueva línea
-        logger.info(f"Modelo {model_name} descargado exitosamente: {model_path}")
-        return True
-        
-    except Exception as e:
-        logger.error(f"Error descargando {model_name}: {e}")
-        if model_path.exists():
-            model_path.unlink()
-        return False
+    # Lista de URLs a intentar (GitHub personal primero, fallback segundo)
+    urls_to_try = [
+        {
+            'url': model_config['url'],
+            'source': 'GitHub Personal',
+            'priority': 1
+        }
+    ]
+    
+    # FIX: Agregar URLs de fallback para modelos MobileNet
+    # REASON: Mientras se suben los modelos al GitHub personal, usar fuentes originales
+    # IMPACT: Sistema funcional inmediatamente sin esperar la subida manual de modelos
+    fallback_urls = {
+        'db_mobilenet_v3_large': 'https://github.com/felixdittrich92/OnnxTR/releases/download/v0.2.0/db_mobilenet_v3_large-4987e7bd.onnx',
+        'crnn_mobilenet_v3_small': 'https://github.com/felixdittrich92/OnnxTR/releases/download/v0.0.1/crnn_mobilenet_v3_small-bded4d49.onnx'
+    }
+    
+    if model_name in fallback_urls:
+        urls_to_try.append({
+            'url': fallback_urls[model_name],
+            'source': 'OnnxTR Original (Fallback)',
+            'priority': 2
+        })
+    
+    # Intentar descarga desde cada URL
+    for url_info in urls_to_try:
+        try:
+            size_mb = model_config.get('size_mb', 0)
+            logger.info(f"Intentando descarga de {model_config['description']} ({size_mb}MB)...")
+            logger.info(f"Fuente {url_info['priority']}: {url_info['source']}")
+            logger.info(f"URL: {url_info['url']}")
+            
+            response = requests.get(url_info['url'], stream=True, timeout=30)
+            response.raise_for_status()
+            
+            # Verificar que efectivamente es un archivo ONNX
+            content_type = response.headers.get('content-type', '')
+            logger.info(f"Tipo de contenido: {content_type}")
+            
+            # Verificar tamaño del archivo
+            total_size = int(response.headers.get('content-length', 0))
+            if total_size > 0:
+                logger.info(f"Tamaño archivo: {total_size / (1024*1024):.1f}MB")
+            
+            # Descargar el archivo con progreso
+            downloaded = 0
+            with open(model_path, 'wb') as f:
+                for chunk in response.iter_content(chunk_size=8192):
+                    if chunk:
+                        f.write(chunk)
+                        downloaded += len(chunk)
+                        if total_size > 0:
+                            progress = (downloaded / total_size) * 100
+                            print(f"\rProgreso: {progress:.1f}%", end='', flush=True)
+            
+            print()  # Nueva línea
+            logger.info(f"✅ Modelo {model_name} descargado exitosamente desde {url_info['source']}")
+            logger.info(f"   Archivo: {model_path}")
+            return True
+            
+        except Exception as e:
+            logger.warning(f"❌ Error con {url_info['source']}: {e}")
+            if model_path.exists():
+                model_path.unlink()
+            continue  # Intentar siguiente URL
+    
+    # Si llegamos aquí, ninguna URL funcionó
+    logger.error(f"❌ No se pudo descargar {model_name} desde ninguna fuente")
+    return False
 
 def verify_models():
     """Verifica que todos los modelos estén disponibles"""

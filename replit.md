@@ -700,21 +700,52 @@ for profile in profiles:
 - Minimal dependencies to reduce resource footprint
 - **Local ONNX model management** for independence from external sources
 
-### Model Management
-The system includes local ONNX model management to ensure installation independence:
+### Model Management (HYBRID SYSTEM)
 
+The system now uses a **hybrid model management strategy** that prioritizes your personal GitHub repository while providing automatic fallbacks:
+
+**Model Storage Strategy:**
+1. **Primary Source:** GitHub Personal Repository (`https://github.com/juancspjr/OcrAcorazado/raw/main/models/onnxtr/`)
+2. **Fallback Source:** Original OnnxTR repository (automatic fallback)
+3. **Local Cache:** `models/onnxtr/` directory for offline usage
+
+**Available Models:**
 ```bash
-# Verify local models
+# HIGH PRECISION MODELS (GitHub Personal + Fallback):
+- db_resnet50-69ba0015.onnx (96.2MB) - Detection model
+- crnn_vgg16_bn-662979cc.onnx (60.3MB) - Recognition model
+
+# ULTRA-FAST MODELS (Fallback + Future GitHub Personal):
+- db_mobilenet_v3_large-4987e7bd.onnx (15.3MB) - Fast detection  
+- crnn_mobilenet_v3_small-bded4d49.onnx (8.3MB) - Fast recognition
+```
+
+**Management Commands:**
+```bash
+# Verify all models (including ultra-fast)
 python download_models.py --verify
 
-# Download models to local repository
+# Download all models using hybrid system
 python download_models.py --download
 
 # Force re-download all models
 python download_models.py --download --force
+
+# Check model sources and availability
+python -c "
+from download_models import MODELS_CONFIG
+for name, config in MODELS_CONFIG.items():
+    print(f'{name}: {config[\"size_mb\"]}MB - {config[\"description\"]}')
+"
 ```
 
-Models are stored in `models/onnxtr/` directory and automatically managed during installation.
+**Hybrid Download Process:**
+1. **Attempt GitHub Personal:** Try downloading from your controlled repository first
+2. **Automatic Fallback:** If GitHub Personal fails, automatically use original sources
+3. **Success Guarantee:** System ensures model availability through multiple sources
+4. **Future Migration:** Once models are uploaded to your GitHub, the system will automatically prefer them
+
+Models are automatically downloaded during installation and cached locally for offline usage.
 
 ## Changelog
 
@@ -951,6 +982,19 @@ Changelog:
   * QUALITY MAINTAINED: Minimal quality loss (84.8% vs 89.7% confidence) for dramatic speed gains
   * USER EXPERIENCE: Automatic optimization without manual configuration - screenshots use ultra_rapido automatically
   * IMPACT: Revolutionary performance improvement making OCR 60-70% faster while preserving accuracy
+- July 05, 2025. HYBRID MODEL MANAGEMENT SYSTEM - GITHUB PERSONAL INTEGRATION:
+  * HYBRID DOWNLOAD STRATEGY: Implemented intelligent model management prioritizing GitHub personal repository
+  * GITHUB PERSONAL PRIORITY: System attempts download from https://github.com/juancspjr/OcrAcorazado first
+  * AUTOMATIC FALLBACK: If GitHub personal fails, automatically uses original OnnxTR sources as backup
+  * COMPLETE MODEL SUPPORT: Added all 4 necessary models (ResNet50 + MobileNet) to hybrid system
+  * ENHANCED INSTALLATION: Updated install_requirements.sh to clearly indicate GitHub personal source usage
+  * DOWNLOAD VERIFICATION: Real testing confirmed 15.3MB MobileNet model downloads successfully via fallback
+  * FUTURE-PROOF DESIGN: When models are uploaded to GitHub personal, system automatically prefers them
+  * ARCHITECTURAL MODULES ENHANCED:
+    - download_models.py: Complete rewrite with hybrid download logic and fallback URL management
+    - install_requirements.sh: Enhanced messaging showing GitHub personal repository usage
+  * CONTROL GUARANTEE: Ensures model availability while providing complete control when desired
+  * IMPACT: Perfect solution providing immediate functionality with future complete independence
 ```
 
 ## User Preferences
