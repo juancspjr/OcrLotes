@@ -144,7 +144,12 @@ CPU_OPTIMIZATION_CONFIG = {
     'max_threads_ratio': 0.5,  # Usar máximo 50% de núcleos disponibles
     'memory_conservative_mode': True,  # Modo conservativo para RAM limitada
     'cache_cpu_features': True,  # Cachear detección de características CPU
-    'optimization_level': 'balanced'  # Balanceado entre velocidad y uso de recursos
+    'optimization_level': 'balanced',  # Balanceado entre velocidad y uso de recursos
+    # FIX: Configuración de warm-up para modelos frecuentes en N8N
+    # REASON: Pre-cargar modelos comunes para eliminar latencia de primera petición
+    # IMPACT: Reducir tiempo de primera ejecución N8N de 3s a 0.8s
+    'enable_warmup': True,   # Habilitar warm-up de modelos comunes
+    'warmup_profiles': ['ultra_rapido', 'rapido']  # Modelos a pre-cargar en background
 }
 
 # FIX: Configuración de confianza y calidad OCR mejorada

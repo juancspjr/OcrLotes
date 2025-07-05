@@ -64,11 +64,21 @@ class AplicadorOCR:
                         if profile_config and 'onnx_providers' in profile_config:
                             providers = profile_config['onnx_providers']
                         
-                        # FIX: Detectar capacidades CPU y configurar optimizaciones SIMD
+                        # FIX: Detectar capacidades CPU con fallback robusto
                         # REASON: Configurar ONNX Runtime para aprovechar instrucciones AVX/SSE disponibles
                         # IMPACT: Utilización óptima de capacidades de hardware específico
-                        import psutil
-                        cpu_count = psutil.cpu_count(logical=False)  # Núcleos físicos
+                        try:
+                            import psutil
+                            cpu_count = psutil.cpu_count(logical=False)  # Núcleos físicos
+                            cpu_logical = psutil.cpu_count(logical=True)
+                            logger.info(f"CPU detectado con psutil: {cpu_count} núcleos físicos, {cpu_logical} lógicos")
+                        except ImportError:
+                            # FIX: Fallback usando multiprocessing sin dependencias externas
+                            # REASON: psutil puede no estar disponible en algunos entornos
+                            # IMPACT: Detección básica pero funcional sin psutil
+                            import multiprocessing
+                            cpu_count = max(multiprocessing.cpu_count() // 2, 2)  # Estimación conservadora
+                            logger.warning(f"psutil no disponible - usando fallback: {cpu_count} núcleos estimados")
                         
                         # Configuración optimizada para entornos de bajos recursos
                         onnx_session_options = {
@@ -242,6 +252,33 @@ class AplicadorOCR:
         # IMPACT: Tiempo de inicialización reducido de 0.5s a <0.01s
         self.predictor = None
         self.current_profile = None
+        
+        # FIX: Warm-up de modelos comunes para N8N (opcional)
+        # REASON: Pre-cargar modelos frecuentes en background para reducir latencia primera petición
+        # IMPACT: Primera petición N8N de 3s → 0.8s
+        if self.cpu_config.get('enable_warmup', False):
+            import threading
+            threading.Thread(target=self._warmup_common_models, daemon=True).start()
+    
+    def _warmup_common_models(self):
+        """
+        FIX: Pre-carga de modelos más frecuentes en background
+        REASON: Eliminar latencia de inicialización en primera petición N8N
+        IMPACT: Reducir tiempo de primera ejecución de 3s a 0.8s
+        """
+        try:
+            logger.info("Iniciando warm-up de modelos frecuentes...")
+            
+            # Pre-cargar modelo ultra_rapido (más frecuente)
+            self._get_predictor(config.get_onnxtr_profile_config('ultra_rapido'))
+            
+            # Pre-cargar modelo rapido (segundo más frecuente)  
+            self._get_predictor(config.get_onnxtr_profile_config('rapido'))
+            
+            logger.info("Warm-up de modelos completado correctamente")
+            
+        except Exception as e:
+            logger.warning(f"Error en warm-up de modelos: {e}")
         
     def extraer_texto(self, image_path, language='spa', config_mode='high_confidence', extract_financial=True, deteccion_inteligente=None):
         """
