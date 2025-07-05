@@ -27,7 +27,11 @@ logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(name)s - %(leve
 logger = logging.getLogger(__name__)
 
 class OrquestadorOCR:
-    """Clase principal que orquesta todo el proceso de OCR"""
+    """
+    FIX: Orquestador híbrido para procesamiento individual y por lotes
+    REASON: Soportar tanto procesamiento individual como asíncrono de alto volumen
+    IMPACT: Arquitectura flexible que mantiene compatibilidad y añade capacidades empresariales
+    """
     
     def __init__(self):
         # FIX: Lazy Loading para módulos - OPTIMIZACIÓN CRÍTICA DE VELOCIDAD
@@ -68,6 +72,199 @@ class OrquestadorOCR:
             self._aplicador = AplicadorOCR()
         return self._aplicador
         
+    def procesar_lote_imagenes(self, image_paths, caption_texts, metadata_list, language='spa', profile='rapido'):
+        """
+        FIX: Procesamiento asíncrono por lotes para alto volumen
+        REASON: Implementar capacidad empresarial de procesamiento simultáneo con extracción posicional
+        IMPACT: Sistema escalable para cientos de recibos con validación automática y JSON estructurado
+        
+        Args:
+            image_paths: Lista de rutas a imágenes a procesar
+            caption_texts: Lista de textos de caption de WhatsApp
+            metadata_list: Lista de metadatos para cada imagen (sender_id, etc.)
+            language: Idioma para OCR
+            profile: Perfil de rendimiento
+            
+        Returns:
+            list: Lista de resultados estructurados para cada imagen
+        """
+        from datetime import datetime
+        import time
+        
+        if not image_paths:
+            return []
+        
+        batch_start_time = time.time()
+        batch_results = []
+        
+        try:
+            # Preparar arrays de imágenes procesadas
+            processed_images = []
+            valid_indices = []
+            
+            for i, image_path in enumerate(image_paths):
+                try:
+                    # Validar imagen
+                    validation_result = self.validador.analizar_imagen(image_path)
+                    
+                    if not validation_result.get('error'):
+                        # Mejorar imagen usando el método procesar_imagen
+                        mejora_result = self.mejorador.procesar_imagen(
+                            image_path, validation_result, profile, save_steps=False
+                        )
+                        
+                        if mejora_result.get('imagen_mejorada_path'):
+                            # Cargar imagen como array NumPy
+                            import cv2
+                            img_array = cv2.imread(mejora_result['imagen_mejorada_path'], cv2.IMREAD_COLOR)
+                            if img_array is not None:
+                                processed_images.append(img_array)
+                                valid_indices.append(i)
+                        else:
+                            # Usar imagen original si mejora falla
+                            import cv2
+                            img_array = cv2.imread(image_path, cv2.IMREAD_COLOR)
+                            if img_array is not None:
+                                processed_images.append(img_array)
+                                valid_indices.append(i)
+                                
+                except Exception as e:
+                    logger.error(f"Error procesando imagen {i}: {e}")
+                    continue
+            
+            # Procesamiento OCR por lotes
+            if processed_images:
+                # Preparar metadatos para imágenes válidas
+                valid_metadata = [metadata_list[i] if i < len(metadata_list) else {} for i in valid_indices]
+                
+                # Ejecutar OCR por lotes
+                ocr_results = self.aplicador.extraer_texto_batch(
+                    processed_images, language, profile, True, valid_metadata
+                )
+                
+                # Procesar resultados con extracción posicional
+                for idx, result in enumerate(ocr_results):
+                    original_index = valid_indices[idx]
+                    caption_text = caption_texts[original_index] if original_index < len(caption_texts) else ""
+                    metadata = metadata_list[original_index] if original_index < len(metadata_list) else {}
+                    
+                    # Aplicar extracción posicional inteligente
+                    final_result = self._process_batch_result_with_positioning(
+                        result, caption_text, metadata, image_paths[original_index]
+                    )
+                    
+                    batch_results.append(final_result)
+            
+            # Completar resultados para imágenes que fallaron
+            processed_count = len(batch_results)
+            for i in range(len(image_paths)):
+                if i not in valid_indices:
+                    batch_results.insert(i, {
+                        'request_id': self._generate_request_id_from_metadata(
+                            metadata_list[i] if i < len(metadata_list) else {}
+                        ),
+                        'processing_status': 'error',
+                        'error_reason': 'Image validation or preprocessing failed',
+                        'full_raw_ocr_text': '',
+                        'extracted_fields': [],
+                        'unmapped_text_segments': []
+                    })
+            
+        except Exception as e:
+            logger.error(f"Error en procesamiento por lotes: {e}")
+            return [{'error': str(e), 'processing_status': 'error'} for _ in image_paths]
+        
+        # Añadir métricas de lote
+        batch_time = time.time() - batch_start_time
+        
+        for result in batch_results:
+            result['batch_metadata'] = {
+                'batch_size': len(image_paths),
+                'batch_processing_time_seconds': round(batch_time, 2),
+                'batch_timestamp': datetime.now().isoformat()
+            }
+        
+        return batch_results
+
+    def _process_batch_result_with_positioning(self, ocr_result, caption_text, metadata, image_path):
+        """
+        FIX: Procesa resultado individual de lote con extracción posicional completa
+        REASON: Aplicar mapeo de campos y validación a cada imagen del lote
+        IMPACT: Resultado JSON estructurado listo para almacenamiento en BD
+        """
+        try:
+            # Obtener datos de palabras con coordenadas
+            word_data = ocr_result.get('word_data', [])
+            full_text = ocr_result.get('full_raw_ocr_text', '')
+            
+            # Aplicar extracción posicional inteligente
+            extracted_fields, unmapped_segments = self.aplicador._extract_fields_with_positioning(
+                word_data, full_text, caption_text
+            )
+            
+            # Validar campos extraídos
+            processing_status, error_reason = self.aplicador._validate_extracted_fields(extracted_fields)
+            
+            # Generar request_id
+            request_id = self._generate_request_id_from_metadata(metadata)
+            
+            # Construir resultado estructurado
+            structured_result = {
+                'request_id': request_id,
+                'processing_status': processing_status,
+                'error_reason': error_reason,
+                'metadata': {
+                    'fecha_procesamiento': ocr_result.get('timestamp'),
+                    'perfil_ocr_usado': ocr_result.get('metadata', {}).get('profile', 'unknown'),
+                    'tiempo_procesamiento_ms': ocr_result.get('processing_time_ms', 0),
+                    'fuente_whatsapp': self._extract_whatsapp_metadata(metadata, caption_text)
+                },
+                'full_raw_ocr_text': full_text,
+                'extracted_fields': extracted_fields,
+                'unmapped_text_segments': unmapped_segments
+            }
+            
+            return self.aplicador._convert_numpy_types(structured_result)
+            
+        except Exception as e:
+            logger.error(f"Error procesando resultado individual: {e}")
+            return {
+                'request_id': self._generate_request_id_from_metadata(metadata),
+                'processing_status': 'error',
+                'error_reason': f'Post-processing failed: {str(e)}',
+                'full_raw_ocr_text': ocr_result.get('full_raw_ocr_text', ''),
+                'extracted_fields': [],
+                'unmapped_text_segments': []
+            }
+
+    def _generate_request_id_from_metadata(self, metadata):
+        """Genera request_id desde metadatos de WhatsApp"""
+        try:
+            sorteo_fecha = metadata.get('sorteo_fecha', '20250101')
+            sorteo_conteo = metadata.get('sorteo_conteo', 'A')
+            sender_id = metadata.get('sender_id', '000000000000000@lid')
+            sender_name = metadata.get('sender_name', 'Unknown')
+            hora_min = metadata.get('hora_min', '00-00')
+            
+            return f"{sorteo_fecha}-{sorteo_conteo}_{sender_id}_{sender_name}_{hora_min}.png"
+            
+        except Exception:
+            from datetime import datetime
+            timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+            return f"batch_{timestamp}.png"
+
+    def _extract_whatsapp_metadata(self, metadata, caption_text):
+        """Extrae metadatos específicos de WhatsApp"""
+        return {
+            'sender_id': metadata.get('sender_id', ''),
+            'sender_name_registered': metadata.get('sender_name', ''),
+            'fecha_envio_whatsapp': metadata.get('sorteo_fecha', ''),
+            'hora_envio_whatsapp': metadata.get('hora_min', '').replace('-', ':'),
+            'sorteo_fecha': metadata.get('sorteo_fecha', ''),
+            'sorteo_conteo': metadata.get('sorteo_conteo', ''),
+            'caption_whatsapp': caption_text
+        }
+
     def procesar_imagen_completo(self, image_path, language='spa', profile='rapido', 
                                 save_intermediate=False, output_dir=None):
         """

@@ -453,3 +453,112 @@ def get_ocr_confidence_config():
 def get_financial_patterns():
     """Cache para patrones financieros"""
     return getattr(globals(), 'FINANCIAL_PATTERNS', {})
+
+# FIX: Configuraciones para sistema asíncrono de alto volumen
+# REASON: Implementar configuración centralizada para procesamiento por lotes y directorios de trabajo
+# IMPACT: Base sólida para sistema asíncrono manteniendo coherencia arquitectural
+
+# Configuración del sistema de procesamiento por lotes
+BATCH_PROCESSING_CONFIG = {
+    'batch_size': 10,  # Número ideal de imágenes por lote
+    'batch_timeout_seconds': 60,  # Tiempo máximo para formar un lote
+    'polling_interval_seconds': 5,  # Frecuencia de monitoreo del inbox
+    'max_concurrent_batches': 2,  # Máximo de lotes simultáneos
+    'enable_batch_processing': True,  # Flag para habilitar/deshabilitar batching
+    'processing_order': 'fifo',  # Orden de procesamiento (FIFO)
+    'retry_failed_images': True,  # Reintentar imágenes fallidas
+    'max_retries': 3,  # Máximo intentos por imagen
+}
+
+# Estructura de directorios para sistema asíncrono
+ASYNC_DIRECTORIES = {
+    'data_root': 'data',
+    'inbox': 'data/inbox',
+    'processing': 'data/processing', 
+    'processed': 'data/processed',
+    'errors': 'data/errors',
+    'results': 'data/results',
+}
+
+# Configuración de validación de campos obligatorios para recibos
+RECEIPT_VALIDATION_CONFIG = {
+    'mandatory_fields': {
+        'basic': ['numero_referencia', 'monto', 'banco_origen'],
+        'beneficiary_flexible': {
+            'option1': ['cedula_beneficiario'],
+            'option2': ['telefono_beneficiario', 'banco_beneficiario']
+        }
+    },
+    'optional_fields': ['fecha_transaccion', 'nombre_beneficiario', 'tipo_transaccion'],
+    'confidence_thresholds': {
+        'minimum_field_confidence': 0.6,
+        'minimum_overall_confidence': 0.7
+    },
+    'validation_rules': {
+        'numero_referencia': r'^[A-Z0-9\-]{6,20}$',
+        'monto': r'^\d+(?:\.\d{2})?$',
+        'cedula_beneficiario': r'^[VE]\-?\d{7,8}$',
+        'telefono_beneficiario': r'^\+?58\d{10}$'
+    }
+}
+
+# Configuración para extracción posicional inteligente
+POSITIONAL_EXTRACTION_CONFIG = {
+    'proximity_tolerance': {
+        'horizontal': 50,  # Tolerancia horizontal en píxeles
+        'vertical': 30,    # Tolerancia vertical en píxeles
+        'diagonal': 60     # Tolerancia diagonal máxima
+    },
+    'field_keywords': {
+        'numero_referencia': ['ref', 'referencia', 'reference', 'nro', 'ref.', 'numero'],
+        'monto': ['total', 'monto', 'amount', 'valor', '$', 'precio', 'importe'],
+        'banco_origen': ['banco', 'bank', 'bco', 'entidad', 'emisor'],
+        'cedula_beneficiario': ['cedula', 'ci', 'v-', 'c.i.', 'documento'],
+        'telefono_beneficiario': ['telefono', 'telf', 'phone', 'cel', 'movil'],
+        'nombre_beneficiario': ['beneficiario', 'nombre', 'destinatario', 'para'],
+        'fecha_transaccion': ['fecha', 'date', 'dia', 'hora'],
+        'tipo_transaccion': ['tipo', 'operacion', 'transaccion', 'pago']
+    },
+    'relative_positions': [
+        'top-left', 'top-center', 'top-right',
+        'middle-left', 'center', 'middle-right', 
+        'bottom-left', 'bottom-center', 'bottom-right',
+        'header', 'footer', 'below-label', 'right-of-label',
+        'adjacent-to-amount', 'near-reference'
+    ]
+}
+
+# Configuración de la API HTTP
+API_CONFIG = {
+    'endpoint_prefix': '/api/ocr',
+    'max_upload_size': 16 * 1024 * 1024,  # 16MB
+    'allowed_image_types': ['image/png', 'image/jpeg', 'image/jpg', 'image/bmp'],
+    'required_fields': ['image', 'caption', 'sender_id', 'sender_name', 'sorteo_fecha', 'sorteo_conteo', 'hora_min'],
+    'response_timeout': 300,  # 5 minutos máximo de procesamiento
+    'enable_cors': True
+}
+
+@lru_cache(maxsize=16)
+def get_batch_config():
+    """Cache para configuración de procesamiento por lotes"""
+    return BATCH_PROCESSING_CONFIG
+
+@lru_cache(maxsize=16)
+def get_async_directories():
+    """Cache para configuración de directorios asíncronos"""
+    return ASYNC_DIRECTORIES
+
+@lru_cache(maxsize=16)
+def get_validation_config():
+    """Cache para configuración de validación de recibos"""
+    return RECEIPT_VALIDATION_CONFIG
+
+@lru_cache(maxsize=16)
+def get_positional_config():
+    """Cache para configuración de extracción posicional"""
+    return POSITIONAL_EXTRACTION_CONFIG
+
+@lru_cache(maxsize=8)
+def get_api_config():
+    """Cache para configuración de la API HTTP"""
+    return API_CONFIG

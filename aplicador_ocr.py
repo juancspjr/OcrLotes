@@ -280,6 +280,127 @@ class AplicadorOCR:
         except Exception as e:
             logger.warning(f"Error en warm-up de modelos: {e}")
         
+    def extraer_texto_batch(self, image_arrays, language='spa', config_mode='high_confidence', extract_financial=True, metadata_list=None):
+        """
+        FIX: Nuevo método para procesamiento por lotes con extracción posicional
+        REASON: Implementar procesamiento asíncrono de alto volumen con coordenadas
+        IMPACT: Capacidad de procesar múltiples imágenes simultaneamente con datos posicionales
+        
+        Args:
+            image_arrays: Lista de arrays NumPy de imágenes preprocesadas
+            language: Idioma para OCR
+            config_mode: Configuración base
+            extract_financial: Si extraer datos financieros específicos
+            metadata_list: Lista de metadatos para cada imagen
+            
+        Returns:
+            list: Lista de resultados de OCR con coordenadas para cada imagen
+        """
+        if not image_arrays:
+            return []
+            
+        try:
+            # Obtener predictor optimizado para el modo de configuración
+            predictor = self._get_predictor(self._select_optimal_profile(config_mode, None))
+            
+            # Preparar batch de imágenes para OnnxTR
+            batch_results = []
+            
+            for i, img_array in enumerate(image_arrays):
+                # Obtener metadatos si están disponibles
+                metadata = metadata_list[i] if metadata_list and i < len(metadata_list) else {}
+                
+                # Procesar imagen individual con coordenadas
+                result = self._process_single_image_with_coordinates(
+                    img_array, predictor, language, config_mode, extract_financial, metadata
+                )
+                batch_results.append(result)
+                
+            return batch_results
+            
+        except Exception as e:
+            print(f"Error en procesamiento por lotes: {str(e)}")
+            return [{'error': str(e), 'processing_status': 'error'} for _ in image_arrays]
+
+    def _process_single_image_with_coordinates(self, img_array, predictor, language, config_mode, extract_financial, metadata):
+        """
+        FIX: Procesa una imagen individual extrayendo texto y coordenadas
+        REASON: Centralizar lógica de procesamiento individual con datos posicionales
+        IMPACT: Extracción estructurada con información de posición para mapeo inteligente
+        """
+        try:
+            from datetime import datetime
+            import time
+            
+            start_time = time.time()
+            
+            # Ejecutar OCR con OnnxTR
+            result = predictor(img_array)
+            
+            # Extraer texto completo y coordenadas
+            full_text_segments = []
+            word_data = []
+            
+            for page_result in result.pages:
+                for block in page_result.blocks:
+                    for line in block.lines:
+                        for word in line.words:
+                            # Obtener coordenadas de la palabra
+                            coords = word.geometry
+                            if hasattr(coords, 'polygon') and len(coords.polygon) >= 4:
+                                # Convertir polígono a bounding box [x_min, y_min, x_max, y_max]
+                                x_coords = [point[0] for point in coords.polygon]
+                                y_coords = [point[1] for point in coords.polygon]
+                                bbox = [min(x_coords), min(y_coords), max(x_coords), max(y_coords)]
+                            else:
+                                bbox = [0, 0, 0, 0]  # Coordenadas por defecto si no disponibles
+                            
+                            # Datos de la palabra
+                            word_info = {
+                                'text': word.value,
+                                'confidence': float(word.confidence),
+                                'coordinates': bbox,
+                                'raw_geometry': coords.polygon if hasattr(coords, 'polygon') else []
+                            }
+                            
+                            word_data.append(word_info)
+                            full_text_segments.append(word.value)
+            
+            # Texto completo sin filtrar
+            full_raw_text = ' '.join(full_text_segments)
+            
+            # Calcular métricas básicas
+            processing_time = time.time() - start_time
+            avg_confidence = sum(w['confidence'] for w in word_data) / len(word_data) if word_data else 0
+            
+            # Preparar resultado base
+            result_data = {
+                'full_raw_ocr_text': full_raw_text,
+                'word_data': word_data,
+                'processing_time_ms': round(processing_time * 1000, 2),
+                'average_confidence': round(avg_confidence, 3),
+                'total_words': len(word_data),
+                'processing_status': 'success',
+                'metadata': metadata or {},
+                'timestamp': datetime.now().isoformat()
+            }
+            
+            # Extraer datos financieros si se solicita
+            if extract_financial:
+                financial_data = self._extraer_datos_financieros(full_raw_text)
+                result_data['financial_data'] = financial_data
+            
+            return result_data
+            
+        except Exception as e:
+            return {
+                'error': str(e),
+                'processing_status': 'error',
+                'full_raw_ocr_text': '',
+                'word_data': [],
+                'metadata': metadata or {}
+            }
+
     def extraer_texto(self, image_path, language='spa', config_mode='high_confidence', extract_financial=True, deteccion_inteligente=None):
         """
         FIX: OCR ULTRA-OPTIMIZADO con selección automática de perfil para máxima velocidad
@@ -1149,6 +1270,268 @@ class AplicadorOCR:
         
         return texto
     
+    def _extract_fields_with_positioning(self, word_data, full_text, caption_text=""):
+        """
+        FIX: Sistema de extracción posicional inteligente para recibos de pago
+        REASON: Implementar mapeo de campos basado en proximidad y contexto posicional
+        IMPACT: Extracción estructurada de datos financieros con validación automática
+        """
+        from config import get_positional_config, get_validation_config
+        
+        pos_config = get_positional_config()
+        val_config = get_validation_config()
+        
+        extracted_fields = []
+        unmapped_segments = []
+        
+        # Procesar cada campo definido
+        for field_name, keywords in pos_config['field_keywords'].items():
+            field_result = self._find_field_by_proximity(word_data, field_name, keywords, pos_config)
+            
+            if field_result:
+                extracted_fields.append(field_result)
+            
+        # Añadir descripción del motivo desde caption de WhatsApp
+        if caption_text:
+            extracted_fields.append({
+                'field_name': 'descripcion_motivo',
+                'value': caption_text,
+                'confidence': 1.0,
+                'coordinates': None,
+                'relative_position': None,
+                'raw_text_segment': None
+            })
+        
+        # Identificar segmentos no mapeados
+        mapped_texts = {field['raw_text_segment'] for field in extracted_fields if field.get('raw_text_segment')}
+        
+        for word in word_data:
+            if word['text'] not in mapped_texts:
+                unmapped_segments.append({
+                    'text': word['text'],
+                    'confidence': word['confidence'],
+                    'coordinates': word['coordinates'],
+                    'relative_position': self._calculate_relative_position(word['coordinates'], word_data)
+                })
+        
+        return extracted_fields, unmapped_segments
+
+    def _find_field_by_proximity(self, word_data, field_name, keywords, pos_config):
+        """
+        FIX: Busca un campo específico usando proximidad y keywords contextuales
+        REASON: Implementar lógica flexible de mapeo que maneja diferentes layouts de recibos
+        IMPACT: Extracción robusta que se adapta a variaciones en diseño de documentos
+        """
+        tolerance = pos_config['proximity_tolerance']
+        best_match = None
+        best_score = 0
+        
+        # Buscar keywords del campo en el texto
+        for i, label_word in enumerate(word_data):
+            label_text = label_word['text'].lower()
+            
+            # Verificar si contiene algún keyword del campo
+            for keyword in keywords:
+                if keyword.lower() in label_text:
+                    # Buscar valor asociado por proximidad
+                    value_candidate = self._find_nearest_value(word_data, i, tolerance)
+                    
+                    if value_candidate:
+                        # Calcular score basado en confianza y proximidad
+                        proximity_score = self._calculate_proximity_score(
+                            label_word['coordinates'], value_candidate['coordinates']
+                        )
+                        confidence_score = (label_word['confidence'] + value_candidate['confidence']) / 2
+                        total_score = proximity_score * confidence_score
+                        
+                        if total_score > best_score:
+                            best_score = total_score
+                            best_match = {
+                                'field_name': field_name,
+                                'value': self._clean_field_value(value_candidate['text'], field_name),
+                                'confidence': round(confidence_score, 3),
+                                'coordinates': value_candidate['coordinates'],
+                                'relative_position': self._calculate_relative_position(
+                                    value_candidate['coordinates'], word_data
+                                ),
+                                'raw_text_segment': f"{label_word['text']} {value_candidate['text']}"
+                            }
+        
+        return best_match
+
+    def _find_nearest_value(self, word_data, label_index, tolerance):
+        """
+        FIX: Encuentra el valor más cercano a un label basado en tolerancia posicional
+        REASON: Manejar layouts donde valores están abajo, a la derecha, o cerca del label
+        IMPACT: Mapeo flexible que funciona con diferentes diseños de recibos
+        """
+        label_coords = word_data[label_index]['coordinates']
+        label_x_center = (label_coords[0] + label_coords[2]) / 2
+        label_y_center = (label_coords[1] + label_coords[3]) / 2
+        
+        best_candidate = None
+        min_distance = float('inf')
+        
+        for i, word in enumerate(word_data):
+            if i == label_index:
+                continue
+                
+            word_coords = word['coordinates']
+            word_x_center = (word_coords[0] + word_coords[2]) / 2
+            word_y_center = (word_coords[1] + word_coords[3]) / 2
+            
+            # Calcular distancias
+            horizontal_dist = abs(word_x_center - label_x_center)
+            vertical_dist = abs(word_y_center - label_y_center)
+            diagonal_dist = ((word_x_center - label_x_center) ** 2 + (word_y_center - label_y_center) ** 2) ** 0.5
+            
+            # Verificar si está dentro de tolerancia
+            if (horizontal_dist <= tolerance['horizontal'] or 
+                vertical_dist <= tolerance['vertical'] or 
+                diagonal_dist <= tolerance['diagonal']):
+                
+                if diagonal_dist < min_distance:
+                    min_distance = diagonal_dist
+                    best_candidate = word
+        
+        return best_candidate
+
+    def _calculate_proximity_score(self, coords1, coords2):
+        """Calcula score de proximidad entre dos coordenadas (1.0 = muy cerca, 0.0 = muy lejos)"""
+        x1_center = (coords1[0] + coords1[2]) / 2
+        y1_center = (coords1[1] + coords1[3]) / 2
+        x2_center = (coords2[0] + coords2[2]) / 2
+        y2_center = (coords2[1] + coords2[3]) / 2
+        
+        distance = ((x2_center - x1_center) ** 2 + (y2_center - y1_center) ** 2) ** 0.5
+        
+        # Normalizar distancia (asumiendo imagen máxima de 2000x2000)
+        max_distance = 2000 * 1.414  # Diagonal máxima
+        normalized_distance = distance / max_distance
+        
+        return max(0, 1 - normalized_distance)
+
+    def _calculate_relative_position(self, coordinates, all_word_data):
+        """
+        FIX: Calcula posición relativa de un elemento en la imagen
+        REASON: Proporcionar descripción categórica de ubicación para análisis contextual
+        IMPACT: Información adicional para validación y debugging de extracción
+        """
+        if not coordinates or not all_word_data:
+            return 'unknown'
+        
+        # Obtener dimensiones de la imagen basado en todos los elementos
+        all_coords = [word['coordinates'] for word in all_word_data if word['coordinates']]
+        if not all_coords:
+            return 'unknown'
+        
+        min_x = min(coord[0] for coord in all_coords)
+        max_x = max(coord[2] for coord in all_coords)
+        min_y = min(coord[1] for coord in all_coords)
+        max_y = max(coord[3] for coord in all_coords)
+        
+        # Calcular centro del elemento
+        elem_x_center = (coordinates[0] + coordinates[2]) / 2
+        elem_y_center = (coordinates[1] + coordinates[3]) / 2
+        
+        # Calcular posición relativa
+        width = max_x - min_x
+        height = max_y - min_y
+        
+        rel_x = (elem_x_center - min_x) / width if width > 0 else 0.5
+        rel_y = (elem_y_center - min_y) / height if height > 0 else 0.5
+        
+        # Determinar posición categórica
+        if rel_y < 0.33:
+            vertical = 'top'
+        elif rel_y < 0.66:
+            vertical = 'middle'
+        else:
+            vertical = 'bottom'
+            
+        if rel_x < 0.33:
+            horizontal = 'left'
+        elif rel_x < 0.66:
+            horizontal = 'center'
+        else:
+            horizontal = 'right'
+        
+        return f"{vertical}-{horizontal}"
+
+    def _clean_field_value(self, raw_value, field_name):
+        """
+        FIX: Limpia y normaliza valores extraídos según el tipo de campo
+        REASON: Garantizar consistencia en formato de datos extraídos
+        IMPACT: Datos estructurados listos para validación y almacenamiento
+        """
+        import re
+        
+        cleaned = raw_value.strip()
+        
+        if field_name == 'monto':
+            # Extraer solo números y decimales
+            match = re.search(r'(\d+(?:[.,]\d{2})?)', cleaned)
+            return match.group(1).replace(',', '.') if match else cleaned
+            
+        elif field_name == 'numero_referencia':
+            # Extraer solo caracteres alfanuméricos y guiones
+            match = re.search(r'([A-Z0-9\-]{6,20})', cleaned.upper())
+            return match.group(1) if match else cleaned
+            
+        elif field_name == 'cedula_beneficiario':
+            # Extraer formato de cédula venezolana
+            match = re.search(r'([VE]\-?\d{7,8})', cleaned.upper())
+            return match.group(1) if match else cleaned
+            
+        elif field_name == 'telefono_beneficiario':
+            # Extraer solo números de teléfono
+            digits = re.sub(r'[^\d]', '', cleaned)
+            if len(digits) >= 10:
+                return digits
+            return cleaned
+            
+        return cleaned
+
+    def _validate_extracted_fields(self, extracted_fields):
+        """
+        FIX: Valida campos extraídos según reglas de negocio para recibos
+        REASON: Determinar si un recibo cumple requisitos mínimos para ser válido
+        IMPACT: Clasificación automática entre recibos válidos y con errores
+        """
+        from config import get_validation_config
+        
+        val_config = get_validation_config()
+        field_dict = {field['field_name']: field for field in extracted_fields}
+        
+        # Verificar campos básicos obligatorios
+        basic_fields = val_config['mandatory_fields']['basic']
+        missing_basic = [field for field in basic_fields if field not in field_dict]
+        
+        # Verificar condición flexible de beneficiario
+        beneficiary_options = val_config['mandatory_fields']['beneficiary_flexible']
+        option1_satisfied = all(field in field_dict for field in beneficiary_options['option1'])
+        option2_satisfied = all(field in field_dict for field in beneficiary_options['option2'])
+        
+        beneficiary_satisfied = option1_satisfied or option2_satisfied
+        
+        # Determinar status de procesamiento
+        if not missing_basic and beneficiary_satisfied:
+            processing_status = 'success'
+            error_reason = None
+        else:
+            processing_status = 'error'
+            error_parts = []
+            
+            if missing_basic:
+                error_parts.append(f"Missing basic fields: {', '.join(missing_basic)}")
+            
+            if not beneficiary_satisfied:
+                error_parts.append("Missing beneficiary identification (need cedula OR phone+bank)")
+            
+            error_reason = '; '.join(error_parts)
+        
+        return processing_status, error_reason
+
     def _convert_numpy_types(self, obj):
         """
         FIX: Convierte TODOS los tipos NumPy y problemáticos a tipos nativos Python para serialización JSON

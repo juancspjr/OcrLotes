@@ -5,12 +5,13 @@ Rutas y controladores para la aplicación web Flask
 import os
 import json
 import logging
+import shutil
 from pathlib import Path
 from datetime import datetime
 from werkzeug.utils import secure_filename
 from flask import render_template, request, redirect, url_for, flash, jsonify, send_file
 
-from app import app
+from app import app, preload_ocr_components, start_batch_worker
 from main_ocr_process import OrquestadorOCR
 import config
 
@@ -282,3 +283,273 @@ def duration_filter(seconds):
         minutes = int(seconds // 60)
         secs = seconds % 60
         return f"{minutes}m {secs:.0f}s"
+
+# FIX: Rutas de API HTTP para sistema asíncrono de alto volumen
+# REASON: Implementar endpoint complementario para ingesta directa vía HTTP
+# IMPACT: Flexibilidad de integración con múltiples sistemas externos
+
+@app.route('/api/ocr/process_image', methods=['POST'])
+def api_process_image():
+    """
+    FIX: Endpoint API HTTP para ingesta directa de imágenes con metadata de WhatsApp
+    REASON: Ofrecer alternativa HTTP estándar al sistema de archivos para máxima interoperabilidad
+    IMPACT: Integración directa con n8n y otros sistemas web sin acceso al sistema de archivos
+    """
+    try:
+        from config import get_api_config, get_async_directories
+        
+        api_config = get_api_config()
+        directories = get_async_directories()
+        
+        # Validar que sea multipart/form-data
+        if not request.files:
+            return jsonify({
+                'status': 'error',
+                'message': 'No image file provided',
+                'details': 'Request must include multipart/form-data with image field'
+            }), 400
+        
+        # Verificar campos obligatorios
+        required_fields = api_config['required_fields']
+        missing_fields = []
+        
+        for field in required_fields[1:]:  # Excluir 'image' que se verifica separadamente
+            if field not in request.form:
+                missing_fields.append(field)
+        
+        if missing_fields:
+            return jsonify({
+                'status': 'error',
+                'message': 'Missing required fields',
+                'missing_fields': missing_fields
+            }), 400
+        
+        # Obtener archivo de imagen
+        if 'image' not in request.files:
+            return jsonify({
+                'status': 'error',
+                'message': 'No image file provided in form data'
+            }), 400
+        
+        image_file = request.files['image']
+        
+        if image_file.filename == '':
+            return jsonify({
+                'status': 'error',
+                'message': 'No image file selected'
+            }), 400
+        
+        # Validar tipo de archivo
+        if image_file.content_type not in api_config['allowed_image_types']:
+            return jsonify({
+                'status': 'error',
+                'message': f'Invalid image type. Allowed: {", ".join(api_config["allowed_image_types"])}'
+            }), 400
+        
+        # Generar request_id desde metadatos
+        sorteo_fecha = request.form.get('sorteo_fecha')
+        sorteo_conteo = request.form.get('sorteo_conteo')
+        sender_id = request.form.get('sender_id')
+        sender_name = request.form.get('sender_name')
+        hora_min = request.form.get('hora_min')
+        
+        # Determinar extensión de archivo
+        file_ext = '.png' if image_file.content_type == 'image/png' else '.jpg'
+        request_id = f"{sorteo_fecha}-{sorteo_conteo}_{sender_id}_{sender_name}_{hora_min}{file_ext}"
+        
+        # Guardar imagen en inbox
+        image_path = os.path.join(directories['inbox'], request_id)
+        image_file.save(image_path)
+        
+        # Guardar caption
+        caption = request.form.get('caption', '')
+        if caption:
+            caption_path = image_path.replace(file_ext, '.caption.txt')
+            with open(caption_path, 'w', encoding='utf-8') as f:
+                f.write(caption)
+        
+        # Guardar additional_data si existe
+        additional_data = request.form.get('additional_data')
+        if additional_data:
+            try:
+                # Validar que sea JSON válido
+                json.loads(additional_data)
+                additional_path = image_path.replace(file_ext, '.additional_data.json')
+                with open(additional_path, 'w', encoding='utf-8') as f:
+                    f.write(additional_data)
+            except json.JSONDecodeError:
+                # Si no es JSON válido, guardar como texto
+                additional_path = image_path.replace(file_ext, '.additional_data.txt')
+                with open(additional_path, 'w', encoding='utf-8') as f:
+                    f.write(additional_data)
+        
+        return jsonify({
+            'status': 'accepted',
+            'message': 'Image enqueued for processing.',
+            'request_id': request_id,
+            'estimated_processing_time_seconds': 30,
+            'check_result_endpoint': f'/api/ocr/result/{request_id.replace(file_ext, "")}'
+        }), 202
+        
+    except Exception as e:
+        logger.error(f"Error en API process_image: {e}")
+        return jsonify({
+            'status': 'error', 
+            'message': 'Internal server error',
+            'details': str(e)
+        }), 500
+
+@app.route('/api/ocr/result/<request_id>', methods=['GET'])
+def api_get_result(request_id):
+    """
+    FIX: Endpoint para recuperar resultados de procesamiento asíncrono
+    REASON: Permitir a sistemas externos consultar resultados cuando estén listos
+    IMPACT: Workflow completo de ingesta → procesamiento → recuperación
+    """
+    try:
+        from config import get_async_directories
+        
+        directories = get_async_directories()
+        
+        # Buscar archivo de resultado
+        result_path = os.path.join(directories['results'], f"{request_id}.json")
+        
+        if os.path.exists(result_path):
+            with open(result_path, 'r', encoding='utf-8') as f:
+                result_data = json.load(f)
+            
+            return jsonify({
+                'status': 'completed',
+                'result': result_data
+            })
+        
+        # Verificar si está en procesamiento
+        processing_pattern = os.path.join(directories['processing'], f"{request_id}.*")
+        import glob
+        processing_files = glob.glob(processing_pattern)
+        
+        if processing_files:
+            return jsonify({
+                'status': 'processing',
+                'message': 'Image is currently being processed',
+                'estimated_remaining_seconds': 20
+            })
+        
+        # Verificar si está en errores
+        error_pattern = os.path.join(directories['errors'], f"{request_id}.*")
+        error_files = glob.glob(error_pattern)
+        
+        if error_files:
+            return jsonify({
+                'status': 'error',
+                'message': 'Processing failed. Image moved to error queue.',
+                'error_reason': 'Processing or validation failed'
+            })
+        
+        # No encontrado en ningún lugar
+        return jsonify({
+            'status': 'not_found',
+            'message': 'Request ID not found in system'
+        }), 404
+        
+    except Exception as e:
+        logger.error(f"Error en API get_result: {e}")
+        return jsonify({
+            'status': 'error',
+            'message': 'Internal server error',
+            'details': str(e)
+        }), 500
+
+@app.route('/api/ocr/status', methods=['GET'])
+def api_system_status():
+    """
+    FIX: Endpoint de estado del sistema asíncrono
+    REASON: Proporcionar visibilidad del estado de las colas de procesamiento
+    IMPACT: Monitoreo y debugging del sistema asíncrono
+    """
+    try:
+        from config import get_async_directories
+        import glob
+        
+        directories = get_async_directories()
+        
+        # Contar archivos en cada directorio
+        inbox_count = len(glob.glob(os.path.join(directories['inbox'], "*.png")) + 
+                         glob.glob(os.path.join(directories['inbox'], "*.jpg")))
+        
+        processing_count = len(glob.glob(os.path.join(directories['processing'], "*.png")) + 
+                              glob.glob(os.path.join(directories['processing'], "*.jpg")))
+        
+        processed_count = len(glob.glob(os.path.join(directories['processed'], "*.png")) + 
+                             glob.glob(os.path.join(directories['processed'], "*.jpg")))
+        
+        errors_count = len(glob.glob(os.path.join(directories['errors'], "*.png")) + 
+                          glob.glob(os.path.join(directories['errors'], "*.jpg")))
+        
+        results_count = len(glob.glob(os.path.join(directories['results'], "*.json")))
+        
+        return jsonify({
+            'status': 'operational',
+            'timestamp': datetime.now().isoformat(),
+            'queue_status': {
+                'inbox': inbox_count,
+                'processing': processing_count,
+                'processed': processed_count,
+                'errors': errors_count,
+                'results_available': results_count
+            },
+            'system_info': {
+                'worker_running': True,  # TODO: verificar estado real del worker
+                'ocr_components_loaded': True,  # TODO: verificar estado real
+                'version': '2.0.0-async'
+            }
+        })
+        
+    except Exception as e:
+        logger.error(f"Error en API system_status: {e}")
+        return jsonify({
+            'status': 'error',
+            'message': 'Could not retrieve system status',
+            'details': str(e)
+        }), 500
+
+# FIX: Inicialización automática del sistema asíncrono
+# REASON: Arrancar worker y pre-cargar componentes cuando se carga el módulo
+# IMPACT: Sistema listo inmediatamente para procesamiento de alto volumen
+
+def initialize_async_system():
+    """Inicializa el sistema asíncrono"""
+    try:
+        logger.info("Inicializando sistema OCR asíncrono...")
+        
+        # Pre-cargar componentes OCR
+        preload_ocr_components()
+        
+        # Iniciar worker asíncrono
+        start_batch_worker()
+        
+        logger.info("✅ Sistema OCR asíncrono inicializado exitosamente")
+        
+    except Exception as e:
+        logger.error(f"Error inicializando sistema asíncrono: {e}")
+
+# Ejecutar inicialización al cargar el módulo
+try:
+    initialize_async_system()
+except Exception as e:
+    logger.error(f"Error en inicialización inicial: {e}")
+
+# Asegurar que los directorios existen al cargar el módulo
+def ensure_async_directories():
+    """Crea directorios necesarios para el sistema asíncrono"""
+    from config import get_async_directories
+    
+    directories = get_async_directories()
+    
+    for dir_path in directories.values():
+        os.makedirs(dir_path, exist_ok=True)
+
+# Ejecutar al cargar el módulo
+ensure_async_directories()
+
+logger.info("✅ Rutas API HTTP y directorios asíncronos inicializados")
