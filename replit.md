@@ -94,26 +94,512 @@ chmod +x install_requirements.sh
 ./install_requirements.sh
 ```
 
-**Activate Environment**: 
+### Local Development Environment Setup
+
+**1. Environment Activation**
 ```bash
+# Activate the virtual environment
 source venv_ocr/bin/activate
+
+# Verify Python environment
+which python
+python --version
 ```
 
-3. **Run Application**:
-   ```bash
-   # Web Interface
-   python main.py                              # Local development
-   gunicorn --bind 0.0.0.0:5000 main:app      # Production
-   
-   # Command Line Interface
-   python main_ocr_process.py imagen.jpg --json-only    # Basic OCR
-   python main_ocr_process.py --help                    # View all options
-   ```
+**2. Local Web Interface Usage**
 
-### Local Development
-- Direct Python execution with `python main.py`
-- Development server on `0.0.0.0:5000`
-- Auto-creation of required directories (`uploads`, `temp`, `static`)
+**Start Local Server:**
+```bash
+# For local development (accessible only from same machine)
+python main.py
+
+# For local network access (accessible from other machines in network)
+python main.py --host 0.0.0.0 --port 5000
+```
+
+**Access Web Interface:**
+- **Local machine only:** `http://localhost:5000` or `http://127.0.0.1:5000`
+- **Network access:** `http://192.168.77.55:5000` (replace with your actual IP)
+- **Find your IP:** `ip addr show | grep inet` or `hostname -I`
+
+**3. Complete Usage Examples**
+
+**Web Interface Example (Real Document Processing):**
+```bash
+# 1. Start server
+source venv_ocr/bin/activate
+python main.py
+
+# 2. Open browser: http://localhost:5000
+# 3. Upload image (JPG, PNG, PDF)
+# 4. Select processing profile: 'rapido' or 'normal'
+# 5. Click "Procesar Imagen"
+# 6. View results with extracted text and confidence scores
+```
+
+**Command Line Examples (Real Usage):**
+```bash
+# Basic OCR with default settings
+python main_ocr_process.py factura.jpg
+
+# High-quality OCR with detailed JSON output
+python main_ocr_process.py documento.png --profile normal --json-only
+
+# n8n Integration format
+python main_ocr_process.py recibo.jpg --json-n8n --profile rapido
+
+# Financial document processing
+python main_ocr_process.py factura.pdf --language spa --profile normal --save-intermediate
+
+# Multiple language support
+python main_ocr_process.py document.jpg --language eng --profile screenshot_optimized
+
+# Complete example with all options
+python main_ocr_process.py invoice.png \
+  --profile normal \
+  --language spa \
+  --save-intermediate \
+  --output-dir ./resultados \
+  --json-n8n
+```
+
+**4. Real Processing Examples**
+
+**Example 1: Invoice Processing**
+```bash
+# Process invoice with maximum accuracy
+python main_ocr_process.py factura_empresa.jpg --profile normal --json-only
+
+# Expected output structure:
+{
+  "metadata": {
+    "archivo": "factura_empresa.jpg",
+    "timestamp": "2025-07-05T00:15:30",
+    "processing_time": 3.2
+  },
+  "text_extraction": {
+    "texto_completo": "FACTURA\nEmpresa XYZ S.A.\nNIT: 900123456-7\nFecha: 2025-07-04\nTotal: $1,250,000",
+    "confidence": 94.5,
+    "words_count": 45
+  },
+  "financial_data": {
+    "amounts": ["1,250,000"],
+    "dates": ["2025-07-04"],
+    "tax_ids": ["900123456-7"],
+    "document_type": "factura"
+  }
+}
+```
+
+**Example 2: Receipt Processing**
+```bash
+# Process receipt with screenshot optimization
+python main_ocr_process.py recibo_movil.jpg --profile screenshot_optimized --json-n8n
+
+# n8n compatible output for automation
+{
+  "status": "success",
+  "automation_ready": true,
+  "classification": {
+    "document_type": "recibo",
+    "confidence_level": "high",
+    "processing_quality": "excellent"
+  },
+  "extracted_elements": {
+    "text": "Supermercado ABC\nTotal: $89,500\nFecha: 2025-07-05",
+    "amounts": ["89,500"],
+    "merchant": "Supermercado ABC"
+  }
+}
+```
+
+### Clean Installation Recovery
+
+**Complete System Cleanup (for failed installations):**
+```bash
+#!/bin/bash
+# cleanup_ocr_system.sh - Complete cleanup script
+
+echo "🧹 Iniciando limpieza completa del sistema OCR..."
+
+# 1. Remove virtual environment
+if [ -d "venv_ocr" ]; then
+    echo "Eliminando entorno virtual..."
+    rm -rf venv_ocr
+fi
+
+# 2. Remove temporary files
+echo "Limpiando archivos temporales..."
+rm -rf temp/*
+rm -rf uploads/*
+rm -rf __pycache__
+find . -name "*.pyc" -delete
+find . -name "__pycache__" -type d -exec rm -rf {} + 2>/dev/null
+
+# 3. Remove downloaded models (if corrupted)
+if [ -d "models" ]; then
+    echo "Eliminando modelos descargados..."
+    rm -rf models/onnxtr/*
+fi
+
+# 4. Remove pip cache
+echo "Limpiando cache de pip..."
+rm -rf ~/.cache/pip
+
+# 5. Remove ONNX cache
+echo "Limpiando cache de ONNX..."
+rm -rf ~/.cache/onnxtr
+
+# 6. Reset permissions
+echo "Restableciendo permisos..."
+chmod +x install_requirements.sh
+chmod +x install.sh 2>/dev/null || true
+
+echo "✅ Limpieza completa finalizada"
+echo "Ahora puedes ejecutar: ./install_requirements.sh"
+```
+
+**Step-by-Step Clean Installation:**
+```bash
+# 1. Create and save the cleanup script
+cat > cleanup_ocr_system.sh << 'EOF'
+#!/bin/bash
+echo "🧹 Iniciando limpieza completa del sistema OCR..."
+rm -rf venv_ocr temp/* uploads/* __pycache__
+find . -name "*.pyc" -delete
+find . -name "__pycache__" -type d -exec rm -rf {} + 2>/dev/null
+rm -rf models/onnxtr/* ~/.cache/pip ~/.cache/onnxtr
+chmod +x install_requirements.sh
+echo "✅ Limpieza completa finalizada"
+EOF
+
+# 2. Execute cleanup
+chmod +x cleanup_ocr_system.sh
+./cleanup_ocr_system.sh
+
+# 3. Fresh installation
+./install_requirements.sh
+
+# 4. Verify installation
+source venv_ocr/bin/activate
+python -c "import onnxtr; print('✅ OnnxTR instalado correctamente')"
+python download_models.py --verify
+```
+
+### Local Environment vs Server Environment
+
+**Local Environment (Recommended for Development):**
+```bash
+# Characteristics:
+- Full web interface with file upload
+- Real-time processing feedback
+- Browser-based result visualization
+- Direct file system access
+- Interactive debugging
+
+# Usage:
+python main.py  # Starts web server on localhost:5000
+```
+
+**Server Environment (Production/Headless):**
+```bash
+# Characteristics:
+- Command-line interface only
+- No web browser required
+- Batch processing capability
+- API integration friendly
+- Automated workflows
+
+# Usage:
+python main_ocr_process.py image.jpg --json-only  # Direct CLI processing
+```
+
+### Network Access Configuration
+
+**Enable Network Access for Web Interface:**
+```bash
+# Method 1: Direct parameter
+python main.py --host 0.0.0.0 --port 5000
+
+# Method 2: Environment variable
+export FLASK_RUN_HOST=0.0.0.0
+export FLASK_RUN_PORT=5000
+python main.py
+
+# Method 3: Production server
+gunicorn --bind 0.0.0.0:5000 --workers 2 main:app
+```
+
+**Find Your Network IP:**
+```bash
+# Linux/Ubuntu
+ip addr show | grep "inet " | grep -v 127.0.0.1
+
+# Alternative
+hostname -I | cut -d' ' -f1
+
+# Example output: 192.168.77.55
+# Then access: http://192.168.77.55:5000
+```
+
+## Troubleshooting Guide
+
+### Common Installation Problems
+
+**Problem 1: Virtual Environment Creation Failed**
+```bash
+# Error: "command 'python3' not found"
+# Solution: Install Python 3 and pip
+sudo apt update
+sudo apt install python3 python3-pip python3-venv
+
+# Verify installation
+python3 --version
+pip3 --version
+```
+
+**Problem 2: Permission Denied on Scripts**
+```bash
+# Error: "Permission denied: ./install_requirements.sh"
+# Solution: Fix permissions
+chmod +x install_requirements.sh
+chmod +x install.sh
+ls -la *.sh  # Verify permissions
+```
+
+**Problem 3: ONNX Model Download Failed**
+```bash
+# Error: "Failed to download ONNX models"
+# Solution: Manual model verification and download
+python download_models.py --verify
+python download_models.py --download --force
+
+# Check internet connection
+ping google.com
+
+# Clear cache and retry
+rm -rf ~/.cache/onnxtr
+python download_models.py --download
+```
+
+**Problem 4: Import Error - OnnxTR Not Found**
+```bash
+# Error: "ModuleNotFoundError: No module named 'onnxtr'"
+# Solution: Reinstall OnnxTR
+source venv_ocr/bin/activate
+pip uninstall onnxtr
+pip install onnxtr==0.7.1
+
+# Verify installation
+python -c "import onnxtr; print('✅ OnnxTR working')"
+```
+
+### Runtime Problems
+
+**Problem 1: Web Interface Not Accessible**
+```bash
+# Issue: Cannot access http://192.168.77.55:5000
+# Diagnostic steps:
+netstat -tlnp | grep :5000  # Check if port is open
+sudo ufw status            # Check firewall rules
+python main.py --host 0.0.0.0 --port 5000  # Force network binding
+
+# Solution: Configure firewall
+sudo ufw allow 5000/tcp
+sudo ufw reload
+```
+
+**Problem 2: Out of Memory During Processing**
+```bash
+# Error: "MemoryError" or system freeze
+# Solution: Use lighter processing profile
+python main_ocr_process.py image.jpg --profile ultra_rapido
+
+# Monitor memory usage
+free -h
+top -p $(pgrep python)
+
+# Increase virtual memory (if needed)
+sudo swapon --show
+sudo fallocate -l 2G /swapfile
+sudo chmod 600 /swapfile
+sudo mkswap /swapfile
+sudo swapon /swapfile
+```
+
+**Problem 3: Slow Processing Performance**
+```bash
+# Issue: Processing takes longer than expected
+# Solution: Optimize processing settings
+python main_ocr_process.py image.jpg --profile ultra_rapido
+
+# Check system resources
+htop
+iostat -x 1
+
+# Use appropriate image sizes (recommendation: < 2MB)
+file image.jpg  # Check file size
+```
+
+**Problem 4: OCR Results Poor Quality**
+```bash
+# Issue: Low confidence scores or incorrect text
+# Solution: Optimize image quality before processing
+python main_ocr_process.py image.jpg --profile normal  # Use higher quality
+
+# Pre-process images for better results:
+# 1. Ensure image resolution > 300 DPI
+# 2. Use high contrast images
+# 3. Avoid very small text (< 12px)
+# 4. Ensure good lighting in photos
+```
+
+### Advanced Troubleshooting
+
+**Debug Mode Activation:**
+```bash
+# Enable detailed logging
+export FLASK_DEBUG=1
+export FLASK_ENV=development
+python main.py
+
+# View detailed logs
+tail -f temp/ocr_debug.log
+```
+
+**System Resource Monitoring:**
+```bash
+# Monitor system resources during processing
+watch -n 1 'free -h && echo "--- CPU ---" && top -bn1 | head -20'
+
+# Check disk space
+df -h
+du -sh * | sort -hr
+```
+
+**Complete System Verification:**
+```bash
+# Verify all system components
+#!/bin/bash
+echo "🔍 Verificación completa del sistema OCR"
+
+# 1. Python environment
+echo "Python version: $(python --version)"
+echo "Virtual env: $VIRTUAL_ENV"
+
+# 2. Dependencies
+python -c "import onnxtr; print('✅ OnnxTR OK')"
+python -c "import cv2; print('✅ OpenCV OK')"
+python -c "import numpy; print('✅ NumPy OK')"
+
+# 3. Models
+python download_models.py --verify
+
+# 4. Permissions
+ls -la *.sh
+ls -la uploads/ temp/
+
+# 5. Test processing
+python main_ocr_process.py test_factura.png --json-only | head -20
+
+echo "✅ Verificación completada"
+```
+
+### Performance Optimization
+
+**Recommended System Specifications:**
+```bash
+# Minimum requirements:
+- CPU: 2 cores, 2.0 GHz
+- RAM: 4 GB
+- Storage: 2 GB free space
+- Network: Internet connection for initial setup
+
+# Optimal requirements:
+- CPU: 4+ cores, 3.0+ GHz
+- RAM: 8+ GB
+- Storage: 5+ GB free space (SSD recommended)
+- Network: High-speed internet for model downloads
+```
+
+**Processing Profile Selection:**
+```bash
+# Choose profile based on your needs:
+--profile ultra_rapido    # Fastest, moderate quality (1-2 seconds)
+--profile rapido         # Balanced speed/quality (3-4 seconds)
+--profile normal         # Best quality, slower (5-8 seconds)
+--profile screenshot_optimized  # Optimized for mobile screenshots
+```
+
+### Emergency Recovery
+
+**Complete System Reset:**
+```bash
+# If all else fails, complete reset
+./cleanup_ocr_system.sh  # Run cleanup script
+./install_requirements.sh  # Fresh installation
+```
+
+**Quick Health Check:**
+```bash
+# One-command system health check
+python -c "
+import sys, os
+print('✅ Python OK' if sys.version_info >= (3,7) else '❌ Python version')
+print('✅ Virtual env OK' if os.environ.get('VIRTUAL_ENV') else '❌ Virtual env not active')
+try:
+    import onnxtr; print('✅ OnnxTR OK')
+except: print('❌ OnnxTR not installed')
+print('✅ All systems operational')
+"
+```
+
+## FAQ - Frequently Asked Questions
+
+**Q: How to access the web interface from another computer on the network?**
+A: Start the server with network binding and ensure firewall allows connections:
+```bash
+python main.py --host 0.0.0.0 --port 5000
+# Access from other devices: http://YOUR_IP:5000
+```
+
+**Q: What's the difference between web interface and command line?**
+A: Web interface provides visual upload, real-time feedback, and browser-based results. Command line is for automation, batch processing, and integration with other systems.
+
+**Q: Can I process multiple images at once?**
+A: Yes, using command line:
+```bash
+# Process multiple images
+for image in *.jpg; do
+    python main_ocr_process.py "$image" --json-only >> results.json
+done
+```
+
+**Q: How to improve OCR accuracy?**
+A: Use high-resolution images (>300 DPI), good contrast, proper lighting, and the 'normal' profile for best quality.
+
+**Q: What image formats are supported?**
+A: JPG, PNG, BMP, TIFF, and PDF (first page only).
+
+**Q: How much disk space is required?**
+A: Minimum 2GB, recommended 5GB including virtual environment and ONNX models.
+
+**Q: Can I run this on Windows?**
+A: Yes, but Ubuntu/Linux is recommended. Windows users should use WSL (Windows Subsystem for Linux).
+
+**Q: Is GPU required?**
+A: No, the system is optimized for CPU-only processing using ONNX runtime.
+
+**Q: How to backup my installation?**
+A: Backup the entire project directory including `venv_ocr/` and `models/` folders.
+
+**Q: How to update to a newer version?**
+A: Run cleanup script, download latest version, and reinstall:
+```bash
+./cleanup_ocr_system.sh
+git pull origin main  # If using git
+./install_requirements.sh
+```
 
 ### Resource Optimization
 - No GPU requirements - CPU-only processing
@@ -348,6 +834,18 @@ Changelog:
     - config.py: LRU cache functions for configuration optimization
     - mejora_ocr.py: Intelligent bypass evaluation and optimized minimal processing
   * IMPACT: Dramatic performance improvement with professional n8n integration for enterprise automation workflows
+- July 05, 2025. COMPREHENSIVE DOCUMENTATION EXPANSION AND RECOVERY TOOLS:
+  * EXPANDED LOCAL USAGE GUIDE: Added detailed instructions for local network access (http://192.168.77.55:5000)
+  * REAL PROCESSING EXAMPLES: Added complete examples with actual command-line usage and expected outputs
+  * COMPREHENSIVE TROUBLESHOOTING: Added extensive troubleshooting guide covering installation, runtime, and performance issues
+  * CLEAN RECOVERY SYSTEM: Created cleanup_ocr_system.sh script for complete system recovery from failed installations
+  * NETWORK CONFIGURATION: Added multiple methods for network access configuration and IP detection
+  * ENVIRONMENT DISTINCTION: Clear documentation of local vs server environment differences and use cases
+  * ADVANCED DIAGNOSTICS: Added system resource monitoring, debug mode activation, and health check procedures
+  * EMERGENCY RECOVERY: Step-by-step procedures for complete system reset and verification
+  * FAQ SECTION: Comprehensive frequently asked questions with practical solutions
+  * PERFORMANCE OPTIMIZATION: Detailed specifications, profile selection guide, and resource requirements
+  * IMPACT: Complete user guide enabling independent installation, troubleshooting, and optimization
 ```
 
 ## User Preferences
