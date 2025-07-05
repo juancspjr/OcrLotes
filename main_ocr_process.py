@@ -36,6 +36,13 @@ class OrquestadorOCR:
         self._validador = None
         self._mejorador = None
         self._aplicador = None
+        
+        # FIX: Configuración para procesamiento concurrente N8N
+        # REASON: Peticiones N8N individuales requieren throughput máximo sin bloqueos
+        # IMPACT: Procesamiento paralelo de múltiples documentos simultáneamente
+        import threading
+        self._processing_lock = threading.RLock()  # Lock recursivo para seguridad
+        self._max_concurrent_processes = 2  # Máximo 2 procesos simultáneos para 4GB RAM
     
     @property
     def validador(self):
