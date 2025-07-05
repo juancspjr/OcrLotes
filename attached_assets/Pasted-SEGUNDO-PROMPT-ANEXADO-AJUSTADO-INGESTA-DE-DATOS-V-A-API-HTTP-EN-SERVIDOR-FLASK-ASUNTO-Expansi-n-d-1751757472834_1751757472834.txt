@@ -1,0 +1,86 @@
+SEGUNDO PROMPT ANEXADO AJUSTADO: INGESTA DE DATOS VÍA API HTTP EN SERVIDOR FLASK
+ASUNTO: Expansión del Mecanismo de Ingestión de Datos mediante una API HTTP en el Servidor Flask, con Consideraciones para Datos Adicionales en Lote.
+
+1. Contexto y Justificación:
+
+El prompt principal se centró en el sistema de archivos como la cola de trabajo primaria para la ingestión de imágenes. Si bien n8n maneja un webhook inicial, el servidor Flask en sí no fue descrito con un endpoint HTTP explícito para recibir imágenes directamente.
+
+Para maximizar las "ventajas del web" (como la integración directa con otros servicios web, un modelo de "push" más inmediato, y la conformidad con protocolos estándar), se propone la implementación de un endpoint API HTTP en el servidor Flask que pueda recibir imágenes y sus datos asociados directamente. Esto no reemplaza la arquitectura basada en el sistema de archivos, sino que la complementa o proporciona una alternativa de ingestión más directa.
+
+2. Requisitos para la Implementación del Endpoint API HTTP:
+
+La IA desarrolladora debe implementar un endpoint HTTP en el servidor Flask con las siguientes características:
+
+Método y Ruta: Un endpoint HTTP POST, por ejemplo, /api/ocr/process_image.
+
+Formato de Petición (Request):
+
+Tipo de Contenido: Se recomienda multipart/form-data para facilitar el envío de archivos binarios (imágenes) junto con otros campos de texto.
+
+Campos de la Petición: Los campos primarios (sender_id, sender_name, sorteo_fecha, sorteo_conteo, hora_min) serán utilizados para construir el request_id (nombre de archivo). El caption es un dato anexo fundamental. Se incluye una provisión para futuros datos adicionales acumulables por lote.
+
+image: El archivo de la imagen (tipo binario, ej., .png, .jpg). (Obligatorio)
+
+caption: El texto del caption de WhatsApp (cadena de texto). (Obligatorio)
+
+sender_id: Identificador del remitente (cadena de texto, ej., ID de WhatsApp). (Obligatorio, para request_id)
+
+sender_name: Nombre registrado del remitente (cadena de texto, ej., "Juanc"). (Obligatorio, para request_id)
+
+sorteo_fecha: Fecha del sorteo (cadena de texto en formato YYYYMMDD, ej., "20250620"). (Obligatorio, para request_id)
+
+sorteo_conteo: Conteo del sorteo (cadena de texto, ej., "A"). (Obligatorio, para request_id)
+
+hora_min: Hora y minuto del envío (cadena de texto en formato HH-MM, ej., "17-31"). (Obligatorio, para request_id)
+
+additional_data (Opcional): Un campo de tipo JSON String o similar, que contenga datos extras estructurados que puedan ser relevantes para el procesamiento en lote o para enriquecer los resultados futuros, y que aún no hemos especificado. Esto permite flexibilidad sin modificar el endpoint para cada nuevo campo. La IA desarrolladora debe prever cómo estos datos se asociarán y acumularán por cada imagen en el lote.
+
+Procesamiento del Endpoint:
+
+Al recibir una petición POST válida, el endpoint deberá:
+
+Generar el request_id: Construir el nombre de archivo único (YYYYMMDD-C_SENDERID_NOMBRE_HORA-MIN.png) utilizando los datos proporcionados en la petición (excluyendo caption y additional_data del nombre del archivo, ya que serán guardados aparte o en metadata interna).
+
+Guardar Archivos en data/inbox/:
+
+Guardar el archivo de imagen recibido en data/inbox/ con el request_id como nombre.
+
+Crear y guardar un archivo [request_id_sin_ext].caption.txt en data/inbox/ con el contenido del campo caption recibido.
+
+Si additional_data está presente, guardar también un archivo [request_id_sin_ext].additional_data.json en data/inbox/ con su contenido.
+
+Respuesta Inmediata al Cliente: Devolver una respuesta HTTP 202 Accepted (o similar) al cliente que hizo la petición, indicando que la solicitud ha sido recibida y encolada para procesamiento asíncrono. La respuesta debe incluir el request_id para que el cliente pueda rastrear el estado.
+
+Ejemplo de Respuesta JSON: {"status": "accepted", "message": "Image enqueued for processing.", "request_id": "20250620-A_...Juanc_17-31.png"}
+
+Manejo de Errores en la Petición: Implementar validación de entrada (ej., archivo de imagen presente, campos obligatorios de metadata) y devolver códigos de estado HTTP apropiados (ej., 400 Bad Request) en caso de errores en la petición.
+
+3. Ventajas de la Ingesta vía API HTTP (/api/ocr/process_image):
+
+La implementación de este endpoint ofrece los siguientes beneficios, aprovechando directamente las ventajas de la web:
+
+Integración Directa: Permite que cualquier otro servicio o aplicación web (no solo n8n) envíe imágenes directamente al sistema OCR usando un protocolo estándar HTTP, sin necesidad de acceso directo al sistema de archivos.
+
+Modelo Push en Tiempo Real: Las solicitudes son "empujadas" al sistema en el momento en que ocurren, lo que puede ser más reactivo que un modelo de polling puro si el cliente necesita confirmación inmediata.
+
+Estandarización: Utiliza convenciones de API RESTful, lo que facilita la documentación, el consumo por parte de desarrolladores externos y la interoperabilidad general.
+
+Escalabilidad Potencial: Este endpoint podría estar detrás de un balanceador de carga, permitiendo escalar la ingestión de peticiones de manera más sencilla que con la manipulación directa de archivos compartidos si el volumen es extremadamente alto desde múltiples fuentes.
+
+Respuesta Asíncrona Clara: La respuesta 202 Accepted comunica de inmediato al cliente que la solicitud fue recibida correctamente, mientras el procesamiento ocurre en segundo plano.
+
+4. Integración con el Diseño Existente (No Reemplazo, sino Complemento):
+
+Es fundamental que la implementación de este endpoint API HTTP se integre fluidamente con la arquitectura de sistema de archivos ya definida, no que la reemplace.
+
+El endpoint API simplemente actuará como un punto de entrada adicional que realizará la misma acción que n8n hace actualmente: recibir la imagen y el caption, construir el request_id, y luego escribir la imagen y el archivo caption.txt (y additional_data.json si existe) en el data/inbox/.
+
+El batch_processing_worker en el servidor Flask seguirá monitoreando data/inbox/ de la misma manera, sin necesidad de conocer si el archivo provino de n8n directamente o a través de la nueva API HTTP. Esto mantiene la lógica de la cola y el procesamiento de lotes centralizada y robusta.
+
+5. Consideración para el Flujo de n8n:
+
+Con la implementación de este endpoint API:
+
+N8N podría optar por seguir escribiendo directamente al sistema de archivos como se describe en el prompt principal (si tiene acceso directo y es eficiente para su caso de uso).
+
+Alternativamente, n8n podría configurarse para hacer una petición POST HTTP a este nuevo endpoint del servidor Flask, en lugar de escribir directamente al sistema de archivos. Esto podría simplificar la configuración de n8n si el servidor Flask se despliega en un entorno separado sin acceso compartido al sistema de archivos.
