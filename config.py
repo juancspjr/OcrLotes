@@ -110,12 +110,12 @@ ONNXTR_CONFIG = {
     # IMPACT: Selección inteligente para máximo rendimiento sin intervención manual
     'auto_selection': {
         'screenshot_mobile': 'ultra_rapido',
-        'screenshot_desktop': 'rapido', 
-        'document_scanned': 'default',
-        'document_photo': 'rapido',
-        'financial_document': 'high_confidence',
+        'screenshot_desktop': 'ultra_rapido', 
+        'document_scanned': 'rapido',
+        'document_photo': 'ultra_rapido',
+        'financial_document': 'rapido',
         'simple_text': 'ultra_rapido',
-        'complex_layout': 'default'
+        'complex_layout': 'rapido'
     }
 }
 
