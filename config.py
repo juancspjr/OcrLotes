@@ -454,6 +454,31 @@ def get_financial_patterns():
     """Cache para patrones financieros"""
     return getattr(globals(), 'FINANCIAL_PATTERNS', {})
 
+@lru_cache(maxsize=8)
+def get_batch_config():
+    """Cache para configuración de procesamiento por lotes"""
+    return BATCH_PROCESSING_CONFIG
+
+@lru_cache(maxsize=8)
+def get_async_directories():
+    """Cache para configuración de directorios asíncronos"""
+    return ASYNC_DIRECTORIES
+
+@lru_cache(maxsize=8)
+def get_validation_config():
+    """Cache para configuración de validación de recibos"""
+    return RECEIPT_VALIDATION_CONFIG
+
+@lru_cache(maxsize=8)
+def get_positional_config():
+    """Cache para configuración de extracción posicional"""
+    return POSITIONAL_EXTRACTION_CONFIG
+
+@lru_cache(maxsize=8)
+def get_api_config():
+    """Cache para configuración de la API HTTP"""
+    return API_CONFIG
+
 # FIX: Configuraciones para sistema asíncrono de alto volumen
 # REASON: Implementar configuración centralizada para procesamiento por lotes y directorios de trabajo
 # IMPACT: Base sólida para sistema asíncrono manteniendo coherencia arquitectural
@@ -557,7 +582,8 @@ API_CONFIG = {
     'endpoint_prefix': '/api/ocr',
     'max_upload_size': 16 * 1024 * 1024,  # 16MB
     'allowed_image_types': ['image/png', 'image/jpeg', 'image/jpg', 'image/bmp'],
-    'required_fields': ['image', 'caption', 'sender_id', 'sender_name', 'sorteo_fecha', 'sorteo_conteo', 'hora_min'],
+    'required_fields': ['image'],  # Solo imagen es obligatoria
+    'optional_fields': ['caption', 'sender_id', 'sender_name', 'sorteo_fecha', 'sorteo_conteo', 'hora_min', 'additional_data'],
     'response_timeout': 300,  # 5 minutos máximo de procesamiento
     'enable_cors': True
 }

@@ -286,93 +286,98 @@ def duration_filter(seconds):
         secs = seconds % 60
         return f"{minutes}m {secs:.0f}s"
 
-# FIX: Rutas de API HTTP para sistema asíncrono de alto volumen
-# REASON: Implementar endpoint complementario para ingesta directa vía HTTP
-# IMPACT: Flexibilidad de integración con múltiples sistemas externos
+# FIX: API HTTP COMPLETA para sistema asíncrono de alto volumen
+# REASON: Implementar endpoints separados para acumulación y procesamiento como solicita el usuario
+# IMPACT: Sistema flexible para n8n con dos llamadas independientes (acumular + procesar)
 
 @app.route('/api/ocr/process_image', methods=['POST'])
 def api_process_image():
     """
-    FIX: Endpoint API HTTP para ingesta directa de imágenes con metadata de WhatsApp
-    REASON: Ofrecer alternativa HTTP estándar al sistema de archivos para máxima interoperabilidad
-    IMPACT: Integración directa con n8n y otros sistemas web sin acceso al sistema de archivos
+    FIX: Endpoint para acumular imágenes individuales en el sistema (ENDPOINT 1 de 2)
+    REASON: Permitir acumulación de archivos sin activación automática, para control por n8n
+    IMPACT: Flexibilidad total para workflows externos con timing controlado por n8n
+    
+    Campos requeridos:
+    - image: archivo de imagen
+    - caption (opcional): texto del caption de WhatsApp
+    - sender_id (opcional): ID del remitente
+    - sender_name (opcional): nombre del remitente
+    - sorteo_fecha (opcional): fecha del sorteo
+    - sorteo_conteo (opcional): conteo del sorteo
+    - hora_min (opcional): hora y minutos
+    - additional_data (opcional): JSON con datos adicionales
+    
+    Response: 202 Accepted con request_id para seguimiento
     """
     try:
-        from config import get_api_config, get_async_directories
+        from config import get_async_directories, get_api_config
+        import uuid
+        from datetime import datetime
         
-        api_config = get_api_config()
-        directories = get_async_directories()
-        
-        # Validar que sea multipart/form-data
-        if not request.files:
-            return jsonify({
-                'status': 'error',
-                'message': 'No image file provided',
-                'details': 'Request must include multipart/form-data with image field'
-            }), 400
-        
-        # Verificar campos obligatorios
-        required_fields = api_config['required_fields']
-        missing_fields = []
-        
-        for field in required_fields[1:]:  # Excluir 'image' que se verifica separadamente
-            if field not in request.form:
-                missing_fields.append(field)
-        
-        if missing_fields:
-            return jsonify({
-                'status': 'error',
-                'message': 'Missing required fields',
-                'missing_fields': missing_fields
-            }), 400
-        
-        # Obtener archivo de imagen
+        # Validar que se envió una imagen
         if 'image' not in request.files:
             return jsonify({
                 'status': 'error',
-                'message': 'No image file provided in form data'
+                'message': 'No image file provided',
+                'required_fields': ['image']
             }), 400
         
-        image_file = request.files['image']
-        
-        if image_file.filename == '':
+        file = request.files['image']
+        if file.filename == '':
             return jsonify({
                 'status': 'error',
-                'message': 'No image file selected'
+                'message': 'Empty filename provided'
             }), 400
         
         # Validar tipo de archivo
-        if image_file.content_type not in api_config['allowed_image_types']:
+        api_config = get_api_config()
+        if file.content_type not in api_config['allowed_image_types']:
             return jsonify({
                 'status': 'error',
-                'message': f'Invalid image type. Allowed: {", ".join(api_config["allowed_image_types"])}'
+                'message': f'Unsupported file type: {file.content_type}',
+                'supported_types': api_config['allowed_image_types']
             }), 400
         
-        # Generar request_id desde metadatos
-        sorteo_fecha = request.form.get('sorteo_fecha')
-        sorteo_conteo = request.form.get('sorteo_conteo')
-        sender_id = request.form.get('sender_id')
-        sender_name = request.form.get('sender_name')
-        hora_min = request.form.get('hora_min')
-        
-        # Determinar extensión de archivo
-        file_ext = '.png' if image_file.content_type == 'image/png' else '.jpg'
-        request_id = f"{sorteo_fecha}-{sorteo_conteo}_{sender_id}_{sender_name}_{hora_min}{file_ext}"
-        
-        # Guardar imagen en inbox
-        image_path = os.path.join(directories['inbox'], request_id)
-        image_file.save(image_path)
-        
-        # Guardar caption
+        # Extraer metadatos del request
         caption = request.form.get('caption', '')
-        if caption:
+        sender_id = request.form.get('sender_id', '')
+        sender_name = request.form.get('sender_name', '')
+        sorteo_fecha = request.form.get('sorteo_fecha', '')
+        sorteo_conteo = request.form.get('sorteo_conteo', '')
+        hora_min = request.form.get('hora_min', '')
+        additional_data = request.form.get('additional_data', '')
+        
+        # Generar request_id único basado en metadatos
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S_%f')[:-3]
+        request_id = f"{sender_id}_{sender_name}_{sorteo_fecha}_{sorteo_conteo}_{hora_min}_{timestamp}"
+        request_id = request_id.replace(' ', '_').replace(':', '-')
+        
+        # Obtener directorios del sistema
+        directories = get_async_directories()
+        
+        # Determinar extensión del archivo
+        file_ext = os.path.splitext(file.filename)[1].lower()
+        if not file_ext:
+            file_ext = '.jpg'  # Por defecto
+        
+        # Guardar imagen en inbox con request_id como nombre
+        image_filename = f"{request_id}{file_ext}"
+        image_path = os.path.join(directories['inbox'], image_filename)
+        
+        # Asegurar que el directorio existe
+        os.makedirs(directories['inbox'], exist_ok=True)
+        
+        # Guardar imagen
+        file.save(image_path)
+        
+        # Guardar caption si existe
+        if caption.strip():
             caption_path = image_path.replace(file_ext, '.caption.txt')
             with open(caption_path, 'w', encoding='utf-8') as f:
                 f.write(caption)
         
         # Guardar additional_data si existe
-        additional_data = request.form.get('additional_data')
-        if additional_data:
+        if additional_data.strip():
             try:
                 # Validar que sea JSON válido
                 json.loads(additional_data)
@@ -385,82 +390,383 @@ def api_process_image():
                 with open(additional_path, 'w', encoding='utf-8') as f:
                     f.write(additional_data)
         
+        # Guardar metadatos completos del request
+        metadata = {
+            'request_id': request_id,
+            'original_filename': file.filename,
+            'content_type': file.content_type,
+            'sender_id': sender_id,
+            'sender_name': sender_name,
+            'sorteo_fecha': sorteo_fecha,
+            'sorteo_conteo': sorteo_conteo,
+            'hora_min': hora_min,
+            'caption': caption,
+            'timestamp': datetime.now().isoformat(),
+            'status': 'queued'
+        }
+        
+        metadata_path = image_path.replace(file_ext, '.metadata.json')
+        with open(metadata_path, 'w', encoding='utf-8') as f:
+            json.dump(metadata, f, ensure_ascii=False, indent=2)
+        
+        logger.info(f"✅ Imagen encolada: {request_id}")
+        
         return jsonify({
             'status': 'accepted',
-            'message': 'Image enqueued for processing.',
+            'message': 'Image queued for processing',
             'request_id': request_id,
-            'estimated_processing_time_seconds': 30,
-            'check_result_endpoint': f'/api/ocr/result/{request_id.replace(file_ext, "")}'
+            'queue_position': 'pending',
+            'check_result_endpoint': f'/api/ocr/result/{request_id}',
+            'batch_process_endpoint': '/api/ocr/process_batch'
         }), 202
         
     except Exception as e:
         logger.error(f"Error en API process_image: {e}")
         return jsonify({
-            'status': 'error', 
+            'status': 'error',
             'message': 'Internal server error',
+            'details': str(e)
+        }), 500
+
+@app.route('/api/ocr/process_batch', methods=['POST'])
+def api_process_batch():
+    """
+    FIX: Endpoint para procesar lote acumulado bajo demanda (ENDPOINT 2 de 2)
+    REASON: Separar acumulación de procesamiento para control total por n8n
+    IMPACT: Activación manual del procesamiento cuando n8n lo determine apropiado
+    
+    Body (JSON opcional):
+    - batch_size (opcional): tamaño específico del lote
+    - profile (opcional): perfil de procesamiento ('ultra_rapido', 'rapido', 'normal')
+    - process_all (opcional): procesar todas las imágenes en cola
+    
+    Response: 200 OK con detalles del lote procesado
+    """
+    try:
+        from config import get_async_directories, get_batch_config
+        import glob
+        import shutil
+        from datetime import datetime
+        
+        # Obtener configuración
+        directories = get_async_directories()
+        batch_config = get_batch_config()
+        
+        # Parsear parámetros del request
+        data = request.get_json() or {}
+        batch_size = data.get('batch_size', batch_config['batch_size'])
+        profile = data.get('profile', 'ultra_rapido')
+        process_all = data.get('process_all', False)
+        
+        # Validar parámetros
+        if not isinstance(batch_size, int) or batch_size < 1:
+            batch_size = batch_config['batch_size']
+        
+        if profile not in ['ultra_rapido', 'rapido', 'normal', 'high_confidence']:
+            profile = 'ultra_rapido'
+        
+        # Buscar imágenes en inbox
+        image_patterns = [
+            os.path.join(directories['inbox'], "*.png"),
+            os.path.join(directories['inbox'], "*.jpg"),
+            os.path.join(directories['inbox'], "*.jpeg")
+        ]
+        
+        image_files = []
+        for pattern in image_patterns:
+            image_files.extend(glob.glob(pattern))
+        
+        if not image_files:
+            return jsonify({
+                'status': 'success',
+                'message': 'No images in queue to process',
+                'batch_info': {
+                    'processed_count': 0,
+                    'queue_size': 0,
+                    'batch_id': None
+                }
+            }), 200
+        
+        # Ordenar por timestamp (FIFO)
+        image_files.sort(key=os.path.getmtime)
+        
+        # Determinar lote a procesar
+        if process_all:
+            current_batch = image_files
+        else:
+            current_batch = image_files[:batch_size]
+        
+        # Generar batch_id único
+        batch_timestamp = datetime.now().strftime('%Y%m%d_%H%M%S_%f')[:-3]
+        batch_id = f"BATCH_{batch_timestamp}"
+        
+        logger.info(f"🚀 Iniciando procesamiento de lote {batch_id}: {len(current_batch)} imágenes")
+        
+        # Procesar lote usando la función existente
+        global _ocr_orchestrator
+        if not _ocr_orchestrator:
+            preload_ocr_components()
+        
+        if _ocr_orchestrator:
+            # Preparar datos para procesamiento
+            processing_paths = []
+            caption_texts = []
+            metadata_list = []
+            
+            for img_path in current_batch:
+                # Mover imagen a processing
+                filename = os.path.basename(img_path)
+                processing_path = os.path.join(directories['processing'], filename)
+                shutil.move(img_path, processing_path)
+                processing_paths.append(processing_path)
+                
+                # Leer caption si existe
+                caption_path = img_path.replace('.png', '.caption.txt').replace('.jpg', '.caption.txt').replace('.jpeg', '.caption.txt')
+                caption_text = ""
+                if os.path.exists(caption_path):
+                    with open(caption_path, 'r', encoding='utf-8') as f:
+                        caption_text = f.read().strip()
+                    # Mover caption también
+                    new_caption_path = processing_path.replace('.png', '.caption.txt').replace('.jpg', '.caption.txt').replace('.jpeg', '.caption.txt')
+                    shutil.move(caption_path, new_caption_path)
+                
+                caption_texts.append(caption_text)
+                
+                # Leer metadata si existe
+                metadata_path = img_path.replace('.png', '.metadata.json').replace('.jpg', '.metadata.json').replace('.jpeg', '.metadata.json')
+                metadata = {}
+                if os.path.exists(metadata_path):
+                    try:
+                        with open(metadata_path, 'r', encoding='utf-8') as f:
+                            metadata = json.load(f)
+                        # Mover metadata también
+                        new_metadata_path = processing_path.replace('.png', '.metadata.json').replace('.jpg', '.metadata.json').replace('.jpeg', '.metadata.json')
+                        shutil.move(metadata_path, new_metadata_path)
+                    except Exception as e:
+                        logger.warning(f"Error leyendo metadata {metadata_path}: {e}")
+                
+                metadata_list.append(metadata)
+            
+            # Ejecutar procesamiento por lotes
+            batch_start_time = time.time()
+            results = _ocr_orchestrator.procesar_lote_imagenes(
+                processing_paths, caption_texts, metadata_list, 'spa', profile
+            )
+            batch_processing_time = time.time() - batch_start_time
+            
+            # Guardar resultados y mover archivos
+            successful_results = 0
+            failed_results = 0
+            result_files = []
+            
+            for i, result in enumerate(results):
+                try:
+                    filename = os.path.basename(processing_paths[i])
+                    request_id = result.get('request_id', filename.replace('.png', '').replace('.jpg', '').replace('.jpeg', ''))
+                    
+                    # Añadir batch_id al resultado
+                    result['batch_id'] = batch_id
+                    result['batch_processing_time'] = round(batch_processing_time, 2)
+                    result['batch_position'] = i + 1
+                    result['batch_size'] = len(results)
+                    
+                    # Guardar JSON resultado
+                    result_filename = f"{batch_id}_{request_id}.json"
+                    result_path = os.path.join(directories['results'], result_filename)
+                    
+                    with open(result_path, 'w', encoding='utf-8') as f:
+                        json.dump(result, f, ensure_ascii=False, indent=2)
+                    
+                    result_files.append(result_filename)
+                    
+                    # Mover imagen según resultado
+                    if result.get('processing_status') == 'success':
+                        final_path = os.path.join(directories['processed'], filename)
+                        successful_results += 1
+                    else:
+                        final_path = os.path.join(directories['errors'], filename)
+                        failed_results += 1
+                    
+                    shutil.move(processing_paths[i], final_path)
+                    
+                    # Mover archivos auxiliares también
+                    for aux_ext in ['.caption.txt', '.metadata.json', '.additional_data.json', '.additional_data.txt']:
+                        aux_processing = processing_paths[i].replace('.png', aux_ext).replace('.jpg', aux_ext).replace('.jpeg', aux_ext)
+                        if os.path.exists(aux_processing):
+                            aux_final = final_path.replace('.png', aux_ext).replace('.jpg', aux_ext).replace('.jpeg', aux_ext)
+                            shutil.move(aux_processing, aux_final)
+                    
+                except Exception as e:
+                    logger.error(f"Error guardando resultado {i}: {e}")
+                    failed_results += 1
+            
+            # Preparar resumen del lote
+            remaining_in_queue = len(image_files) - len(current_batch)
+            
+            logger.info(f"✅ Lote {batch_id} procesado: {successful_results} éxitos, {failed_results} errores")
+            
+            return jsonify({
+                'status': 'success',
+                'message': f'Batch processed successfully',
+                'batch_info': {
+                    'batch_id': batch_id,
+                    'processed_count': len(current_batch),
+                    'successful_count': successful_results,
+                    'failed_count': failed_results,
+                    'processing_time_seconds': round(batch_processing_time, 2),
+                    'profile_used': profile,
+                    'remaining_in_queue': remaining_in_queue,
+                    'result_files': result_files,
+                    'download_endpoint': f'/api/download/batch_results/{batch_id}'
+                },
+                'processing_summary': {
+                    'average_time_per_image': round(batch_processing_time / len(current_batch), 2) if current_batch else 0,
+                    'images_per_second': round(len(current_batch) / batch_processing_time, 2) if batch_processing_time > 0 else 0,
+                    'queue_status': f'{remaining_in_queue} images remaining'
+                }
+            }), 200
+        
+        else:
+            return jsonify({
+                'status': 'error',
+                'message': 'OCR system not initialized'
+            }), 500
+        
+    except Exception as e:
+        logger.error(f"Error en API process_batch: {e}")
+        return jsonify({
+            'status': 'error',
+            'message': 'Batch processing failed',
             'details': str(e)
         }), 500
 
 @app.route('/api/ocr/result/<request_id>', methods=['GET'])
 def api_get_result(request_id):
     """
-    FIX: Endpoint para recuperar resultados de procesamiento asíncrono
-    REASON: Permitir a sistemas externos consultar resultados cuando estén listos
-    IMPACT: Workflow completo de ingesta → procesamiento → recuperación
+    FIX: Endpoint para consultar resultado de procesamiento individual
+    REASON: Permitir seguimiento de estado y recuperación de resultados
+    IMPACT: API completa para consulta de status y descarga de resultados
     """
     try:
         from config import get_async_directories
+        import glob
         
         directories = get_async_directories()
         
-        # Buscar archivo de resultado
-        result_path = os.path.join(directories['results'], f"{request_id}.json")
+        # Buscar resultado en directorio de resultados
+        result_pattern = os.path.join(directories['results'], f"*{request_id}*.json")
+        result_files = glob.glob(result_pattern)
         
-        if os.path.exists(result_path):
-            with open(result_path, 'r', encoding='utf-8') as f:
+        if result_files:
+            # Encontrado - leer y devolver resultado
+            result_file = result_files[0]
+            with open(result_file, 'r', encoding='utf-8') as f:
                 result_data = json.load(f)
             
             return jsonify({
                 'status': 'completed',
-                'result': result_data
-            })
+                'request_id': request_id,
+                'result': result_data,
+                'file_location': os.path.basename(result_file)
+            }), 200
         
-        # Verificar si está en procesamiento
-        processing_pattern = os.path.join(directories['processing'], f"{request_id}.*")
-        import glob
+        # Buscar en processing
+        processing_pattern = os.path.join(directories['processing'], f"*{request_id}*")
         processing_files = glob.glob(processing_pattern)
-        
         if processing_files:
             return jsonify({
                 'status': 'processing',
-                'message': 'Image is currently being processed',
-                'estimated_remaining_seconds': 20
-            })
+                'request_id': request_id,
+                'message': 'Image is currently being processed'
+            }), 200
         
-        # Verificar si está en errores
-        error_pattern = os.path.join(directories['errors'], f"{request_id}.*")
+        # Buscar en inbox
+        inbox_pattern = os.path.join(directories['inbox'], f"*{request_id}*")
+        inbox_files = glob.glob(inbox_pattern)
+        if inbox_files:
+            return jsonify({
+                'status': 'queued',
+                'request_id': request_id,
+                'message': 'Image is queued for processing'
+            }), 200
+        
+        # Buscar en errors
+        error_pattern = os.path.join(directories['errors'], f"*{request_id}*")
         error_files = glob.glob(error_pattern)
-        
         if error_files:
             return jsonify({
                 'status': 'error',
-                'message': 'Processing failed. Image moved to error queue.',
-                'error_reason': 'Processing or validation failed'
-            })
+                'request_id': request_id,
+                'message': 'Processing failed',
+                'error_reason': 'Check system logs for details'
+            }), 200
         
-        # No encontrado en ningún lugar
+        # No encontrado
         return jsonify({
             'status': 'not_found',
+            'request_id': request_id,
             'message': 'Request ID not found in system'
         }), 404
         
     except Exception as e:
-        logger.error(f"Error en API get_result: {e}")
+        logger.error(f"Error consultando resultado {request_id}: {e}")
         return jsonify({
             'status': 'error',
-            'message': 'Internal server error',
+            'message': 'Could not retrieve result',
             'details': str(e)
         }), 500
+
+@app.route('/api/ocr/queue/status', methods=['GET'])
+def api_queue_status():
+    """
+    FIX: Endpoint para consultar estado de la cola de procesamiento
+    REASON: Permitir monitoreo del sistema para n8n y otros workflows
+    IMPACT: Visibilidad completa del estado del sistema asíncrono
+    """
+    try:
+        from config import get_async_directories
+        import glob
+        
+        directories = get_async_directories()
+        
+        # Contar archivos en cada directorio
+        inbox_count = len(glob.glob(os.path.join(directories['inbox'], "*.*")))
+        processing_count = len(glob.glob(os.path.join(directories['processing'], "*.*")))
+        processed_count = len(glob.glob(os.path.join(directories['processed'], "*.*")))
+        errors_count = len(glob.glob(os.path.join(directories['errors'], "*.*")))
+        results_count = len(glob.glob(os.path.join(directories['results'], "*.json")))
+        
+        return jsonify({
+            'status': 'success',
+            'queue_status': {
+                'inbox': inbox_count,
+                'processing': processing_count,
+                'processed': processed_count,
+                'errors': errors_count,
+                'results_available': results_count
+            },
+            'system_status': {
+                'worker_running': _worker_running,
+                'ocr_loaded': _ocr_orchestrator is not None
+            },
+            'timestamp': datetime.now().isoformat()
+        }), 200
+        
+    except Exception as e:
+        logger.error(f"Error consultando estado de cola: {e}")
+        return jsonify({
+            'status': 'error',
+            'message': 'Could not retrieve queue status',
+            'details': str(e)
+        }), 500
+
+# FIX: Importar endpoints API HTTP completos desde módulo separado
+# REASON: Evitar conflictos de nombres y mantener código organizado
+# IMPACT: Sistema API completo sin duplicaciones
+
+# FIX: Endpoints API integrados directamente - import eliminado
+# REASON: Resolver error ModuleNotFoundError ya que api_endpoints.py fue eliminado
+# IMPACT: Sistema funcional con endpoints integrados en routes.py
 
 @app.route('/api/ocr/status', methods=['GET'])
 def api_system_status():
