@@ -33,6 +33,156 @@
         }
     }
     
+
+// FIX: Sistema de renombrado automático según formato especificado
+// REASON: Usuario necesita formato específico A--214056942235719@lid_Juanc_17-30.png
+// IMPACT: Archivos con nombres consistentes para mejor organización
+
+function updateFileNamePreview() {
+    const prefix = document.getElementById('prefixField').value || 'A--214056942235719';
+    const userId = document.getElementById('userIdField').value || 'lid';
+    const userName = document.getElementById('userNameField').value || 'Usuario';
+    const time = document.getElementById('timeField').value || getCurrentTime();
+    
+    const fileName = `${prefix}@${userId}_${userName}_${time}.png`;
+    document.getElementById('fileNamePreview').textContent = fileName;
+}
+
+function getCurrentTime() {
+    const now = new Date();
+    const hours = now.getHours().toString().padStart(2, '0');
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+    return `${hours}-${minutes}`;
+}
+
+// Actualizar preview en tiempo real
+document.addEventListener('DOMContentLoaded', function() {
+    ['prefixField', 'userIdField', 'userNameField', 'timeField'].forEach(fieldId => {
+        document.getElementById(fieldId).addEventListener('input', updateFileNamePreview);
+    });
+    
+    // Establecer hora actual por defecto
+    document.getElementById('timeField').value = getCurrentTime();
+    updateFileNamePreview();
+});
+
+async function processImagesWithRename() {
+    const fileInput = document.getElementById('fileInput');
+    const processBtn = document.getElementById('processBtn');
+    
+    if (!fileInput.files || fileInput.files.length === 0) {
+        alert('Por favor selecciona al menos una imagen');
+        return;
+    }
+    
+    // Validar campos requeridos
+    const prefix = document.getElementById('prefixField').value.trim();
+    const userId = document.getElementById('userIdField').value.trim();
+    const userName = document.getElementById('userNameField').value.trim();
+    const time = document.getElementById('timeField').value.trim();
+    
+    if (!prefix || !userId || !userName || !time) {
+        alert('Por favor completa todos los campos requeridos');
+        return;
+    }
+    
+    // Deshabilitar botón durante procesamiento
+    processBtn.disabled = true;
+    processBtn.innerHTML = '<div class="spinner-border spinner-border-sm me-2"></div>Procesando...';
+    
+    try {
+        const results = [];
+        
+        for (let i = 0; i < fileInput.files.length; i++) {
+            const file = fileInput.files[i];
+            const formData = new FormData();
+            
+            // Crear nombre personalizado
+            const customFileName = `${prefix}@${userId}_${userName}_${time}.png`;
+            
+            // Renombrar archivo antes de enviar
+            const renamedFile = new File([file], customFileName, { type: file.type });
+            formData.append('image', renamedFile);
+            
+            // Metadatos adicionales
+            formData.append('custom_filename', customFileName);
+            formData.append('prefix', prefix);
+            formData.append('user_id', userId);
+            formData.append('user_name', userName);
+            formData.append('time_stamp', time);
+            
+            // Enviar para procesamiento
+            const response = await fetch('/api/ocr/process_image', {
+                method: 'POST',
+                body: formData
+            });
+            
+            const result = await response.json();
+            results.push({
+                filename: customFileName,
+                result: result
+            });
+        }
+        
+        // Procesar todas las imágenes encoladas
+        const batchResponse = await fetch('/api/ocr/process_batch', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ profile: 'ultra_rapido' })
+        });
+        
+        const batchResult = await batchResponse.json();
+        
+        // Mostrar resultados
+        showProcessingResults(results, batchResult);
+        
+        // Actualizar listas
+        updateQueueDisplay();
+        updateProcessedFiles();
+        
+    } catch (error) {
+        console.error('Error procesando imágenes:', error);
+        alert('Error al procesar las imágenes. Por favor intenta nuevamente.');
+    } finally {
+        // Restaurar botón
+        processBtn.disabled = false;
+        processBtn.innerHTML = '<i class="fas fa-cogs me-2"></i>Subir y Procesar Imágenes';
+    }
+}
+
+function showProcessingResults(results, batchResult) {
+    const resultsDiv = document.getElementById('uploadResults');
+    const resultsContent = document.getElementById('processingResults');
+    
+    let html = `
+        <h6>Imágenes procesadas: ${results.length}</h6>
+        <ul class="list-unstyled">
+    `;
+    
+    results.forEach(item => {
+        html += `
+            <li class="mb-2">
+                <strong>${item.filename}</strong><br>
+                <small class="text-muted">ID: ${item.result.request_id}</small>
+            </li>
+        `;
+    });
+    
+    html += '</ul>';
+    
+    if (batchResult.batch_info) {
+        html += `
+            <hr>
+            <h6>Resultados del procesamiento:</h6>
+            <p>Tiempo total: ${batchResult.batch_info.processing_time_seconds}s</p>
+            <p>Archivos procesados: ${batchResult.batch_info.processed_count}</p>
+        `;
+    }
+    
+    resultsContent.innerHTML = html;
+    resultsDiv.style.display = 'block';
+}
+
 </script>
     <style>
     /* FIX: Workflow clarificado para mejor experiencia de usuario
@@ -482,7 +632,7 @@
         <!-- System Status Alert -->
         <div id="systemAlert" class="alert alert-info mb-4">
             <div class="d-flex align-items-center">
-                <div class="loading-spinner me-3"></div>
+                
                 <div>
                     <strong>Inicializando Sistema OCR...</strong>
                     <span class="d-block">Verificando estado de componentes y recursos del sistema</span>
@@ -532,490 +682,128 @@
                     <!-- Overview Tab -->
                     <div class="tab-pane fade show active" id="overview" role="tabpanel">
                         <!-- Queue Status -->
-                        <div class="card mb-4">
-                            <div class="card-header">
-                                <h5 class="mb-0">
-                                    <i class="fas fa-list-ol me-2"></i>Estado de Colas de Procesamiento
-                                </h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="row" id="queueMetrics">
-                                    <div class="col-md-3 mb-3">
-                                        <div class="metric-card">
-                                            <span class="metric-value" id="inboxCount">-</span>
-                                            <div class="metric-label">En Cola</div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3 mb-3">
-                                        <div class="metric-card">
-                                            <span class="metric-value" id="processingCount">-</span>
-                                            <div class="metric-label">Procesando</div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3 mb-3">
-                                        <div class="metric-card">
-                                            <span class="metric-value" id="processedCount">-</span>
-                                            <div class="metric-label">Procesados</div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3 mb-3">
-                                        <div class="metric-card">
-                                            <span class="metric-value" id="errorsCount">-</span>
-                                            <div class="metric-label">Errores</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="mt-3">
-                                    <button class="btn btn-primary me-2" onclick="testProcessBatch()">
-                                        <i class="fas fa-play me-1"></i>Procesar Lote Ahora
-                                    </button>
-                                    <button class="btn btn-info" onclick="refreshQueueStatus()">
-                                        <i class="fas fa-sync me-1"></i>Actualizar Estado
-                                    </button>
-                                </div>
-                            </div>
+                        
+<div class="card">
+    <div class="card-header">
+        <h5 class="card-title mb-0">
+            <i class="fas fa-cloud-upload-alt me-2"></i>Subir y Procesar Imágenes
+        </h5>
+    </div>
+    <div class="card-body">
+        <!-- Campos de configuración para renombrado -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <label for="prefixField" class="form-label">Prefijo</label>
+                <input type="text" class="form-control" id="prefixField" placeholder="A--214056942235719" value="A--214056942235719">
+            </div>
+            <div class="col-md-3">
+                <label for="userIdField" class="form-label">ID Usuario</label>
+                <input type="text" class="form-control" id="userIdField" placeholder="lid" value="lid">
+            </div>
+            <div class="col-md-3">
+                <label for="userNameField" class="form-label">Nombre Usuario</label>
+                <input type="text" class="form-control" id="userNameField" placeholder="Juanc" value="Juanc">
+            </div>
+            <div class="col-md-3">
+                <label for="timeField" class="form-label">Hora (HH-MM)</label>
+                <input type="text" class="form-control" id="timeField" placeholder="17-30" value="">
+            </div>
+        </div>
+        
+        <!-- Selección de archivo -->
+        <div class="mb-3">
+            <label for="fileInput" class="form-label">Seleccionar Imagen</label>
+            <input type="file" class="form-control" id="fileInput" accept="image/*" multiple>
+            <div class="form-text">Formatos soportados: PNG, JPG, JPEG</div>
+        </div>
+        
+        <!-- Previsualización del nombre -->
+        <div class="mb-3">
+            <label class="form-label">Nombre del archivo resultante:</label>
+            <div class="form-control-plaintext bg-light border rounded p-2" id="fileNamePreview">
+                A--214056942235719@lid_Juanc_17-30.png
+            </div>
+        </div>
+        
+        <!-- Botón de procesamiento -->
+        <div class="text-center">
+            <button type="button" class="btn btn-primary btn-lg" onclick="processImagesWithRename()" id="processBtn">
+                <i class="fas fa-cogs me-2"></i>Subir y Procesar Imágenes
+            </button>
+        </div>
+        
+        <!-- Área de resultados -->
+        <div class="mt-4" id="uploadResults" style="display: none;">
+            <div class="alert alert-success">
+                <h6><i class="fas fa-check-circle me-2"></i>Procesamiento Completado</h6>
+                <div id="processingResults"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
                         </div>
 
-                        <!-- Performance Chart -->
-                        <div class="card mb-4">
-                            <div class="card-header">
-                                <h5 class="mb-0">
-                                    <i class="fas fa-chart-line me-2"></i>Rendimiento del Sistema
-                                </h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="chart-container">
-                                    <canvas id="performanceChart"></canvas>
-                                </div>
-                            </div>
-                        </div>
+                        
+<div class="card">
+    <div class="card-header">
+        <h5 class="card-title mb-0">
+            <i class="fas fa-cloud-upload-alt me-2"></i>Subir y Procesar Imágenes
+        </h5>
+    </div>
+    <div class="card-body">
+        <!-- Campos de configuración para renombrado -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <label for="prefixField" class="form-label">Prefijo</label>
+                <input type="text" class="form-control" id="prefixField" placeholder="A--214056942235719" value="A--214056942235719">
+            </div>
+            <div class="col-md-3">
+                <label for="userIdField" class="form-label">ID Usuario</label>
+                <input type="text" class="form-control" id="userIdField" placeholder="lid" value="lid">
+            </div>
+            <div class="col-md-3">
+                <label for="userNameField" class="form-label">Nombre Usuario</label>
+                <input type="text" class="form-control" id="userNameField" placeholder="Juanc" value="Juanc">
+            </div>
+            <div class="col-md-3">
+                <label for="timeField" class="form-label">Hora (HH-MM)</label>
+                <input type="text" class="form-control" id="timeField" placeholder="17-30" value="">
+            </div>
+        </div>
+        
+        <!-- Selección de archivo -->
+        <div class="mb-3">
+            <label for="fileInput" class="form-label">Seleccionar Imagen</label>
+            <input type="file" class="form-control" id="fileInput" accept="image/*" multiple>
+            <div class="form-text">Formatos soportados: PNG, JPG, JPEG</div>
+        </div>
+        
+        <!-- Previsualización del nombre -->
+        <div class="mb-3">
+            <label class="form-label">Nombre del archivo resultante:</label>
+            <div class="form-control-plaintext bg-light border rounded p-2" id="fileNamePreview">
+                A--214056942235719@lid_Juanc_17-30.png
+            </div>
+        </div>
+        
+        <!-- Botón de procesamiento -->
+        <div class="text-center">
+            <button type="button" class="btn btn-primary btn-lg" onclick="processImagesWithRename()" id="processBtn">
+                <i class="fas fa-cogs me-2"></i>Subir y Procesar Imágenes
+            </button>
+        </div>
+        
+        <!-- Área de resultados -->
+        <div class="mt-4" id="uploadResults" style="display: none;">
+            <div class="alert alert-success">
+                <h6><i class="fas fa-check-circle me-2"></i>Procesamiento Completado</h6>
+                <div id="processingResults"></div>
+            </div>
+        </div>
+    </div>
+</div>
 
-                        <!-- Feature Overview -->
-                        <div class="card">
-                            <div class="card-header">
-                                <h5 class="mb-0">
-                                    <i class="fas fa-check-circle me-2"></i>Características Implementadas
-                                </h5>
-                            </div>
-                            <div class="card-body">
-                                <ul class="feature-list">
-                                    <li><i class="fas fa-check"></i>Endpoints API separados para acumulación y procesamiento</li>
-                                    <li><i class="fas fa-check"></i>Sistema asíncrono sin activaciones automáticas</li>
-                                    <li><i class="fas fa-check"></i>Extracción posicional inteligente con coordenadas</li>
-                                    <li><i class="fas fa-check"></i>Validación automática de campos obligatorios</li>
-                                    <li><i class="fas fa-check"></i>Procesamiento por lotes con metadatos WhatsApp</li>
-                                    <li><i class="fas fa-check"></i>Perfiles de rendimiento optimizados (ultra_rapido, rapido, normal)</li>
-                                    <li><i class="fas fa-check"></i>Modelos ONNX-TR para máxima eficiencia en CPU</li>
-                                    <li><i class="fas fa-check"></i>Monitoreo de recursos en tiempo real</li>
-                                    <li><i class="fas fa-check"></i>Integración completa con n8n workflows</li>
-                                    <li><i class="fas fa-check"></i>Sistema de validación de recibos de pago</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- API Tab -->
-                    <div class="tab-pane fade" id="api" role="tabpanel">
-                        <div class="card mb-4">
-                            <div class="card-header">
-                                <h5 class="mb-0">
-                                    <i class="fas fa-plug me-2"></i>Endpoints API Principales
-                                </h5>
-                            </div>
-                            <div class="card-body">
-                                <!-- Endpoint 1: Process Image -->
-                                <div class="api-endpoint">
-                                    <h6><span class="badge bg-primary">POST</span> /api/ocr/process_image</h6>
-                                    <p class="mb-2">Acumula imágenes individuales en el sistema para procesamiento posterior</p>
-                                    <div class="code-block">
-curl -X POST http://localhost:5000/api/ocr/process_image \
-  -F "image=@recibo.jpg" \
-  -F "caption=Pago realizado" \
-  -F "sender_id=user123" \
-  -F "sender_name=Juan Pérez"
-                                    </div>
-                                </div>
-
-                                <!-- Endpoint 2: Process Batch -->
-                                <div class="api-endpoint">
-                                    <h6><span class="badge bg-success">POST</span> /api/ocr/process_batch</h6>
-                                    <p class="mb-2">Procesa lote acumulado bajo demanda con control total por n8n</p>
-                                    <div class="code-block">
-curl -X POST http://localhost:5000/api/ocr/process_batch \
-  -H "Content-Type: application/json" \
-  -d '{"batch_size": 5, "profile": "ultra_rapido"}'
-                                    </div>
-                                </div>
-
-                                <!-- Endpoint 3: Get Result -->
-                                <div class="api-endpoint">
-                                    <h6><span class="badge bg-info">GET</span> /api/ocr/result/{request_id}</h6>
-                                    <p class="mb-2">Consulta resultado de procesamiento individual</p>
-                                    <div class="code-block">
-curl -X GET http://localhost:5000/api/ocr/result/sender123_juan_20250706_001_1430_20250706_143022_456
-                                    </div>
-                                </div>
-
-                                <!-- Endpoint 4: Queue Status -->
-                                <div class="api-endpoint">
-                                    <h6><span class="badge bg-warning">GET</span> /api/ocr/queue/status</h6>
-                                    <p class="mb-2">Estado completo del sistema de colas</p>
-                                    <div class="code-block">
-curl -X GET http://localhost:5000/api/ocr/queue/status
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- API Response Examples -->
-                        <div class="card">
-                            <div class="card-header">
-                                <h5 class="mb-0">
-                                    <i class="fas fa-code me-2"></i>Ejemplos de Respuestas
-                                </h5>
-                            </div>
-                            <div class="card-body">
-                                <h6>Respuesta de process_image (202 Accepted):</h6>
-                                <div class="code-block mb-3">
-{
-  "status": "accepted",
-  "message": "Image queued for processing",
-  "request_id": "sender123_juan_20250706_001_1430_20250706_143022_456",
-  "check_result_endpoint": "/api/ocr/result/sender123_juan_20250706_001_1430_20250706_143022_456",
-  "batch_process_endpoint": "/api/ocr/process_batch"
-}
-                                </div>
-
-                                <h6>Respuesta de process_batch (200 OK):</h6>
-                                <div class="code-block">
-{
-  "status": "success",
-  "batch_info": {
-    "batch_id": "BATCH_20250706_143022_789",
-    "processed_count": 5,
-    "successful_count": 4,
-    "failed_count": 1,
-    "processing_time_seconds": 12.5,
-    "profile_used": "ultra_rapido"
-  }
-}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Results Tab -->
-                    <div class="tab-pane fade" id="results" role="tabpanel">
-                        <div class="card mb-4">
-                            <div class="card-header">
-                                <h5 class="mb-0">
-                                    <i class="fas fa-file-download me-2"></i>Resultados de Procesamiento
-                                </h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center mb-3">
-                                    <p class="mb-0 text-muted">
-                                        Visualiza archivos procesados y descarga sus resultados JSON
-                                    </p>
-                                    <div>
-                                        <button class="btn btn-primary btn-sm" onclick="refreshProcessedFiles()">
-                                            <i class="fas fa-sync me-1"></i>Actualizar
-                                        </button>
-                                        <a href="/results" class="btn btn-info btn-sm ms-2" target="_blank">
-                                            <i class="fas fa-external-link-alt me-1"></i>Vista Completa
-                                        </a>
-                                    </div>
-                                </div>
-
-                                <!-- Summary Stats -->
-                                <div class="row mb-4">
-                                    <div class="col-md-3">
-                                        <div class="metric-card">
-                                            <span class="metric-value" id="resultsTotal">-</span>
-                                            <div class="metric-label">Archivos Procesados</div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="metric-card">
-                                            <span class="metric-value" id="resultsWithJson">-</span>
-                                            <div class="metric-label">Con JSON Disponible</div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="metric-card">
-                                            <span class="metric-value" id="resultsSuccessRate">-</span>
-                                            <div class="metric-label">Tasa de Éxito</div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="metric-card">
-                                            <span class="metric-value" id="resultsLastUpdate">-</span>
-                                            <div class="metric-label">Última Actualización</div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Results List -->
-                                <div id="processedFilesList">
-                                    <div class="text-center py-4">
-                                        <div class="loading-spinner me-3"></div>
-                                        <span>Cargando resultados...</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- JSON Viewer -->
-                        <div class="card">
-                            <div class="card-header">
-                                <h5 class="mb-0">
-                                    <i class="fas fa-code me-2"></i>Visualizador JSON
-                                </h5>
-                            </div>
-                            <div class="card-body">
-                                <div id="jsonViewerContent" class="json-viewer" style="min-height: 300px;">
-                                    <div class="text-center py-4 text-muted">
-                                        <i class="fas fa-file-code fa-3x mb-3"></i>
-                                        <p>Selecciona un archivo de la lista para ver su contenido JSON</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Test Tab -->
-                    <div class="tab-pane fade" id="test" role="tabpanel">
-                        <div class="card mb-4">
-                            <div class="card-header">
-                                <h5 class="mb-0">
-                                    <i class="fas fa-flask me-2"></i>Pruebas de API
-                                </h5>
-                            </div>
-                            <div class="card-body">
-                                <!-- File Upload Test -->
-                                <div class="card border-primary mb-4">
-                                    <div class="card-body text-center p-4">
-                                        <i class="fas fa-cloud-upload-alt fa-3x mb-3" style="color: var(--accent-primary);"></i>
-                                        <h5 style="color: var(--text-primary) !important;">Sube tu recibo de WhatsApp</h5>
-                                        <p style="color: var(--text-secondary) !important;">Formatos: PNG, JPG, JPEG (máx. 16MB)</p>
-                                        <input type="file" id="testFileInput" accept="image/*,.png,.jpg,.jpeg" class="form-control mb-3">
-                                        <div class="file-info mt-2" id="fileInfo" style="display: none; color: var(--success-color) !important;">
-                                            <i class="fas fa-check-circle me-1"></i>
-                                            <span id="fileName"></span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Test Form -->
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="mb-3">
-                                            <label class="form-label">Caption (WhatsApp)</label>
-                                            <input type="text" class="form-control" id="testCaption" 
-                                                   placeholder="Ej: Pago realizado a proveedor">
-                                        </div>
-                                        <div class="mb-3">
-                                            <label class="form-label">Sender ID</label>
-                                            <input type="text" class="form-control" id="testSenderId" 
-                                                   placeholder="Ej: user123">
-                                        </div>
-                                        <div class="mb-3">
-                                            <label class="form-label">Sender Name</label>
-                                            <input type="text" class="form-control" id="testSenderName" 
-                                                   placeholder="Ej: Juan Pérez">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="mb-3">
-                                            <label class="form-label">Sorteo Fecha</label>
-                                            <input type="text" class="form-control" id="testSorteoFecha" 
-                                                   placeholder="Ej: 20250706">
-                                        </div>
-                                        <div class="mb-3">
-                                            <label class="form-label">Sorteo Conteo</label>
-                                            <input type="text" class="form-control" id="testSorteoConteo" 
-                                                   placeholder="Ej: 001">
-                                        </div>
-                                        <div class="mb-3">
-                                            <label class="form-label">Hora Min</label>
-                                            <input type="text" class="form-control" id="testHoraMin" 
-                                                   placeholder="Ej: 1430">
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <button class="btn btn-primary me-2" onclick="testProcessImage()" id="testProcessBtn">
-                                    <i class="fas fa-upload me-1"></i>Probar process_image
-                                </button>
-                                <button class="btn btn-success me-2" onclick="testProcessBatch()">
-                                    <i class="fas fa-cogs me-1"></i>Probar process_batch
-                                </button>
-                                <button class="btn btn-info" onclick="testGetResult()">
-                                    <i class="fas fa-search me-1"></i>Probar get_result
-                                </button>
-
-                                <!-- Test Results -->
-                                <div id="testResults" class="mt-4" style="display: none;">
-                                    <h6>Resultado de la Prueba:</h6>
-                                    <div class="code-block" id="testResultsContent"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Documentation Tab -->
-                    <div class="tab-pane fade" id="docs" role="tabpanel">
-                        <div class="card mb-4">
-                            <div class="card-header">
-                                <h5 class="mb-0">
-                                    <i class="fas fa-book me-2"></i>¿Qué es este Sistema OCR?
-                                </h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="alert alert-primary">
-                                    <h6><i class="fas fa-lightbulb me-2"></i>En Términos Simples</h6>
-                                    <p class="mb-0">
-                                        Este sistema <strong>convierte imágenes de recibos en texto digital</strong> de forma automática. 
-                                        Es como tener un asistente que lee todos tus recibos de WhatsApp y extrae la información importante 
-                                        (monto, fecha, lugar) sin que tengas que hacerlo manualmente.
-                                    </p>
-                                </div>
-
-                                <h6><i class="fas fa-rocket me-2"></i>¿Por Qué es Útil?</h6>
-                                <ul class="mb-4">
-                                    <li><strong>Ahorra Tiempo:</strong> No necesitas escribir manualmente la información de tus recibos</li>
-                                    <li><strong>Evita Errores:</strong> La computadora lee mejor que nosotros los números pequeños</li>
-                                    <li><strong>Organiza Automáticamente:</strong> Toda la información queda guardada en formato digital</li>
-                                    <li><strong>Para WhatsApp Business:</strong> Perfecto para negocios que reciben muchos comprobantes de pago</li>
-                                </ul>
-
-                                <h6><i class="fas fa-cogs me-2"></i>¿Cómo Funciona?</h6>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="border rounded p-3 mb-3">
-                                            <h6 class="text-primary">1. Subir Imagen</h6>
-                                            <p class="small mb-0">Subes la foto del recibo desde tu teléfono o computadora</p>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="border rounded p-3 mb-3">
-                                            <h6 class="text-success">2. El Sistema Lee</h6>
-                                            <p class="small mb-0">La computadora analiza la imagen y extrae todo el texto</p>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="border rounded p-3 mb-3">
-                                            <h6 class="text-info">3. Encuentra Datos</h6>
-                                            <p class="small mb-0">Identifica automáticamente montos, fechas y referencias</p>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="border rounded p-3 mb-3">
-                                            <h6 class="text-warning">4. Te Entrega Resultados</h6>
-                                            <p class="small mb-0">Recibes toda la información organizada y lista para usar</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="card mb-4">
-                            <div class="card-header">
-                                <h5 class="mb-0">
-                                    <i class="fas fa-mobile-alt me-2"></i>Guía de Uso Simple
-                                </h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="alert alert-success">
-                                    <h6><i class="fas fa-star me-2"></i>Para Usuarios Normales (Interfaz Web)</h6>
-                                    <ol>
-                                        <li>Ve a la pestaña <strong>"Pruebas"</strong> arriba</li>
-                                        <li>Haz clic en <strong>"Seleccionar archivo"</strong> y elige tu imagen</li>
-                                        <li>Llena los datos opcionales (como nombre del remitente)</li>
-                                        <li>Haz clic en <strong>"Procesar Imagen"</strong></li>
-                                        <li>Espera unos segundos y ve a <strong>"Resultados"</strong> para ver el texto extraído</li>
-                                    </ol>
-                                </div>
-
-                                <div class="alert alert-info">
-                                    <h6><i class="fas fa-robot me-2"></i>Para Sistemas Automáticos (n8n, Zapier, etc.)</h6>
-                                    <p>Si usas herramientas de automatización, puedes conectar este sistema usando estas direcciones:</p>
-                                    <ul class="small">
-                                        <li><code>POST /api/ocr/process_image</code> - Para subir imágenes</li>
-                                        <li><code>POST /api/ocr/process_batch</code> - Para procesar en lotes</li>
-                                        <li><code>GET /api/ocr/result/{id}</code> - Para obtener resultados</li>
-                                    </ul>
-                                    <p class="small">Ve a la pestaña <strong>"API"</strong> para ejemplos completos.</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="card mb-4">
-                            <div class="card-header">
-                                <h5 class="mb-0">
-                                    <i class="fas fa-question-circle me-2"></i>Preguntas Frecuentes
-                                </h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <h6>¿Qué tipos de imágenes puedo subir?</h6>
-                                        <p class="small">Cualquier foto de recibo: PNG, JPG, JPEG. Funciona mejor con fotos claras y bien iluminadas.</p>
-
-                                        <h6>¿Cuánto tiempo tarda?</h6>
-                                        <p class="small">Entre 0.5 y 2 segundos por imagen, dependiendo de la calidad y el perfil de procesamiento.</p>
-
-                                        <h6>¿Qué información extrae?</h6>
-                                        <p class="small">Todo el texto visible + específicamente montos, fechas, referencias, nombres de lugares y números de cuenta.</p>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <h6>¿Es seguro subir mis recibos?</h6>
-                                        <p class="small">Sí, todo se procesa localmente en este servidor. Las imágenes se eliminan después del procesamiento.</p>
-
-                                        <h6>¿Funciona con recibos en español?</h6>
-                                        <p class="small">Sí, está optimizado para documentos financieros en español e inglés.</p>
-
-                                        <h6>¿Puedo procesar muchas imágenes a la vez?</h6>
-                                        <p class="small">Sí, ve a la sección <strong>"Lotes"</strong> para procesamiento masivo o usa la API para automatización.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="card">
-                            <div class="card-header">
-                                <h5 class="mb-0">
-                                    <i class="fas fa-tools me-2"></i>Para Desarrolladores y Técnicos
-                                </h5>
-                            </div>
-                            <div class="card-body">
-                                <h6>Arquitectura del Sistema:</h6>
-                                <ul class="small">
-                                    <li><strong>Motor OCR:</strong> ONNX-TR optimizado para CPU con modelos MobileNet y ResNet50</li>
-                                    <li><strong>Backend:</strong> Flask con procesamiento asíncrono y sistema de colas</li>
-                                    <li><strong>Extracción Inteligente:</strong> Algoritmos de proximidad para identificación de campos</li>
-                                    <li><strong>Validación:</strong> Reglas de negocio para documentos financieros</li>
-                                </ul>
-
-                                <h6>Integración n8n:</h6>
-                                <div class="row mt-4">
-                                    <div class="col-md-4 mb-4">
-                                        <div class="card border-success">
-                                            <div class="card-body text-center">
-                                                <div class="display-6 text-success mb-3">
-                                                    <i class="fas fa-upload"></i>
-                                                </div>
-                                                <h6 class="card-title" style="color: #10b981 !important;">PASO 1: Guardar Imagen</h6>
-                                                <p class="card-text small" style="color: var(--text-primary) !important;">
-                                                    Sube tu recibo de WhatsApp. Se guarda en cola esperando procesamiento.
-                                                    <strong>No se procesa automáticamente.</strong>
-                                                </p>
-                                                <div class="code-block small">
-POST /api/ocr/process_image
-→ Devuelve: request_id único
-                                                </div>
-                                            </div>
                                         </div>
                                     </div>
                                     
@@ -1155,7 +943,7 @@ GET /api/ocr/result/request_id
                                     <span id="cpuValue">-</span>
                                 </div>
                                 <div class="progress">
-                                    <div class="progress-bar bg-primary" id="cpuBar" style="width: 0%"></div>
+                                    
                                 </div>
                             </div>
 
@@ -1166,7 +954,7 @@ GET /api/ocr/result/request_id
                                     <span id="memoryValue">-</span>
                                 </div>
                                 <div class="progress">
-                                    <div class="progress-bar bg-success" id="memoryBar" style="width: 0%"></div>
+                                    
                                 </div>
                             </div>
 
@@ -1177,7 +965,7 @@ GET /api/ocr/result/request_id
                                     <span id="diskValue">-</span>
                                 </div>
                                 <div class="progress">
-                                    <div class="progress-bar bg-warning" id="diskBar" style="width: 0%"></div>
+                                    
                                 </div>
                             </div>
                         </div>
@@ -1241,6 +1029,156 @@ GET /api/ocr/result/request_id
         }
     }
     
+
+// FIX: Sistema de renombrado automático según formato especificado
+// REASON: Usuario necesita formato específico A--214056942235719@lid_Juanc_17-30.png
+// IMPACT: Archivos con nombres consistentes para mejor organización
+
+function updateFileNamePreview() {
+    const prefix = document.getElementById('prefixField').value || 'A--214056942235719';
+    const userId = document.getElementById('userIdField').value || 'lid';
+    const userName = document.getElementById('userNameField').value || 'Usuario';
+    const time = document.getElementById('timeField').value || getCurrentTime();
+    
+    const fileName = `${prefix}@${userId}_${userName}_${time}.png`;
+    document.getElementById('fileNamePreview').textContent = fileName;
+}
+
+function getCurrentTime() {
+    const now = new Date();
+    const hours = now.getHours().toString().padStart(2, '0');
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+    return `${hours}-${minutes}`;
+}
+
+// Actualizar preview en tiempo real
+document.addEventListener('DOMContentLoaded', function() {
+    ['prefixField', 'userIdField', 'userNameField', 'timeField'].forEach(fieldId => {
+        document.getElementById(fieldId).addEventListener('input', updateFileNamePreview);
+    });
+    
+    // Establecer hora actual por defecto
+    document.getElementById('timeField').value = getCurrentTime();
+    updateFileNamePreview();
+});
+
+async function processImagesWithRename() {
+    const fileInput = document.getElementById('fileInput');
+    const processBtn = document.getElementById('processBtn');
+    
+    if (!fileInput.files || fileInput.files.length === 0) {
+        alert('Por favor selecciona al menos una imagen');
+        return;
+    }
+    
+    // Validar campos requeridos
+    const prefix = document.getElementById('prefixField').value.trim();
+    const userId = document.getElementById('userIdField').value.trim();
+    const userName = document.getElementById('userNameField').value.trim();
+    const time = document.getElementById('timeField').value.trim();
+    
+    if (!prefix || !userId || !userName || !time) {
+        alert('Por favor completa todos los campos requeridos');
+        return;
+    }
+    
+    // Deshabilitar botón durante procesamiento
+    processBtn.disabled = true;
+    processBtn.innerHTML = '<div class="spinner-border spinner-border-sm me-2"></div>Procesando...';
+    
+    try {
+        const results = [];
+        
+        for (let i = 0; i < fileInput.files.length; i++) {
+            const file = fileInput.files[i];
+            const formData = new FormData();
+            
+            // Crear nombre personalizado
+            const customFileName = `${prefix}@${userId}_${userName}_${time}.png`;
+            
+            // Renombrar archivo antes de enviar
+            const renamedFile = new File([file], customFileName, { type: file.type });
+            formData.append('image', renamedFile);
+            
+            // Metadatos adicionales
+            formData.append('custom_filename', customFileName);
+            formData.append('prefix', prefix);
+            formData.append('user_id', userId);
+            formData.append('user_name', userName);
+            formData.append('time_stamp', time);
+            
+            // Enviar para procesamiento
+            const response = await fetch('/api/ocr/process_image', {
+                method: 'POST',
+                body: formData
+            });
+            
+            const result = await response.json();
+            results.push({
+                filename: customFileName,
+                result: result
+            });
+        }
+        
+        // Procesar todas las imágenes encoladas
+        const batchResponse = await fetch('/api/ocr/process_batch', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ profile: 'ultra_rapido' })
+        });
+        
+        const batchResult = await batchResponse.json();
+        
+        // Mostrar resultados
+        showProcessingResults(results, batchResult);
+        
+        // Actualizar listas
+        updateQueueDisplay();
+        updateProcessedFiles();
+        
+    } catch (error) {
+        console.error('Error procesando imágenes:', error);
+        alert('Error al procesar las imágenes. Por favor intenta nuevamente.');
+    } finally {
+        // Restaurar botón
+        processBtn.disabled = false;
+        processBtn.innerHTML = '<i class="fas fa-cogs me-2"></i>Subir y Procesar Imágenes';
+    }
+}
+
+function showProcessingResults(results, batchResult) {
+    const resultsDiv = document.getElementById('uploadResults');
+    const resultsContent = document.getElementById('processingResults');
+    
+    let html = `
+        <h6>Imágenes procesadas: ${results.length}</h6>
+        <ul class="list-unstyled">
+    `;
+    
+    results.forEach(item => {
+        html += `
+            <li class="mb-2">
+                <strong>${item.filename}</strong><br>
+                <small class="text-muted">ID: ${item.result.request_id}</small>
+            </li>
+        `;
+    });
+    
+    html += '</ul>';
+    
+    if (batchResult.batch_info) {
+        html += `
+            <hr>
+            <h6>Resultados del procesamiento:</h6>
+            <p>Tiempo total: ${batchResult.batch_info.processing_time_seconds}s</p>
+            <p>Archivos procesados: ${batchResult.batch_info.processed_count}</p>
+        `;
+    }
+    
+    resultsContent.innerHTML = html;
+    resultsDiv.style.display = 'block';
+}
+
 </script>
     <script>
         // Global variables
@@ -1335,7 +1273,7 @@ GET /api/ocr/result/request_id
         function testProcessBatch() {
             const button = event.target;
             const originalText = button.innerHTML;
-            button.innerHTML = '<div class="loading-spinner me-2"></div>Procesando...';
+            button.innerHTML = 'Procesando...';
             button.disabled = true;
 
             fetch('/api/ocr/process_batch', {
@@ -1382,7 +1320,7 @@ GET /api/ocr/result/request_id
 
             const button = document.getElementById('testProcessBtn');
             const originalText = button.innerHTML;
-            button.innerHTML = '<div class="loading-spinner me-2"></div>Subiendo...';
+            button.innerHTML = 'Subiendo...';
             button.disabled = true;
 
             fetch('/api/ocr/process_image', {
@@ -1733,6 +1671,156 @@ GET /api/ocr/result/request_id
         }
     }
     
+
+// FIX: Sistema de renombrado automático según formato especificado
+// REASON: Usuario necesita formato específico A--214056942235719@lid_Juanc_17-30.png
+// IMPACT: Archivos con nombres consistentes para mejor organización
+
+function updateFileNamePreview() {
+    const prefix = document.getElementById('prefixField').value || 'A--214056942235719';
+    const userId = document.getElementById('userIdField').value || 'lid';
+    const userName = document.getElementById('userNameField').value || 'Usuario';
+    const time = document.getElementById('timeField').value || getCurrentTime();
+    
+    const fileName = `${prefix}@${userId}_${userName}_${time}.png`;
+    document.getElementById('fileNamePreview').textContent = fileName;
+}
+
+function getCurrentTime() {
+    const now = new Date();
+    const hours = now.getHours().toString().padStart(2, '0');
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+    return `${hours}-${minutes}`;
+}
+
+// Actualizar preview en tiempo real
+document.addEventListener('DOMContentLoaded', function() {
+    ['prefixField', 'userIdField', 'userNameField', 'timeField'].forEach(fieldId => {
+        document.getElementById(fieldId).addEventListener('input', updateFileNamePreview);
+    });
+    
+    // Establecer hora actual por defecto
+    document.getElementById('timeField').value = getCurrentTime();
+    updateFileNamePreview();
+});
+
+async function processImagesWithRename() {
+    const fileInput = document.getElementById('fileInput');
+    const processBtn = document.getElementById('processBtn');
+    
+    if (!fileInput.files || fileInput.files.length === 0) {
+        alert('Por favor selecciona al menos una imagen');
+        return;
+    }
+    
+    // Validar campos requeridos
+    const prefix = document.getElementById('prefixField').value.trim();
+    const userId = document.getElementById('userIdField').value.trim();
+    const userName = document.getElementById('userNameField').value.trim();
+    const time = document.getElementById('timeField').value.trim();
+    
+    if (!prefix || !userId || !userName || !time) {
+        alert('Por favor completa todos los campos requeridos');
+        return;
+    }
+    
+    // Deshabilitar botón durante procesamiento
+    processBtn.disabled = true;
+    processBtn.innerHTML = '<div class="spinner-border spinner-border-sm me-2"></div>Procesando...';
+    
+    try {
+        const results = [];
+        
+        for (let i = 0; i < fileInput.files.length; i++) {
+            const file = fileInput.files[i];
+            const formData = new FormData();
+            
+            // Crear nombre personalizado
+            const customFileName = `${prefix}@${userId}_${userName}_${time}.png`;
+            
+            // Renombrar archivo antes de enviar
+            const renamedFile = new File([file], customFileName, { type: file.type });
+            formData.append('image', renamedFile);
+            
+            // Metadatos adicionales
+            formData.append('custom_filename', customFileName);
+            formData.append('prefix', prefix);
+            formData.append('user_id', userId);
+            formData.append('user_name', userName);
+            formData.append('time_stamp', time);
+            
+            // Enviar para procesamiento
+            const response = await fetch('/api/ocr/process_image', {
+                method: 'POST',
+                body: formData
+            });
+            
+            const result = await response.json();
+            results.push({
+                filename: customFileName,
+                result: result
+            });
+        }
+        
+        // Procesar todas las imágenes encoladas
+        const batchResponse = await fetch('/api/ocr/process_batch', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ profile: 'ultra_rapido' })
+        });
+        
+        const batchResult = await batchResponse.json();
+        
+        // Mostrar resultados
+        showProcessingResults(results, batchResult);
+        
+        // Actualizar listas
+        updateQueueDisplay();
+        updateProcessedFiles();
+        
+    } catch (error) {
+        console.error('Error procesando imágenes:', error);
+        alert('Error al procesar las imágenes. Por favor intenta nuevamente.');
+    } finally {
+        // Restaurar botón
+        processBtn.disabled = false;
+        processBtn.innerHTML = '<i class="fas fa-cogs me-2"></i>Subir y Procesar Imágenes';
+    }
+}
+
+function showProcessingResults(results, batchResult) {
+    const resultsDiv = document.getElementById('uploadResults');
+    const resultsContent = document.getElementById('processingResults');
+    
+    let html = `
+        <h6>Imágenes procesadas: ${results.length}</h6>
+        <ul class="list-unstyled">
+    `;
+    
+    results.forEach(item => {
+        html += `
+            <li class="mb-2">
+                <strong>${item.filename}</strong><br>
+                <small class="text-muted">ID: ${item.result.request_id}</small>
+            </li>
+        `;
+    });
+    
+    html += '</ul>';
+    
+    if (batchResult.batch_info) {
+        html += `
+            <hr>
+            <h6>Resultados del procesamiento:</h6>
+            <p>Tiempo total: ${batchResult.batch_info.processing_time_seconds}s</p>
+            <p>Archivos procesados: ${batchResult.batch_info.processed_count}</p>
+        `;
+    }
+    
+    resultsContent.innerHTML = html;
+    resultsDiv.style.display = 'block';
+}
+
 </script>
 </body>
 </html>

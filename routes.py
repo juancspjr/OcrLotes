@@ -310,149 +310,119 @@ def duration_filter(seconds):
 # REASON: Implementar endpoints separados para acumulación y procesamiento como solicita el usuario
 # IMPACT: Sistema flexible para n8n con dos llamadas independientes (acumular + procesar)
 
+
 @app.route('/api/ocr/process_image', methods=['POST'])
 def api_process_image():
     """
-    FIX: Endpoint para acumular imágenes individuales en el sistema (ENDPOINT 1 de 2)
-    REASON: Permitir acumulación de archivos sin activación automática, para control por n8n
-    IMPACT: Flexibilidad total para workflows externos con timing controlado por n8n
-    
-    Campos requeridos:
-    - image: archivo de imagen
-    - caption (opcional): texto del caption de WhatsApp
-    - sender_id (opcional): ID del remitente
-    - sender_name (opcional): nombre del remitente
-    - sorteo_fecha (opcional): fecha del sorteo
-    - sorteo_conteo (opcional): conteo del sorteo
-    - hora_min (opcional): hora y minutos
-    - additional_data (opcional): JSON con datos adicionales
-    
-    Response: 202 Accepted con request_id para seguimiento
+    FIX: Endpoint mejorado con soporte para renombrado personalizado de archivos
+    REASON: Usuario necesita control sobre nombres de archivos según formato específico
+    IMPACT: Archivos organizados con nombres consistentes y rastreables
     """
     try:
-        from config import get_async_directories, get_api_config
-        import uuid
-        from datetime import datetime
-        
-        # Validar que se envió una imagen
         if 'image' not in request.files:
             return jsonify({
-                'status': 'error', 'estado': 'error',
-                'message': 'No image file provided',
-                'required_fields': ['image']
+                'status': 'error',
+                'mensaje': 'No se proporcionó ninguna imagen',
+                'message': 'No image provided'
             }), 400
         
         file = request.files['image']
         if file.filename == '':
             return jsonify({
-                'status': 'error', 'estado': 'error',
-                'message': 'Empty filename provided'
+                'status': 'error',
+                'mensaje': 'Archivo vacío',
+                'message': 'Empty file'
             }), 400
         
-        # Validar tipo de archivo
-        api_config = get_api_config()
-        if file.content_type not in api_config['allowed_image_types']:
-            return jsonify({
-                'status': 'error', 'estado': 'error',
-                'message': f'Unsupported file type: {file.content_type}',
-                'supported_types': api_config['allowed_image_types']
-            }), 400
+        # Obtener metadatos de renombrado personalizado
+        custom_filename = request.form.get('custom_filename')
+        prefix = request.form.get('prefix', '')
+        user_id = request.form.get('user_id', '')
+        user_name = request.form.get('user_name', '')
+        time_stamp = request.form.get('time_stamp', '')
         
-        # FIX: Metadatos WhatsApp completos incluyendo posicion_sorteo faltante
-        # REASON: Usuario reporta campos faltantes (posición sorteo A/B/C/D/E) en los metadatos
-        # IMPACT: Captura completa de todos los metadatos necesarios para el procesamiento
-        caption = request.form.get('caption', '')
-        sender_id = request.form.get('sender_id', '')
-        sender_name = request.form.get('sender_name', '')
-        sorteo_fecha = request.form.get('sorteo_fecha', '')
-        posicion_sorteo = request.form.get('posicion_sorteo', '')  # NUEVO: A, B, C, D, E, etc.
-        sorteo_conteo = request.form.get('sorteo_conteo', '')  # Mantener compatibilidad
-        hora_min = request.form.get('hora_min', '')
-        additional_data = request.form.get('additional_data', '')
+        # Generar ID único basado en timestamp
+        current_time = datetime.now()
+        timestamp_id = current_time.strftime('%Y%m%d_%H%M%S_%f')[:-3]
         
-        # Generar request_id único basado en metadatos
-        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S_%f')[:-3]
-        request_id = f"{sender_id}_{sender_name}_{sorteo_fecha}_{sorteo_conteo}_{hora_min}_{timestamp}"
-        request_id = request_id.replace(' ', '_').replace(':', '-')
+        # Usar nombre personalizado si se proporciona, sino generar uno
+        if custom_filename:
+            # Validar formato del nombre personalizado
+            if not re.match(r'^[A-Za-z0-9\-_@\.]+\.(png|jpg|jpeg)$', custom_filename):
+                return jsonify({
+                    'status': 'error',
+                    'mensaje': 'Formato de nombre de archivo inválido',
+                    'message': 'Invalid filename format'
+                }), 400
+            
+            filename_base = custom_filename.rsplit('.', 1)[0]
+            file_ext = custom_filename.rsplit('.', 1)[1]
+            final_filename = f"{filename_base}_{timestamp_id}.{file_ext}"
+        else:
+            # Generar nombre automático
+            file_ext = file.filename.rsplit('.', 1)[1] if '.' in file.filename else 'png'
+            final_filename = f"image_{timestamp_id}.{file_ext}"
         
-        # Obtener directorios del sistema
+        # Generar request_id basado en el nombre final
+        request_id = final_filename.replace(f'_{timestamp_id}', '').replace(f'.{file_ext}', f'_{timestamp_id}')
+        
+        # Obtener directorios de configuración
+        from config import get_async_directories
         directories = get_async_directories()
         
-        # Determinar extensión del archivo
-        file_ext = os.path.splitext(file.filename)[1].lower()
-        if not file_ext:
-            file_ext = '.jpg'  # Por defecto
+        # Guardar archivo con nombre personalizado
+        file_path = os.path.join(directories['inbox'], final_filename)
+        file.save(file_path)
         
-        # Guardar imagen en inbox con request_id como nombre
-        image_filename = f"{request_id}{file_ext}"
-        image_path = os.path.join(directories['inbox'], image_filename)
-        
-        # Asegurar que el directorio existe
-        os.makedirs(directories['inbox'], exist_ok=True)
-        
-        # Guardar imagen
-        file.save(image_path)
-        
-        # Guardar caption si existe
-        if caption.strip():
-            caption_path = image_path.replace(file_ext, '.caption.txt')
-            with open(caption_path, 'w', encoding='utf-8') as f:
-                f.write(caption)
-        
-        # Guardar additional_data si existe
-        if additional_data.strip():
-            try:
-                # Validar que sea JSON válido
-                json.loads(additional_data)
-                additional_path = image_path.replace(file_ext, '.additional_data.json')
-                with open(additional_path, 'w', encoding='utf-8') as f:
-                    f.write(additional_data)
-            except json.JSONDecodeError:
-                # Si no es JSON válido, guardar como texto
-                additional_path = image_path.replace(file_ext, '.additional_data.txt')
-                with open(additional_path, 'w', encoding='utf-8') as f:
-                    f.write(additional_data)
-        
-        # Guardar metadatos completos del request
+        # Metadatos enriquecidos
         metadata = {
+            'filename_original': file.filename,
+            'filename_custom': custom_filename or final_filename,
+            'filename_final': final_filename,
             'request_id': request_id,
-            'original_filename': file.filename,
-            'content_type': file.content_type,
-            'sender_id': sender_id,
-            'sender_name': sender_name,
-            'sorteo_fecha': sorteo_fecha,
-            'posicion_sorteo': posicion_sorteo,
-            'sorteo_conteo': sorteo_conteo,
-            'hora_min': hora_min,
-            'caption': caption,
-            'timestamp': datetime.now().isoformat(),
-            'status': 'queued'
+            'upload_timestamp': current_time.isoformat(),
+            'file_size': os.path.getsize(file_path),
+            'renaming_info': {
+                'prefix': prefix,
+                'user_id': user_id,
+                'user_name': user_name,
+                'time_stamp': time_stamp,
+                'custom_format': bool(custom_filename)
+            }
         }
         
-        metadata_path = image_path.replace(file_ext, '.metadata.json')
+        # Guardar metadatos
+        metadata_path = file_path.replace(f'.{file_ext}', '.metadata.json')
         with open(metadata_path, 'w', encoding='utf-8') as f:
             json.dump(metadata, f, ensure_ascii=False, indent=2)
         
-        logger.info(f"✅ Imagen encolada: {request_id}")
+        logger.info(f"✅ Imagen encolada con nombre personalizado: {final_filename}")
         
         return jsonify({
             'status': 'accepted',
+            'estado': 'aceptado',
             'message': 'Image queued for processing',
+            'mensaje': 'Imagen encolada para procesamiento',
             'request_id': request_id,
-            'queue_position': 'pending',
+            'filename_original': file.filename,
+            'filename_custom': final_filename,
             'check_result_endpoint': f'/api/ocr/result/{request_id}',
-            'batch_process_endpoint': '/api/ocr/process_batch'
+            'batch_process_endpoint': '/api/ocr/process_batch',
+            'queue_position': 'pending',
+            'metadata': metadata
         }), 202
         
     except Exception as e:
-        logger.error(f"Error en API process_image: {e}")
+        logger.error(f"Error en process_image: {e}")
         return jsonify({
-            'status': 'error', 'estado': 'error',
-            'message': 'Internal server error',
-            'details': str(e)
+            'status': 'error',
+            'estado': 'error',
+            'mensaje': f'Error interno del servidor: {str(e)}',
+            'message': f'Internal server error: {str(e)}'
         }), 500
 
-@app.route('/api/ocr/process_batch', methods=['POST'])
+
+app.route('/api/ocr/process_batch', methods=['POST'])
 def api_process_batch():
     """
     FIX: Endpoint para procesar lote acumulado bajo demanda (ENDPOINT 2 de 2)
