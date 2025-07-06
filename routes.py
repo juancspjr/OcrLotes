@@ -1045,25 +1045,32 @@ def api_get_processed_files():
             # Formato: vsgdds@afn1_luis_2025-07-06__12-00_20250706_051820_623.png
             filename_parts = filename.replace('.png', '').replace('.jpg', '').replace('.jpeg', '')
             
-            # Buscar JSON que contenga partes del nombre original
+            # FIX: Algoritmo mejorado de detección JSON con patrones de lote
+            # REASON: Los JSONs se generan con prefijos BATCH_ que no coinciden con nombres originales
+            # IMPACT: Detecta correctamente todos los JSONs procesados
             for result_path in result_files:
                 result_filename = os.path.basename(result_path)
                 
-                # Patrones de búsqueda inteligente
+                # Extraer información del archivo original
+                original_id = filename_parts.split('_')[0] if '_' in filename_parts else filename_parts
+                original_name_part = filename_parts.split('@')[1].split('_')[0] if '@' in filename_parts else None
+                original_timestamp = filename_parts.split('__')[1] if '__' in filename_parts else None
+                
+                # Patrones de búsqueda mejorados para archivos de lote
                 search_patterns = [
-                    # ID base del archivo
-                    filename_parts.split('_')[0] if '_' in filename_parts else filename_parts,
-                    # Nombre completo
-                    filename_parts,
-                    # Primera parte antes del @
-                    filename_parts.split('@')[0] if '@' in filename_parts else None,
-                    # Parte después del @
-                    filename_parts.split('@')[1].split('_')[0] if '@' in filename_parts else None
+                    # Patrón completo con ID original
+                    original_id,
+                    # Patrón con nombre de usuario
+                    original_name_part,
+                    # Patrón con timestamp
+                    original_timestamp,
+                    # Patrón flexible - cualquier parte del nombre que aparezca en el JSON
+                    filename_parts
                 ]
                 
-                # Verificar si algún patrón coincide
+                # Verificar coincidencias con mayor flexibilidad
                 for pattern in search_patterns:
-                    if pattern and pattern in result_filename:
+                    if pattern and len(pattern) > 3 and pattern in result_filename:
                         json_file = result_path
                         json_exists = True
                         break

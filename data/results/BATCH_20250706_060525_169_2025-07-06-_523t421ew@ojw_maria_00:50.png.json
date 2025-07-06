@@ -1,40 +1,27 @@
 {
-  "request_id": "2025-07-06-_1wfqafg@d242_alvaro_11:11.png",
+  "request_id": "2025-07-06-_523t421ew@ojw_maria_00:50.png",
   "processing_status": "success",
   "error_reason": null,
   "metadata": {
-    "fecha_procesamiento": "2025-07-06T05:42:00.026080",
+    "fecha_procesamiento": "2025-07-06T06:05:27.569671",
     "perfil_ocr_usado": "unknown",
-    "tiempo_procesamiento_ms": 546.61,
+    "tiempo_procesamiento_ms": 514.47,
     "fuente_whatsapp": {
-      "sender_id": "1wfqafg@d242",
-      "sender_name_registered": "alvaro",
+      "sender_id": "523t421ew@ojw",
+      "sender_name_registered": "maria",
       "fecha_envio_whatsapp": "2025-07-06",
-      "hora_envio_whatsapp": "11:11",
+      "hora_envio_whatsapp": "00:50",
       "sorteo_fecha": "2025-07-06",
       "sorteo_conteo": "",
-      "caption_whatsapp": "151"
+      "caption_whatsapp": "32 55"
     }
   },
-  "full_raw_ocr_text": "Eldinero fue enviado Bs. 313,62 Dinero Rapido BBVA Provincial Banco: BANCO MERCANTIL Numero celular: 04125318244 Identificacion: V27061025 Concepto: Pago Fecha: 20/06/2025 Referencia: 000012071",
+  "full_raw_ocr_text": "PagomOvilBDV Personas 104,54 Bs Fecha: 20/06/2025 Operacion: 003039376430 D Identificacion: 27061025 Origen: 0102****2 2663 Destino: 04125318244 Banco: 0105 = BANCO MERCANTIL Concepto: 08 Evelin",
   "extracted_fields": [
     {
-      "field_name": "numero_referencia",
-      "value": "ELDINERO",
-      "confidence": 0.874,
-      "coordinates": [
-        0,
-        0,
-        0,
-        0
-      ],
-      "relative_position": "middle-center",
-      "raw_text_segment": "Numero Eldinero"
-    },
-    {
       "field_name": "banco_origen",
-      "value": "Eldinero",
-      "confidence": 0.981,
+      "value": "PagomOvilBDV",
+      "confidence": 0.736,
       "coordinates": [
         0,
         0,
@@ -42,12 +29,12 @@
         0
       ],
       "relative_position": "middle-center",
-      "raw_text_segment": "BANCO Eldinero"
+      "raw_text_segment": "Banco: PagomOvilBDV"
     },
     {
       "field_name": "cedula_beneficiario",
-      "value": "Eldinero",
-      "confidence": 0.926,
+      "value": "PagomOvilBDV",
+      "confidence": 0.741,
       "coordinates": [
         0,
         0,
@@ -55,12 +42,12 @@
         0
       ],
       "relative_position": "middle-center",
-      "raw_text_segment": "Provincial Eldinero"
+      "raw_text_segment": "Operacion: PagomOvilBDV"
     },
     {
       "field_name": "telefono_beneficiario",
-      "value": "Eldinero",
-      "confidence": 0.986,
+      "value": "Personas",
+      "confidence": 0.729,
       "coordinates": [
         0,
         0,
@@ -68,12 +55,12 @@
         0
       ],
       "relative_position": "middle-center",
-      "raw_text_segment": "celular: Eldinero"
+      "raw_text_segment": "PagomOvilBDV Personas"
     },
     {
       "field_name": "fecha_transaccion",
-      "value": "Eldinero",
-      "confidence": 0.986,
+      "value": "PagomOvilBDV",
+      "confidence": 0.741,
       "coordinates": [
         0,
         0,
@@ -81,12 +68,12 @@
         0
       ],
       "relative_position": "middle-center",
-      "raw_text_segment": "Fecha: Eldinero"
+      "raw_text_segment": "Fecha: PagomOvilBDV"
     },
     {
       "field_name": "tipo_transaccion",
-      "value": "Eldinero",
-      "confidence": 0.97,
+      "value": "PagomOvilBDV",
+      "confidence": 0.741,
       "coordinates": [
         0,
         0,
@@ -94,11 +81,11 @@
         0
       ],
       "relative_position": "middle-center",
-      "raw_text_segment": "Pago Eldinero"
+      "raw_text_segment": "Operacion: PagomOvilBDV"
     },
     {
       "field_name": "descripcion_motivo",
-      "value": "151",
+      "value": "32 55",
       "confidence": 1.0,
       "coordinates": null,
       "relative_position": null,
@@ -107,8 +94,8 @@
   ],
   "unmapped_text_segments": [
     {
-      "text": "Eldinero",
-      "confidence": 0.9719844460487366,
+      "text": "PagomOvilBDV",
+      "confidence": 0.4895503520965576,
       "coordinates": [
         0,
         0,
@@ -118,8 +105,8 @@
       "relative_position": "middle-center"
     },
     {
-      "text": "fue",
-      "confidence": 0.9998860359191895,
+      "text": "Personas",
+      "confidence": 0.9693654179573059,
       "coordinates": [
         0,
         0,
@@ -129,8 +116,8 @@
       "relative_position": "middle-center"
     },
     {
-      "text": "enviado",
-      "confidence": 0.9965296387672424,
+      "text": "104,54",
+      "confidence": 0.9870736598968506,
       "coordinates": [
         0,
         0,
@@ -140,173 +127,8 @@
       "relative_position": "middle-center"
     },
     {
-      "text": "Bs.",
-      "confidence": 0.9983106851577759,
-      "coordinates": [
-        0,
-        0,
-        0,
-        0
-      ],
-      "relative_position": "middle-center"
-    },
-    {
-      "text": "313,62",
-      "confidence": 0.5610727667808533,
-      "coordinates": [
-        0,
-        0,
-        0,
-        0
-      ],
-      "relative_position": "middle-center"
-    },
-    {
-      "text": "Dinero",
-      "confidence": 0.9980239868164062,
-      "coordinates": [
-        0,
-        0,
-        0,
-        0
-      ],
-      "relative_position": "middle-center"
-    },
-    {
-      "text": "Rapido",
-      "confidence": 0.8813668489456177,
-      "coordinates": [
-        0,
-        0,
-        0,
-        0
-      ],
-      "relative_position": "middle-center"
-    },
-    {
-      "text": "BBVA",
-      "confidence": 0.96855229139328,
-      "coordinates": [
-        0,
-        0,
-        0,
-        0
-      ],
-      "relative_position": "middle-center"
-    },
-    {
-      "text": "Provincial",
-      "confidence": 0.879702091217041,
-      "coordinates": [
-        0,
-        0,
-        0,
-        0
-      ],
-      "relative_position": "middle-center"
-    },
-    {
-      "text": "Banco:",
-      "confidence": 0.9519730806350708,
-      "coordinates": [
-        0,
-        0,
-        0,
-        0
-      ],
-      "relative_position": "middle-center"
-    },
-    {
-      "text": "BANCO",
-      "confidence": 0.9897941946983337,
-      "coordinates": [
-        0,
-        0,
-        0,
-        0
-      ],
-      "relative_position": "middle-center"
-    },
-    {
-      "text": "MERCANTIL",
-      "confidence": 0.9470658302307129,
-      "coordinates": [
-        0,
-        0,
-        0,
-        0
-      ],
-      "relative_position": "middle-center"
-    },
-    {
-      "text": "Numero",
-      "confidence": 0.7763277292251587,
-      "coordinates": [
-        0,
-        0,
-        0,
-        0
-      ],
-      "relative_position": "middle-center"
-    },
-    {
-      "text": "celular:",
-      "confidence": 0.9993205070495605,
-      "coordinates": [
-        0,
-        0,
-        0,
-        0
-      ],
-      "relative_position": "middle-center"
-    },
-    {
-      "text": "04125318244",
-      "confidence": 0.9708089828491211,
-      "coordinates": [
-        0,
-        0,
-        0,
-        0
-      ],
-      "relative_position": "middle-center"
-    },
-    {
-      "text": "Identificacion:",
-      "confidence": 0.66046142578125,
-      "coordinates": [
-        0,
-        0,
-        0,
-        0
-      ],
-      "relative_position": "middle-center"
-    },
-    {
-      "text": "V27061025",
-      "confidence": 0.9998863935470581,
-      "coordinates": [
-        0,
-        0,
-        0,
-        0
-      ],
-      "relative_position": "middle-center"
-    },
-    {
-      "text": "Concepto:",
-      "confidence": 0.9798423647880554,
-      "coordinates": [
-        0,
-        0,
-        0,
-        0
-      ],
-      "relative_position": "middle-center"
-    },
-    {
-      "text": "Pago",
-      "confidence": 0.9679677486419678,
+      "text": "Bs",
+      "confidence": 0.9976170063018799,
       "coordinates": [
         0,
         0,
@@ -317,7 +139,7 @@
     },
     {
       "text": "Fecha:",
-      "confidence": 0.9992514252662659,
+      "confidence": 0.9933943152427673,
       "coordinates": [
         0,
         0,
@@ -328,7 +150,7 @@
     },
     {
       "text": "20/06/2025",
-      "confidence": 0.9781606793403625,
+      "confidence": 0.994637668132782,
       "coordinates": [
         0,
         0,
@@ -338,8 +160,8 @@
       "relative_position": "middle-center"
     },
     {
-      "text": "Referencia:",
-      "confidence": 0.7342566847801208,
+      "text": "Operacion:",
+      "confidence": 0.9929012656211853,
       "coordinates": [
         0,
         0,
@@ -349,8 +171,184 @@
       "relative_position": "middle-center"
     },
     {
-      "text": "000012071",
-      "confidence": 0.9997273087501526,
+      "text": "003039376430",
+      "confidence": 0.825695127248764,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "relative_position": "middle-center"
+    },
+    {
+      "text": "D",
+      "confidence": 0.9814924597740173,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "relative_position": "middle-center"
+    },
+    {
+      "text": "Identificacion:",
+      "confidence": 0.966042160987854,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "relative_position": "middle-center"
+    },
+    {
+      "text": "27061025",
+      "confidence": 0.6714341640472412,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "relative_position": "middle-center"
+    },
+    {
+      "text": "Origen:",
+      "confidence": 0.8241031169891357,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "relative_position": "middle-center"
+    },
+    {
+      "text": "0102****2",
+      "confidence": 0.8192927837371826,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "relative_position": "middle-center"
+    },
+    {
+      "text": "2663",
+      "confidence": 0.979152262210846,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "relative_position": "middle-center"
+    },
+    {
+      "text": "Destino:",
+      "confidence": 0.973254382610321,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "relative_position": "middle-center"
+    },
+    {
+      "text": "04125318244",
+      "confidence": 0.9981418251991272,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "relative_position": "middle-center"
+    },
+    {
+      "text": "Banco:",
+      "confidence": 0.9814731478691101,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "relative_position": "middle-center"
+    },
+    {
+      "text": "0105",
+      "confidence": 0.9994476437568665,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "relative_position": "middle-center"
+    },
+    {
+      "text": "=",
+      "confidence": 0.9029436111450195,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "relative_position": "middle-center"
+    },
+    {
+      "text": "BANCO",
+      "confidence": 0.975364089012146,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "relative_position": "middle-center"
+    },
+    {
+      "text": "MERCANTIL",
+      "confidence": 0.7498931288719177,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "relative_position": "middle-center"
+    },
+    {
+      "text": "Concepto:",
+      "confidence": 0.9843394756317139,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "relative_position": "middle-center"
+    },
+    {
+      "text": "08",
+      "confidence": 0.9999992847442627,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "relative_position": "middle-center"
+    },
+    {
+      "text": "Evelin",
+      "confidence": 0.9991360306739807,
       "coordinates": [
         0,
         0,
@@ -361,12 +359,12 @@
     }
   ],
   "batch_metadata": {
-    "batch_size": 2,
-    "batch_processing_time_seconds": 1.41,
-    "batch_timestamp": "2025-07-06T05:42:00.028236"
+    "batch_size": 4,
+    "batch_processing_time_seconds": 2.87,
+    "batch_timestamp": "2025-07-06T06:05:28.044339"
   },
-  "batch_id": "BATCH_20250706_054158_613",
-  "batch_processing_time": 1.41,
-  "batch_position": 2,
-  "batch_size": 2
+  "batch_id": "BATCH_20250706_060525_169",
+  "batch_processing_time": 2.87,
+  "batch_position": 3,
+  "batch_size": 4
 }

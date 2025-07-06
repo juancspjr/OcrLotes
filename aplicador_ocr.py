@@ -23,6 +23,42 @@ from onnxtr.models import ocr_predictor
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+
+def extract_word_coordinates(doc_result):
+    """
+    FIX: Extrae coordenadas reales de cada palabra detectada por OnnxTR
+    REASON: Las coordenadas actuales están hardcodeadas en cero
+    IMPACT: Proporciona coordenadas exactas para cada palabra detectada
+    """
+    word_coordinates = []
+    
+    try:
+        # Acceder a resultados de detección de OnnxTR
+        for page in doc_result.pages:
+            for block in page.blocks:
+                for line in block.lines:
+                    for word in line.words:
+                        # Extraer coordenadas de la palabra
+                        if hasattr(word, 'geometry') and word.geometry:
+                            # Coordenadas en formato [x1, y1, x2, y2]
+                            coords = [
+                                float(word.geometry[0][0]),  # x1
+                                float(word.geometry[0][1]),  # y1
+                                float(word.geometry[2][0]),  # x2
+                                float(word.geometry[2][1])   # y2
+                            ]
+                            
+                            word_coordinates.append({
+                                'text': word.value,
+                                'coordinates': coords,
+                                'confidence': float(word.confidence)
+                            })
+    except Exception as e:
+        print(f"Error extrayendo coordenadas: {e}")
+    
+    return word_coordinates
+
+
 class AplicadorOCR:
     """Clase para aplicar OCR con OnnxTR y extraer datos estructurados"""
     
