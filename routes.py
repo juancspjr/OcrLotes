@@ -39,7 +39,12 @@ def allowed_file(filename):
 
 @app.route('/')
 def index():
-    """Dashboard principal del sistema OCR asíncrono con métricas profesionales"""
+    """Dashboard mejorado y simplificado del sistema OCR"""
+    return render_template('improved_dashboard.html')
+
+@app.route('/dashboard')
+def dashboard():
+    """Dashboard profesional original del sistema OCR asíncrono con métricas profesionales"""
     return render_template('dashboard.html')
 
 @app.route('/old')
@@ -1221,5 +1226,75 @@ def api_download_batch_results(batch_id):
         return jsonify({
             'status': 'error',
             'message': 'Could not download batch results',
+            'details': str(e)
+        }), 500
+
+@app.route('/api/ocr/clean', methods=['POST'])
+def api_clean_system():
+    """
+    FIX: Endpoint para limpiar el sistema después de procesar
+    REASON: Usuario solicita botón de limpieza para eliminar archivos procesados y evitar basura
+    IMPACT: Sistema más limpio y organizado después de cada procesamiento
+    """
+    try:
+        from config import get_async_directories
+        import glob
+        import shutil
+        
+        directories = get_async_directories()
+        cleaned_counts = {}
+        
+        # Limpiar directorio processed
+        processed_files = glob.glob(os.path.join(directories['processed'], "*.*"))
+        for file_path in processed_files:
+            try:
+                os.remove(file_path)
+            except Exception as e:
+                logger.warning(f"No se pudo eliminar archivo procesado {file_path}: {e}")
+        cleaned_counts['processed'] = len(processed_files)
+        
+        # Limpiar directorio results
+        result_files = glob.glob(os.path.join(directories['results'], "*.json"))
+        for file_path in result_files:
+            try:
+                os.remove(file_path)
+            except Exception as e:
+                logger.warning(f"No se pudo eliminar resultado {file_path}: {e}")
+        cleaned_counts['results'] = len(result_files)
+        
+        # Limpiar directorio errors (opcional)
+        error_files = glob.glob(os.path.join(directories['errors'], "*.*"))
+        for file_path in error_files:
+            try:
+                os.remove(file_path)
+            except Exception as e:
+                logger.warning(f"No se pudo eliminar error {file_path}: {e}")
+        cleaned_counts['errors'] = len(error_files)
+        
+        # Limpiar directorios temporales
+        temp_dirs = glob.glob(os.path.join('temp', 'web_*'))
+        temp_cleaned = 0
+        for temp_dir in temp_dirs:
+            try:
+                shutil.rmtree(temp_dir)
+                temp_cleaned += 1
+            except Exception as e:
+                logger.warning(f"No se pudo eliminar directorio temporal {temp_dir}: {e}")
+        cleaned_counts['temp_dirs'] = temp_cleaned
+        
+        logger.info(f"Sistema limpiado: {cleaned_counts}")
+        
+        return jsonify({
+            'status': 'success',
+            'message': 'Sistema limpiado exitosamente',
+            'cleaned_counts': cleaned_counts,
+            'timestamp': datetime.now().isoformat()
+        }), 200
+        
+    except Exception as e:
+        logger.error(f"Error al limpiar sistema: {e}")
+        return jsonify({
+            'status': 'error',
+            'message': 'Error al limpiar el sistema',
             'details': str(e)
         }), 500
