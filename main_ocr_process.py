@@ -799,7 +799,7 @@ class OrquestadorOCR:
             for image_file in files_to_process:
                 try:
                     # Procesar imagen individual
-                    resultado = self.procesar_imagen_completa(
+                    resultado = self.procesar_imagen(
                         str(image_file),
                         profile=profile,
                         extract_financial=True

@@ -48,13 +48,13 @@ except Exception as e:
 
 @app.route('/')
 def index():
-    """Página principal del dashboard simplificado"""
-    return render_template('dashboard_simple.html')
+    """Página principal del dashboard con workflow completo"""
+    return render_template('dashboard_workflow.html')
 
 @app.route('/dashboard')
 def dashboard():
     """Dashboard principal del sistema OCR"""
-    return render_template('dashboard_simple.html')
+    return render_template('dashboard_workflow.html')
 
 @app.route('/dashboard_old')
 def dashboard_old():
@@ -396,6 +396,49 @@ def api_clean_queue():
             'estado': 'error',
             'mensaje': f'Error al limpiar cola: {str(e)}',
             'message': f'Error cleaning queue: {str(e)}'
+        }), 500
+
+@app.route('/api/ocr/download_json/<filename>')
+def download_json(filename):
+    """
+    FIX: Endpoint para descargar archivos JSON de resultados OCR
+    REASON: Usuario necesita poder descargar resultados JSON individualmente
+    IMPACT: Permite acceso directo a resultados de OCR procesados
+    """
+    try:
+        from config import get_async_directories
+        directories = get_async_directories()
+        
+        # Buscar archivo JSON en directorio de resultados
+        results_dir = Path(directories['results'])
+        json_filename = filename.replace('.png', '.json')
+        json_path = results_dir / json_filename
+        
+        if not json_path.exists():
+            # Buscar también en directorio de procesados
+            processed_dir = Path(directories['processed'])
+            json_path = processed_dir / json_filename
+            
+        if not json_path.exists():
+            return jsonify({
+                'status': 'error',
+                'message': 'Archivo JSON no encontrado'
+            }), 404
+        
+        # Leer y devolver el archivo JSON
+        from flask import send_file
+        return send_file(
+            json_path,
+            as_attachment=True,
+            download_name=json_filename,
+            mimetype='application/json'
+        )
+        
+    except Exception as e:
+        logger.error(f"Error descargando JSON {filename}: {e}")
+        return jsonify({
+            'status': 'error',
+            'message': f'Error descargando archivo: {str(e)}'
         }), 500
 
 if __name__ == '__main__':

@@ -27,10 +27,12 @@ Sistema OCR asíncrono de alto rendimiento para procesamiento de recibos de pago
 
 ## Preferencias del Usuario
 - Interfaz completamente en español
-- Diseño de un solo renglón con botón "Subir" únicamente
-- Workflow: "Elegir archivo" solo selecciona, botón gris procesa
-- Cero duplicidad en la interfaz
-- Mostrar resultados de ambos sistemas (archivos procesados + cola)
+- Workflow por etapas: Subir → Lista no procesados → Procesar lote → Extraer resultados → Limpiar
+- Botón "Subir" solo para cargar y renombrar archivos
+- Botón separado "Procesar Todo el Lote" para ejecutar OCR
+- Botón "Extraer Resultados JSON" para descargar resultados
+- Botón "Limpiar Sistema" al final
+- Mostrar listas separadas de archivos pendientes y procesados
 - Prioridad en coordenadas correctas y archivos JSON visibles
 
 ## APIs Principales

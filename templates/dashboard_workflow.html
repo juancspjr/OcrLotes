@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema OCR Asíncrono - Workflow Completo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { 
+            font-family: 'Segoe UI', system-ui, sans-serif; 
+            background: #f8f9fa;
+        }
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .upload-section {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .workflow-section {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .btn-workflow {
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 500;
+            margin: 5px;
+        }
+        .btn-upload { background: #6c757d; border: none; }
+        .btn-upload:hover { background: #5a6268; }
+        .btn-process { background: #17a2b8; border: none; }
+        .btn-process:hover { background: #138496; }
+        .btn-extract { background: #28a745; border: none; }
+        .btn-extract:hover { background: #218838; }
+        .btn-clean { background: #dc3545; border: none; }
+        .btn-clean:hover { background: #c82333; }
+        
+        .file-item {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+        .file-item:hover {
+            border-color: #007bff;
+            box-shadow: 0 2px 8px rgba(0,123,255,0.15);
+        }
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        .json-preview {
+            background: #f1f3f4;
+            border-radius: 6px;
+            padding: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #e9ecef;
+        }
+        .metrics-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+        .metric-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="text-center mb-4">
+            <h2><i class="fas fa-cogs me-2"></i>Sistema OCR Asíncrono - Workflow Completo</h2>
+            <p class="text-muted">Procesamiento por etapas: Subir → Procesar → Extraer → Limpiar</p>
+        </div>
+
+        <!-- Sección de Carga de Archivos -->
+        <div class="upload-section">
+            <h5><i class="fas fa-upload me-2"></i>1. Subir y Renombrar Archivos</h5>
+            <div class="row align-items-end">
+                <div class="col-md-2">
+                    <label class="form-label fw-bold">Posición Sorteo</label>
+                    <input type="text" class="form-control" id="posicionSorteo" value="A--214056942235719" placeholder="A--214056942235719">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label fw-bold">Fecha Sorteo</label>
+                    <input type="text" class="form-control" id="fechaSorteo" placeholder="20250706">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label fw-bold">Sender ID</label>
+                    <input type="text" class="form-control" id="senderId" value="lid_Usuario" placeholder="lid_Usuario">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label fw-bold">Hora (HH-MM)</label>
+                    <input type="text" class="form-control" id="horaFormato" placeholder="17-30">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label fw-bold">Elegir Archivo</label>
+                    <input type="file" class="form-control" id="fileInput" accept="image/*" multiple>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label fw-bold">&nbsp;</label>
+                    <button class="btn btn-upload btn-secondary btn-workflow w-100" onclick="subirArchivos()">
+                        <i class="fas fa-upload me-2"></i>Subir
+                    </button>
+                </div>
+            </div>
+            <div class="mt-3">
+                <small class="text-muted">Formato resultante: </small>
+                <span class="badge bg-light text-dark" id="nombrePreview">A--214056942235719-20250706--lid_Usuario_17-30.png</span>
+            </div>
+        </div>
+
+        <!-- Métricas del Sistema -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="metrics-card">
+                    <div class="metric-number" id="pendientesCount">0</div>
+                    <div>Archivos Pendientes</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="metrics-card">
+                    <div class="metric-number" id="procesandoCount">0</div>
+                    <div>Procesando</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="metrics-card">
+                    <div class="metric-number" id="completadosCount">0</div>
+                    <div>Completados</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="metrics-card">
+                    <div class="metric-number" id="jsonCount">0</div>
+                    <div>JSON Disponibles</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Workflow de Procesamiento -->
+        <div class="workflow-section">
+            <div class="row">
+                <div class="col-md-3">
+                    <h5><i class="fas fa-clock me-2"></i>2. Archivos No Procesados</h5>
+                    <div id="archivosPendientes" class="mt-3" style="max-height: 400px; overflow-y: auto;">
+                        <div class="text-center text-muted py-4">
+                            <i class="fas fa-inbox fa-2x mb-2"></i>
+                            <p>Archivos subidos aparecerán aquí</p>
+                        </div>
+                    </div>
+                    <button class="btn btn-process btn-info btn-workflow w-100 mt-3" onclick="procesarLote()">
+                        <i class="fas fa-cogs me-2"></i>Procesar Todo el Lote
+                    </button>
+                </div>
+                
+                <div class="col-md-3">
+                    <h5><i class="fas fa-check-circle me-2"></i>3. Archivos Procesados</h5>
+                    <div id="archivosProcesados" class="mt-3" style="max-height: 400px; overflow-y: auto;">
+                        <div class="text-center text-muted py-4">
+                            <i class="fas fa-check-circle fa-2x mb-2"></i>
+                            <p>Archivos procesados aparecerán aquí</p>
+                        </div>
+                    </div>
+                    <button class="btn btn-extract btn-success btn-workflow w-100 mt-3" onclick="extraerResultados()">
+                        <i class="fas fa-download me-2"></i>Extraer Resultados JSON
+                    </button>
+                </div>
+                
+                <div class="col-md-6">
+                    <h5><i class="fas fa-file-code me-2"></i>4. Resultados JSON</h5>
+                    <div id="resultadosJSON" class="mt-3" style="max-height: 400px; overflow-y: auto;">
+                        <div class="text-center text-muted py-4">
+                            <i class="fas fa-file-code fa-2x mb-2"></i>
+                            <p>Los resultados JSON aparecerán aquí</p>
+                        </div>
+                    </div>
+                    <button class="btn btn-clean btn-danger btn-workflow w-100 mt-3" onclick="limpiarSistema()">
+                        <i class="fas fa-trash me-2"></i>Limpiar Sistema
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Variables globales
+        let archivosPendientesData = [];
+        let archivosProcesadosData = [];
+        let resultadosJSONData = [];
+
+        function actualizarPreview() {
+            const posicion = document.getElementById('posicionSorteo').value || 'A--214056942235719';
+            const fecha = document.getElementById('fechaSorteo').value || getFechaActual();
+            const sender = document.getElementById('senderId').value || 'lid_Usuario';
+            const hora = document.getElementById('horaFormato').value || getHoraActual();
+            
+            const nombre = `${posicion}-${fecha}--${sender}_${hora}.png`;
+            document.getElementById('nombrePreview').textContent = nombre;
+        }
+
+        function getFechaActual() {
+            const ahora = new Date();
+            return ahora.getFullYear() + 
+                   (ahora.getMonth() + 1).toString().padStart(2, '0') + 
+                   ahora.getDate().toString().padStart(2, '0');
+        }
+
+        function getHoraActual() {
+            const ahora = new Date();
+            return ahora.getHours().toString().padStart(2, '0') + '-' + 
+                   ahora.getMinutes().toString().padStart(2, '0');
+        }
+
+        async function subirArchivos() {
+            const fileInput = document.getElementById('fileInput');
+            
+            if (!fileInput.files || fileInput.files.length === 0) {
+                alert('Por favor selecciona al menos un archivo');
+                return;
+            }
+
+            const button = event.target;
+            const originalText = button.innerHTML;
+            button.disabled = true;
+            button.innerHTML = '<div class="spinner-border spinner-border-sm me-2"></div>Subiendo...';
+
+            try {
+                for (let i = 0; i < fileInput.files.length; i++) {
+                    const file = fileInput.files[i];
+                    const formData = new FormData();
+                    
+                    const posicion = document.getElementById('posicionSorteo').value;
+                    const fecha = document.getElementById('fechaSorteo').value || getFechaActual();
+                    const sender = document.getElementById('senderId').value;
+                    const hora = document.getElementById('horaFormato').value || getHoraActual();
+                    
+                    const nombrePersonalizado = `${posicion}-${fecha}--${sender}_${hora}.png`;
+                    
+                    formData.append('image', file);
+                    formData.append('custom_filename', nombrePersonalizado);
+                    formData.append('posicion_sorteo', posicion);
+                    formData.append('fecha_sorteo', fecha);
+                    formData.append('sender_id', sender);
+                    formData.append('hora_formato', hora);
+                    
+                    const response = await fetch('/api/ocr/process_image', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    const resultado = await response.json();
+                    console.log('Imagen encolada:', resultado);
+                }
+                
+                await actualizarTodasLasListas();
+                alert('Archivos subidos exitosamente');
+                
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error subiendo archivos: ' + error.message);
+            } finally {
+                button.disabled = false;
+                button.innerHTML = originalText;
+            }
+        }
+
+        async function procesarLote() {
+            const button = event.target;
+            const originalText = button.innerHTML;
+            button.disabled = true;
+            button.innerHTML = '<div class="spinner-border spinner-border-sm me-2"></div>Procesando...';
+
+            try {
+                const response = await fetch('/api/ocr/process_batch', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ profile: 'ultra_rapido' })
+                });
+                
+                const resultado = await response.json();
+                console.log('Lote procesado:', resultado);
+                
+                await actualizarTodasLasListas();
+                alert(`Lote procesado: ${resultado.batch_info?.processed_count || 0} éxitos, ${resultado.batch_info?.error_count || 0} errores`);
+                
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error procesando lote: ' + error.message);
+            } finally {
+                button.disabled = false;
+                button.innerHTML = originalText;
+            }
+        }
+
+        async function extraerResultados() {
+            const button = event.target;
+            const originalText = button.innerHTML;
+            button.disabled = true;
+            button.innerHTML = '<div class="spinner-border spinner-border-sm me-2"></div>Extrayendo...';
+
+            try {
+                const response = await fetch('/api/ocr/processed_files');
+                const data = await response.json();
+                
+                if (data.files && data.files.length > 0) {
+                    resultadosJSONData = data.files.filter(file => file.has_ocr_data);
+                    renderizarResultadosJSON();
+                    alert(`Se encontraron ${resultadosJSONData.length} archivos con resultados JSON`);
+                } else {
+                    alert('No se encontraron archivos con resultados JSON');
+                }
+                
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error extrayendo resultados: ' + error.message);
+            } finally {
+                button.disabled = false;
+                button.innerHTML = originalText;
+            }
+        }
+
+        async function limpiarSistema() {
+            if (!confirm('¿Estás seguro de que quieres limpiar el sistema? Esto eliminará todos los archivos y resultados.')) {
+                return;
+            }
+
+            const button = event.target;
+            const originalText = button.innerHTML;
+            button.disabled = true;
+            button.innerHTML = '<div class="spinner-border spinner-border-sm me-2"></div>Limpiando...';
+
+            try {
+                const response = await fetch('/api/ocr/clean', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                
+                const resultado = await response.json();
+                console.log('Sistema limpiado:', resultado);
+                
+                await actualizarTodasLasListas();
+                alert('Sistema limpiado exitosamente');
+                
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error limpiando sistema: ' + error.message);
+            } finally {
+                button.disabled = false;
+                button.innerHTML = originalText;
+            }
+        }
+
+        async function actualizarTodasLasListas() {
+            await Promise.all([
+                actualizarArchivosPendientes(),
+                actualizarArchivosProcesados(),
+                actualizarMetricas()
+            ]);
+        }
+
+        async function actualizarArchivosPendientes() {
+            try {
+                const response = await fetch('/api/ocr/queue/status');
+                const data = await response.json();
+                
+                const container = document.getElementById('archivosPendientes');
+                const pendientes = data.queue_details?.pending || [];
+                
+                if (pendientes.length > 0) {
+                    let html = '';
+                    pendientes.forEach(file => {
+                        html += `
+                            <div class="file-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>${file.filename || 'Sin nombre'}</strong>
+                                        <br><small class="text-muted">${file.size_readable || 'N/A'}</small>
+                                    </div>
+                                    <span class="status-badge bg-warning text-dark">Pendiente</span>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    container.innerHTML = html;
+                } else {
+                    container.innerHTML = '<div class="text-center text-muted py-4">No hay archivos pendientes</div>';
+                }
+            } catch (error) {
+                console.error('Error actualizando pendientes:', error);
+            }
+        }
+
+        async function actualizarArchivosProcesados() {
+            try {
+                const response = await fetch('/api/ocr/processed_files');
+                const data = await response.json();
+                
+                const container = document.getElementById('archivosProcesados');
+                
+                if (data.files && data.files.length > 0) {
+                    let html = '';
+                    data.files.slice(0, 20).forEach(file => {
+                        html += `
+                            <div class="file-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>${file.filename}</strong>
+                                        <br><small class="text-muted">${file.size_readable} - ${file.modified_readable}</small>
+                                        ${file.confidence ? `<br><small class="text-info">Confianza: ${(file.confidence * 100).toFixed(1)}%</small>` : ''}
+                                    </div>
+                                    <span class="status-badge ${file.has_ocr_data ? 'bg-success text-white' : 'bg-secondary text-white'}">
+                                        ${file.has_coordinates ? 'Con coordenadas' : 'Sin coordenadas'}
+                                    </span>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    container.innerHTML = html;
+                } else {
+                    container.innerHTML = '<div class="text-center text-muted py-4">No hay archivos procesados</div>';
+                }
+            } catch (error) {
+                console.error('Error actualizando procesados:', error);
+            }
+        }
+
+        function renderizarResultadosJSON() {
+            const container = document.getElementById('resultadosJSON');
+            
+            if (resultadosJSONData.length > 0) {
+                let html = '';
+                resultadosJSONData.forEach(file => {
+                    html += `
+                        <div class="file-item">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <strong>${file.filename}</strong>
+                                <button class="btn btn-sm btn-outline-primary" onclick="descargarJSON('${file.filename}')">
+                                    <i class="fas fa-download"></i> JSON
+                                </button>
+                            </div>
+                            <div class="json-preview">
+                                <small>Archivo con resultados OCR disponible</small><br>
+                                <small class="text-muted">Confianza: ${file.confidence ? (file.confidence * 100).toFixed(1) + '%' : 'N/A'}</small><br>
+                                <small class="text-muted">Coordenadas: ${file.has_coordinates ? 'Sí' : 'No'}</small>
+                            </div>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+            } else {
+                container.innerHTML = '<div class="text-center text-muted py-4">No hay resultados JSON disponibles</div>';
+            }
+        }
+
+        async function descargarJSON(filename) {
+            try {
+                const response = await fetch(`/api/ocr/download_json/${encodeURIComponent(filename)}`);
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = filename.replace('.png', '.json');
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+                } else {
+                    alert('Error descargando archivo JSON');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error descargando archivo: ' + error.message);
+            }
+        }
+
+        async function actualizarMetricas() {
+            try {
+                const response = await fetch('/api/ocr/queue/status');
+                const data = await response.json();
+                
+                document.getElementById('pendientesCount').textContent = data.queue_status?.pending || 0;
+                document.getElementById('procesandoCount').textContent = data.queue_status?.processing || 0;
+                document.getElementById('completadosCount').textContent = data.queue_status?.completed || 0;
+                document.getElementById('jsonCount').textContent = data.queue_status?.results_available || 0;
+            } catch (error) {
+                console.error('Error actualizando métricas:', error);
+            }
+        }
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('fechaSorteo').value = getFechaActual();
+            document.getElementById('horaFormato').value = getHoraActual();
+            
+            ['posicionSorteo', 'fechaSorteo', 'senderId', 'horaFormato'].forEach(fieldId => {
+                document.getElementById(fieldId).addEventListener('input', actualizarPreview);
+            });
+            
+            actualizarPreview();
+            actualizarTodasLasListas();
+            
+            // Actualizar cada 10 segundos
+            setInterval(actualizarTodasLasListas, 10000);
+        });
+    </script>
+</body>
+</html>
