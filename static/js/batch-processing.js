@@ -146,7 +146,7 @@ class BatchProcessor {
         
         // Add files
         this.selectedFiles.forEach(file => {
-            formData.append('images', file);
+            formData.append('files', file);
         });
 
         // Add metadata

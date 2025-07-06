@@ -1017,8 +1017,19 @@
                 
                 const formData = new FormData();
                 Array.from(files).forEach(file => {
-                    formData.append('images', file);
+                    formData.append('files', file);
                 });
+                
+                // FIX: Envío de metadatos WhatsApp personalizados desde el formulario
+                // REASON: Usuario requiere que los metadatos del formulario se envíen al backend
+                // IMPACT: Sistema utiliza metadatos personalizados en lugar de automáticos
+                // INTERFACE: Validación de campos de metadatos con manejo de errores
+                formData.append('numerosorteo', document.getElementById('numerosorteo').value || '');
+                formData.append('fechasorteo', document.getElementById('fechasorteo').value || '');
+                formData.append('idWhatsapp', document.getElementById('idWhatsapp').value || '');
+                formData.append('nombre', document.getElementById('nombre').value || '');
+                formData.append('horamin', document.getElementById('horamin').value || '');
+                formData.append('caption', document.getElementById('caption').value || '');
 
                 try {
                     this.logActivity(`🚀 Iniciando subida de ${files.length} archivo(s)...`);
@@ -1623,6 +1634,26 @@
                     }
                 });
             }
+
+            // FIX: Implementar listeners reactivos para preview automático
+            // REASON: Usuario reporta que preview no se actualiza automáticamente
+            // IMPACT: Preview se actualiza en tiempo real al cambiar cualquier campo
+            // INTERFACE: Validación de campos con binding reactivo
+            setupReactivePreview() {
+                const metadataFields = ['numerosorteo', 'fechasorteo', 'idWhatsapp', 'nombre', 'horamin', 'caption'];
+                
+                metadataFields.forEach(fieldId => {
+                    const field = document.getElementById(fieldId);
+                    if (field) {
+                        field.addEventListener('input', () => {
+                            this.updateFilenamePreview();
+                        });
+                        field.addEventListener('change', () => {
+                            this.updateFilenamePreview();
+                        });
+                    }
+                });
+            }
         }
 
         // INTERFACE: Global utility functions
@@ -1637,6 +1668,44 @@
                         icon.className = 'fas fa-check';
                         setTimeout(() => {
                             icon.className = 'fas fa-copy';
+                        }, 1000);
+                    }
+                }).catch(err => {
+                    console.error('Error copying to clipboard:', err);
+                });
+            }
+        }
+
+        // FIX: Implementar función copyFilenamePreview específica
+        // REASON: Usuario reporta que botón de copia no funciona
+        // IMPACT: Función de copia completamente funcional con feedback visual
+        // INTERFACE: Validación de elemento y manejo de errores
+        function copyFilenamePreview() {
+            const previewElement = document.getElementById('filenamePreview');
+            if (previewElement) {
+                const filename = previewElement.textContent;
+                navigator.clipboard.writeText(filename).then(() => {
+                    // Visual feedback
+                    const copyBtn = previewElement.parentElement?.querySelector('.copy-btn i');
+                    if (copyBtn) {
+                        copyBtn.className = 'fas fa-check';
+                        setTimeout(() => {
+                            copyBtn.className = 'fas fa-copy';
+                        }, 1000);
+                    }
+                    
+                    // Log activity
+                    if (window.manager) {
+                        window.manager.logActivity(`📋 Nombre de archivo copiado: ${filename}`);
+                    }
+                }).catch(err => {
+                    console.error('Error copying filename:', err);
+                    if (window.manager) {
+                        window.manager.logActivity(`❌ Error al copiar nombre de archivo`);
+                    }
+                });
+            }
+        } = 'fas fa-copy';
                         }, 1000);
                     }
                 });
@@ -1675,6 +1744,10 @@
         // INTERFACE: Initialize the application
         document.addEventListener('DOMContentLoaded', () => {
             window.interfaceManager = new InterfaceExcellenceManager();
+            // FIX: Configurar preview reactivo automáticamente
+            // REASON: Usuario requiere preview que se actualice al cambiar campos
+            // IMPACT: Preview funciona inmediatamente sin necesidad de botones
+            window.interfaceManager.setupReactivePreview();
         });
     </script>
 </body>

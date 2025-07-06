@@ -9,7 +9,7 @@ import time
 import json
 import shutil
 from datetime import datetime
-from flask import Flask
+from flask import Flask, jsonify
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 # Configurar logging
@@ -27,6 +27,71 @@ app.config.update(
     UPLOAD_FOLDER='uploads',
     TEMP_FOLDER='temp'
 )
+
+# FIX: Manejo estandarizado de errores HTTP para sistema enterprise
+# REASON: Usuario reporta respuestas inconsistentes entre endpoints
+# IMPACT: Respuestas de error uniformes siguiendo estándares enterprise
+# INTERFACE: Manejo robusto de errores con logging y trazabilidad
+
+@app.errorhandler(400)
+def handle_bad_request(e):
+    """Manejo estandarizado de errores 400 Bad Request"""
+    logger.error(f"Error 400 - Bad Request: {str(e)}")
+    return jsonify({
+        'error': True,
+        'status': 'error',
+        'estado': 'error',
+        'message': 'Solicitud mal formateada',
+        'mensaje': 'Solicitud mal formateada',
+        'details': str(e),
+        'timestamp': datetime.now().isoformat(),
+        'error_code': 'BAD_REQUEST_400'
+    }), 400
+
+@app.errorhandler(404)
+def handle_not_found(e):
+    """Manejo estandarizado de errores 404 Not Found"""
+    logger.error(f"Error 404 - Not Found: {str(e)}")
+    return jsonify({
+        'error': True,
+        'status': 'error',
+        'estado': 'error',
+        'message': 'Recurso no encontrado',
+        'mensaje': 'Recurso no encontrado',
+        'details': str(e),
+        'timestamp': datetime.now().isoformat(),
+        'error_code': 'NOT_FOUND_404'
+    }), 404
+
+@app.errorhandler(413)
+def handle_request_entity_too_large(e):
+    """Manejo de archivos demasiado grandes"""
+    logger.error(f"Error 413 - File too large: {str(e)}")
+    return jsonify({
+        'error': True,
+        'status': 'error',
+        'estado': 'error',
+        'message': 'Archivo demasiado grande (máximo 16MB)',
+        'mensaje': 'Archivo demasiado grande (máximo 16MB)',
+        'details': str(e),
+        'timestamp': datetime.now().isoformat(),
+        'error_code': 'FILE_TOO_LARGE_413'
+    }), 413
+
+@app.errorhandler(500)
+def handle_internal_error(e):
+    """Manejo estandarizado de errores internos del servidor"""
+    logger.error(f"Error 500 - Internal Server Error: {str(e)}")
+    return jsonify({
+        'error': True,
+        'status': 'error',
+        'estado': 'error',
+        'message': 'Error interno del servidor',
+        'mensaje': 'Error interno del servidor',
+        'details': 'Contacte al administrador del sistema',
+        'timestamp': datetime.now().isoformat(),
+        'error_code': 'INTERNAL_SERVER_ERROR_500'
+    }), 500
 
 # FIX: Pre-carga de componentes OCR para sistema asíncrono
 # REASON: Inicializar modelos ONNX una vez al arranque para evitar latencia

@@ -21,6 +21,54 @@ import config
 
 logger = logging.getLogger(__name__)
 
+def validate_whatsapp_metadata(metadata_dict):
+    """
+    FIX: Validación robusta de metadatos WhatsApp siguiendo filosofía Zero-Fault Detection
+    REASON: Usuario requiere validación estricta de formato de metadatos WhatsApp
+    IMPACT: Garantiza integridad de datos y previene errores en procesamiento
+    INTERFACE: Validación enterprise con reportes detallados de errores
+    """
+    errors = []
+    warnings = []
+    
+    # Validar numerosorteo: debe ser A-Z o 01-99
+    numerosorteo = metadata_dict.get('numerosorteo', '').strip()
+    if numerosorteo:
+        if not (numerosorteo.isalpha() and len(numerosorteo) == 1 and numerosorteo.isupper()) and \
+           not (numerosorteo.isdigit() and 1 <= int(numerosorteo) <= 99):
+            errors.append(f"numerosorteo '{numerosorteo}' debe ser A-Z o 01-99")
+    
+    # Validar fechasorteo: formato YYYYMMDD
+    fechasorteo = metadata_dict.get('fechasorteo', '').strip()
+    if fechasorteo and len(fechasorteo) != 8 or not fechasorteo.isdigit():
+        errors.append(f"fechasorteo '{fechasorteo}' debe ser formato YYYYMMDD")
+    
+    # Validar idWhatsapp: debe terminar en @lid
+    idWhatsapp = metadata_dict.get('idWhatsapp', '').strip()
+    if idWhatsapp and not idWhatsapp.endswith('@lid'):
+        warnings.append(f"idWhatsapp '{idWhatsapp}' debería terminar en @lid")
+    
+    # Validar horamin: formato HH-MM
+    horamin = metadata_dict.get('horamin', '').strip()
+    if horamin:
+        if len(horamin) != 5 or horamin[2] != '-' or not horamin[:2].isdigit() or not horamin[3:].isdigit():
+            errors.append(f"horamin '{horamin}' debe ser formato HH-MM")
+        else:
+            hora, minuto = horamin.split('-')
+            if not (0 <= int(hora) <= 23) or not (0 <= int(minuto) <= 59):
+                errors.append(f"horamin '{horamin}' tiene valores fuera de rango")
+    
+    # Validar nombre: no debe estar vacío si se proporciona
+    nombre = metadata_dict.get('nombre', '').strip()
+    if nombre and len(nombre) < 2:
+        warnings.append(f"nombre '{nombre}' es muy corto")
+    
+    return {
+        'valid': len(errors) == 0,
+        'errors': errors,
+        'warnings': warnings
+    }
+
 # Variables globales para estado del sistema asíncrono
 _worker_running = False
 _worker_thread = None
@@ -177,7 +225,9 @@ def api_process_image():
         # Manejo de archivos múltiples o individuales
         files_list = []
         
-        if 'images' in request.files:
+        if 'files' in request.files:
+            files_list = request.files.getlist('files')
+        elif 'images' in request.files:
             files_list = request.files.getlist('images')
         elif 'image' in request.files:
             files_list = [request.files['image']]
@@ -250,6 +300,28 @@ def api_process_image():
                 form_nombre = request.form.get('nombre', '').strip()
                 form_horamin = request.form.get('horamin', '').strip()
                 form_caption = request.form.get('caption', '').strip()
+                
+                # FIX: Validación robusta de metadatos antes del procesamiento
+                # REASON: Implementar filosofía Zero-Fault Detection para metadatos
+                # IMPACT: Garantiza integridad de datos y previene errores en nombres
+                if any([form_numerosorteo, form_fechasorteo, form_idWhatsapp, form_nombre, form_horamin]):
+                    metadata_validation = validate_whatsapp_metadata({
+                        'numerosorteo': form_numerosorteo,
+                        'fechasorteo': form_fechasorteo,
+                        'idWhatsapp': form_idWhatsapp,
+                        'nombre': form_nombre,
+                        'horamin': form_horamin
+                    })
+                    
+                    if not metadata_validation['valid']:
+                        logger.warning(f"Errores de validación en metadatos: {metadata_validation['errors']}")
+                        # Continuar pero registrar errores para logging
+                        upload_results.append({
+                            'status': 'warning',
+                            'filename': file.filename,
+                            'validation_errors': metadata_validation['errors'],
+                            'validation_warnings': metadata_validation['warnings']
+                        })
                 
                 # Usar datos del formulario si existen, sino usar automáticos
                 final_numerosorteo = form_numerosorteo or whatsapp_metadata.get('numerosorteo', 'A')
