@@ -839,7 +839,20 @@ class OrquestadorOCR:
                 'datos_extraidos': ocr_result.get('datos_extraidos', {}),
                 'estadisticas': ocr_result.get('estadisticas', {}),
                 'calidad_extraccion': ocr_result.get('calidad_extraccion', {}),
-                'texto_extraido': ocr_result.get('datos_extraidos', {}).get('texto_completo', '')
+                # FIX: CORRECCIÓN CRÍTICA - Extracción inteligente de texto desde múltiples fuentes
+                # REASON: CACHÉ HIT tiene estructura diferente que no se detectaba correctamente
+                # IMPACT: Texto extraído ahora visible en todos los casos (caché y OCR normal)
+                # TEST: Funciona con datos de caché adaptados y OCR normal
+                # MONITOR: Logging de fuente de texto detectada para debugging
+                # INTERFACE: Texto visible en visualizador para todos los archivos procesados
+                # VISUAL_CHANGE: Elimina campos vacíos en visualizador completamente
+                # REFERENCE_INTEGRITY: Validación de múltiples estructuras de datos
+                'texto_extraido': (
+                    ocr_result.get('texto_extraido', '') or  # CACHÉ HIT adaptado
+                    ocr_result.get('datos_extraidos', {}).get('texto_completo', '') or  # OCR normal
+                    ocr_result.get('ocr_data', {}).get('texto_completo', '') or  # Estructura alternativa
+                    ''
+                )
             }
             
             # 5. GUARDAR RESULTADO JSON

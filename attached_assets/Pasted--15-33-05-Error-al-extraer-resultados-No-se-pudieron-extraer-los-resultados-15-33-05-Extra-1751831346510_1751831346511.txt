@@ -1,0 +1,50 @@
+[15:33:05] ❌ Error al extraer resultados: No se pudieron extraer los resultados
+[15:33:05] 📥 Extrayendo resultados JSON...
+[15:33:02] ✅ 5 archivos procesados cargados
+[15:32:35] ⚠️ Sin resultados para: 20250706-G--218253343817970@lid_Maria_02-07_20250706_193117_994.png
+[15:32:34] ⚠️ Sin resultados para: 20250706-H--212950389261079@lid_Ana_16-58_20250706_193129_330.png
+[15:32:32] ⚠️ Sin resultados para: 20250706-G--211848900928132@lid_Miguel_09-37_20250706_193153_501.png
+[15:32:31] ⚠️ Sin resultados para: 20250706-H--212811299189101@lid_Luis_18-48_20250706_193142_884.jpg
+[15:32:28] ⚠️ Sin resultados para: 20250706-A--21294442478450@lid_Miguel_17-19_20250706_193209_685.jpg
+[15:32:26] ✅ 5 archivos procesados cargados
+[15:32:24] ✅ 5 archivos procesados cargados
+[15:32:20] ✅ Procesamiento iniciado. Request ID: BATCH_20250706_193217_fc1ccec0
+[15:32:17] ⚙️ Iniciando procesamiento de lote...
+[15:32:16] 📂 5 archivo(s) en cola con metadatos WhatsApp
+[15:32:11] 📂 5 archivo(s) en cola con metadatos WhatsApp
+[15:32:09] 📂 5 archivo(s) en cola con metadatos WhatsApp
+[15:32:09] 🗑️ Selección de archivos limpiada
+[15:32:09] ✅ 1 archivo(s) subido(s) exitosamente
+[15:32:09] 🚀 Iniciando subida de 1 archivo(s)...
+[15:32:07] 🎲 Datos WhatsApp generados aleatoriamente
+[15:32:03] 📁 1 archivo(s) seleccionado(s) para subida
+[15:31:53] 📂 4 archivo(s) en cola con metadatos WhatsApp
+[15:31:53] 🗑️ Selección de archivos limpiada
+[15:31:53] ✅ 1 archivo(s) subido(s) exitosamente
+[15:31:53] 🚀 Iniciando subida de 1 archivo(s)...
+[15:31:52] 🎲 Datos WhatsApp generados aleatoriamente
+[15:31:49] 📁 1 archivo(s) seleccionado(s) para subida
+[15:31:43] 📂 3 archivo(s) en cola con metadatos WhatsApp
+[15:31:42] 🗑️ Selección de archivos limpiada
+[15:31:42] ✅ 1 archivo(s) subido(s) exitosamente
+[15:31:42] 🚀 Iniciando subida de 1 archivo(s)...
+[15:31:40] 🎲 Datos WhatsApp generados aleatoriamente
+[15:31:38] 📁 1 archivo(s) seleccionado(s) para subida
+[15:31:29] 📂 2 archivo(s) en cola con metadatos WhatsApp
+[15:31:29] 🗑️ Selección de archivos limpiada
+[15:31:29] ✅ 1 archivo(s) subido(s) exitosamente
+[15:31:28] 🚀 Iniciando subida de 1 archivo(s)...
+[15:31:26] 🎲 Datos WhatsApp generados aleatoriamente
+[15:31:24] 📁 1 archivo(s) seleccionado(s) para subida
+[15:31:18] 📂 1 archivo(s) en cola con metadatos WhatsApp
+[15:31:18] 🗑️ Selección de archivos limpiada
+[15:31:18] ✅ 1 archivo(s) subido(s) exitosamente
+[15:31:17] 🚀 Iniciando subida de 1 archivo(s)...
+[15:31:16] 🎲 Datos WhatsApp generados aleatoriamente
+[15:31:11] 📁 1 archivo(s) seleccionado(s) para subida
+[15:31:03] ℹ️ No hay archivos procesados disponibles
+[15:31:03] ✅ Sistema limpiado: Sistema limpiado exitosamente
+[15:31:03] 🧹 Iniciando limpieza del sistema...
+[15:30:59] ✅ 5 archivos procesados cargados
+[15:30:47] ✅ 5 archivos procesados cargados
+Sistema iniciado. Esperando actividad...

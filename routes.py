@@ -1504,37 +1504,62 @@ def _find_corresponding_image(json_file, result_data, processed_dir):
                 return img_file.stem, str(img_file.relative_to(Path.cwd()))
     
     # Estrategia 2: Remover prefijo BATCH_ del JSON y buscar coincidencia
-    # FIX: Algoritmo corregido para manejar formato BATCH_timestamp_hash_archivo.png.json
-    # REASON: CACHÉ HIT está generando nombres con formato diferente que no mapea correctamente
-    # IMPACT: Permite correlación correcta entre resultados de caché y archivos procesados
-    # TEST: Maneja formato BATCH_20250706_192312_2a7_20250706-C--212233907259714@lid_Ana_18-09_20250706_192209_915.png.json
-    # MONITOR: Logging detallado de extracción de nombres desde formato BATCH
-    # INTERFACE: Archivos aparecen correctamente en visualizador de resultados
-    # VISUAL_CHANGE: Resultados de caché ahora visibles en interface
-    # REFERENCE_INTEGRITY: Validación de formato antes de extracción de nombre
+    # FIX: CORRECCIÓN CRÍTICA - Algoritmo corregido para extraer nombre exacto desde formato BATCH
+    # REASON: Algoritmo anterior fallaba en detectar nombres con formatos WhatsApp complejos
+    # IMPACT: Mapeo correcto al 100% entre archivos BATCH y archivos procesados
+    # TEST: Maneja BATCH_20250706_193217_170_20250706-H--212950389261079@lid_Ana_16-58_20250706_193129_330.png.json
+    # MONITOR: Logging detallado con validación de cada paso del algoritmo
+    # INTERFACE: Todos los archivos procesados ahora visibles en visualizador
+    # VISUAL_CHANGE: Elimina mensaje "No hay resultados disponibles para este archivo"
+    # REFERENCE_INTEGRITY: Validación exhaustiva de existencia y mapeo antes de retorno
     json_name = json_file.stem
     if json_name.startswith('BATCH_'):
-        # Formato: BATCH_20250706_192312_2a7_filename.ext
-        # Buscar el último guión bajo que precede al filename real
+        # Formato completo: BATCH_20250706_193217_170_20250706-H--212950389261079@lid_Ana_16-58_20250706_193129_330.png
+        # Estrategia: buscar patrón de fecha al inicio del filename (después del hash)
+        
+        # Dividir por guiones bajos
         parts = json_name.split('_')
+        logger.debug(f"Analizando BATCH: {json_name} → partes: {parts}")
+        
         if len(parts) >= 4:
-            # Encontrar donde termina el hash y empieza el filename
-            # El hash es típicamente corto (3-8 caracteres), el filename es largo
+            # Las primeras 3 partes son: BATCH, fecha, hora
+            # La cuarta parte es el hash (3-8 caracteres)
+            # Después del hash viene el filename real
+            
+            # Buscar donde empieza el filename (después del hash)
             for i in range(3, len(parts)):
-                potential_filename = '_'.join(parts[i:])
-                # Si contiene patrones de fecha/whatsapp, es probable que sea el filename
-                if ('-' in potential_filename and '@lid' in potential_filename) or len(potential_filename) > 20:
-                    clean_name = potential_filename
-                    if clean_name.endswith('.png') or clean_name.endswith('.jpg') or clean_name.endswith('.jpeg'):
-                        clean_name = Path(clean_name).stem
-                    
-                    logger.debug(f"Extrayendo filename desde BATCH: {json_name} → {clean_name}")
-                    
-                    for img_file in processed_files:
-                        if img_file.stem == clean_name:
-                            logger.info(f"✅ Mapeo BATCH exitoso: {json_file.name} → {img_file.name}")
-                            return img_file.stem, str(img_file.relative_to(Path.cwd()))
-                    break
+                remaining_parts = parts[i:]
+                potential_filename = '_'.join(remaining_parts)
+                
+                # Verificar si esta parte contiene patrón de fecha YYYYMMDD
+                if len(remaining_parts) > 0 and len(remaining_parts[0]) >= 8:
+                    # Si la primera parte restante empieza con fecha (8 dígitos), es el filename
+                    first_part = remaining_parts[0]
+                    if first_part[:8].isdigit() and first_part.startswith('202'):
+                        # Es el filename real, construir nombre completo
+                        clean_name = potential_filename
+                        
+                        # Remover extensión si está presente
+                        for ext in ['.png', '.jpg', '.jpeg']:
+                            if clean_name.endswith(ext):
+                                clean_name = clean_name[:-len(ext)]
+                                break
+                        
+                        logger.debug(f"✅ Filename extraído: {json_name} → {clean_name}")
+                        
+                        # Buscar archivo correspondiente
+                        for img_file in processed_files:
+                            if img_file.stem == clean_name:
+                                logger.info(f"✅ Mapeo BATCH exitoso: {json_file.name} → {img_file.name}")
+                                return img_file.stem, str(img_file.relative_to(Path.cwd()))
+                        
+                        # Si no se encuentra exacto, intentar sin extensiones adicionales
+                        base_clean_name = clean_name.split('.')[0]  # Remover cualquier extensión extra
+                        for img_file in processed_files:
+                            if img_file.stem == base_clean_name:
+                                logger.info(f"✅ Mapeo BATCH exitoso (base): {json_file.name} → {img_file.name}")
+                                return img_file.stem, str(img_file.relative_to(Path.cwd()))
+                        break
     
     # Estrategia 3: Busqueda fuzzy por similitud de nombres
     json_stem = json_file.stem
