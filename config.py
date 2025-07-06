@@ -459,20 +459,22 @@ def get_batch_config():
     """Cache para configuración de procesamiento por lotes"""
     return BATCH_PROCESSING_CONFIG
 
-@lru_cache(maxsize=8)
 def get_async_directories():
     """
     FIX: Función para obtener directorios asíncronos de forma consistente
     REASON: Endpoints requieren acceso consistente a la estructura de directorios
     IMPACT: Eliminación de errores ModuleNotFoundError en endpoints API
     """
-    # Definir directorios asíncronos
+    # FIX: Definir directorios asíncronos con SISTEMA DE HISTORIAL EMPRESARIAL
+    # REASON: Usuario requiere historial independiente para preservar archivos procesados
+    # IMPACT: Limpieza segura con historial permanente y eliminación tras 24h en historial
     directories = {
         'inbox': str(BASE_DIR / "data" / "inbox"),
         'processing': str(BASE_DIR / "data" / "processing"), 
         'processed': str(BASE_DIR / "data" / "processed"),
         'results': str(BASE_DIR / "data" / "results"),
-        'errors': str(BASE_DIR / "data" / "errors")
+        'errors': str(BASE_DIR / "data" / "errors"),
+        'historial': str(BASE_DIR / "data" / "historial")  # FIX: Nuevo directorio historial empresarial
     }
     
     # Crear directorios si no existen

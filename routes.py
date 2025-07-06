@@ -1342,58 +1342,95 @@ def api_clean_system():
         directories = get_async_directories()
         cleaned_counts = {}
         
-        # FIX: Limpiar directorio processed con manejo robusto de errores
-        # REASON: Eliminar archivos procesados para evitar acumulación de basura
-        # IMPACT: Sistema más limpio y organizado después de cada procesamiento
+        # FIX: Mover archivos procesados a HISTORIAL en lugar de eliminarlos
+        # REASON: Usuario requiere historial para preservar archivos sin interferir con nuevos lotes
+        # IMPACT: Limpieza segura que preserva archivos en historial empresarial permanente
+        # WORKFLOW: processed → historial → eliminación tras 24h en historial solamente
+        # INTEGRIDAD: Archivos procesados NO interfieren pero se preservan en historial
         processed_files = glob.glob(os.path.join(directories['processed'], "*.*"))
-        processed_cleaned = 0
+        processed_moved = 0
+        historial_dir = 'data/historial'
+        # Crear directorio historial si no existe
+        os.makedirs(historial_dir, exist_ok=True)
+        
         for file_path in processed_files:
             try:
-                os.remove(file_path)
-                processed_cleaned += 1
+                filename = os.path.basename(file_path)
+                # Agregar timestamp al archivo en historial para evitar conflictos
+                name, ext = os.path.splitext(filename)
+                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                historial_filename = f"{name}_historial_{timestamp}{ext}"
+                historial_path = os.path.join(historial_dir, historial_filename)
+                
+                # Mover archivo a historial
+                shutil.move(file_path, historial_path)
+                processed_moved += 1
+                logger.debug(f"Archivo movido a historial: {filename} → {historial_filename}")
             except Exception as e:
-                logger.warning(f"No se pudo eliminar archivo procesado {file_path}: {e}")
-        cleaned_counts['processed'] = processed_cleaned
+                logger.warning(f"No se pudo mover archivo procesado {file_path}: {e}")
+        cleaned_counts['processed_moved_to_historial'] = processed_moved
         
-        # FIX: Limpiar directorio results con retención de 24 horas
-        # REASON: Usuario requiere mantener archivos al menos 24 horas antes de limpiar
-        # IMPACT: Preserva archivos recientes y solo elimina archivos antiguos (>24h)
-        # TEST: Solo elimina archivos con más de 24 horas de antigüedad
-        # MONITOR: Logging de archivos preservados vs eliminados
-        # INTERFACE: Sistema mantiene archivos visibles por 24 horas mínimo
-        # VISUAL_CHANGE: Archivos procesados permanecen visibles por 24 horas
-        # REFERENCE_INTEGRITY: Implementa retención solicitada por usuario
+        # FIX: Mover archivos results a HISTORIAL y aplicar eliminación 24h SOLO en historial
+        # REASON: Usuario requiere que archivos procesados vayan a historial, eliminación 24h solo en historial
+        # IMPACT: Results activos se mueven a historial, eliminación temporal SOLO en historial
+        # WORKFLOW: results → historial → eliminación tras 24h SOLO en historial
+        # INTEGRIDAD: Results no acumulan, historial maneja retención temporal
         
         from datetime import datetime, timedelta
         
+        # Mover archivos results a historial
         result_files = glob.glob(os.path.join(directories['results'], "*.json"))
-        results_cleaned = 0
-        results_preserved = 0
-        cutoff_time = datetime.now() - timedelta(hours=24)
+        results_moved = 0
         
         for file_path in result_files:
+            try:
+                filename = os.path.basename(file_path)
+                # Agregar timestamp para evitar conflictos en historial
+                name, ext = os.path.splitext(filename)
+                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                historial_filename = f"{name}_result_{timestamp}{ext}"
+                historial_path = os.path.join(historial_dir, historial_filename)
+                
+                # Mover a historial
+                shutil.move(file_path, historial_path)
+                results_moved += 1
+                logger.debug(f"Resultado movido a historial: {filename} → {historial_filename}")
+            except Exception as e:
+                logger.warning(f"No se pudo mover resultado {file_path}: {e}")
+        
+        cleaned_counts['results_moved_to_historial'] = results_moved
+        
+        # FIX: Aplicar eliminación de 24 horas SOLO en directorio historial
+        # REASON: Historial mantiene archivos 24h antes de eliminación final
+        # IMPACT: Eliminación temporal solo afecta historial, no archivos activos
+        historial_files = glob.glob(os.path.join(historial_dir, "*.*"))
+        historial_cleaned = 0
+        historial_preserved = 0
+        cutoff_time = datetime.now() - timedelta(hours=24)
+        
+        for file_path in historial_files:
             try:
                 file_stat = os.stat(file_path)
                 file_time = datetime.fromtimestamp(file_stat.st_mtime)
                 
                 if file_time < cutoff_time:
-                    # Archivo tiene más de 24 horas, eliminar
+                    # Archivo en historial tiene más de 24 horas, eliminar definitivamente
                     os.remove(file_path)
-                    results_cleaned += 1
-                    logger.debug(f"Archivo JSON eliminado (>24h): {os.path.basename(file_path)}")
+                    historial_cleaned += 1
+                    logger.debug(f"Archivo historial eliminado (>24h): {os.path.basename(file_path)}")
                 else:
-                    # Archivo reciente, preservar
-                    results_preserved += 1
-                    logger.debug(f"Archivo JSON preservado (<24h): {os.path.basename(file_path)}")
+                    # Archivo reciente en historial, preservar
+                    historial_preserved += 1
+                    logger.debug(f"Archivo historial preservado (<24h): {os.path.basename(file_path)}")
                     
             except Exception as e:
-                logger.warning(f"No se pudo procesar archivo de resultado {file_path}: {e}")
+                logger.warning(f"No se pudo procesar archivo historial {file_path}: {e}")
                 
-        cleaned_counts['results'] = results_cleaned
-        cleaned_counts['results_preserved'] = results_preserved
+        cleaned_counts['historial_eliminated'] = historial_cleaned
+        cleaned_counts['historial_preserved'] = historial_preserved
         
-        if results_preserved > 0:
-            logger.info(f"🕒 Retención 24h: {results_preserved} archivos preservados, {results_cleaned} eliminados")
+        if historial_preserved > 0:
+            logger.info(f"📁 Historial empresarial: {historial_preserved} preservados, {historial_cleaned} eliminados (>24h)")
         
         # FIX: Limpiar directorio errors (opcional para archivos con errores)
         # REASON: Limpiar archivos que fallaron en procesamiento anterior
@@ -1447,7 +1484,7 @@ def api_clean_system():
             'message': f'Error al limpiar sistema: {str(e)}',
             'mensaje': f'Error al limpiar sistema: {str(e)}',
             'error_code': 'CLEAN_SYSTEM_ERROR',
-            'timestamp': datetime.now().isoformat(),
+            'timestamp': datetime.datetime.now().isoformat(),
             'success': False
         }), 500
 
@@ -1480,13 +1517,29 @@ def api_extract_results():
                 'error_code': 'RESULTS_DIR_NOT_FOUND'
             }), 404
         
-        # Buscar archivos JSON en el directorio de resultados
+        # FIX: Buscar archivos JSON en directorio results Y en historial empresarial
+        # REASON: Usuario requiere extraer datos de archivos movidos a historial por limpiador
+        # IMPACT: Extracción completa de todos los archivos procesados sin importar ubicación
         json_files = []
-        for file in os.listdir(results_dir):
-            if file.endswith('.json'):
-                file_path = os.path.join(results_dir, file)
-                if os.path.isfile(file_path):
-                    json_files.append(file_path)
+        
+        # Buscar en directorio results activo
+        if os.path.exists(results_dir):
+            for file in os.listdir(results_dir):
+                if file.endswith('.json'):
+                    file_path = os.path.join(results_dir, file)
+                    if os.path.isfile(file_path):
+                        json_files.append(file_path)
+        
+        # FIX: Buscar TAMBIÉN en directorio historial empresarial
+        # REASON: Archivos procesados se mueven a historial, deben incluirse en extracción
+        # IMPACT: Extracción consolidada incluye todos los archivos históricos
+        historial_dir = 'data/historial'
+        if os.path.exists(historial_dir):
+            for file in os.listdir(historial_dir):
+                if file.endswith('.json') and 'result_' in file:  # Solo archivos de resultados en historial
+                    file_path = os.path.join(historial_dir, file)
+                    if os.path.isfile(file_path):
+                        json_files.append(file_path)
         
         if not json_files:
             logger.info("No hay archivos de resultados disponibles para extraer")
