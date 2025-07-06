@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema OCR Empresarial - Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .status-badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.375rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .status-success { background-color: #d1edff; color: #0066cc; }
+        .status-warning { background-color: #fff3cd; color: #856404; }
+        .status-danger { background-color: #f8d7da; color: #721c24; }
+        .status-info { background-color: #d1ecf1; color: #0c5460; }
+        
+        .processed-file-item {
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            transition: all 0.2s ease;
+        }
+        .processed-file-item:hover {
+            border-color: #007bff;
+            box-shadow: 0 2px 4px rgba(0,123,255,0.1);
+        }
+        .processed-file-item.selected {
+            border-color: #007bff;
+            background-color: #f8f9ff;
+        }
+        
+        .result-viewer {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 1rem;
+            min-height: 400px;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        
+        .monitoring-panel {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+        }
+        
+        .nav-tabs .nav-link {
+            color: #6c757d;
+            border: none;
+            padding: 0.75rem 1.5rem;
+        }
+        .nav-tabs .nav-link.active {
+            background-color: #007bff;
+            color: white;
+            border-radius: 8px;
+        }
+        
+        .upload-zone {
+            border: 2px dashed #6c757d;
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        .upload-zone:hover {
+            border-color: #007bff;
+            background-color: #f8f9ff;
+        }
+        
+        .metric-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-left: 4px solid #007bff;
+        }
+        
+        .json-viewer {
+            background-color: #2d3748;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .coordinate-highlight {
+            background-color: #fff3cd;
+            padding: 0.25rem;
+            border-radius: 4px;
+            margin: 0.25rem 0;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-eye me-2"></i>
+                Sistema OCR Empresarial
+            </a>
+            <div class="navbar-nav ms-auto">
+                <span class="nav-link">
+                    <i class="fas fa-clock me-1"></i>
+                    <span id="currentTime"></span>
+                </span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid py-4">
+        <!-- Panel de Monitoreo en Tiempo Real -->
+        <div class="monitoring-panel">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="text-center">
+                        <h4 class="mb-1" id="systemStatus">Sistema Activo</h4>
+                        <small>Estado del Sistema</small>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="text-center">
+                        <h4 class="mb-1" id="processingRate">0.0/seg</h4>
+                        <small>Velocidad de Procesamiento</small>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="text-center">
+                        <h4 class="mb-1" id="queueTotal">0</h4>
+                        <small>Total en Cola</small>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="text-center">
+                        <h4 class="mb-1" id="successRate">0%</h4>
+                        <small>Tasa de Éxito</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navegación por Pestañas -->
+        <ul class="nav nav-tabs mb-4" id="mainTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="upload-tab" data-bs-toggle="tab" data-bs-target="#upload-panel">
+                    <i class="fas fa-upload me-2"></i>Subir Imágenes
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="queue-tab" data-bs-toggle="tab" data-bs-target="#queue-panel">
+                    <i class="fas fa-list me-2"></i>Cola de Procesamiento
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="processed-tab" data-bs-toggle="tab" data-bs-target="#processed-panel">
+                    <i class="fas fa-check-circle me-2"></i>Archivos Procesados
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="monitor-tab" data-bs-toggle="tab" data-bs-target="#monitor-panel">
+                    <i class="fas fa-chart-line me-2"></i>Monitoreo en Tiempo Real
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="api-tab" data-bs-toggle="tab" data-bs-target="#api-panel">
+                    <i class="fas fa-code me-2"></i>APIs y Documentación
+                </button>
+            </li>
+        </ul>
+
+        <!-- Contenido de Pestañas -->
+        <div class="tab-content">
+            <!-- Panel de Subida -->
+            <div class="tab-pane fade show active" id="upload-panel">
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5><i class="fas fa-upload me-2"></i>Subir Imágenes para OCR</h5>
+                            </div>
+                            <div class="card-body">
+                                <form id="uploadForm" enctype="multipart/form-data">
+                                    <div class="upload-zone" onclick="document.getElementById('fileInput').click()">
+                                        <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
+                                        <h5>Haz clic aquí o arrastra archivos</h5>
+                                        <p class="text-muted">Formatos: PNG, JPG, JPEG</p>
+                                        <input type="file" id="fileInput" name="images" multiple accept=".png,.jpg,.jpeg" style="display: none;">
+                                    </div>
+                                    <div class="mt-3">
+                                        <button type="button" class="btn btn-primary btn-lg" id="uploadBtn">
+                                            <i class="fas fa-upload me-2"></i>Subir Archivos
+                                        </button>
+                                    </div>
+                                </form>
+                                <div id="uploadProgress" class="mt-3" style="display: none;">
+                                    <div class="progress">
+                                        <div class="progress-bar" role="progressbar" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="metric-card">
+                            <h6><i class="fas fa-info-circle me-2"></i>Información del Sistema</h6>
+                            <div class="mt-3">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>OCR Engine:</span>
+                                    <span class="status-badge status-success" id="ocrStatus">Activo</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Worker:</span>
+                                    <span class="status-badge status-success" id="workerStatus">Activo</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>En Cola:</span>
+                                    <span id="inboxCount">0</span>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <span>Procesados:</span>
+                                    <span id="processedCount">0</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel de Cola -->
+            <div class="tab-pane fade" id="queue-panel">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5><i class="fas fa-list me-2"></i>Archivos en Cola de Procesamiento</h5>
+                                <button class="btn btn-success" id="processAllBtn">
+                                    <i class="fas fa-play me-2"></i>Procesar Todo el Lote
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <div id="queueList">
+                                    <div class="text-center text-muted">
+                                        <i class="fas fa-inbox fa-3x mb-3"></i>
+                                        <p>No hay archivos en cola</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel de Archivos Procesados -->
+            <div class="tab-pane fade" id="processed-panel">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5><i class="fas fa-check-circle me-2"></i>Archivos Procesados</h5>
+                                <div>
+                                    <button class="btn btn-info btn-sm me-2" id="extractJsonBtn">
+                                        <i class="fas fa-download me-1"></i>Extraer Resultados JSON
+                                    </button>
+                                    <button class="btn btn-warning btn-sm" id="cleanSystemBtn">
+                                        <i class="fas fa-broom me-1"></i>Limpiar Sistema
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div id="processedFilesList">
+                                    <div class="text-center text-muted">
+                                        <i class="fas fa-file-alt fa-3x mb-3"></i>
+                                        <p>No hay archivos procesados</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5><i class="fas fa-eye me-2"></i>Visor de Resultados</h5>
+                            </div>
+                            <div class="card-body">
+                                <div id="resultViewer" class="result-viewer">
+                                    <div class="text-center text-muted">
+                                        <i class="fas fa-mouse-pointer fa-2x mb-3"></i>
+                                        <p>Selecciona un archivo procesado para ver sus resultados</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel de Monitoreo -->
+            <div class="tab-pane fade" id="monitor-panel">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5><i class="fas fa-chart-line me-2"></i>Monitoreo en Tiempo Real</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row mb-4">
+                                    <div class="col-md-3">
+                                        <div class="metric-card text-center">
+                                            <h3 id="liveInboxCount">0</h3>
+                                            <p class="mb-0">En Cola</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="metric-card text-center">
+                                            <h3 id="liveProcessingCount">0</h3>
+                                            <p class="mb-0">Procesando</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="metric-card text-center">
+                                            <h3 id="liveProcessedCount">0</h3>
+                                            <p class="mb-0">Completados</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="metric-card text-center">
+                                            <h3 id="liveErrorsCount">0</h3>
+                                            <p class="mb-0">Errores</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h6>Log de Actividad en Tiempo Real</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="activityLog" style="height: 300px; overflow-y: auto; background-color: #f8f9fa; padding: 1rem; border-radius: 4px;">
+                                            <div class="text-muted">Sistema iniciado. Esperando actividad...</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel de APIs -->
+            <div class="tab-pane fade" id="api-panel">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5><i class="fas fa-code me-2"></i>APIs y Documentación</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h6>Endpoints Principales</h6>
+                                        <div class="list-group">
+                                            <div class="list-group-item">
+                                                <div class="d-flex w-100 justify-content-between">
+                                                    <h6 class="mb-1">POST /api/ocr/process_image</h6>
+                                                    <small class="text-success">POST</small>
+                                                </div>
+                                                <p class="mb-1">Subir imagen para procesamiento OCR</p>
+                                            </div>
+                                            <div class="list-group-item">
+                                                <div class="d-flex w-100 justify-content-between">
+                                                    <h6 class="mb-1">POST /api/ocr/process_batch</h6>
+                                                    <small class="text-success">POST</small>
+                                                </div>
+                                                <p class="mb-1">Procesar lote completo de imágenes</p>
+                                            </div>
+                                            <div class="list-group-item">
+                                                <div class="d-flex w-100 justify-content-between">
+                                                    <h6 class="mb-1">GET /api/ocr/processed_files</h6>
+                                                    <small class="text-info">GET</small>
+                                                </div>
+                                                <p class="mb-1">Obtener lista de archivos procesados</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6>Ejemplo de Uso</h6>
+                                        <div class="json-viewer">
+<pre><code>// Subir imagen
+fetch('/api/ocr/process_image', {
+  method: 'POST',
+  body: formData
+});
+
+// Procesar lote
+fetch('/api/ocr/process_batch', {
+  method: 'POST'
+}).then(res => res.json());
+
+// Ver estado de cola
+fetch('/api/ocr/queue/status')
+  .then(res => res.json());</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let selectedFile = null;
+        let monitoringInterval = null;
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', function() {
+            updateTime();
+            setInterval(updateTime, 1000);
+            startMonitoring();
+            loadProcessedFiles();
+            
+            // Event listeners
+            document.getElementById('uploadBtn').addEventListener('click', uploadFiles);
+            document.getElementById('processAllBtn').addEventListener('click', processAllFiles);
+            document.getElementById('extractJsonBtn').addEventListener('click', extractResults);
+            document.getElementById('cleanSystemBtn').addEventListener('click', cleanSystem);
+            
+            // Drag and drop
+            setupDragAndDrop();
+        });
+
+        function updateTime() {
+            document.getElementById('currentTime').textContent = new Date().toLocaleString('es-ES');
+        }
+
+        function startMonitoring() {
+            updateSystemStatus();
+            monitoringInterval = setInterval(updateSystemStatus, 2000);
+        }
+
+        function updateSystemStatus() {
+            fetch('/api/ocr/queue/status')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'ok') {
+                        // Actualizar contadores principales
+                        document.getElementById('inboxCount').textContent = data.queue_status.inbox || 0;
+                        document.getElementById('processedCount').textContent = data.queue_status.processed || 0;
+                        document.getElementById('queueTotal').textContent = data.total_active || 0;
+                        
+                        // Actualizar monitoreo en tiempo real
+                        document.getElementById('liveInboxCount').textContent = data.queue_status.inbox || 0;
+                        document.getElementById('liveProcessingCount').textContent = data.queue_status.processing || 0;
+                        document.getElementById('liveProcessedCount').textContent = data.queue_status.processed || 0;
+                        document.getElementById('liveErrorsCount').textContent = data.queue_status.errors || 0;
+                        
+                        // Actualizar estado del sistema
+                        const ocrStatus = document.getElementById('ocrStatus');
+                        const workerStatus = document.getElementById('workerStatus');
+                        
+                        if (data.system_status?.ocr_loaded) {
+                            ocrStatus.textContent = 'Activo';
+                            ocrStatus.className = 'status-badge status-success';
+                        } else {
+                            ocrStatus.textContent = 'Inactivo';
+                            ocrStatus.className = 'status-badge status-danger';
+                        }
+                        
+                        if (data.system_status?.worker_running) {
+                            workerStatus.textContent = 'Activo';
+                            workerStatus.className = 'status-badge status-success';
+                        } else {
+                            workerStatus.textContent = 'Inactivo';
+                            workerStatus.className = 'status-badge status-warning';
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error updating system status:', error);
+                    logActivity('Error obteniendo estado del sistema', 'error');
+                });
+        }
+
+        function setupDragAndDrop() {
+            const uploadZone = document.querySelector('.upload-zone');
+            
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                uploadZone.addEventListener(eventName, preventDefaults, false);
+            });
+
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                uploadZone.addEventListener(eventName, highlight, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                uploadZone.addEventListener(eventName, unhighlight, false);
+            });
+
+            function highlight(e) {
+                uploadZone.style.borderColor = '#007bff';
+                uploadZone.style.backgroundColor = '#f8f9ff';
+            }
+
+            function unhighlight(e) {
+                uploadZone.style.borderColor = '#6c757d';
+                uploadZone.style.backgroundColor = '';
+            }
+
+            uploadZone.addEventListener('drop', handleDrop, false);
+
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                document.getElementById('fileInput').files = files;
+            }
+        }
+
+        function uploadFiles() {
+            const fileInput = document.getElementById('fileInput');
+            const files = fileInput.files;
+            
+            if (files.length === 0) {
+                showNotification('Por favor selecciona archivos para subir', 'warning');
+                return;
+            }
+
+            const formData = new FormData();
+            for (let file of files) {
+                formData.append('images', file);
+            }
+
+            document.getElementById('uploadProgress').style.display = 'block';
+            
+            fetch('/api/ocr/process_image', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'accepted' || data.estado === 'aceptado') {
+                    showNotification(`${files.length} archivo(s) subido(s) exitosamente`, 'success');
+                    fileInput.value = '';
+                    logActivity(`${files.length} archivo(s) agregado(s) a la cola`, 'success');
+                } else {
+                    showNotification('Error al subir archivos: ' + (data.mensaje || data.message), 'error');
+                }
+                document.getElementById('uploadProgress').style.display = 'none';
+            })
+            .catch(error => {
+                console.error('Error uploading files:', error);
+                showNotification('Error al subir archivos', 'error');
+                document.getElementById('uploadProgress').style.display = 'none';
+            });
+        }
+
+        function processAllFiles() {
+            document.getElementById('processAllBtn').disabled = true;
+            document.getElementById('processAllBtn').innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Procesando...';
+            
+            logActivity('Iniciando procesamiento de lote...', 'info');
+            
+            fetch('/api/ocr/process_batch', {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'exitoso' || data.estado === 'exitoso') {
+                    showNotification('Lote procesado exitosamente', 'success');
+                    logActivity(`Lote procesado: ${data.batch_info?.processed_count || 0} archivos`, 'success');
+                    loadProcessedFiles();
+                } else {
+                    showNotification('Error procesando lote: ' + (data.mensaje || data.message), 'error');
+                    logActivity('Error en procesamiento de lote', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error processing batch:', error);
+                showNotification('Error procesando lote', 'error');
+                logActivity('Error procesando lote', 'error');
+            })
+            .finally(() => {
+                document.getElementById('processAllBtn').disabled = false;
+                document.getElementById('processAllBtn').innerHTML = '<i class="fas fa-play me-2"></i>Procesar Todo el Lote';
+            });
+        }
+
+        function loadProcessedFiles() {
+            fetch('/api/ocr/processed_files')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'exitoso' && data.processed_files) {
+                        displayProcessedFiles(data.processed_files);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading processed files:', error);
+                });
+        }
+
+        function displayProcessedFiles(files) {
+            const container = document.getElementById('processedFilesList');
+            
+            if (files.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center text-muted">
+                        <i class="fas fa-file-alt fa-3x mb-3"></i>
+                        <p>No hay archivos procesados</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            files.forEach(file => {
+                html += `
+                    <div class="processed-file-item" data-file="${file.filename}" onclick="selectFile('${file.filename}', ${JSON.stringify(file).replace(/"/g, '&quot;')})">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>${file.image_name}</strong>
+                                <br>
+                                <small class="text-muted">
+                                    ${new Date(file.processed_date).toLocaleString('es-ES')} | 
+                                    Calidad: ${file.extraction_quality}
+                                    ${file.has_coordinates ? ' | <i class="fas fa-map-marker-alt text-success"></i> Coordenadas' : ''}
+                                </small>
+                            </div>
+                            <div>
+                                <button class="btn btn-sm btn-outline-primary me-1" onclick="event.stopPropagation(); downloadJson('${file.filename}')">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                                <span class="status-badge status-success">Procesado</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        function selectFile(filename, fileData) {
+            // Deseleccionar archivo anterior
+            document.querySelectorAll('.processed-file-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            
+            // Seleccionar archivo actual
+            document.querySelector(`[data-file="${filename}"]`).classList.add('selected');
+            
+            selectedFile = fileData;
+            displayFileResults(fileData);
+        }
+
+        function displayFileResults(fileData) {
+            const viewer = document.getElementById('resultViewer');
+            
+            let html = `
+                <div class="mb-3">
+                    <h6><i class="fas fa-file-alt me-2"></i>${fileData.image_name}</h6>
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <small class="text-muted">Procesado: ${new Date(fileData.processed_date).toLocaleString('es-ES')}</small>
+                        </div>
+                        <div class="col-6">
+                            <small class="text-muted">Calidad: ${fileData.extraction_quality}</small>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Mostrar texto extraído
+            if (fileData.result_data.texto_completo) {
+                html += `
+                    <div class="mb-3">
+                        <h6><i class="fas fa-font me-2"></i>Texto Extraído</h6>
+                        <div class="border p-2 bg-white rounded">
+                            ${fileData.result_data.texto_completo}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Mostrar coordenadas si existen
+            if (fileData.result_data.datos_extraidos && fileData.result_data.datos_extraidos.coordenadas) {
+                html += `
+                    <div class="mb-3">
+                        <h6><i class="fas fa-map-marker-alt me-2"></i>Coordenadas Detectadas</h6>
+                        <div class="coordinate-highlight">
+                            <small>Se detectaron ${fileData.result_data.datos_extraidos.coordenadas.length} palabras con coordenadas</small>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Mostrar datos financieros si existen
+            if (fileData.result_data.datos_financieros) {
+                html += `
+                    <div class="mb-3">
+                        <h6><i class="fas fa-dollar-sign me-2"></i>Datos Financieros</h6>
+                        <div class="json-viewer">
+                            <pre>${JSON.stringify(fileData.result_data.datos_financieros, null, 2)}</pre>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Botón para ver JSON completo
+            html += `
+                <div class="mb-3">
+                    <button class="btn btn-sm btn-outline-info" onclick="toggleFullJson()">
+                        <i class="fas fa-code me-1"></i>Ver JSON Completo
+                    </button>
+                </div>
+                <div id="fullJsonView" style="display: none;">
+                    <div class="json-viewer">
+                        <pre>${JSON.stringify(fileData.result_data, null, 2)}</pre>
+                    </div>
+                </div>
+            `;
+            
+            viewer.innerHTML = html;
+        }
+
+        function toggleFullJson() {
+            const jsonView = document.getElementById('fullJsonView');
+            if (jsonView.style.display === 'none') {
+                jsonView.style.display = 'block';
+            } else {
+                jsonView.style.display = 'none';
+            }
+        }
+
+        function downloadJson(filename) {
+            window.open(`/api/ocr/download_json/${filename}`, '_blank');
+        }
+
+        function extractResults() {
+            showNotification('Generando archivo de resultados...', 'info');
+            // Aquí implementarías la descarga de todos los JSONs
+            logActivity('Extrayendo resultados JSON...', 'info');
+        }
+
+        function cleanSystem() {
+            if (confirm('¿Estás seguro de que deseas limpiar todo el sistema? Esta acción no se puede deshacer.')) {
+                fetch('/api/ocr/clean_queue', {
+                    method: 'POST'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'exitoso') {
+                        showNotification('Sistema limpiado exitosamente', 'success');
+                        logActivity('Sistema limpiado completamente', 'success');
+                        loadProcessedFiles();
+                        document.getElementById('resultViewer').innerHTML = `
+                            <div class="text-center text-muted">
+                                <i class="fas fa-mouse-pointer fa-2x mb-3"></i>
+                                <p>Selecciona un archivo procesado para ver sus resultados</p>
+                            </div>
+                        `;
+                    } else {
+                        showNotification('Error limpiando sistema: ' + (data.mensaje || data.message), 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error cleaning system:', error);
+                    showNotification('Error limpiando sistema', 'error');
+                });
+            }
+        }
+
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `alert alert-${type === 'success' ? 'success' : type === 'error' ? 'danger' : 'warning'} alert-dismissible position-fixed`;
+            notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; max-width: 400px;';
+            notification.innerHTML = `
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-triangle' : 'info-circle'} me-2"></i>
+                    ${message}
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+            }, 5000);
+        }
+
+        function logActivity(message, type) {
+            const log = document.getElementById('activityLog');
+            const timestamp = new Date().toLocaleTimeString('es-ES');
+            const icon = type === 'success' ? 'check-circle text-success' : type === 'error' ? 'exclamation-triangle text-danger' : 'info-circle text-info';
+            
+            const logEntry = document.createElement('div');
+            logEntry.className = 'mb-1';
+            logEntry.innerHTML = `<small><i class="fas fa-${icon} me-2"></i>[${timestamp}] ${message}</small>`;
+            
+            log.appendChild(logEntry);
+            log.scrollTop = log.scrollHeight;
+        }
+    </script>
+</body>
+</html>
