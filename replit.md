@@ -152,6 +152,33 @@ Sistema OCR asíncrono de alto rendimiento para procesamiento de recibos de pago
 - **TESTING**: 2 archivos visibles con preview de texto completo y estadísticas
 - **VALIDACIÓN**: Archivos permanecen visibles tras limpieza gracias a retención 24h
 
+## CORRECCIONES CRÍTICAS ADICIONALES - Fallas Ocultas Detectadas (Julio 6, 2025 20:33 UTC)
+### FILOSOFÍA APLICADA: ZERO-FAULT DETECTION + REFERENCE INTEGRITY VALIDATION
+
+#### ✅ **FALLA CRÍTICA OCULTA #1**: Logger No Definido - CORREGIDO
+- **PROBLEMA**: Variable `logger` usada 57 veces en routes.py pero no estaba importada/definida
+- **CAUSA RAÍZ**: Falta de `logger = logging.getLogger(__name__)` en imports de routes.py
+- **SOLUCIÓN**: Configuración correcta de logger enterprise con getLogger(__name__)
+- **RESULTADO**: ✅ Eliminación completa de errores NameError en logging
+- **TESTING**: Todos los logger.info/debug/warning/error ahora funcionan correctamente
+- **VALIDACIÓN**: Logs estructurados visibles en consola sin errores
+
+#### ✅ **FALLA CRÍTICA OCULTA #2**: Variable request_id No Segura - CORREGIDO  
+- **PROBLEMA**: Variable `request_id` potencialmente no definida en manejo de errores
+- **CAUSA RAÍZ**: Error handling podía ejecutarse antes de definición de request_id
+- **SOLUCIÓN**: Manejo seguro con `locals().get('request_id', f"ERROR_{timestamp}")`
+- **RESULTADO**: ✅ Error handling robusto sin NameError adicionales
+- **TESTING**: Manejo de errores funciona en cualquier punto del flujo
+- **VALIDACIÓN**: Respuestas de error consistentes con request_id válido
+
+#### ✅ **FALLA CRÍTICA OCULTA #3**: Manejo Inseguro de file.filename None - CORREGIDO
+- **PROBLEMA**: file.filename puede ser None causando crashes en operaciones de string
+- **CAUSA RAÍZ**: No validación de None antes de operaciones .rsplit() y secure_filename()  
+- **SOLUCIÓN**: Validación robusta con fallbacks y manejo seguro de None/empty
+- **RESULTADO**: ✅ Upload de archivos robusto sin crashes por nombres inválidos
+- **TESTING**: Maneja archivos sin nombre o con nombres problemáticos
+- **VALIDACIÓN**: Upload consistente sin errores inesperados
+
 ## Estado del Proyecto
 🟢 **SISTEMA COMPLETAMENTE FUNCIONAL** - Migración a Replit completada exitosamente
 - ✅ **MIGRACIÓN REPLIT**: Completada siguiendo filosofía INTEGRIDAD TOTAL
