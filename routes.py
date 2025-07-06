@@ -167,117 +167,146 @@ def api_get_processed_files():
 @app.route('/api/ocr/process_image', methods=['POST'])
 def api_process_image():
     """
-    FIX: Endpoint corregido con formato exacto de renombrado solicitado por el usuario
-    REASON: Usuario necesita formato específico "Posición Sorteo"-"Fecha Sorteo"--"Sender ID"_"Hora (HH:MM)".png
-    IMPACT: Archivos organizados con nombres exactos según especificación
+    FIX: Endpoint corregido para subida múltiple de archivos con metadatos WhatsApp
+    REASON: Usuario reporta error en subida y necesita formato WhatsApp correcto
+    IMPACT: Sistema funcional con metadata de WhatsApp visible en interfaz
+    INTERFACE: Manejo correcto de archivos múltiples con validación robusta
+    VISUAL_CHANGE: Metadatos WhatsApp visibles en interfaz con formato correcto
     """
     try:
-        if 'image' not in request.files:
-            return jsonify({
-                'status': 'error',
-                'mensaje': 'No se proporcionó ninguna imagen',
-                'message': 'No image provided'
-            }), 400
+        # Manejo de archivos múltiples o individuales
+        files_list = []
         
-        file = request.files['image']
-        if file.filename == '':
-            return jsonify({
-                'status': 'error',
-                'mensaje': 'Archivo vacío',
-                'message': 'Empty file'
-            }), 400
-        
-        # Obtener datos del formulario para renombrado
-        custom_filename = request.form.get('custom_filename')
-        posicion_sorteo = request.form.get('posicion_sorteo', '')
-        fecha_sorteo = request.form.get('fecha_sorteo', '')
-        sender_id = request.form.get('sender_id', '')
-        hora_formato = request.form.get('hora_formato', '')
-        
-        # Generar timestamp único
-        current_time = datetime.now()
-        timestamp_id = current_time.strftime('%Y%m%d_%H%M%S_%f')[:-3]
-        
-        # Usar nombre personalizado si se proporciona
-        if custom_filename and all([posicion_sorteo, fecha_sorteo, sender_id, hora_formato]):
-            # Validar formato
-            if not custom_filename.endswith(('.png', '.jpg', '.jpeg')):
-                return jsonify({
-                    'status': 'error',
-                    'mensaje': 'Formato de archivo no válido',
-                    'message': 'Invalid file format'
-                }), 400
-            
-            # Usar nombre exacto del usuario + timestamp para evitar duplicados
-            file_ext = custom_filename.rsplit('.', 1)[1]
-            final_filename = f"{custom_filename.rsplit('.', 1)[0]}_{timestamp_id}.{file_ext}"
+        if 'images' in request.files:
+            files_list = request.files.getlist('images')
+        elif 'image' in request.files:
+            files_list = [request.files['image']]
         else:
-            # Nombre por defecto si no hay datos personalizados
-            file_ext = file.filename.rsplit('.', 1)[1] if file.filename and '.' in file.filename else 'png'
-            final_filename = f"image_{timestamp_id}.{file_ext}"
+            return jsonify({
+                'status': 'error',
+                'mensaje': 'No se proporcionaron imágenes',
+                'message': 'No images provided'
+            }), 400
         
-        # Request ID basado en el nombre final
-        request_id = final_filename.replace(f'_{timestamp_id}', '').replace(f'.{file_ext}', f'_{timestamp_id}')
+        # Filtrar archivos válidos
+        valid_files = [f for f in files_list if f.filename != '']
+        if not valid_files:
+            return jsonify({
+                'status': 'error',
+                'mensaje': 'No hay archivos válidos',
+                'message': 'No valid files'
+            }), 400
         
         # Obtener directorios
         from config import get_async_directories
         directories = get_async_directories()
         
-        # Guardar archivo
-        file_path = os.path.join(directories['inbox'], final_filename)
-        file.save(file_path)
+        # Procesar múltiples archivos
+        uploaded_files = []
+        upload_results = []
+        current_time = datetime.now()
         
-        # FIX: Extraer metadatos de WhatsApp del nombre de archivo
-        # REASON: Usuario requiere campos específicos (numerosorteo, idWhatsapp, nombre, horamin) para simulación óptima
-        # IMPACT: Restaura funcionalidad crítica de metadatos empresariales sin afectar interfaz
-        from app import extract_metadata_from_filename
-        whatsapp_metadata = extract_metadata_from_filename(final_filename)
+        for file in valid_files:
+            try:
+                # Generar timestamp único por archivo
+                timestamp_id = current_time.strftime('%Y%m%d_%H%M%S_%f')[:-3]
+                
+                # Determinar extensión de archivo
+                if '.' in file.filename:
+                    file_ext = file.filename.rsplit('.', 1)[1].lower()
+                    if file_ext not in ['png', 'jpg', 'jpeg']:
+                        continue  # Saltar archivos no válidos
+                else:
+                    file_ext = 'png'
+                
+                # Generar nombre usando formato WhatsApp si es posible
+                original_name = file.filename
+                
+                # Intentar detectar si es formato WhatsApp en el nombre original
+                if ('--' in original_name and '@' in original_name and '_' in original_name):
+                    # Es formato WhatsApp, usar nombre original con timestamp para evitar duplicados
+                    base_name = original_name.rsplit('.', 1)[0]
+                    final_filename = f"{base_name}_{timestamp_id}.{file_ext}"
+                else:
+                    # No es formato WhatsApp, generar nombre genérico
+                    clean_name = secure_filename(original_name.rsplit('.', 1)[0] if '.' in original_name else original_name)
+                    final_filename = f"{clean_name}_{timestamp_id}.{file_ext}"
+                
+                # Guardar archivo
+                file_path = os.path.join(directories['inbox'], final_filename)
+                file.save(file_path)
+                
+                # Extraer metadatos de WhatsApp del nombre de archivo
+                from app import extract_metadata_from_filename
+                whatsapp_metadata = extract_metadata_from_filename(final_filename)
+                
+                # Metadatos completos con datos de WhatsApp empresariales
+                metadata = {
+                    'filename_original': file.filename,
+                    'filename_final': final_filename,
+                    'request_id': final_filename.replace(f'_{timestamp_id}', ''),
+                    'upload_timestamp': current_time.isoformat(),
+                    'file_size': os.path.getsize(file_path),
+                    # Campos críticos de WhatsApp para simulación óptima
+                    'numerosorteo': whatsapp_metadata.get('numerosorteo', 'A'),
+                    'idWhatsapp': whatsapp_metadata.get('idWhatsapp', 'unknown@lid'),
+                    'nombre': whatsapp_metadata.get('nombre', 'Unknown'),
+                    'horamin': whatsapp_metadata.get('horamin', '00-00'),
+                    'texto_mensaje_whatsapp': whatsapp_metadata.get('texto_mensaje_whatsapp', ''),
+                    'caption': request.form.get('caption', ''),
+                    'otro_valor': request.form.get('otro_valor', 'subir'),
+                    # Metadatos completos de WhatsApp
+                    'whatsapp_metadata': whatsapp_metadata
+                }
+                
+                # Guardar metadatos
+                metadata_path = file_path.replace(f'.{file_ext}', '.metadata.json')
+                with open(metadata_path, 'w', encoding='utf-8') as f:
+                    json.dump(metadata, f, ensure_ascii=False, indent=2)
+                
+                uploaded_files.append(final_filename)
+                upload_results.append({
+                    'filename_original': file.filename,
+                    'filename_final': final_filename,
+                    'metadata': metadata,
+                    'status': 'uploaded'
+                })
+                
+                logger.info(f"✅ Archivo subido: {final_filename} con metadata WhatsApp: {whatsapp_metadata}")
+                
+            except Exception as e:
+                logger.error(f"Error subiendo archivo {file.filename}: {e}")
+                upload_results.append({
+                    'filename_original': file.filename,
+                    'status': 'error',
+                    'error': str(e)
+                })
         
-        # Metadatos completos con datos de WhatsApp empresariales
-        metadata = {
-            'filename_original': file.filename,
-            'filename_custom': custom_filename or final_filename,
-            'filename_final': final_filename,
-            'request_id': request_id,
-            'upload_timestamp': current_time.isoformat(),
-            'file_size': os.path.getsize(file_path),
-            # Campos críticos de WhatsApp para simulación óptima
-            'numerosorteo': whatsapp_metadata.get('numerosorteo', 'A'),
-            'idWhatsapp': whatsapp_metadata.get('idWhatsapp', 'unknown@lid'),
-            'nombre': whatsapp_metadata.get('nombre', 'Unknown'),
-            'horamin': whatsapp_metadata.get('horamin', '00-00'),
-            'texto_mensaje_whatsapp': whatsapp_metadata.get('texto_mensaje_whatsapp', ''),
-            # Metadatos completos de WhatsApp
-            'whatsapp_metadata': whatsapp_metadata,
-            'renaming_info': {
-                'posicion_sorteo': posicion_sorteo,
-                'fecha_sorteo': fecha_sorteo,
-                'sender_id': sender_id,
-                'hora_formato': hora_formato,
-                'formato_aplicado': bool(custom_filename)
-            }
-        }
+        if not uploaded_files:
+            return jsonify({
+                'status': 'error',
+                'mensaje': 'No se pudieron subir archivos',
+                'message': 'No files could be uploaded',
+                'results': upload_results
+            }), 400
         
-        # Guardar metadatos
-        metadata_path = file_path.replace(f'.{file_ext}', '.metadata.json')
-        with open(metadata_path, 'w', encoding='utf-8') as f:
-            json.dump(metadata, f, ensure_ascii=False, indent=2)
-        
-        logger.info(f"✅ Imagen encolada con nombre personalizado: {final_filename}")
+        logger.info(f"✅ {len(uploaded_files)} archivos subidos exitosamente")
         
         return jsonify({
-            'status': 'accepted',
-            'estado': 'aceptado',
-            'message': 'Image queued for processing',
-            'mensaje': 'Imagen encolada para procesamiento',
-            'request_id': request_id,
-            'filename_original': file.filename,
-            'filename_custom': final_filename,
-            'check_result_endpoint': f'/api/ocr/result/{request_id}',
-            'batch_process_endpoint': '/api/ocr/process_batch',
-            'queue_position': 'pending',
-            'metadata': metadata
-        }), 202
+            'status': 'success',
+            'estado': 'exitoso',
+            'message': f'{len(uploaded_files)} files uploaded successfully',
+            'mensaje': f'{len(uploaded_files)} archivos subidos exitosamente',
+            'uploaded_count': len(uploaded_files),
+            'total_files': len(valid_files),
+            'uploaded_files': uploaded_files,
+            'results': upload_results,
+            'next_steps': {
+                'queue_check': '/api/ocr/queue/status',
+                'process_batch': '/api/ocr/process_batch',
+                'view_files': '/#queue-panel'
+            }
+        }), 200
         
     except Exception as e:
         logger.error(f"Error en process_image: {e}")
@@ -399,9 +428,52 @@ def api_queue_status():
         except:
             pass
         
+        # FIX: Agregar lista de archivos en cola con metadatos WhatsApp
+        # REASON: Usuario reporta que no se ven archivos en cola
+        # IMPACT: Interfaz muestra archivos reales con metadatos completos
+        # VISUAL_CHANGE: Archivos visibles en interfaz con nombres completos de WhatsApp
+        
+        inbox_files = []
+        try:
+            for filename in os.listdir(directories['inbox']):
+                if filename.endswith(('.png', '.jpg', '.jpeg')):
+                    file_path = os.path.join(directories['inbox'], filename)
+                    metadata_path = file_path.replace(f'.{filename.split(".")[-1]}', '.metadata.json')
+                    
+                    file_info = {
+                        'filename': filename,
+                        'size': os.path.getsize(file_path),
+                        'upload_time': os.path.getmtime(file_path)
+                    }
+                    
+                    # Cargar metadatos si existen
+                    if os.path.exists(metadata_path):
+                        try:
+                            with open(metadata_path, 'r', encoding='utf-8') as f:
+                                metadata = json.load(f)
+                                file_info.update({
+                                    'numerosorteo': metadata.get('numerosorteo', 'A'),
+                                    'idWhatsapp': metadata.get('idWhatsapp', 'unknown@lid'),
+                                    'nombre': metadata.get('nombre', 'Unknown'),
+                                    'horamin': metadata.get('horamin', '00-00'),
+                                    'caption': metadata.get('caption', ''),
+                                    'whatsapp_metadata': metadata.get('whatsapp_metadata', {})
+                                })
+                        except Exception as e:
+                            logger.warning(f"Error leyendo metadata para {filename}: {e}")
+                    
+                    inbox_files.append(file_info)
+        except Exception as e:
+            logger.warning(f"Error obteniendo archivos en cola: {e}")
+        
         return jsonify({
             'status': 'ok',
             'estado': 'exitoso',
+            'inbox_count': inbox_count,
+            'processing_count': processing_count,
+            'processed_count': processed_count,
+            'error_count': errors_count,
+            'inbox_files': inbox_files,
             'queue_status': {
                 'inbox': inbox_count,
                 'pending': inbox_count,

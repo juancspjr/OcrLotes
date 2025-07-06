@@ -943,7 +943,7 @@
                 }
             }
 
-            // INTERFACE: Enhanced queue loading with metadata
+            // INTERFACE: Enhanced queue loading with WhatsApp metadata
             async loadQueueFiles() {
                 try {
                     const response = await fetch('/api/ocr/queue/status');
@@ -953,15 +953,20 @@
                     
                     if (data.inbox_files && data.inbox_files.length > 0) {
                         queueList.innerHTML = '';
-                        data.inbox_files.forEach((file, index) => {
+                        data.inbox_files.forEach((fileInfo, index) => {
                             const fileItem = document.createElement('div');
                             fileItem.className = 'enhanced-file-item';
+                            
+                            // Extraer componentes del nombre de archivo WhatsApp
+                            const filename = fileInfo.filename || fileInfo;
+                            const whatsappData = fileInfo.whatsapp_metadata || {};
+                            
                             fileItem.innerHTML = `
                                 <div class="d-flex justify-content-between align-items-start">
                                     <div class="flex-grow-1">
                                         <div class="filename-display">
-                                            <div class="filename-label">Archivo en Cola ${index + 1}</div>
-                                            ${file}
+                                            <div class="filename-label">Archivo WhatsApp ${index + 1}</div>
+                                            <span id="queue-file-${index}">${filename}</span>
                                             <button class="copy-btn" onclick="copyToClipboard('queue-file-${index}')">
                                                 <i class="fas fa-copy"></i>
                                             </button>
@@ -973,21 +978,35 @@
                                 </div>
                                 <div class="file-metadata">
                                     <div class="metadata-item">
-                                        <div class="metadata-label">Estado</div>
-                                        <div class="metadata-value">Esperando Procesamiento</div>
+                                        <div class="metadata-label">Código Sorteo</div>
+                                        <div class="metadata-value">${fileInfo.numerosorteo || whatsappData.numerosorteo || 'A'}</div>
                                     </div>
                                     <div class="metadata-item">
-                                        <div class="metadata-label">Posición</div>
-                                        <div class="metadata-value">${index + 1} de ${data.inbox_files.length}</div>
+                                        <div class="metadata-label">ID WhatsApp</div>
+                                        <div class="metadata-value">${fileInfo.idWhatsapp || whatsappData.idWhatsapp || 'unknown@lid'}</div>
                                     </div>
                                     <div class="metadata-item">
-                                        <div class="metadata-label">Prioridad</div>
-                                        <div class="metadata-value">Normal</div>
+                                        <div class="metadata-label">Nombre</div>
+                                        <div class="metadata-value">${fileInfo.nombre || whatsappData.nombre || 'Unknown'}</div>
+                                    </div>
+                                    <div class="metadata-item">
+                                        <div class="metadata-label">Hora:Minuto</div>
+                                        <div class="metadata-value">${fileInfo.horamin || whatsappData.horamin || '00-00'}</div>
+                                    </div>
+                                    <div class="metadata-item">
+                                        <div class="metadata-label">Caption</div>
+                                        <div class="metadata-value">${fileInfo.caption || 'Sin caption'}</div>
+                                    </div>
+                                    <div class="metadata-item">
+                                        <div class="metadata-label">Tamaño</div>
+                                        <div class="metadata-value">${this.formatFileSize(fileInfo.size || 0)}</div>
                                     </div>
                                 </div>
                             `;
                             queueList.appendChild(fileItem);
                         });
+                        
+                        this.logActivity(`📂 ${data.inbox_files.length} archivo(s) en cola con metadatos WhatsApp`);
                     } else {
                         queueList.innerHTML = `
                             <div class="text-center text-muted py-5">
