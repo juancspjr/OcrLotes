@@ -1050,7 +1050,7 @@ def get_result_data(filename):
             },
             'coordenadas': {
                 'disponibles': len(coordenadas) > 0,
-                'total_elementos': len(coordenadas),
+                'total': len(coordenadas),
                 'elementos': coordenadas[:50]  # Limitar para performance
             },
             'palabras_individuales': {

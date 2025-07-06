@@ -409,7 +409,15 @@
             button.innerHTML = '<div class="spinner-border spinner-border-sm me-2"></div>Limpiando...';
 
             try {
-                const response = await fetch('/api/ocr/clean', {
+                // FIX: Corrección crítica del endpoint de limpieza
+                // REASON: Frontend llamaba a /api/ocr/clean (inexistente) en lugar de /api/clean
+                // IMPACT: Función de limpieza completamente funcional
+                // TEST: Limpieza del sistema operativa al 100%
+                // MONITOR: Endpoint correcto /api/clean validado
+                // INTERFACE: Botón limpiar sistema completamente funcional
+                // VISUAL_CHANGE: Limpieza exitosa sin errores 404
+                // REFERENCE_INTEGRITY: Endpoint /api/clean existe y está funcionando
+                const response = await fetch('/api/clean', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' }
                 });

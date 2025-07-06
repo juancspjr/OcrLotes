@@ -1339,7 +1339,29 @@
                     
                     const resultViewer = document.getElementById('resultViewer');
                     
-                    if (result.status === 'exitoso' && result.ocr_data) {
+                    // FIX: Manejo correcto de respuesta del endpoint result_data
+                    // REASON: El endpoint devuelve 'status': 'success' y campos estructurados específicos
+                    // IMPACT: Visualizador muestra datos reales extraídos en lugar de errores
+                    // TEST: Compatibilidad con estructura real de respuesta del endpoint
+                    // MONITOR: Logging de datos reales recibidos del endpoint
+                    // INTERFACE: Visualizador funcional con datos estructurados legibles
+                    // VISUAL_CHANGE: Resultados OCR visibles en lugar de mensaje de error
+                    // REFERENCE_INTEGRITY: Compatibilidad con estructura real del endpoint /api/ocr/result_data
+                    
+                    if (result.status === 'success') {
+                        // Mostrar datos estructurados del visualizador
+                        const displayData = {
+                            'Información del Archivo': result.archivo_info,
+                            'Estadísticas': result.estadisticas,
+                            'Texto Extraído': result.texto_extraido,
+                            'Coordenadas': result.coordenadas,
+                            'Palabras Individuales': result.palabras_individuales,
+                            'Datos Financieros': result.datos_financieros,
+                            'Calidad de Extracción': result.calidad_extraccion
+                        };
+                        resultViewer.innerHTML = this.formatJsonWithSyntaxHighlighting(displayData);
+                        this.logActivity(`📄 Resultados estructurados cargados para: ${filename}`);
+                    } else if (result.status === 'exitoso' && result.ocr_data) {
                         resultViewer.innerHTML = this.formatJsonWithSyntaxHighlighting(result.ocr_data);
                         this.logActivity(`📄 Resultados cargados para: ${filename}`);
                     } else if (result.status === 'exitoso' && result.json_content) {
