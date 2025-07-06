@@ -19,8 +19,17 @@ import config
 
 logger = logging.getLogger(__name__)
 
+# FIX: Variables globales para estado del sistema asíncrono
+# REASON: Resolver error '_worker_running' is not defined en endpoints de estado
+# IMPACT: Sistema de monitoreo funcional sin errores de variables no definidas
+
 # Instancia global del orquestador
 orquestador = OrquestadorOCR()
+
+# Variables globales de estado del sistema
+_worker_running = False
+_ocr_orchestrator = None
+_batch_worker_thread = None
 
 def allowed_file(filename):
     """Verifica si el archivo tiene una extensión permitida"""
@@ -752,7 +761,7 @@ def api_queue_status():
             },
             'system_status': {
                 'worker_running': _worker_running,
-                'ocr_loaded': _ocr_orchestrator is not None
+                'ocr_loaded': _ocr_orchestrator is not None and orquestador is not None
             },
             'timestamp': datetime.now().isoformat()
         }), 200
@@ -832,19 +841,28 @@ def api_system_status():
 
 def initialize_async_system():
     """Inicializa el sistema asíncrono"""
+    global _worker_running, _ocr_orchestrator, _batch_worker_thread
+    
     try:
         logger.info("Inicializando sistema OCR asíncrono...")
         
+        # FIX: Inicialización correcta de variables globales de estado
+        # REASON: Asegurar que las variables de estado estén correctamente inicializadas
+        # IMPACT: Endpoints de monitoreo funcionan sin errores de variables no definidas
+        
         # Pre-cargar componentes OCR
         preload_ocr_components()
+        _ocr_orchestrator = orquestador
         
         # Iniciar worker asíncrono
         start_batch_worker()
+        _worker_running = True
         
         logger.info("✅ Sistema OCR asíncrono inicializado exitosamente")
         
     except Exception as e:
         logger.error(f"Error inicializando sistema asíncrono: {e}")
+        _worker_running = False
 
 # Ejecutar inicialización al cargar el módulo
 try:
