@@ -350,13 +350,17 @@
                     throw new Error(`Error en descarga: ${downloadResponse.status} ${downloadResponse.statusText}`);
                 }
                 
-                // Convertir respuesta a blob para descarga
-                const blob = await downloadResponse.blob();
+                // FIX: Convertir respuesta JSON a blob para descarga directa de JSON
+                // REASON: Usuario requiere JSON directo, no ZIP
+                // IMPACT: Descarga JSON consolidado empresarial como solicita usuario
+                const jsonData = await downloadResponse.json();
+                const jsonString = JSON.stringify(jsonData, null, 2);
+                const blob = new Blob([jsonString], { type: 'application/json' });
                 
-                // Crear enlace de descarga
+                // Crear enlace de descarga JSON
                 const link = document.createElement('a');
                 link.href = URL.createObjectURL(blob);
-                link.download = 'resultados_ocr.zip';
+                link.download = `resultados_consolidados_${new Date().toISOString().slice(0,19).replace(/:/g,'-')}.json`;
                 link.style.display = 'none';
                 
                 // Descargar archivo
@@ -374,9 +378,27 @@
                 if (listData.files && listData.files.length > 0) {
                     resultadosJSONData = listData.files.filter(file => file.has_ocr_data);
                     renderizarResultadosJSON();
-                    alert(`✅ Descarga completada exitosamente.\nArchivos incluidos: ${resultadosJSONData.length} resultados JSON`);
+                    alert(`✅ JSON consolidado descargado exitosamente
+                    
+📊 Resumen de extracción empresarial:
+• Total archivos procesados: ${jsonData.archivos_procesados?.length || 0}
+• Archivos con monto extraído: ${jsonData.archivos_procesados?.filter(a => a.monto && a.monto.trim() !== '').length || 0}
+• Archivos con referencia: ${jsonData.archivos_procesados?.filter(a => a.referencia && a.referencia.trim() !== '').length || 0}
+• Fecha extracción: ${jsonData.metadata?.fecha_extraccion || 'N/A'}
+
+📄 Campos empresariales incluidos:
+nombre_archivo, caption, otro, referencia, bancoorigen, monto, datosbeneficiario (cedula, telefono, banco_destino), pago_fecha, concepto`);
                 } else {
-                    alert('✅ Descarga completada exitosamente.');
+                    alert(`✅ JSON consolidado descargado exitosamente
+                    
+📊 Resumen de extracción empresarial:
+• Total archivos procesados: ${jsonData.archivos_procesados?.length || 0}
+• Archivos con monto extraído: ${jsonData.archivos_procesados?.filter(a => a.monto && a.monto.trim() !== '').length || 0}
+• Archivos con referencia: ${jsonData.archivos_procesados?.filter(a => a.referencia && a.referencia.trim() !== '').length || 0}
+• Fecha extracción: ${jsonData.metadata?.fecha_extracción || jsonData.metadata?.fecha_extraccion || 'N/A'}
+
+📄 Campos empresariales incluidos:
+nombre_archivo, caption, otro, referencia, bancoorigen, monto, datosbeneficiario (cedula, telefono, banco_destino), pago_fecha, concepto`);
                 }
                 
             } catch (error) {
