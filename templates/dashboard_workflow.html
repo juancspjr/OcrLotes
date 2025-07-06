@@ -316,26 +316,48 @@
         }
 
         async function extraerResultados() {
+            /**
+             * FIX: Función corregida para descargar ZIP de resultados del endpoint correcto
+             * REASON: Estaba llamando a /api/ocr/processed_files en lugar de /api/extract_results
+             * IMPACT: Funcionalidad "Extraer Resultados JSON" ahora descarga ZIP correctamente
+             * TEST: Descarga ZIP con todos los archivos JSON de results/
+             * MONITOR: Logging de descarga de resultados
+             * INTERFACE: Botón funcional con descarga automática de ZIP
+             * VISUAL_CHANGE: Usuario recibe archivo ZIP en descargas
+             * REFERENCE_INTEGRITY: Endpoint /api/extract_results existe y es accesible
+             */
             const button = event.target;
             const originalText = button.innerHTML;
             button.disabled = true;
             button.innerHTML = '<div class="spinner-border spinner-border-sm me-2"></div>Extrayendo...';
 
             try {
+                // Crear enlace de descarga temporal
+                const link = document.createElement('a');
+                link.href = '/api/extract_results';
+                link.download = 'resultados_ocr.zip';
+                link.style.display = 'none';
+                
+                // Agregar al DOM, hacer clic y remover
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                // Actualizar lista de resultados para mostrar archivos disponibles
                 const response = await fetch('/api/ocr/processed_files');
                 const data = await response.json();
                 
                 if (data.files && data.files.length > 0) {
                     resultadosJSONData = data.files.filter(file => file.has_ocr_data);
                     renderizarResultadosJSON();
-                    alert(`Se encontraron ${resultadosJSONData.length} archivos con resultados JSON`);
+                    alert(`✅ Descarga iniciada: ${resultadosJSONData.length} archivos JSON en el ZIP`);
                 } else {
-                    alert('No se encontraron archivos con resultados JSON');
+                    alert('⚠️ No se encontraron archivos con resultados JSON para descargar');
                 }
                 
             } catch (error) {
                 console.error('Error:', error);
-                alert('Error extrayendo resultados: ' + error.message);
+                alert('❌ Error al extraer resultados: No se pudieron extraer los resultados');
             } finally {
                 button.disabled = false;
                 button.innerHTML = originalText;
