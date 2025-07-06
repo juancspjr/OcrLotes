@@ -489,7 +489,7 @@
                                         </div>
                                         <h4>Arrastrar archivos aquí</h4>
                                         <p class="text-muted mb-3">o hacer clic para seleccionar</p>
-                                        <input type="file" class="form-control d-none" id="fileInput" name="images" multiple accept="image/*">
+                                        <input type="file" class="form-control d-none" id="fileInput" name="files" multiple accept="image/*">
                                         <button type="button" class="btn btn-primary excellence-btn" id="selectFilesBtn">
                                             <i class="fas fa-folder-open me-2"></i>Seleccionar Archivos
                                         </button>
@@ -877,6 +877,15 @@
                 // VISUAL_CHANGE: Enhanced file selection
                 document.getElementById('selectFilesBtn').addEventListener('click', () => {
                     document.getElementById('fileInput').click();
+                });
+                
+                // FIX: Upload zone click handler para facilitar selección
+                // REASON: Usuario necesita poder hacer click en toda la zona de upload
+                // IMPACT: Mejor UX al hacer toda la zona clickeable
+                document.getElementById('uploadZone').addEventListener('click', (e) => {
+                    if (e.target.id !== 'selectFilesBtn' && !e.target.closest('#selectFilesBtn')) {
+                        document.getElementById('fileInput').click();
+                    }
                 });
 
                 document.getElementById('fileInput').addEventListener('change', (e) => {
@@ -1702,11 +1711,6 @@
                     console.error('Error copying filename:', err);
                     if (window.manager) {
                         window.manager.logActivity(`❌ Error al copiar nombre de archivo`);
-                    }
-                });
-            }
-        } = 'fas fa-copy';
-                        }, 1000);
                     }
                 });
             }
