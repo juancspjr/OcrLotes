@@ -7,183 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js">
-    // FIX: Mejorar workflow de carga de archivos
-    // REASON: Usuario solicita claridad entre "elegir archivos" y "subir imágenes"
-    // IMPACT: Workflow más intuitivo con procesamiento automático
-    
-    // Auto-procesamiento después de selección
-    $('#fileInput').on('change', function() {
-        const files = this.files;
-        if (files && files.length > 0) {
-            // Mostrar archivos seleccionados
-            updateQueueDisplay();
-            
-            // Procesamiento automático opcional
-            if (confirm('¿Procesar imágenes automáticamente?')) {
-                processSelectedImages();
-            }
-        }
-    });
-    
-    function processSelectedImages() {
-        const fileInput = document.getElementById('fileInput');
-        if (fileInput.files.length > 0) {
-            uploadImages(); // Llamar función de subida existente
-        }
-    }
-    
-
-// FIX: Sistema de renombrado automático según formato especificado
-// REASON: Usuario necesita formato específico A--214056942235719@lid_Juanc_17-30.png
-// IMPACT: Archivos con nombres consistentes para mejor organización
-
-function updateFileNamePreview() {
-    const prefix = document.getElementById('prefixField').value || 'A--214056942235719';
-    const userId = document.getElementById('userIdField').value || 'lid';
-    const userName = document.getElementById('userNameField').value || 'Usuario';
-    const time = document.getElementById('timeField').value || getCurrentTime();
-    
-    const fileName = `${prefix}@${userId}_${userName}_${time}.png`;
-    document.getElementById('fileNamePreview').textContent = fileName;
-}
-
-function getCurrentTime() {
-    const now = new Date();
-    const hours = now.getHours().toString().padStart(2, '0');
-    const minutes = now.getMinutes().toString().padStart(2, '0');
-    return `${hours}-${minutes}`;
-}
-
-// Actualizar preview en tiempo real
-document.addEventListener('DOMContentLoaded', function() {
-    ['prefixField', 'userIdField', 'userNameField', 'timeField'].forEach(fieldId => {
-        document.getElementById(fieldId).addEventListener('input', updateFileNamePreview);
-    });
-    
-    // Establecer hora actual por defecto
-    document.getElementById('timeField').value = getCurrentTime();
-    updateFileNamePreview();
-});
-
-async function processImagesWithRename() {
-    const fileInput = document.getElementById('fileInput');
-    const processBtn = document.getElementById('processBtn');
-    
-    if (!fileInput.files || fileInput.files.length === 0) {
-        alert('Por favor selecciona al menos una imagen');
-        return;
-    }
-    
-    // Validar campos requeridos
-    const prefix = document.getElementById('prefixField').value.trim();
-    const userId = document.getElementById('userIdField').value.trim();
-    const userName = document.getElementById('userNameField').value.trim();
-    const time = document.getElementById('timeField').value.trim();
-    
-    if (!prefix || !userId || !userName || !time) {
-        alert('Por favor completa todos los campos requeridos');
-        return;
-    }
-    
-    // Deshabilitar botón durante procesamiento
-    processBtn.disabled = true;
-    processBtn.innerHTML = '<div class="spinner-border spinner-border-sm me-2"></div>Procesando...';
-    
-    try {
-        const results = [];
-        
-        for (let i = 0; i < fileInput.files.length; i++) {
-            const file = fileInput.files[i];
-            const formData = new FormData();
-            
-            // Crear nombre personalizado
-            const customFileName = `${prefix}@${userId}_${userName}_${time}.png`;
-            
-            // Renombrar archivo antes de enviar
-            const renamedFile = new File([file], customFileName, { type: file.type });
-            formData.append('image', renamedFile);
-            
-            // Metadatos adicionales
-            formData.append('custom_filename', customFileName);
-            formData.append('prefix', prefix);
-            formData.append('user_id', userId);
-            formData.append('user_name', userName);
-            formData.append('time_stamp', time);
-            
-            // Enviar para procesamiento
-            const response = await fetch('/api/ocr/process_image', {
-                method: 'POST',
-                body: formData
-            });
-            
-            const result = await response.json();
-            results.push({
-                filename: customFileName,
-                result: result
-            });
-        }
-        
-        // Procesar todas las imágenes encoladas
-        const batchResponse = await fetch('/api/ocr/process_batch', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ profile: 'ultra_rapido' })
-        });
-        
-        const batchResult = await batchResponse.json();
-        
-        // Mostrar resultados
-        showProcessingResults(results, batchResult);
-        
-        // Actualizar listas
-        updateQueueDisplay();
-        updateProcessedFiles();
-        
-    } catch (error) {
-        console.error('Error procesando imágenes:', error);
-        alert('Error al procesar las imágenes. Por favor intenta nuevamente.');
-    } finally {
-        // Restaurar botón
-        processBtn.disabled = false;
-        processBtn.innerHTML = '<i class="fas fa-cogs me-2"></i>Subir y Procesar Imágenes';
-    }
-}
-
-function showProcessingResults(results, batchResult) {
-    const resultsDiv = document.getElementById('uploadResults');
-    const resultsContent = document.getElementById('processingResults');
-    
-    let html = `
-        <h6>Imágenes procesadas: ${results.length}</h6>
-        <ul class="list-unstyled">
-    `;
-    
-    results.forEach(item => {
-        html += `
-            <li class="mb-2">
-                <strong>${item.filename}</strong><br>
-                <small class="text-muted">ID: ${item.result.request_id}</small>
-            </li>
-        `;
-    });
-    
-    html += '</ul>';
-    
-    if (batchResult.batch_info) {
-        html += `
-            <hr>
-            <h6>Resultados del procesamiento:</h6>
-            <p>Tiempo total: ${batchResult.batch_info.processing_time_seconds}s</p>
-            <p>Archivos procesados: ${batchResult.batch_info.processed_count}</p>
-        `;
-    }
-    
-    resultsContent.innerHTML = html;
-    resultsDiv.style.display = 'block';
-}
-
-</script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
     /* FIX: Workflow clarificado para mejor experiencia de usuario
      * REASON: Usuario solicita claridad entre selección y procesamiento
@@ -683,124 +507,135 @@ function showProcessingResults(results, batchResult) {
                     <div class="tab-pane fade show active" id="overview" role="tabpanel">
                         <!-- Queue Status -->
                         
-<div class="card">
-    <div class="card-header">
-        <h5 class="card-title mb-0">
-            <i class="fas fa-cloud-upload-alt me-2"></i>Subir y Procesar Imágenes
-        </h5>
-    </div>
-    <div class="card-body">
-        <!-- Campos de configuración para renombrado -->
-        <div class="row mb-4">
-            <div class="col-md-3">
-                <label for="prefixField" class="form-label">Prefijo</label>
-                <input type="text" class="form-control" id="prefixField" placeholder="A--214056942235719" value="A--214056942235719">
-            </div>
-            <div class="col-md-3">
-                <label for="userIdField" class="form-label">ID Usuario</label>
-                <input type="text" class="form-control" id="userIdField" placeholder="lid" value="lid">
-            </div>
-            <div class="col-md-3">
-                <label for="userNameField" class="form-label">Nombre Usuario</label>
-                <input type="text" class="form-control" id="userNameField" placeholder="Juanc" value="Juanc">
-            </div>
-            <div class="col-md-3">
-                <label for="timeField" class="form-label">Hora (HH-MM)</label>
-                <input type="text" class="form-control" id="timeField" placeholder="17-30" value="">
-            </div>
-        </div>
-        
-        <!-- Selección de archivo -->
-        <div class="mb-3">
-            <label for="fileInput" class="form-label">Seleccionar Imagen</label>
-            <input type="file" class="form-control" id="fileInput" accept="image/*" multiple>
-            <div class="form-text">Formatos soportados: PNG, JPG, JPEG</div>
-        </div>
-        
-        <!-- Previsualización del nombre -->
-        <div class="mb-3">
-            <label class="form-label">Nombre del archivo resultante:</label>
-            <div class="form-control-plaintext bg-light border rounded p-2" id="fileNamePreview">
-                A--214056942235719@lid_Juanc_17-30.png
-            </div>
-        </div>
-        
-        <!-- Botón de procesamiento -->
-        <div class="text-center">
-            <button type="button" class="btn btn-primary btn-lg" onclick="processImagesWithRename()" id="processBtn">
-                <i class="fas fa-cogs me-2"></i>Subir y Procesar Imágenes
-            </button>
-        </div>
-        
-        <!-- Área de resultados -->
-        <div class="mt-4" id="uploadResults" style="display: none;">
-            <div class="alert alert-success">
-                <h6><i class="fas fa-check-circle me-2"></i>Procesamiento Completado</h6>
-                <div id="processingResults"></div>
-            </div>
-        </div>
+
+                        <!-- Nueva Interfaz de Upload con Renombrado -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">
+                                    <i class="fas fa-cloud-upload-alt me-2"></i>Procesamiento de Imágenes
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <!-- Campos para formato específico: "Posición Sorteo"-"Fecha Sorteo"--"Sender ID"_"Hora (HH:MM)".png -->
+                                <div class="row mb-4">
+                                    <div class="col-md-3">
+                                        <label for="posicionSorteo" class="form-label">Posición Sorteo</label>
+                                        <input type="text" class="form-control" id="posicionSorteo" placeholder="A--214056942235719" value="A--214056942235719">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="fechaSorteo" class="form-label">Fecha Sorteo</label>
+                                        <input type="text" class="form-control" id="fechaSorteo" placeholder="20250706" value="">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="senderId" class="form-label">Sender ID</label>
+                                        <input type="text" class="form-control" id="senderId" placeholder="lid_Juanc" value="lid_Juanc">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="horaFormato" class="form-label">Hora (HH:MM)</label>
+                                        <input type="text" class="form-control" id="horaFormato" placeholder="17-30" value="">
+                                    </div>
+                                </div>
+                                
+                                <!-- Previsualización del nombre -->
+                                <div class="mb-3">
+                                    <label class="form-label">Nombre del archivo resultante:</label>
+                                    <div class="form-control-plaintext bg-light border rounded p-2" id="nombrePreview">
+                                        A--214056942235719-20250706--lid_Juanc_17-30.png
+                                    </div>
+                                </div>
+                                
+                                <!-- Selección de archivo (SOLO ELEGIR) -->
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label for="fileInput" class="form-label">Elegir Archivo</label>
+                                        <input type="file" class="form-control" id="fileInput" accept="image/*" multiple>
+                                        <div class="form-text">Solo selecciona las imágenes. No se procesan automáticamente.</div>
+                                    </div>
+                                    <div class="col-md-6 d-flex align-items-end">
+                                        <!-- BOTÓN GRIS ÚNICO PARA ACCIÓN -->
+                                        <button type="button" class="btn btn-secondary btn-lg w-100" onclick="subirYProcesarImagenes()" id="botonProcesar">
+                                            <i class="fas fa-cogs me-2"></i>Subir y Procesar Imágenes
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <!-- Área de resultados -->
+                                <div class="mt-4" id="areaResultados" style="display: none;">
+                                    <div class="alert alert-success">
+                                        <h6><i class="fas fa-check-circle me-2"></i>Procesamiento Completado</h6>
+                                        <div id="contenidoResultados"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
     </div>
 </div>
 
                         </div>
 
-                        
-<div class="card">
-    <div class="card-header">
-        <h5 class="card-title mb-0">
-            <i class="fas fa-cloud-upload-alt me-2"></i>Subir y Procesar Imágenes
-        </h5>
-    </div>
-    <div class="card-body">
-        <!-- Campos de configuración para renombrado -->
-        <div class="row mb-4">
-            <div class="col-md-3">
-                <label for="prefixField" class="form-label">Prefijo</label>
-                <input type="text" class="form-control" id="prefixField" placeholder="A--214056942235719" value="A--214056942235719">
-            </div>
-            <div class="col-md-3">
-                <label for="userIdField" class="form-label">ID Usuario</label>
-                <input type="text" class="form-control" id="userIdField" placeholder="lid" value="lid">
-            </div>
-            <div class="col-md-3">
-                <label for="userNameField" class="form-label">Nombre Usuario</label>
-                <input type="text" class="form-control" id="userNameField" placeholder="Juanc" value="Juanc">
-            </div>
-            <div class="col-md-3">
-                <label for="timeField" class="form-label">Hora (HH-MM)</label>
-                <input type="text" class="form-control" id="timeField" placeholder="17-30" value="">
-            </div>
-        </div>
-        
-        <!-- Selección de archivo -->
-        <div class="mb-3">
-            <label for="fileInput" class="form-label">Seleccionar Imagen</label>
-            <input type="file" class="form-control" id="fileInput" accept="image/*" multiple>
-            <div class="form-text">Formatos soportados: PNG, JPG, JPEG</div>
-        </div>
-        
-        <!-- Previsualización del nombre -->
-        <div class="mb-3">
-            <label class="form-label">Nombre del archivo resultante:</label>
-            <div class="form-control-plaintext bg-light border rounded p-2" id="fileNamePreview">
-                A--214056942235719@lid_Juanc_17-30.png
-            </div>
-        </div>
-        
-        <!-- Botón de procesamiento -->
-        <div class="text-center">
-            <button type="button" class="btn btn-primary btn-lg" onclick="processImagesWithRename()" id="processBtn">
-                <i class="fas fa-cogs me-2"></i>Subir y Procesar Imágenes
-            </button>
-        </div>
-        
-        <!-- Área de resultados -->
-        <div class="mt-4" id="uploadResults" style="display: none;">
-            <div class="alert alert-success">
-                <h6><i class="fas fa-check-circle me-2"></i>Procesamiento Completado</h6>
-                <div id="processingResults"></div>
-            </div>
-        </div>
+
+                        <!-- Nueva Interfaz de Upload con Renombrado -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">
+                                    <i class="fas fa-cloud-upload-alt me-2"></i>Procesamiento de Imágenes
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <!-- Campos para formato específico: "Posición Sorteo"-"Fecha Sorteo"--"Sender ID"_"Hora (HH:MM)".png -->
+                                <div class="row mb-4">
+                                    <div class="col-md-3">
+                                        <label for="posicionSorteo" class="form-label">Posición Sorteo</label>
+                                        <input type="text" class="form-control" id="posicionSorteo" placeholder="A--214056942235719" value="A--214056942235719">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="fechaSorteo" class="form-label">Fecha Sorteo</label>
+                                        <input type="text" class="form-control" id="fechaSorteo" placeholder="20250706" value="">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="senderId" class="form-label">Sender ID</label>
+                                        <input type="text" class="form-control" id="senderId" placeholder="lid_Juanc" value="lid_Juanc">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="horaFormato" class="form-label">Hora (HH:MM)</label>
+                                        <input type="text" class="form-control" id="horaFormato" placeholder="17-30" value="">
+                                    </div>
+                                </div>
+                                
+                                <!-- Previsualización del nombre -->
+                                <div class="mb-3">
+                                    <label class="form-label">Nombre del archivo resultante:</label>
+                                    <div class="form-control-plaintext bg-light border rounded p-2" id="nombrePreview">
+                                        A--214056942235719-20250706--lid_Juanc_17-30.png
+                                    </div>
+                                </div>
+                                
+                                <!-- Selección de archivo (SOLO ELEGIR) -->
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label for="fileInput" class="form-label">Elegir Archivo</label>
+                                        <input type="file" class="form-control" id="fileInput" accept="image/*" multiple>
+                                        <div class="form-text">Solo selecciona las imágenes. No se procesan automáticamente.</div>
+                                    </div>
+                                    <div class="col-md-6 d-flex align-items-end">
+                                        <!-- BOTÓN GRIS ÚNICO PARA ACCIÓN -->
+                                        <button type="button" class="btn btn-secondary btn-lg w-100" onclick="subirYProcesarImagenes()" id="botonProcesar">
+                                            <i class="fas fa-cogs me-2"></i>Subir y Procesar Imágenes
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <!-- Área de resultados -->
+                                <div class="mt-4" id="areaResultados" style="display: none;">
+                                    <div class="alert alert-success">
+                                        <h6><i class="fas fa-check-circle me-2"></i>Procesamiento Completado</h6>
+                                        <div id="contenidoResultados"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
     </div>
 </div>
 
@@ -1028,19 +863,8 @@ GET /api/ocr/result/request_id
             uploadImages(); // Llamar función de subida existente
         }
     }
-    
 
-// FIX: Sistema de renombrado automático según formato especificado
-// REASON: Usuario necesita formato específico A--214056942235719@lid_Juanc_17-30.png
-// IMPACT: Archivos con nombres consistentes para mejor organización
-
-function updateFileNamePreview() {
-    const prefix = document.getElementById('prefixField').value || 'A--214056942235719';
-    const userId = document.getElementById('userIdField').value || 'lid';
-    const userName = document.getElementById('userNameField').value || 'Usuario';
-    const time = document.getElementById('timeField').value || getCurrentTime();
-    
-    const fileName = `${prefix}@${userId}_${userName}_${time}.png`;
+@${userId}_${userName}_${time}.png`;
     document.getElementById('fileNamePreview').textContent = fileName;
 }
 
@@ -1119,447 +943,7 @@ async function processImagesWithRename() {
                 result: result
             });
         }
-        
-        // Procesar todas las imágenes encoladas
-        const batchResponse = await fetch('/api/ocr/process_batch', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ profile: 'ultra_rapido' })
-        });
-        
-        const batchResult = await batchResponse.json();
-        
-        // Mostrar resultados
-        showProcessingResults(results, batchResult);
-        
-        // Actualizar listas
-        updateQueueDisplay();
-        updateProcessedFiles();
-        
-    } catch (error) {
-        console.error('Error procesando imágenes:', error);
-        alert('Error al procesar las imágenes. Por favor intenta nuevamente.');
-    } finally {
-        // Restaurar botón
-        processBtn.disabled = false;
-        processBtn.innerHTML = '<i class="fas fa-cogs me-2"></i>Subir y Procesar Imágenes';
-    }
-}
 
-function showProcessingResults(results, batchResult) {
-    const resultsDiv = document.getElementById('uploadResults');
-    const resultsContent = document.getElementById('processingResults');
-    
-    let html = `
-        <h6>Imágenes procesadas: ${results.length}</h6>
-        <ul class="list-unstyled">
-    `;
-    
-    results.forEach(item => {
-        html += `
-            <li class="mb-2">
-                <strong>${item.filename}</strong><br>
-                <small class="text-muted">ID: ${item.result.request_id}</small>
-            </li>
-        `;
-    });
-    
-    html += '</ul>';
-    
-    if (batchResult.batch_info) {
-        html += `
-            <hr>
-            <h6>Resultados del procesamiento:</h6>
-            <p>Tiempo total: ${batchResult.batch_info.processing_time_seconds}s</p>
-            <p>Archivos procesados: ${batchResult.batch_info.processed_count}</p>
-        `;
-    }
-    
-    resultsContent.innerHTML = html;
-    resultsDiv.style.display = 'block';
-}
-
-</script>
-    <script>
-        // Global variables
-        let performanceChart;
-        let lastRequestId = null;
-        let refreshInterval;
-
-        // Initialize dashboard
-        document.addEventListener('DOMContentLoaded', function() {
-            initializeDashboard();
-            setupFileDropZone();
-            startResourceMonitoring();
-        });
-
-        function initializeDashboard() {
-            checkSystemStatus();
-            initializePerformanceChart();
-            refreshQueueStatus();
-        }
-
-        function checkSystemStatus() {
-            fetch('/api/ocr/queue/status')
-                .then(response => response.json())
-                .then(data => {
-                    updateSystemStatus(data);
-                    document.getElementById('systemAlert').style.display = 'none';
-                })
-                .catch(error => {
-                    console.error('Error checking system status:', error);
-                    updateSystemAlert('danger', 'Error del Sistema', 'No se pudo conectar con el sistema OCR');
-                });
-        }
-
-        function updateSystemStatus(data) {
-            // FIX: Mejora de explicaciones para usuarios no técnicos
-            // REASON: Usuario solicita mejor explicación de cada componente del sistema
-            // IMPACT: Interfaz más clara y fácil de entender para usuarios sin experiencia técnica
-            
-            // Update OCR status with explanation
-            const ocrActive = data.system_status.ocr_loaded;
-            document.getElementById('ocrStatus').textContent = ocrActive ? 'Funcionando' : 'Detenido';
-            document.getElementById('ocrStatus').className = 'status-badge ' + (ocrActive ? 'status-success' : 'status-danger');
-            document.getElementById('ocrStatus').title = ocrActive ? 
-                'El sistema de lectura de texto está funcionando correctamente' : 
-                'El sistema de lectura de texto no está funcionando';
-            
-            // Update worker status with explanation
-            const workerActive = data.system_status.worker_running;
-            document.getElementById('workerStatus').textContent = workerActive ? 'Procesando' : 'Pausado';
-            document.getElementById('workerStatus').className = 'status-badge ' + (workerActive ? 'status-success' : 'status-danger');
-            document.getElementById('workerStatus').title = workerActive ? 
-                'El sistema está listo para procesar imágenes automáticamente' : 
-                'El sistema no está procesando imágenes en este momento';
-            
-            document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString();
-
-            // Update queue metrics
-            if (data.queue_status) {
-                document.getElementById('inboxCount').textContent = data.queue_status.inbox || 0;
-                document.getElementById('processingCount').textContent = data.queue_status.processing || 0;
-                document.getElementById('processedCount').textContent = data.queue_status.processed || 0;
-                document.getElementById('errorsCount').textContent = data.queue_status.errors || 0;
-            }
-        }
-
-        function updateSystemAlert(type, title, message) {
-            const alert = document.getElementById('systemAlert');
-            alert.className = `alert alert-${type} mb-4`;
-            alert.innerHTML = `
-                <div class="d-flex align-items-center">
-                    <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'times-circle'} me-3"></i>
-                    <div>
-                        <strong>${title}</strong>
-                        <span class="d-block">${message}</span>
-                    </div>
-                </div>
-            `;
-            alert.style.display = 'block';
-        }
-
-        function refreshQueueStatus() {
-            fetch('/api/ocr/queue/status')
-                .then(response => response.json())
-                .then(data => {
-                    updateSystemStatus(data);
-                })
-                .catch(error => {
-                    console.error('Error refreshing queue status:', error);
-                });
-        }
-
-        function testProcessBatch() {
-            const button = event.target;
-            const originalText = button.innerHTML;
-            button.innerHTML = 'Procesando...';
-            button.disabled = true;
-
-            fetch('/api/ocr/process_batch', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    batch_size: 10,
-                    profile: 'ultra_rapido'
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                showTestResults(data);
-                refreshQueueStatus();
-                updateSystemAlert('success', 'Lote Procesado', `Se procesaron ${data.batch_info?.processed_count || 0} imágenes exitosamente`);
-            })
-            .catch(error => {
-                console.error('Error processing batch:', error);
-                updateSystemAlert('danger', 'Error de Procesamiento', 'No se pudo procesar el lote');
-            })
-            .finally(() => {
-                button.innerHTML = originalText;
-                button.disabled = false;
-            });
-        }
-
-        function testProcessImage() {
-            const fileInput = document.getElementById('testFileInput');
-            if (!fileInput.files[0]) {
-                updateSystemAlert('warning', 'Archivo Requerido', 'Por favor selecciona una imagen para probar');
-                return;
-            }
-
-            const formData = new FormData();
-            formData.append('image', fileInput.files[0]);
-            formData.append('caption', document.getElementById('testCaption').value);
-            formData.append('sender_id', document.getElementById('testSenderId').value);
-            formData.append('sender_name', document.getElementById('testSenderName').value);
-            formData.append('sorteo_fecha', document.getElementById('testSorteoFecha').value);
-            formData.append('sorteo_conteo', document.getElementById('testSorteoConteo').value);
-            formData.append('hora_min', document.getElementById('testHoraMin').value);
-
-            const button = document.getElementById('testProcessBtn');
-            const originalText = button.innerHTML;
-            button.innerHTML = 'Subiendo...';
-            button.disabled = true;
-
-            fetch('/api/ocr/process_image', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                showTestResults(data);
-                lastRequestId = data.request_id;
-                refreshQueueStatus();
-                updateSystemAlert('success', 'Imagen Encolada', `Request ID: ${data.request_id}`);
-            })
-            .catch(error => {
-                console.error('Error uploading image:', error);
-                updateSystemAlert('danger', 'Error de Subida', 'No se pudo subir la imagen');
-            })
-            .finally(() => {
-                button.innerHTML = originalText;
-                button.disabled = false;
-            });
-        }
-
-        function testGetResult() {
-            if (!lastRequestId) {
-                updateSystemAlert('warning', 'Request ID Requerido', 'Primero sube una imagen para obtener un request_id');
-                return;
-            }
-
-            fetch(`/api/ocr/result/${lastRequestId}`)
-                .then(response => response.json())
-                .then(data => {
-                    showTestResults(data);
-                })
-                .catch(error => {
-                    console.error('Error getting result:', error);
-                    updateSystemAlert('danger', 'Error de Consulta', 'No se pudo obtener el resultado');
-                });
-        }
-
-        function showTestResults(data) {
-            const resultsDiv = document.getElementById('testResults');
-            const contentDiv = document.getElementById('testResultsContent');
-            contentDiv.textContent = JSON.stringify(data, null, 2);
-            resultsDiv.style.display = 'block';
-        }
-
-        function setupFileDropZone() {
-            // Remove drop zone references since we're using simple file input
-            const fileInput = document.getElementById('testFileInput');
-
-            // Simple file input without drag and drop complexity
-
-            fileInput.addEventListener('change', (e) => {
-                if (e.target.files.length > 0) {
-                    const file = e.target.files[0];
-                    document.getElementById('fileInfo').style.display = 'block';
-                    document.getElementById('fileName').textContent = file.name;
-                    updateSystemAlert('info', 'Archivo Seleccionado', `${file.name} listo para procesar`);
-                }
-            });
-        }
-
-        function initializePerformanceChart() {
-            const ctx = document.getElementById('performanceChart');
-            performanceChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: [],
-                    datasets: [{
-                        label: 'Tiempo de Procesamiento (s)',
-                        data: [],
-                        borderColor: '#06b6d4',
-                        backgroundColor: 'rgba(6, 182, 212, 0.1)',
-                        tension: 0.4
-                    }, {
-                        label: 'Imágenes por Minuto',
-                        data: [],
-                        borderColor: '#10b981',
-                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                        tension: 0.4,
-                        yAxisID: 'y1'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            labels: {
-                                color: '#cbd5e1'
-                            }
-                        }
-                    },
-                    scales: {
-                        x: {
-                            ticks: {
-                                color: '#cbd5e1'
-                            },
-                            grid: {
-                                color: '#334155'
-                            }
-                        },
-                        y: {
-                            type: 'linear',
-                            display: true,
-                            position: 'left',
-                            ticks: {
-                                color: '#cbd5e1'
-                            },
-                            grid: {
-                                color: '#334155'
-                            }
-                        },
-                        y1: {
-                            type: 'linear',
-                            display: true,
-                            position: 'right',
-                            ticks: {
-                                color: '#cbd5e1'
-                            },
-                            grid: {
-                                drawOnChartArea: false,
-                                color: '#334155'
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        function startResourceMonitoring() {
-            // Simulate resource monitoring
-            updateResourceMetrics();
-            refreshInterval = setInterval(updateResourceMetrics, 5000);
-        }
-
-        function updateResourceMetrics() {
-            // Simulate resource usage
-            const cpu = Math.floor(Math.random() * 60) + 20; // 20-80%
-            const memory = Math.floor(Math.random() * 40) + 30; // 30-70%
-            const disk = Math.floor(Math.random() * 20) + 10; // 10-30%
-
-            document.getElementById('cpuValue').textContent = `${cpu}%`;
-            document.getElementById('cpuBar').style.width = `${cpu}%`;
-            
-            document.getElementById('memoryValue').textContent = `${memory}%`;
-            document.getElementById('memoryBar').style.width = `${memory}%`;
-            
-            document.getElementById('diskValue').textContent = `${disk}%`;
-            document.getElementById('diskBar').style.width = `${disk}%`;
-
-            // Update chart
-            const now = new Date().toLocaleTimeString();
-            if (performanceChart.data.labels.length > 10) {
-                performanceChart.data.labels.shift();
-                performanceChart.data.datasets[0].data.shift();
-                performanceChart.data.datasets[1].data.shift();
-            }
-
-            performanceChart.data.labels.push(now);
-            performanceChart.data.datasets[0].data.push((Math.random() * 2 + 0.5).toFixed(2)); // Processing time
-            performanceChart.data.datasets[1].data.push(Math.floor(Math.random() * 30 + 10)); // Images per minute
-            performanceChart.update();
-
-            // Update stats
-            document.getElementById('totalProcessed').textContent = Math.floor(Math.random() * 1000 + 500);
-            document.getElementById('avgTime').textContent = `${(Math.random() * 2 + 0.8).toFixed(1)}s`;
-            document.getElementById('successRate').textContent = `${(Math.random() * 10 + 90).toFixed(1)}%`;
-            document.getElementById('estimatedCapacity').textContent = `${Math.floor(Math.random() * 50 + 100)} img/hora`;
-        }
-
-        // ==============================================================================
-        // FIX: FUNCIONES PARA MANEJO DE RESULTADOS Y VISUALIZACIÓN JSON
-        // REASON: Usuario requiere ver archivos procesados con descarga de JSON
-        // IMPACT: Interfaz completa de inspección de resultados en tiempo real
-        // ==============================================================================
-
-        // Refresh processed files list
-        async function refreshProcessedFiles() {
-            try {
-                const response = await fetch('/api/ocr/processed_files');
-                const data = await response.json();
-
-                if (data.status === 'success') {
-                    updateResultsStats(data);
-                    renderProcessedFiles(data.processed_files);
-                } else {
-                    console.error('Error loading processed files:', data.message);
-                }
-            } catch (error) {
-                console.error('Error fetching processed files:', error);
-            }
-        }
-
-        // Update results statistics
-        function updateResultsStats(data) {
-            document.getElementById('resultsTotal').textContent = data.total_files;
-            document.getElementById('resultsWithJson').textContent = data.files_with_json;
-            
-            const successRate = data.total_files > 0 
-                ? Math.round((data.files_with_json / data.total_files) * 100) + '%'
-                : '0%';
-            document.getElementById('resultsSuccessRate').textContent = successRate;
-            
-            const lastUpdate = new Date(data.timestamp).toLocaleString('es-ES');
-            document.getElementById('resultsLastUpdate').textContent = lastUpdate.split(' ')[1]; // Solo hora
-        }
-
-        // Render processed files list
-        function renderProcessedFiles(files) {
-            const container = document.getElementById('processedFilesList');
-            
-            if (files.length === 0) {
-                container.innerHTML = `
-                    <div class="text-center py-4 text-muted">
-                        <i class="fas fa-folder-open fa-2x mb-3"></i>
-                        <p>No hay archivos procesados</p>
-                    </div>
-                `;
-                return;
-            }
-
-            // Mostrar solo los primeros 5 archivos en la vista del dashboard
-            const displayFiles = files.slice(0, 5);
-            
-            container.innerHTML = displayFiles.map(file => `
-                <div class="d-flex justify-content-between align-items-center border-bottom py-2">
-                    <div class="flex-grow-1">
-                        <div class="fw-medium">${file.filename}</div>
-                        <small class="text-muted">
-                            ${new Date(file.processed_date).toLocaleString('es-ES')}
-                        </small>
-                    </div>
-                    <div>
-                        ${file.json_exists ? `
-                            <button class="btn btn-sm btn-outline-primary me-1" onclick="viewJsonInDashboard('${file.filename}')">
-                                <i class="fas fa-eye"></i>
-                            </button>
                             <button class="btn btn-sm btn-outline-success" onclick="downloadJsonFile('${file.filename}')">
                                 <i class="fas fa-download"></i>
                             </button>
@@ -1670,19 +1054,8 @@ function showProcessingResults(results, batchResult) {
             uploadImages(); // Llamar función de subida existente
         }
     }
-    
 
-// FIX: Sistema de renombrado automático según formato especificado
-// REASON: Usuario necesita formato específico A--214056942235719@lid_Juanc_17-30.png
-// IMPACT: Archivos con nombres consistentes para mejor organización
-
-function updateFileNamePreview() {
-    const prefix = document.getElementById('prefixField').value || 'A--214056942235719';
-    const userId = document.getElementById('userIdField').value || 'lid';
-    const userName = document.getElementById('userNameField').value || 'Usuario';
-    const time = document.getElementById('timeField').value || getCurrentTime();
-    
-    const fileName = `${prefix}@${userId}_${userName}_${time}.png`;
+@${userId}_${userName}_${time}.png`;
     document.getElementById('fileNamePreview').textContent = fileName;
 }
 
@@ -1762,7 +1135,6 @@ async function processImagesWithRename() {
             });
         }
         
-        // Procesar todas las imágenes encoladas
         const batchResponse = await fetch('/api/ocr/process_batch', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -1822,5 +1194,173 @@ function showProcessingResults(results, batchResult) {
 }
 
 </script>
+
+<script>
+// FIX: JavaScript correcto para renombrado según formato exacto del usuario
+// REASON: Formato específico "Posición Sorteo"-"Fecha Sorteo"--"Sender ID"_"Hora (HH:MM)".png
+// IMPACT: Nombres de archivo consistentes y organizados
+
+function actualizarPreviewNombre() {
+    const posicion = document.getElementById('posicionSorteo').value || 'A--214056942235719';
+    const fecha = document.getElementById('fechaSorteo').value || getFechaActual();
+    const sender = document.getElementById('senderId').value || 'lid_Usuario';
+    const hora = document.getElementById('horaFormato').value || getHoraActual();
+    
+    // Formato exacto: "Posición Sorteo"-"Fecha Sorteo"--"Sender ID"_"Hora (HH:MM)".png
+    const nombreArchivo = `${posicion}-${fecha}--${sender}_${hora}.png`;
+    document.getElementById('nombrePreview').textContent = nombreArchivo;
+}
+
+function getFechaActual() {
+    const ahora = new Date();
+    const año = ahora.getFullYear();
+    const mes = (ahora.getMonth() + 1).toString().padStart(2, '0');
+    const dia = ahora.getDate().toString().padStart(2, '0');
+    return `${año}${mes}${dia}`;
+}
+
+function getHoraActual() {
+    const ahora = new Date();
+    const horas = ahora.getHours().toString().padStart(2, '0');
+    const minutos = ahora.getMinutes().toString().padStart(2, '0');
+    return `${horas}-${minutos}`;
+}
+
+// Actualizar preview en tiempo real
+document.addEventListener('DOMContentLoaded', function() {
+    // Establecer valores por defecto
+    document.getElementById('fechaSorteo').value = getFechaActual();
+    document.getElementById('horaFormato').value = getHoraActual();
+    
+    // Listeners para actualización en tiempo real
+    ['posicionSorteo', 'fechaSorteo', 'senderId', 'horaFormato'].forEach(fieldId => {
+        const element = document.getElementById(fieldId);
+        if (element) {
+            element.addEventListener('input', actualizarPreviewNombre);
+        }
+    });
+    
+    actualizarPreviewNombre();
+});
+
+async function subirYProcesarImagenes() {
+    const fileInput = document.getElementById('fileInput');
+    const botonProcesar = document.getElementById('botonProcesar');
+    
+    if (!fileInput.files || fileInput.files.length === 0) {
+        alert('Por favor selecciona al menos una imagen');
+        return;
+    }
+    
+    // Validar campos requeridos
+    const posicion = document.getElementById('posicionSorteo').value.trim();
+    const fecha = document.getElementById('fechaSorteo').value.trim();
+    const sender = document.getElementById('senderId').value.trim();
+    const hora = document.getElementById('horaFormato').value.trim();
+    
+    if (!posicion || !fecha || !sender || !hora) {
+        alert('Por favor completa todos los campos requeridos');
+        return;
+    }
+    
+    // Deshabilitar botón durante procesamiento
+    botonProcesar.disabled = true;
+    botonProcesar.innerHTML = '<div class="spinner-border spinner-border-sm me-2"></div>Procesando...';
+    
+    try {
+        const resultados = [];
+        
+        // Procesar cada archivo
+        for (let i = 0; i < fileInput.files.length; i++) {
+            const file = fileInput.files[i];
+            const formData = new FormData();
+            
+            // Crear nombre personalizado según formato exacto
+            const nombrePersonalizado = `${posicion}-${fecha}--${sender}_${hora}.png`;
+            
+            // Renombrar archivo
+            const archivoRenombrado = new File([file], nombrePersonalizado, { type: file.type });
+            formData.append('image', archivoRenombrado);
+            
+            // Metadatos para el backend
+            formData.append('custom_filename', nombrePersonalizado);
+            formData.append('posicion_sorteo', posicion);
+            formData.append('fecha_sorteo', fecha);
+            formData.append('sender_id', sender);
+            formData.append('hora_formato', hora);
+            
+            // Enviar para encolado
+            const response = await fetch('/api/ocr/process_image', {
+                method: 'POST',
+                body: formData
+            });
+            
+            const resultado = await response.json();
+            resultados.push({
+                archivo: nombrePersonalizado,
+                resultado: resultado
+            });
+            
+            console.log('Imagen encolada:', resultado);
+        }
+        
+        // Procesar lote completo
+        const respuestaProcesamiento = await fetch('/api/ocr/process_batch', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ profile: 'ultra_rapido' })
+        });
+        
+        const resultadoProcesamiento = await respuestaProcesamiento.json();
+        console.log('Lote procesado:', resultadoProcesamiento);
+        
+        // Mostrar resultados
+        mostrarResultadosProcesamiento(resultados, resultadoProcesamiento);
+        
+        // Actualizar listas
+        if (typeof updateQueueDisplay === 'function') updateQueueDisplay();
+        if (typeof updateProcessedFiles === 'function') updateProcessedFiles();
+        
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error al procesar las imágenes: ' + error.message);
+    } finally {
+        // Restaurar botón
+        botonProcesar.disabled = false;
+        botonProcesar.innerHTML = '<i class="fas fa-cogs me-2"></i>Subir y Procesar Imágenes';
+    }
+}
+
+function mostrarResultadosProcesamiento(resultados, procesamiento) {
+    const areaResultados = document.getElementById('areaResultados');
+    const contenido = document.getElementById('contenidoResultados');
+    
+    let html = `<h6>Imágenes procesadas: ${resultados.length}</h6><ul class="list-unstyled">`;
+    
+    resultados.forEach(item => {
+        html += `
+            <li class="mb-2">
+                <strong>${item.archivo}</strong><br>
+                <small class="text-muted">ID: ${item.resultado.request_id || 'N/A'}</small>
+            </li>
+        `;
+    });
+    
+    html += '</ul>';
+    
+    if (procesamiento && procesamiento.batch_info) {
+        html += `
+            <hr>
+            <h6>Resultados del procesamiento:</h6>
+            <p>Tiempo: ${procesamiento.batch_info.processing_time_seconds || 'N/A'}s</p>
+            <p>Procesados: ${procesamiento.batch_info.processed_count || 0}</p>
+        `;
+    }
+    
+    contenido.innerHTML = html;
+    areaResultados.style.display = 'block';
+}
+</script>
+
 </body>
 </html>
