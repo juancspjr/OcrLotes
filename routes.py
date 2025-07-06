@@ -48,12 +48,17 @@ except Exception as e:
 
 @app.route('/')
 def index():
-    """Página principal del dashboard"""
-    return render_template('dashboard.html')
+    """Página principal del dashboard simplificado"""
+    return render_template('dashboard_simple.html')
 
 @app.route('/dashboard')
 def dashboard():
     """Dashboard principal del sistema OCR"""
+    return render_template('dashboard_simple.html')
+
+@app.route('/dashboard_old')
+def dashboard_old():
+    """Dashboard anterior para referencia"""
     return render_template('dashboard.html')
 
 @app.route('/api/ocr/processed_files')

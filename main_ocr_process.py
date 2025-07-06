@@ -758,6 +758,91 @@ class OrquestadorOCR:
             
         except Exception as e:
             logger.warning(f"Error limpiando archivos temporales: {str(e)}")
+    
+    def process_queue_batch(self, max_files=5, profile='ultra_rapido'):
+        """
+        FIX: Método para procesamiento por lotes desde API
+        REASON: Error 'OrquestadorOCR' object has no attribute 'process_queue_batch'
+        IMPACT: Permite procesamiento por lotes desde interfaz web sin errores
+        """
+        try:
+            from config import get_async_directories
+            directories = get_async_directories()
+            
+            # Obtener archivos pendientes
+            inbox_path = Path(directories['inbox'])
+            image_files = []
+            
+            for ext in ['*.png', '*.jpg', '*.jpeg']:
+                image_files.extend(inbox_path.glob(ext))
+            
+            if not image_files:
+                return {
+                    'status': 'no_files',
+                    'estado': 'sin_archivos', 
+                    'message': 'No hay archivos para procesar',
+                    'batch_info': {
+                        'processed_count': 0,
+                        'error_count': 0,
+                        'total_files': 0
+                    }
+                }
+            
+            # Limitar archivos a procesar
+            files_to_process = image_files[:max_files]
+            processed_count = 0
+            error_count = 0
+            start_time = datetime.now()
+            
+            logger.info(f"Iniciando procesamiento por lotes: {len(files_to_process)} archivos")
+            
+            for image_file in files_to_process:
+                try:
+                    # Procesar imagen individual
+                    resultado = self.procesar_imagen_completa(
+                        str(image_file),
+                        profile=profile,
+                        extract_financial=True
+                    )
+                    
+                    if resultado and resultado.get('status') == 'exitoso':
+                        processed_count += 1
+                        logger.info(f"✅ Procesado: {image_file.name}")
+                    else:
+                        error_count += 1
+                        logger.warning(f"❌ Error procesando: {image_file.name}")
+                        
+                except Exception as e:
+                    error_count += 1
+                    logger.error(f"Error procesando {image_file.name}: {e}")
+            
+            processing_time = (datetime.now() - start_time).total_seconds()
+            
+            return {
+                'status': 'exitoso',
+                'estado': 'exitoso',
+                'message': f'Lote procesado: {processed_count} éxitos, {error_count} errores',
+                'batch_info': {
+                    'processed_count': processed_count,
+                    'error_count': error_count,
+                    'total_files': len(files_to_process),
+                    'processing_time_seconds': round(processing_time, 2),
+                    'avg_time_per_file': round(processing_time / len(files_to_process), 2) if files_to_process else 0
+                }
+            }
+            
+        except Exception as e:
+            logger.error(f"Error en process_queue_batch: {e}")
+            return {
+                'status': 'error',
+                'estado': 'error', 
+                'message': f'Error procesando lote: {str(e)}',
+                'batch_info': {
+                    'processed_count': 0,
+                    'error_count': 1,
+                    'total_files': 0
+                }
+            }
 
 def _generar_json_n8n(resultado):
     """

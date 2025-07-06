@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema OCR Asíncrono - Interfaz Simplificada</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { 
+            font-family: 'Segoe UI', system-ui, sans-serif; 
+            background: #f8f9fa;
+        }
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .upload-row {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .results-section {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .btn-upload {
+            background: #6c757d;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+        .btn-upload:hover {
+            background: #5a6268;
+        }
+        .file-item {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+        .json-preview {
+            background: #f1f3f4;
+            border-radius: 6px;
+            padding: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="text-center mb-4">
+            <h2><i class="fas fa-scan me-2"></i>Sistema OCR Asíncrono</h2>
+            <p class="text-muted">Procesamiento inteligente de documentos con extracción de coordenadas</p>
+        </div>
+
+        <!-- Interfaz Simplificada de Un Solo Renglón -->
+        <div class="upload-row">
+            <div class="row align-items-center">
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Posición Sorteo</label>
+                    <input type="text" class="form-control" id="posicionSorteo" value="A--214056942235719" placeholder="A--214056942235719">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label fw-bold">Fecha Sorteo</label>
+                    <input type="text" class="form-control" id="fechaSorteo" placeholder="20250706">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label fw-bold">Sender ID</label>
+                    <input type="text" class="form-control" id="senderId" value="lid_Usuario" placeholder="lid_Usuario">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label fw-bold">Hora (HH:MM)</label>
+                    <input type="text" class="form-control" id="horaFormato" placeholder="17-30">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-bold">Elegir Archivo</label>
+                    <div class="input-group">
+                        <input type="file" class="form-control" id="fileInput" accept="image/*" multiple>
+                        <button class="btn btn-upload btn-secondary" type="button" onclick="subirArchivos()">
+                            <i class="fas fa-upload me-2"></i>Subir
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Preview del nombre -->
+            <div class="mt-3">
+                <small class="text-muted">Nombre resultante: </small>
+                <span class="badge bg-light text-dark" id="nombrePreview">A--214056942235719-20250706--lid_Usuario_17-30.png</span>
+            </div>
+        </div>
+
+        <!-- Resultados de Ambos Sistemas -->
+        <div class="results-section">
+            <div class="row">
+                <!-- Lista de Archivos Procesados -->
+                <div class="col-md-6">
+                    <h5><i class="fas fa-list me-2"></i>Archivos Procesados</h5>
+                    <div id="listaArchivos" class="mt-3">
+                        <div class="text-center text-muted py-4">
+                            <i class="fas fa-clock fa-2x mb-2"></i>
+                            <p>Los archivos procesados aparecerán aquí</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cola de Procesamiento -->
+                <div class="col-md-6">
+                    <h5><i class="fas fa-clock me-2"></i>Cola de Procesamiento</h5>
+                    <div id="estadoCola" class="mt-3">
+                        <div class="text-center text-muted py-4">
+                            <i class="fas fa-inbox fa-2x mb-2"></i>
+                            <p>Estado de la cola aparecerá aquí</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // FIX: JavaScript simplificado para un solo renglón con ambos resultados
+        // REASON: Usuario solicita interfaz sin duplicidad con resultados de ambos sistemas
+        // IMPACT: Interfaz limpia y funcional que muestra todos los resultados
+
+        function actualizarPreview() {
+            const posicion = document.getElementById('posicionSorteo').value || 'A--214056942235719';
+            const fecha = document.getElementById('fechaSorteo').value || getFechaActual();
+            const sender = document.getElementById('senderId').value || 'lid_Usuario';
+            const hora = document.getElementById('horaFormato').value || getHoraActual();
+            
+            const nombre = `${posicion}-${fecha}--${sender}_${hora}.png`;
+            document.getElementById('nombrePreview').textContent = nombre;
+        }
+
+        function getFechaActual() {
+            const ahora = new Date();
+            return ahora.getFullYear() + 
+                   (ahora.getMonth() + 1).toString().padStart(2, '0') + 
+                   ahora.getDate().toString().padStart(2, '0');
+        }
+
+        function getHoraActual() {
+            const ahora = new Date();
+            return ahora.getHours().toString().padStart(2, '0') + '-' + 
+                   ahora.getMinutes().toString().padStart(2, '0');
+        }
+
+        async function subirArchivos() {
+            const fileInput = document.getElementById('fileInput');
+            
+            if (!fileInput.files || fileInput.files.length === 0) {
+                alert('Por favor selecciona al menos un archivo');
+                return;
+            }
+
+            const button = event.target;
+            const originalText = button.innerHTML;
+            button.disabled = true;
+            button.innerHTML = '<div class="spinner-border spinner-border-sm me-2"></div>Procesando...';
+
+            try {
+                // Procesar cada archivo
+                for (let i = 0; i < fileInput.files.length; i++) {
+                    const file = fileInput.files[i];
+                    const formData = new FormData();
+                    
+                    // Crear nombre personalizado
+                    const posicion = document.getElementById('posicionSorteo').value;
+                    const fecha = document.getElementById('fechaSorteo').value || getFechaActual();
+                    const sender = document.getElementById('senderId').value;
+                    const hora = document.getElementById('horaFormato').value || getHoraActual();
+                    
+                    const nombrePersonalizado = `${posicion}-${fecha}--${sender}_${hora}.png`;
+                    
+                    formData.append('image', file);
+                    formData.append('custom_filename', nombrePersonalizado);
+                    formData.append('posicion_sorteo', posicion);
+                    formData.append('fecha_sorteo', fecha);
+                    formData.append('sender_id', sender);
+                    formData.append('hora_formato', hora);
+                    
+                    // Encolar imagen
+                    const response = await fetch('/api/ocr/process_image', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    const resultado = await response.json();
+                    console.log('Imagen encolada:', resultado);
+                }
+                
+                // Procesar lote
+                const respuestaProceso = await fetch('/api/ocr/process_batch', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ profile: 'ultra_rapido' })
+                });
+                
+                const resultadoProceso = await respuestaProceso.json();
+                console.log('Lote procesado:', resultadoProceso);
+                
+                // Actualizar listas
+                await actualizarAmbosResultados();
+                
+                alert('Archivos procesados exitosamente');
+                
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error procesando archivos: ' + error.message);
+            } finally {
+                button.disabled = false;
+                button.innerHTML = originalText;
+            }
+        }
+
+        async function actualizarAmbosResultados() {
+            // Actualizar archivos procesados
+            try {
+                const response = await fetch('/api/ocr/processed_files');
+                const data = await response.json();
+                
+                const listaArchivos = document.getElementById('listaArchivos');
+                
+                if (data.files && data.files.length > 0) {
+                    let html = '';
+                    data.files.slice(0, 10).forEach(file => {
+                        html += `
+                            <div class="file-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>${file.filename}</strong>
+                                        <br><small class="text-muted">${file.size_readable} - ${file.modified_readable}</small>
+                                    </div>
+                                    <div>
+                                        <span class="badge ${file.has_ocr_data ? 'bg-success' : 'bg-warning'}">
+                                            ${file.has_coordinates ? 'Con coordenadas' : 'Sin coordenadas'}
+                                        </span>
+                                    </div>
+                                </div>
+                                ${file.confidence ? `<div class="mt-2"><small>Confianza: ${(file.confidence * 100).toFixed(1)}%</small></div>` : ''}
+                            </div>
+                        `;
+                    });
+                    listaArchivos.innerHTML = html;
+                } else {
+                    listaArchivos.innerHTML = '<div class="text-center text-muted py-4">No hay archivos procesados</div>';
+                }
+            } catch (error) {
+                console.error('Error actualizando archivos:', error);
+            }
+
+            // Actualizar estado de cola
+            try {
+                const response = await fetch('/api/ocr/queue/status');
+                const data = await response.json();
+                
+                const estadoCola = document.getElementById('estadoCola');
+                estadoCola.innerHTML = `
+                    <div class="row text-center">
+                        <div class="col-3">
+                            <div class="badge bg-primary fs-6">${data.queue_status?.pending || 0}</div>
+                            <div><small>Pendientes</small></div>
+                        </div>
+                        <div class="col-3">
+                            <div class="badge bg-warning fs-6">${data.queue_status?.processing || 0}</div>
+                            <div><small>Procesando</small></div>
+                        </div>
+                        <div class="col-3">
+                            <div class="badge bg-success fs-6">${data.queue_status?.completed || 0}</div>
+                            <div><small>Completados</small></div>
+                        </div>
+                        <div class="col-3">
+                            <div class="badge bg-info fs-6">${data.queue_status?.results_available || 0}</div>
+                            <div><small>JSON</small></div>
+                        </div>
+                    </div>
+                `;
+            } catch (error) {
+                console.error('Error actualizando cola:', error);
+            }
+        }
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', function() {
+            // Establecer valores por defecto
+            document.getElementById('fechaSorteo').value = getFechaActual();
+            document.getElementById('horaFormato').value = getHoraActual();
+            
+            // Listeners para preview
+            ['posicionSorteo', 'fechaSorteo', 'senderId', 'horaFormato'].forEach(fieldId => {
+                document.getElementById(fieldId).addEventListener('input', actualizarPreview);
+            });
+            
+            actualizarPreview();
+            actualizarAmbosResultados();
+            
+            // Actualizar cada 5 segundos
+            setInterval(actualizarAmbosResultados, 5000);
+        });
+    </script>
+</body>
+</html>

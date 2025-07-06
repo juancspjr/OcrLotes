@@ -21,13 +21,16 @@ Sistema OCR asíncrono de alto rendimiento para procesamiento de recibos de pago
 - ✅ Corrección de extracción de coordenadas
 - ✅ Respuestas en español implementadas
 - ✅ Algoritmo de detección JSON corregido
-- ✅ Botones duplicados eliminados
-- ✅ Workflow de archivos clarificado
+- ✅ Interfaz simplificada: un solo renglón con botón "Subir"
+- ✅ Método process_queue_batch agregado al OrquestadorOCR
+- ✅ Resultados de ambos sistemas visibles en interfaz
 
 ## Preferencias del Usuario
 - Interfaz completamente en español
-- Eliminar botones duplicados del footer
-- Workflow claro: "Elegir archivos" → "Procesar automáticamente"
+- Diseño de un solo renglón con botón "Subir" únicamente
+- Workflow: "Elegir archivo" solo selecciona, botón gris procesa
+- Cero duplicidad en la interfaz
+- Mostrar resultados de ambos sistemas (archivos procesados + cola)
 - Prioridad en coordenadas correctas y archivos JSON visibles
 
 ## APIs Principales
