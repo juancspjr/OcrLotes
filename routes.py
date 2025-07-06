@@ -29,7 +29,12 @@ def allowed_file(filename):
 
 @app.route('/')
 def index():
-    """Página principal de carga de imágenes"""
+    """Dashboard principal del sistema OCR asíncrono con métricas profesionales"""
+    return render_template('dashboard.html')
+
+@app.route('/old')
+def old_interface():
+    """Interfaz anterior para compatibilidad"""
     return render_template('index.html')
 
 @app.route('/upload', methods=['POST'])

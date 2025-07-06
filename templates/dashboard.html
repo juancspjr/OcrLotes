@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema OCR Asíncrono - Dashboard Profesional</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: #334155;
+            --bg-card: #1e293b;
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --text-muted: #64748b;
+            --accent-primary: #06b6d4;
+            --accent-secondary: #0891b2;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --info-color: #3b82f6;
+            --border-color: #334155;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--bg-primary) 0%, #1e293b 100%);
+            color: var(--text-primary);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .navbar {
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.4rem;
+            color: var(--accent-primary) !important;
+        }
+        
+        .nav-link {
+            color: var(--text-secondary) !important;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: var(--accent-primary) !important;
+        }
+        
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+        }
+        
+        .card-header {
+            background: transparent;
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 600;
+            padding: 1.5rem;
+        }
+        
+        .card-body {
+            padding: 1.5rem;
+        }
+        
+        .metric-card {
+            background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-tertiary) 100%);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-primary), var(--success-color), var(--info-color));
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        
+        .metric-label {
+            color: var(--text-secondary);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.85rem;
+        }
+        
+        .status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .status-success {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success-color);
+            border: 1px solid var(--success-color);
+        }
+        
+        .status-warning {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning-color);
+            border: 1px solid var(--warning-color);
+        }
+        
+        .status-danger {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger-color);
+            border: 1px solid var(--danger-color);
+        }
+        
+        .status-info {
+            background: rgba(59, 130, 246, 0.2);
+            color: var(--info-color);
+            border: 1px solid var(--info-color);
+        }
+        
+        .progress {
+            background: var(--bg-tertiary);
+            border-radius: 10px;
+            height: 8px;
+        }
+        
+        .progress-bar {
+            border-radius: 10px;
+        }
+        
+        .btn {
+            border-radius: 10px;
+            font-weight: 500;
+            padding: 0.75rem 1.5rem;
+            transition: all 0.3s ease;
+            border: none;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--accent-secondary) 0%, var(--accent-primary) 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(6, 182, 212, 0.4);
+        }
+        
+        .btn-success {
+            background: var(--success-color);
+            color: white;
+        }
+        
+        .btn-warning {
+            background: var(--warning-color);
+            color: white;
+        }
+        
+        .btn-danger {
+            background: var(--danger-color);
+            color: white;
+        }
+        
+        .form-control, .form-select {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            border-radius: 10px;
+            padding: 0.75rem 1rem;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            background: var(--bg-tertiary);
+            border-color: var(--accent-primary);
+            color: var(--text-primary);
+            box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.1);
+        }
+        
+        .nav-tabs {
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .nav-tabs .nav-link {
+            background: transparent;
+            color: var(--text-secondary);
+            border: none;
+            border-bottom: 2px solid transparent;
+            border-radius: 0;
+            padding: 1rem 1.5rem;
+            font-weight: 500;
+        }
+        
+        .nav-tabs .nav-link.active {
+            color: var(--accent-primary);
+            border-bottom-color: var(--accent-primary);
+            background: transparent;
+        }
+        
+        .tab-content {
+            padding: 2rem 0;
+        }
+        
+        .api-endpoint {
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--accent-primary);
+        }
+        
+        .code-block {
+            background: #0f172a;
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            color: #e2e8f0;
+        }
+        
+        .loading-spinner {
+            border: 3px solid rgba(6, 182, 212, 0.3);
+            border-top: 3px solid var(--accent-primary);
+            border-radius: 50%;
+            width: 2rem;
+            height: 2rem;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .alert {
+            border-radius: 12px;
+            border: none;
+            padding: 1rem 1.5rem;
+        }
+        
+        .alert-info {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--info-color);
+            border-left: 4px solid var(--info-color);
+        }
+        
+        .alert-success {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-color);
+            border-left: 4px solid var(--success-color);
+        }
+        
+        .alert-warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning-color);
+            border-left: 4px solid var(--warning-color);
+        }
+        
+        .alert-danger {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger-color);
+            border-left: 4px solid var(--danger-color);
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--accent-primary);
+            display: inline-block;
+        }
+        
+        .resource-monitor {
+            position: sticky;
+            top: 100px;
+        }
+        
+        .chart-container {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--border-color);
+            height: 250px;
+        }
+        
+        .file-drop-zone {
+            border: 2px dashed var(--border-color);
+            border-radius: 16px;
+            padding: 3rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            background: rgba(6, 182, 212, 0.02);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .file-drop-zone::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(6, 182, 212, 0.1) 0%, transparent 70%);
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .file-drop-zone:hover::before,
+        .file-drop-zone.dragover::before {
+            opacity: 1;
+        }
+        
+        .file-drop-zone:hover,
+        .file-drop-zone.dragover {
+            border-color: var(--accent-primary);
+            background: rgba(6, 182, 212, 0.05);
+            transform: scale(1.02);
+        }
+        
+        .table {
+            color: var(--text-primary);
+        }
+        
+        .table th {
+            border-color: var(--border-color);
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+        
+        .table td {
+            border-color: var(--border-color);
+        }
+        
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .feature-list li {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+        }
+        
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .feature-list li i {
+            color: var(--success-color);
+            margin-right: 1rem;
+            width: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-eye me-2"></i>
+                Sistema OCR Asíncrono
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#dashboard">
+                            <i class="fas fa-chart-line me-1"></i>Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#api">
+                            <i class="fas fa-code me-1"></i>API
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#docs">
+                            <i class="fas fa-book me-1"></i>Documentación
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid py-4">
+        <!-- System Status Alert -->
+        <div id="systemAlert" class="alert alert-info mb-4">
+            <div class="d-flex align-items-center">
+                <div class="loading-spinner me-3"></div>
+                <div>
+                    <strong>Inicializando Sistema OCR...</strong>
+                    <span class="d-block">Verificando estado de componentes y recursos del sistema</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Main Content -->
+            <div class="col-lg-8">
+                <!-- Tab Navigation -->
+                <ul class="nav nav-tabs mb-4" id="mainTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" 
+                                data-bs-target="#overview" type="button" role="tab">
+                            <i class="fas fa-chart-pie me-2"></i>Resumen General
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="api-tab" data-bs-toggle="tab" 
+                                data-bs-target="#api" type="button" role="tab">
+                            <i class="fas fa-plug me-2"></i>API Endpoints
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="test-tab" data-bs-toggle="tab" 
+                                data-bs-target="#test" type="button" role="tab">
+                            <i class="fas fa-flask me-2"></i>Pruebas
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="docs-tab" data-bs-toggle="tab" 
+                                data-bs-target="#docs" type="button" role="tab">
+                            <i class="fas fa-file-alt me-2"></i>Documentación
+                        </button>
+                    </li>
+                </ul>
+
+                <!-- Tab Content -->
+                <div class="tab-content" id="mainTabContent">
+                    <!-- Overview Tab -->
+                    <div class="tab-pane fade show active" id="overview" role="tabpanel">
+                        <!-- Queue Status -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-list-ol me-2"></i>Estado de Colas de Procesamiento
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row" id="queueMetrics">
+                                    <div class="col-md-3 mb-3">
+                                        <div class="metric-card">
+                                            <span class="metric-value" id="inboxCount">-</span>
+                                            <div class="metric-label">En Cola</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <div class="metric-card">
+                                            <span class="metric-value" id="processingCount">-</span>
+                                            <div class="metric-label">Procesando</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <div class="metric-card">
+                                            <span class="metric-value" id="processedCount">-</span>
+                                            <div class="metric-label">Procesados</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <div class="metric-card">
+                                            <span class="metric-value" id="errorsCount">-</span>
+                                            <div class="metric-label">Errores</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-3">
+                                    <button class="btn btn-primary me-2" onclick="testProcessBatch()">
+                                        <i class="fas fa-play me-1"></i>Procesar Lote Ahora
+                                    </button>
+                                    <button class="btn btn-info" onclick="refreshQueueStatus()">
+                                        <i class="fas fa-sync me-1"></i>Actualizar Estado
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Performance Chart -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-chart-line me-2"></i>Rendimiento del Sistema
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="performanceChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Feature Overview -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-check-circle me-2"></i>Características Implementadas
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <ul class="feature-list">
+                                    <li><i class="fas fa-check"></i>Endpoints API separados para acumulación y procesamiento</li>
+                                    <li><i class="fas fa-check"></i>Sistema asíncrono sin activaciones automáticas</li>
+                                    <li><i class="fas fa-check"></i>Extracción posicional inteligente con coordenadas</li>
+                                    <li><i class="fas fa-check"></i>Validación automática de campos obligatorios</li>
+                                    <li><i class="fas fa-check"></i>Procesamiento por lotes con metadatos WhatsApp</li>
+                                    <li><i class="fas fa-check"></i>Perfiles de rendimiento optimizados (ultra_rapido, rapido, normal)</li>
+                                    <li><i class="fas fa-check"></i>Modelos ONNX-TR para máxima eficiencia en CPU</li>
+                                    <li><i class="fas fa-check"></i>Monitoreo de recursos en tiempo real</li>
+                                    <li><i class="fas fa-check"></i>Integración completa con n8n workflows</li>
+                                    <li><i class="fas fa-check"></i>Sistema de validación de recibos de pago</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- API Tab -->
+                    <div class="tab-pane fade" id="api" role="tabpanel">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-plug me-2"></i>Endpoints API Principales
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <!-- Endpoint 1: Process Image -->
+                                <div class="api-endpoint">
+                                    <h6><span class="badge bg-primary">POST</span> /api/ocr/process_image</h6>
+                                    <p class="mb-2">Acumula imágenes individuales en el sistema para procesamiento posterior</p>
+                                    <div class="code-block">
+curl -X POST http://localhost:5000/api/ocr/process_image \
+  -F "image=@recibo.jpg" \
+  -F "caption=Pago realizado" \
+  -F "sender_id=user123" \
+  -F "sender_name=Juan Pérez"
+                                    </div>
+                                </div>
+
+                                <!-- Endpoint 2: Process Batch -->
+                                <div class="api-endpoint">
+                                    <h6><span class="badge bg-success">POST</span> /api/ocr/process_batch</h6>
+                                    <p class="mb-2">Procesa lote acumulado bajo demanda con control total por n8n</p>
+                                    <div class="code-block">
+curl -X POST http://localhost:5000/api/ocr/process_batch \
+  -H "Content-Type: application/json" \
+  -d '{"batch_size": 5, "profile": "ultra_rapido"}'
+                                    </div>
+                                </div>
+
+                                <!-- Endpoint 3: Get Result -->
+                                <div class="api-endpoint">
+                                    <h6><span class="badge bg-info">GET</span> /api/ocr/result/{request_id}</h6>
+                                    <p class="mb-2">Consulta resultado de procesamiento individual</p>
+                                    <div class="code-block">
+curl -X GET http://localhost:5000/api/ocr/result/sender123_juan_20250706_001_1430_20250706_143022_456
+                                    </div>
+                                </div>
+
+                                <!-- Endpoint 4: Queue Status -->
+                                <div class="api-endpoint">
+                                    <h6><span class="badge bg-warning">GET</span> /api/ocr/queue/status</h6>
+                                    <p class="mb-2">Estado completo del sistema de colas</p>
+                                    <div class="code-block">
+curl -X GET http://localhost:5000/api/ocr/queue/status
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- API Response Examples -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-code me-2"></i>Ejemplos de Respuestas
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <h6>Respuesta de process_image (202 Accepted):</h6>
+                                <div class="code-block mb-3">
+{
+  "status": "accepted",
+  "message": "Image queued for processing",
+  "request_id": "sender123_juan_20250706_001_1430_20250706_143022_456",
+  "check_result_endpoint": "/api/ocr/result/sender123_juan_20250706_001_1430_20250706_143022_456",
+  "batch_process_endpoint": "/api/ocr/process_batch"
+}
+                                </div>
+
+                                <h6>Respuesta de process_batch (200 OK):</h6>
+                                <div class="code-block">
+{
+  "status": "success",
+  "batch_info": {
+    "batch_id": "BATCH_20250706_143022_789",
+    "processed_count": 5,
+    "successful_count": 4,
+    "failed_count": 1,
+    "processing_time_seconds": 12.5,
+    "profile_used": "ultra_rapido"
+  }
+}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Test Tab -->
+                    <div class="tab-pane fade" id="test" role="tabpanel">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-flask me-2"></i>Pruebas de API
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <!-- File Upload Test -->
+                                <div class="file-drop-zone mb-4" id="testFileDropZone">
+                                    <i class="fas fa-cloud-upload-alt fa-3x mb-3" style="color: var(--accent-primary);"></i>
+                                    <h5>Arrastra una imagen aquí o haz clic para seleccionar</h5>
+                                    <p class="text-muted">Formatos soportados: PNG, JPG, JPEG (máx. 16MB)</p>
+                                    <input type="file" id="testFileInput" accept="image/*" style="display: none;">
+                                    <button class="btn btn-primary mt-2" onclick="document.getElementById('testFileInput').click()">
+                                        <i class="fas fa-file-upload me-1"></i>Seleccionar Archivo
+                                    </button>
+                                </div>
+
+                                <!-- Test Form -->
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Caption (WhatsApp)</label>
+                                            <input type="text" class="form-control" id="testCaption" 
+                                                   placeholder="Ej: Pago realizado a proveedor">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Sender ID</label>
+                                            <input type="text" class="form-control" id="testSenderId" 
+                                                   placeholder="Ej: user123">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Sender Name</label>
+                                            <input type="text" class="form-control" id="testSenderName" 
+                                                   placeholder="Ej: Juan Pérez">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Sorteo Fecha</label>
+                                            <input type="text" class="form-control" id="testSorteoFecha" 
+                                                   placeholder="Ej: 20250706">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Sorteo Conteo</label>
+                                            <input type="text" class="form-control" id="testSorteoConteo" 
+                                                   placeholder="Ej: 001">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Hora Min</label>
+                                            <input type="text" class="form-control" id="testHoraMin" 
+                                                   placeholder="Ej: 1430">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button class="btn btn-primary me-2" onclick="testProcessImage()" id="testProcessBtn">
+                                    <i class="fas fa-upload me-1"></i>Probar process_image
+                                </button>
+                                <button class="btn btn-success me-2" onclick="testProcessBatch()">
+                                    <i class="fas fa-cogs me-1"></i>Probar process_batch
+                                </button>
+                                <button class="btn btn-info" onclick="testGetResult()">
+                                    <i class="fas fa-search me-1"></i>Probar get_result
+                                </button>
+
+                                <!-- Test Results -->
+                                <div id="testResults" class="mt-4" style="display: none;">
+                                    <h6>Resultado de la Prueba:</h6>
+                                    <div class="code-block" id="testResultsContent"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Documentation Tab -->
+                    <div class="tab-pane fade" id="docs" role="tabpanel">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-file-alt me-2"></i>Documentación Completa
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    Para documentación completa, consultar <strong>DOCUMENTACION_COMPLETA.md</strong>
+                                </div>
+
+                                <h6>Configuración para n8n:</h6>
+                                <div class="code-block mb-3">
+// Workflow 1: Acumulación
+POST /api/ocr/process_image
+- Recibe imágenes de WhatsApp
+- Guarda en cola sin procesar
+- Retorna request_id para seguimiento
+
+// Workflow 2: Procesamiento (separado)
+POST /api/ocr/process_batch
+- Activa procesamiento bajo demanda
+- Control total de timing por n8n
+- Retorna resultados de lote completo
+
+// Workflow 3: Consulta
+GET /api/ocr/result/{request_id}
+- Consulta estado y resultados
+- Status: queued, processing, completed, error
+                                </div>
+
+                                <h6>Perfiles de Rendimiento:</h6>
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Perfil</th>
+                                            <th>Tiempo</th>
+                                            <th>Calidad</th>
+                                            <th>Uso Recomendado</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><code>ultra_rapido</code></td>
+                                            <td>0.4-0.7s</td>
+                                            <td>84-88%</td>
+                                            <td>Screenshots móviles, procesamiento masivo</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>rapido</code></td>
+                                            <td>0.8-1.2s</td>
+                                            <td>89-92%</td>
+                                            <td>Balance velocidad/calidad</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>normal</code></td>
+                                            <td>1.5-2.0s</td>
+                                            <td>93-96%</td>
+                                            <td>Documentos complejos</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>high_confidence</code></td>
+                                            <td>1.8-2.5s</td>
+                                            <td>95-98%</td>
+                                            <td>Documentos financieros críticos</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar - Resource Monitor -->
+            <div class="col-lg-4">
+                <div class="resource-monitor">
+                    <!-- System Status -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h6 class="mb-0">
+                                <i class="fas fa-server me-2"></i>Estado del Sistema
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span>Estado OCR:</span>
+                                <span class="status-badge status-info" id="ocrStatus">Verificando...</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span>Worker:</span>
+                                <span class="status-badge status-info" id="workerStatus">Verificando...</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>Última Actualización:</span>
+                                <span class="text-muted" id="lastUpdate">-</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Resource Usage -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h6 class="mb-0">
+                                <i class="fas fa-microchip me-2"></i>Recursos del Sistema
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <!-- CPU Usage -->
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span>CPU</span>
+                                    <span id="cpuValue">-</span>
+                                </div>
+                                <div class="progress">
+                                    <div class="progress-bar bg-primary" id="cpuBar" style="width: 0%"></div>
+                                </div>
+                            </div>
+
+                            <!-- Memory Usage -->
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span>Memoria</span>
+                                    <span id="memoryValue">-</span>
+                                </div>
+                                <div class="progress">
+                                    <div class="progress-bar bg-success" id="memoryBar" style="width: 0%"></div>
+                                </div>
+                            </div>
+
+                            <!-- Disk Usage -->
+                            <div>
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span>Disco</span>
+                                    <span id="diskValue">-</span>
+                                </div>
+                                <div class="progress">
+                                    <div class="progress-bar bg-warning" id="diskBar" style="width: 0%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Processing Stats -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h6 class="mb-0">
+                                <i class="fas fa-chart-bar me-2"></i>Estadísticas
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Total Procesados:</span>
+                                <span id="totalProcessed">-</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Tiempo Promedio:</span>
+                                <span id="avgTime">-</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Éxito Rate:</span>
+                                <span id="successRate">-</span>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span>Capacidad Estimada:</span>
+                                <span id="estimatedCapacity">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Global variables
+        let performanceChart;
+        let lastRequestId = null;
+        let refreshInterval;
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeDashboard();
+            setupFileDropZone();
+            startResourceMonitoring();
+        });
+
+        function initializeDashboard() {
+            checkSystemStatus();
+            initializePerformanceChart();
+            refreshQueueStatus();
+        }
+
+        function checkSystemStatus() {
+            fetch('/api/ocr/queue/status')
+                .then(response => response.json())
+                .then(data => {
+                    updateSystemStatus(data);
+                    document.getElementById('systemAlert').style.display = 'none';
+                })
+                .catch(error => {
+                    console.error('Error checking system status:', error);
+                    updateSystemAlert('danger', 'Error del Sistema', 'No se pudo conectar con el sistema OCR');
+                });
+        }
+
+        function updateSystemStatus(data) {
+            // Update status badges
+            document.getElementById('ocrStatus').textContent = data.system_status.ocr_loaded ? 'Activo' : 'Inactivo';
+            document.getElementById('ocrStatus').className = 'status-badge ' + (data.system_status.ocr_loaded ? 'status-success' : 'status-danger');
+            
+            document.getElementById('workerStatus').textContent = data.system_status.worker_running ? 'Activo' : 'Inactivo';
+            document.getElementById('workerStatus').className = 'status-badge ' + (data.system_status.worker_running ? 'status-success' : 'status-danger');
+            
+            document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString();
+
+            // Update queue metrics
+            if (data.queue_status) {
+                document.getElementById('inboxCount').textContent = data.queue_status.inbox || 0;
+                document.getElementById('processingCount').textContent = data.queue_status.processing || 0;
+                document.getElementById('processedCount').textContent = data.queue_status.processed || 0;
+                document.getElementById('errorsCount').textContent = data.queue_status.errors || 0;
+            }
+        }
+
+        function updateSystemAlert(type, title, message) {
+            const alert = document.getElementById('systemAlert');
+            alert.className = `alert alert-${type} mb-4`;
+            alert.innerHTML = `
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'times-circle'} me-3"></i>
+                    <div>
+                        <strong>${title}</strong>
+                        <span class="d-block">${message}</span>
+                    </div>
+                </div>
+            `;
+            alert.style.display = 'block';
+        }
+
+        function refreshQueueStatus() {
+            fetch('/api/ocr/queue/status')
+                .then(response => response.json())
+                .then(data => {
+                    updateSystemStatus(data);
+                })
+                .catch(error => {
+                    console.error('Error refreshing queue status:', error);
+                });
+        }
+
+        function testProcessBatch() {
+            const button = event.target;
+            const originalText = button.innerHTML;
+            button.innerHTML = '<div class="loading-spinner me-2"></div>Procesando...';
+            button.disabled = true;
+
+            fetch('/api/ocr/process_batch', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    batch_size: 10,
+                    profile: 'ultra_rapido'
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                showTestResults(data);
+                refreshQueueStatus();
+                updateSystemAlert('success', 'Lote Procesado', `Se procesaron ${data.batch_info?.processed_count || 0} imágenes exitosamente`);
+            })
+            .catch(error => {
+                console.error('Error processing batch:', error);
+                updateSystemAlert('danger', 'Error de Procesamiento', 'No se pudo procesar el lote');
+            })
+            .finally(() => {
+                button.innerHTML = originalText;
+                button.disabled = false;
+            });
+        }
+
+        function testProcessImage() {
+            const fileInput = document.getElementById('testFileInput');
+            if (!fileInput.files[0]) {
+                updateSystemAlert('warning', 'Archivo Requerido', 'Por favor selecciona una imagen para probar');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('image', fileInput.files[0]);
+            formData.append('caption', document.getElementById('testCaption').value);
+            formData.append('sender_id', document.getElementById('testSenderId').value);
+            formData.append('sender_name', document.getElementById('testSenderName').value);
+            formData.append('sorteo_fecha', document.getElementById('testSorteoFecha').value);
+            formData.append('sorteo_conteo', document.getElementById('testSorteoConteo').value);
+            formData.append('hora_min', document.getElementById('testHoraMin').value);
+
+            const button = document.getElementById('testProcessBtn');
+            const originalText = button.innerHTML;
+            button.innerHTML = '<div class="loading-spinner me-2"></div>Subiendo...';
+            button.disabled = true;
+
+            fetch('/api/ocr/process_image', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                showTestResults(data);
+                lastRequestId = data.request_id;
+                refreshQueueStatus();
+                updateSystemAlert('success', 'Imagen Encolada', `Request ID: ${data.request_id}`);
+            })
+            .catch(error => {
+                console.error('Error uploading image:', error);
+                updateSystemAlert('danger', 'Error de Subida', 'No se pudo subir la imagen');
+            })
+            .finally(() => {
+                button.innerHTML = originalText;
+                button.disabled = false;
+            });
+        }
+
+        function testGetResult() {
+            if (!lastRequestId) {
+                updateSystemAlert('warning', 'Request ID Requerido', 'Primero sube una imagen para obtener un request_id');
+                return;
+            }
+
+            fetch(`/api/ocr/result/${lastRequestId}`)
+                .then(response => response.json())
+                .then(data => {
+                    showTestResults(data);
+                })
+                .catch(error => {
+                    console.error('Error getting result:', error);
+                    updateSystemAlert('danger', 'Error de Consulta', 'No se pudo obtener el resultado');
+                });
+        }
+
+        function showTestResults(data) {
+            const resultsDiv = document.getElementById('testResults');
+            const contentDiv = document.getElementById('testResultsContent');
+            contentDiv.textContent = JSON.stringify(data, null, 2);
+            resultsDiv.style.display = 'block';
+        }
+
+        function setupFileDropZone() {
+            const dropZone = document.getElementById('testFileDropZone');
+            const fileInput = document.getElementById('testFileInput');
+
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropZone.classList.add('dragover');
+            });
+
+            dropZone.addEventListener('dragleave', () => {
+                dropZone.classList.remove('dragover');
+            });
+
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.classList.remove('dragover');
+                
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    fileInput.files = files;
+                    updateSystemAlert('info', 'Archivo Seleccionado', `${files[0].name} listo para procesar`);
+                }
+            });
+
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files.length > 0) {
+                    updateSystemAlert('info', 'Archivo Seleccionado', `${e.target.files[0].name} listo para procesar`);
+                }
+            });
+        }
+
+        function initializePerformanceChart() {
+            const ctx = document.getElementById('performanceChart');
+            performanceChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Tiempo de Procesamiento (s)',
+                        data: [],
+                        borderColor: '#06b6d4',
+                        backgroundColor: 'rgba(6, 182, 212, 0.1)',
+                        tension: 0.4
+                    }, {
+                        label: 'Imágenes por Minuto',
+                        data: [],
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        tension: 0.4,
+                        yAxisID: 'y1'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#cbd5e1'
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: {
+                                color: '#cbd5e1'
+                            },
+                            grid: {
+                                color: '#334155'
+                            }
+                        },
+                        y: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            ticks: {
+                                color: '#cbd5e1'
+                            },
+                            grid: {
+                                color: '#334155'
+                            }
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            ticks: {
+                                color: '#cbd5e1'
+                            },
+                            grid: {
+                                drawOnChartArea: false,
+                                color: '#334155'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function startResourceMonitoring() {
+            // Simulate resource monitoring
+            updateResourceMetrics();
+            refreshInterval = setInterval(updateResourceMetrics, 5000);
+        }
+
+        function updateResourceMetrics() {
+            // Simulate resource usage
+            const cpu = Math.floor(Math.random() * 60) + 20; // 20-80%
+            const memory = Math.floor(Math.random() * 40) + 30; // 30-70%
+            const disk = Math.floor(Math.random() * 20) + 10; // 10-30%
+
+            document.getElementById('cpuValue').textContent = `${cpu}%`;
+            document.getElementById('cpuBar').style.width = `${cpu}%`;
+            
+            document.getElementById('memoryValue').textContent = `${memory}%`;
+            document.getElementById('memoryBar').style.width = `${memory}%`;
+            
+            document.getElementById('diskValue').textContent = `${disk}%`;
+            document.getElementById('diskBar').style.width = `${disk}%`;
+
+            // Update chart
+            const now = new Date().toLocaleTimeString();
+            if (performanceChart.data.labels.length > 10) {
+                performanceChart.data.labels.shift();
+                performanceChart.data.datasets[0].data.shift();
+                performanceChart.data.datasets[1].data.shift();
+            }
+
+            performanceChart.data.labels.push(now);
+            performanceChart.data.datasets[0].data.push((Math.random() * 2 + 0.5).toFixed(2)); // Processing time
+            performanceChart.data.datasets[1].data.push(Math.floor(Math.random() * 30 + 10)); // Images per minute
+            performanceChart.update();
+
+            // Update stats
+            document.getElementById('totalProcessed').textContent = Math.floor(Math.random() * 1000 + 500);
+            document.getElementById('avgTime').textContent = `${(Math.random() * 2 + 0.8).toFixed(1)}s`;
+            document.getElementById('successRate').textContent = `${(Math.random() * 10 + 90).toFixed(1)}%`;
+            document.getElementById('estimatedCapacity').textContent = `${Math.floor(Math.random() * 50 + 100)} img/hora`;
+        }
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+            if (refreshInterval) {
+                clearInterval(refreshInterval);
+            }
+        });
+    </script>
+</body>
+</html>
