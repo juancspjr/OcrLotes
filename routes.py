@@ -753,11 +753,24 @@ def api_queue_status():
         
         directories = get_async_directories()
         
-        # Contar archivos en cada directorio
-        inbox_count = len(glob.glob(os.path.join(directories['inbox'], "*.*")))
-        processing_count = len(glob.glob(os.path.join(directories['processing'], "*.*")))
-        processed_count = len(glob.glob(os.path.join(directories['processed'], "*.*")))
-        errors_count = len(glob.glob(os.path.join(directories['errors'], "*.*")))
+        # FIX: Contar solo archivos de imagen, no todos los archivos auxiliares
+        # REASON: El contador mostraba 6 archivos cuando solo había 2 imágenes
+        # IMPACT: Contador preciso que refleja solo las imágenes reales en procesamiento
+        
+        # Contar solo archivos de imagen en cada directorio
+        image_extensions = ["*.png", "*.jpg", "*.jpeg"]
+        
+        inbox_count = 0
+        processing_count = 0
+        processed_count = 0
+        errors_count = 0
+        
+        for ext in image_extensions:
+            inbox_count += len(glob.glob(os.path.join(directories['inbox'], ext)))
+            processing_count += len(glob.glob(os.path.join(directories['processing'], ext)))
+            processed_count += len(glob.glob(os.path.join(directories['processed'], ext)))
+            errors_count += len(glob.glob(os.path.join(directories['errors'], ext)))
+        
         results_count = len(glob.glob(os.path.join(directories['results'], "*.json")))
         
         return jsonify({
@@ -772,6 +785,92 @@ def api_queue_status():
             'system_status': {
                 'worker_running': _worker_running,
                 'ocr_loaded': _ocr_orchestrator is not None and orquestador is not None
+            },
+            'timestamp': datetime.now().isoformat()
+        })
+        
+    except Exception as e:
+        logger.error(f"Error en queue status: {e}")
+        return jsonify({
+            'status': 'error',
+            'message': 'Error al obtener estado de la cola',
+            'details': str(e)
+        }), 500
+
+@app.route('/api/ocr/daily_stats', methods=['GET'])
+def api_daily_stats():
+    """
+    FIX: Endpoint para estadísticas diarias de procesamiento
+    REASON: Usuario requiere tracking de imágenes procesadas por día
+    IMPACT: Estadísticas de cierre del día para control de productividad
+    """
+    try:
+        from config import get_async_directories
+        import glob
+        from datetime import datetime, timedelta
+        import json
+        
+        directories = get_async_directories()
+        today = datetime.now().date()
+        yesterday = today - timedelta(days=1)
+        
+        # Función para obtener estadísticas de un día específico
+        def get_day_stats(target_date):
+            day_start = datetime.combine(target_date, datetime.min.time())
+            day_end = datetime.combine(target_date, datetime.max.time())
+            
+            stats = {
+                'processed_count': 0,
+                'json_count': 0,
+                'error_count': 0,
+                'total_size_mb': 0,
+                'success_rate': 0
+            }
+            
+            # Contar archivos procesados del día
+            for ext in ["*.png", "*.jpg", "*.jpeg"]:
+                files = glob.glob(os.path.join(directories['processed'], ext))
+                for file_path in files:
+                    file_mtime = datetime.fromtimestamp(os.path.getmtime(file_path))
+                    if day_start <= file_mtime <= day_end:
+                        stats['processed_count'] += 1
+                        stats['total_size_mb'] += os.path.getsize(file_path) / (1024 * 1024)
+            
+            # Contar JSONs del día
+            json_files = glob.glob(os.path.join(directories['results'], "*.json"))
+            for json_path in json_files:
+                file_mtime = datetime.fromtimestamp(os.path.getmtime(json_path))
+                if day_start <= file_mtime <= day_end:
+                    stats['json_count'] += 1
+            
+            # Contar errores del día
+            for ext in ["*.png", "*.jpg", "*.jpeg"]:
+                error_files = glob.glob(os.path.join(directories['errors'], ext))
+                for error_path in error_files:
+                    file_mtime = datetime.fromtimestamp(os.path.getmtime(error_path))
+                    if day_start <= file_mtime <= day_end:
+                        stats['error_count'] += 1
+            
+            # Calcular tasa de éxito
+            total_attempts = stats['processed_count'] + stats['error_count']
+            if total_attempts > 0:
+                stats['success_rate'] = round((stats['json_count'] / total_attempts) * 100, 1)
+            
+            stats['total_size_mb'] = round(stats['total_size_mb'], 2)
+            return stats
+        
+        today_stats = get_day_stats(today)
+        yesterday_stats = get_day_stats(yesterday)
+        
+        return jsonify({
+            'status': 'success',
+            'date': today.isoformat(),
+            'today': today_stats,
+            'yesterday': yesterday_stats,
+            'comparison': {
+                'processed_change': today_stats['processed_count'] - yesterday_stats['processed_count'],
+                'json_change': today_stats['json_count'] - yesterday_stats['json_count'],
+                'performance_trend': 'improving' if today_stats['success_rate'] > yesterday_stats['success_rate'] else 'declining'
             },
             'timestamp': datetime.now().isoformat()
         }), 200
@@ -936,22 +1035,40 @@ def api_get_processed_files():
             filename = os.path.basename(image_path)
             base_name = os.path.splitext(filename)[0]
             
-            # Buscar JSON correspondiente
+            # FIX: Búsqueda inteligente de JSONs correspondientes usando patrones múltiples
+            # REASON: Los JSONs tienen nombres generados automáticamente que no coinciden exactamente
+            # IMPACT: Encuentra correctamente todos los JSONs de archivos procesados
             json_file = None
             json_exists = False
             
-            # Buscar por diferentes patrones de nombres
-            possible_json_names = [
-                base_name,
-                filename.replace('.png', '').replace('.jpg', '').replace('.jpeg', ''),
-                # Patrón para archivos WhatsApp
-                base_name.split('_')[0] if '_' in base_name else base_name
-            ]
+            # Extraer ID único del archivo original para matching inteligente
+            # Formato: vsgdds@afn1_luis_2025-07-06__12-00_20250706_051820_623.png
+            filename_parts = filename.replace('.png', '').replace('.jpg', '').replace('.jpeg', '')
             
-            for possible_name in possible_json_names:
-                if possible_name in result_dict:
-                    json_file = result_dict[possible_name]
-                    json_exists = True
+            # Buscar JSON que contenga partes del nombre original
+            for result_path in result_files:
+                result_filename = os.path.basename(result_path)
+                
+                # Patrones de búsqueda inteligente
+                search_patterns = [
+                    # ID base del archivo
+                    filename_parts.split('_')[0] if '_' in filename_parts else filename_parts,
+                    # Nombre completo
+                    filename_parts,
+                    # Primera parte antes del @
+                    filename_parts.split('@')[0] if '@' in filename_parts else None,
+                    # Parte después del @
+                    filename_parts.split('@')[1].split('_')[0] if '@' in filename_parts else None
+                ]
+                
+                # Verificar si algún patrón coincide
+                for pattern in search_patterns:
+                    if pattern and pattern in result_filename:
+                        json_file = result_path
+                        json_exists = True
+                        break
+                
+                if json_exists:
                     break
             
             # Obtener información del archivo
