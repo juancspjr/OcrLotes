@@ -212,7 +212,7 @@
         .form-control, .form-select {
             background: var(--bg-tertiary);
             border: 1px solid var(--border-color);
-            color: var(--text-primary);
+            color: var(--text-primary) !important;
             border-radius: 10px;
             padding: 0.75rem 1rem;
         }
@@ -220,8 +220,12 @@
         .form-control:focus, .form-select:focus {
             background: var(--bg-tertiary);
             border-color: var(--accent-primary);
-            color: var(--text-primary);
+            color: var(--text-primary) !important;
             box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.1);
+        }
+        
+        .form-control::placeholder {
+            color: var(--text-muted) !important;
         }
         
         .nav-tabs {
@@ -230,7 +234,7 @@
         
         .nav-tabs .nav-link {
             background: transparent;
-            color: var(--text-secondary);
+            color: var(--text-primary) !important;
             border: none;
             border-bottom: 2px solid transparent;
             border-radius: 0;
@@ -239,7 +243,7 @@
         }
         
         .nav-tabs .nav-link.active {
-            color: var(--accent-primary);
+            color: var(--accent-primary) !important;
             border-bottom-color: var(--accent-primary);
             background: transparent;
         }
@@ -674,14 +678,17 @@ curl -X GET http://localhost:5000/api/ocr/queue/status
                             </div>
                             <div class="card-body">
                                 <!-- File Upload Test -->
-                                <div class="file-drop-zone mb-4" id="testFileDropZone">
-                                    <i class="fas fa-cloud-upload-alt fa-3x mb-3" style="color: var(--accent-primary);"></i>
-                                    <h5>Arrastra una imagen aquí o haz clic para seleccionar</h5>
-                                    <p class="text-muted">Formatos soportados: PNG, JPG, JPEG (máx. 16MB)</p>
-                                    <input type="file" id="testFileInput" accept="image/*" style="display: none;">
-                                    <button class="btn btn-primary mt-2" onclick="document.getElementById('testFileInput').click()">
-                                        <i class="fas fa-file-upload me-1"></i>Seleccionar Archivo
-                                    </button>
+                                <div class="card border-primary mb-4">
+                                    <div class="card-body text-center p-4">
+                                        <i class="fas fa-cloud-upload-alt fa-3x mb-3" style="color: var(--accent-primary);"></i>
+                                        <h5 style="color: var(--text-primary) !important;">Sube tu recibo de WhatsApp</h5>
+                                        <p style="color: var(--text-secondary) !important;">Formatos: PNG, JPG, JPEG (máx. 16MB)</p>
+                                        <input type="file" id="testFileInput" accept="image/*,.png,.jpg,.jpeg" class="form-control mb-3">
+                                        <div class="file-info mt-2" id="fileInfo" style="display: none; color: var(--success-color) !important;">
+                                            <i class="fas fa-check-circle me-1"></i>
+                                            <span id="fileName"></span>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <!-- Test Form -->
@@ -756,23 +763,72 @@ curl -X GET http://localhost:5000/api/ocr/queue/status
                                 </div>
 
                                 <h6>Configuración para n8n:</h6>
-                                <div class="code-block mb-3">
-// Workflow 1: Acumulación
+                                <div class="row mt-4">
+                                    <div class="col-md-4 mb-4">
+                                        <div class="card border-success">
+                                            <div class="card-body text-center">
+                                                <div class="display-6 text-success mb-3">
+                                                    <i class="fas fa-upload"></i>
+                                                </div>
+                                                <h6 class="card-title" style="color: #10b981 !important;">PASO 1: Guardar Imagen</h6>
+                                                <p class="card-text small" style="color: var(--text-primary) !important;">
+                                                    Sube tu recibo de WhatsApp. Se guarda en cola esperando procesamiento.
+                                                    <strong>No se procesa automáticamente.</strong>
+                                                </p>
+                                                <div class="code-block small">
 POST /api/ocr/process_image
-- Recibe imágenes de WhatsApp
-- Guarda en cola sin procesar
-- Retorna request_id para seguimiento
-
-// Workflow 2: Procesamiento (separado)
+→ Devuelve: request_id único
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-4 mb-4">
+                                        <div class="card border-warning">
+                                            <div class="card-body text-center">
+                                                <div class="display-6 text-warning mb-3">
+                                                    <i class="fas fa-play-circle"></i>
+                                                </div>
+                                                <h6 class="card-title" style="color: #f59e0b !important;">PASO 2: Activar Procesamiento</h6>
+                                                <p class="card-text small" style="color: var(--text-primary) !important;">
+                                                    <strong>TÚ DECIDES CUÁNDO:</strong> Procesa todas las imágenes acumuladas cuando quieras.
+                                                </p>
+                                                <div class="code-block small">
 POST /api/ocr/process_batch
-- Activa procesamiento bajo demanda
-- Control total de timing por n8n
-- Retorna resultados de lote completo
+→ Control total de timing
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-4 mb-4">
+                                        <div class="card border-info">
+                                            <div class="card-body text-center">
+                                                <div class="display-6 text-info mb-3">
+                                                    <i class="fas fa-file-invoice-dollar"></i>
+                                                </div>
+                                                <h6 class="card-title" style="color: #3b82f6 !important;">PASO 3: Obtener Resultados</h6>
+                                                <p class="card-text small" style="color: var(--text-primary) !important;">
+                                                    Consulta resultados: monto, fecha, referencia y datos del recibo extraídos automáticamente.
+                                                </p>
+                                                <div class="code-block small">
+GET /api/ocr/result/request_id
+→ Texto completo + datos estructurados
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
 
-// Workflow 3: Consulta
-GET /api/ocr/result/{request_id}
-- Consulta estado y resultados
-- Status: queued, processing, completed, error
+                                <div class="alert alert-success mt-4">
+                                    <h6><i class="fas fa-check-circle me-2"></i>¿Por Qué Este Sistema?</h6>
+                                    <ul class="mb-0" style="color: var(--text-primary) !important;">
+                                        <li><strong>Control total:</strong> Tú decides cuándo procesar, sin automatización forzada</li>
+                                        <li><strong>Para WhatsApp:</strong> Diseñado específicamente para recibos de pago móviles</li>
+                                        <li><strong>Sin pérdidas:</strong> Las imágenes se guardan hasta que las proceses</li>
+                                        <li><strong>Extracción inteligente:</strong> Detecta montos, fechas, referencias automáticamente</li>
+                                        <li><strong>Integración n8n:</strong> Perfecto para workflows automatizados</li>
+                                    </ul>
                                 </div>
 
                                 <h6>Perfiles de Rendimiento:</h6>
@@ -1096,32 +1152,17 @@ GET /api/ocr/result/{request_id}
         }
 
         function setupFileDropZone() {
-            const dropZone = document.getElementById('testFileDropZone');
+            // Remove drop zone references since we're using simple file input
             const fileInput = document.getElementById('testFileInput');
 
-            dropZone.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                dropZone.classList.add('dragover');
-            });
-
-            dropZone.addEventListener('dragleave', () => {
-                dropZone.classList.remove('dragover');
-            });
-
-            dropZone.addEventListener('drop', (e) => {
-                e.preventDefault();
-                dropZone.classList.remove('dragover');
-                
-                const files = e.dataTransfer.files;
-                if (files.length > 0) {
-                    fileInput.files = files;
-                    updateSystemAlert('info', 'Archivo Seleccionado', `${files[0].name} listo para procesar`);
-                }
-            });
+            // Simple file input without drag and drop complexity
 
             fileInput.addEventListener('change', (e) => {
                 if (e.target.files.length > 0) {
-                    updateSystemAlert('info', 'Archivo Seleccionado', `${e.target.files[0].name} listo para procesar`);
+                    const file = e.target.files[0];
+                    document.getElementById('fileInfo').style.display = 'block';
+                    document.getElementById('fileName').textContent = file.name;
+                    updateSystemAlert('info', 'Archivo Seleccionado', `${file.name} listo para procesar`);
                 }
             });
         }
