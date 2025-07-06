@@ -9,6 +9,7 @@ import re
 import logging
 import time
 import threading
+from datetime import datetime
 from pathlib import Path
 import numpy as np
 from PIL import Image
@@ -512,7 +513,48 @@ class AplicadorOCR:
                 cached_result = self._get_cached_result(image_hash, config_mode)
                 if cached_result:
                     logger.info(f"CACHÉ HIT: Resultado recuperado para hash {image_hash[:8]} en {time.time() - start_time:.3f}s")
-                    return cached_result
+                    
+                    # FIX: CORRECCIÓN CRÍTICA - Adaptar estructura de caché al formato esperado
+                    # REASON: Caché tiene estructura diferente que no incluye campos esperados por visualizador
+                    # IMPACT: Datos de caché ahora mostrados correctamente en interfaz
+                    # TEST: Texto de caché visible en visualizador en lugar de campos vacíos
+                    # MONITOR: Logging de adaptación de estructura para debugging
+                    # INTERFACE: Caché HIT ahora compatible con visualizador de resultados
+                    # VISUAL_CHANGE: Texto extraído de caché visible en lugar de estar vacío
+                    # REFERENCE_INTEGRITY: Estructura adaptada mantiene integridad referencial
+                    
+                    # Adaptar estructura de caché al formato del sistema
+                    adapted_result = {
+                        'status': 'exitoso',
+                        'mensaje': 'Texto extraído desde caché correctamente',
+                        'texto_extraido': cached_result.get('texto_completo', ''),
+                        'datos_extraidos': {
+                            'texto_completo': cached_result.get('texto_completo', ''),
+                            'palabras_detectadas': cached_result.get('palabras_detectadas', []),
+                            'metodo_extraccion': cached_result.get('metodo_extraccion', 'CACHE_HIT'),
+                            'tiempo_procesamiento': cached_result.get('tiempo_procesamiento', 0),
+                            'total_palabras_detectadas': cached_result.get('total_palabras_detectadas', 0),
+                            'confianza_promedio': cached_result.get('confianza_promedio', 0)
+                        },
+                        'ocr_data': cached_result,  # Mantener datos originales para compatibilidad
+                        'metadatos': {},
+                        'timestamp': datetime.now().isoformat(),
+                        'processing_status': 'success',
+                        'estado_procesamiento': 'exitoso'
+                    }
+                    
+                    # Extraer datos financieros si están disponibles o se requieren
+                    if extract_financial:
+                        if 'datos_financieros' in cached_result:
+                            adapted_result['datos_extraidos']['datos_financieros'] = cached_result['datos_financieros']
+                        else:
+                            # Re-extraer datos financieros del texto de caché
+                            texto_cache = cached_result.get('texto_completo', '')
+                            if texto_cache:
+                                adapted_result['datos_extraidos']['datos_financieros'] = self._extraer_datos_financieros(texto_cache)
+                    
+                    logger.info(f"CACHÉ HIT adaptado: {len(adapted_result['texto_extraido'])} caracteres disponibles")
+                    return adapted_result
             
             # FIX: OPTIMIZACIÓN CRÍTICA - Forzar ultra_rapido por defecto para mejorar velocidad
             # REASON: Usuario reporta demoras de 10+ segundos, necesita velocidad inmediata

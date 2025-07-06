@@ -904,17 +904,63 @@ def get_result_data(filename):
         datos_extraidos = result_data.get('datos_extraidos', {})
         archivo_info = result_data.get('archivo_info', {})
         
-        # Extraer texto completo
-        texto_completo = datos_extraidos.get('texto_completo', '')
-        if not texto_completo:
-            texto_completo = result_data.get('texto_extraido', '')
+        # FIX: Extracción robusta de texto desde múltiples ubicaciones posibles
+        # REASON: Archivos de caché tienen estructura diferente que no está siendo detectada
+        # IMPACT: Visualizador muestra texto real extraído por OCR en lugar de estar vacío
+        # TEST: Busca texto en todas las ubicaciones posibles del JSON
+        # MONITOR: Logging de ubicación encontrada para debugging
+        # INTERFACE: Visualizador muestra texto completo extraído
+        # VISUAL_CHANGE: Texto OCR ahora visible en lugar de campo vacío
+        # REFERENCE_INTEGRITY: Validación de datos extraídos antes de envío
         
-        # Extraer coordenadas
-        coordenadas = datos_extraidos.get('coordenadas', [])
-        palabras_individuales = datos_extraidos.get('palabras_individuales', [])
+        # Buscar texto en múltiples ubicaciones
+        texto_completo = ''
+        texto_sources = [
+            datos_extraidos.get('texto_completo', ''),
+            result_data.get('texto_extraido', ''),
+            result_data.get('ocr_data', {}).get('texto_completo', ''),
+            result_data.get('ocr_data', {}).get('raw_text', ''),
+            result_data.get('raw_text', '')
+        ]
+        
+        for source in texto_sources:
+            if source and isinstance(source, str) and len(source.strip()) > 0:
+                texto_completo = source.strip()
+                logger.debug(f"Texto encontrado en fuente: {len(texto_completo)} caracteres")
+                break
+        
+        # Extraer coordenadas desde múltiples ubicaciones
+        coordenadas = []
+        coordenadas_sources = [
+            datos_extraidos.get('coordenadas', []),
+            result_data.get('ocr_data', {}).get('coordenadas', []),
+            result_data.get('coordenadas', []),
+            result_data.get('word_coordinates', [])
+        ]
+        
+        for source in coordenadas_sources:
+            if source and isinstance(source, list) and len(source) > 0:
+                coordenadas = source
+                break
+        
+        # Extraer palabras individuales
+        palabras_individuales = []
+        palabras_sources = [
+            datos_extraidos.get('palabras_individuales', []),
+            result_data.get('ocr_data', {}).get('palabras_individuales', []),
+            result_data.get('palabras_individuales', []),
+            result_data.get('word_data', [])
+        ]
+        
+        for source in palabras_sources:
+            if source and isinstance(source, list) and len(source) > 0:
+                palabras_individuales = source
+                break
         
         # Extraer datos financieros
         datos_financieros = datos_extraidos.get('datos_financieros', {})
+        if not datos_financieros:
+            datos_financieros = result_data.get('datos_financieros', {})
         
         # Preparar respuesta estructurada
         viewer_data = {
@@ -1458,18 +1504,37 @@ def _find_corresponding_image(json_file, result_data, processed_dir):
                 return img_file.stem, str(img_file.relative_to(Path.cwd()))
     
     # Estrategia 2: Remover prefijo BATCH_ del JSON y buscar coincidencia
+    # FIX: Algoritmo corregido para manejar formato BATCH_timestamp_hash_archivo.png.json
+    # REASON: CACHÉ HIT está generando nombres con formato diferente que no mapea correctamente
+    # IMPACT: Permite correlación correcta entre resultados de caché y archivos procesados
+    # TEST: Maneja formato BATCH_20250706_192312_2a7_20250706-C--212233907259714@lid_Ana_18-09_20250706_192209_915.png.json
+    # MONITOR: Logging detallado de extracción de nombres desde formato BATCH
+    # INTERFACE: Archivos aparecen correctamente en visualizador de resultados
+    # VISUAL_CHANGE: Resultados de caché ahora visibles en interface
+    # REFERENCE_INTEGRITY: Validación de formato antes de extracción de nombre
     json_name = json_file.stem
     if json_name.startswith('BATCH_'):
-        # Extraer parte después del timestamp: BATCH_20250706_060525_169_archivo.png
-        parts = json_name.split('_', 3)
-        if len(parts) > 3:
-            clean_name = parts[3]
-            if clean_name.endswith('.png') or clean_name.endswith('.jpg') or clean_name.endswith('.jpeg'):
-                clean_name = Path(clean_name).stem
-            
-            for img_file in processed_files:
-                if img_file.stem == clean_name:
-                    return img_file.stem, str(img_file.relative_to(Path.cwd()))
+        # Formato: BATCH_20250706_192312_2a7_filename.ext
+        # Buscar el último guión bajo que precede al filename real
+        parts = json_name.split('_')
+        if len(parts) >= 4:
+            # Encontrar donde termina el hash y empieza el filename
+            # El hash es típicamente corto (3-8 caracteres), el filename es largo
+            for i in range(3, len(parts)):
+                potential_filename = '_'.join(parts[i:])
+                # Si contiene patrones de fecha/whatsapp, es probable que sea el filename
+                if ('-' in potential_filename and '@lid' in potential_filename) or len(potential_filename) > 20:
+                    clean_name = potential_filename
+                    if clean_name.endswith('.png') or clean_name.endswith('.jpg') or clean_name.endswith('.jpeg'):
+                        clean_name = Path(clean_name).stem
+                    
+                    logger.debug(f"Extrayendo filename desde BATCH: {json_name} → {clean_name}")
+                    
+                    for img_file in processed_files:
+                        if img_file.stem == clean_name:
+                            logger.info(f"✅ Mapeo BATCH exitoso: {json_file.name} → {img_file.name}")
+                            return img_file.stem, str(img_file.relative_to(Path.cwd()))
+                    break
     
     # Estrategia 3: Busqueda fuzzy por similitud de nombres
     json_stem = json_file.stem

@@ -1,0 +1,478 @@
+{
+  "texto_completo": "7:15P M . - 60 Ejecutado exitosamente . Cuental debitada : Cta . Corriente . BNC : ** 9496 Beneficiario : 0412 - 5318244 BINGO TREBOL V - 27061025 - MERCANIIL Monto : Bs . 105,00 Comision : Bs . 0,32 Total : Bs . 105,32 Reterencia : 490760968 Côdigo autorizador : 282689 CUENTAS TARJETAS BNC PAGOS DIVISAS",
+  "total_caracteres": 305,
+  "tiempo_procesamiento": 0.513,
+  "metodo_extraccion": "ONNXTR_SINGLE_PASS",
+  "configuracion_onnxtr": "ultra_rapido",
+  "total_palabras_detectadas": 39,
+  "palabras_detectadas": [
+    {
+      "texto": "7:15P",
+      "confianza": 0.9961686730384827,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 0,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "M.",
+      "confianza": 0.996823787689209,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 0,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "-",
+      "confianza": 0.8581536412239075,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 1,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "60",
+      "confianza": 0.7759696245193481,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 2,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "Ejecutado",
+      "confianza": 0.8796206712722778,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 3,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "exitosamente.",
+      "confianza": 0.5144385099411011,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 3,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "Cuental",
+      "confianza": 0.6126993894577026,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 4,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "debitada:",
+      "confianza": 0.785293698310852,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 4,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "Cta.",
+      "confianza": 0.9903391003608704,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 5,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Corriente.",
+      "confianza": 0.5854465365409851,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 5,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "BNC:",
+      "confianza": 0.9547752141952515,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 5,
+        "palabra": 2
+      }
+    },
+    {
+      "texto": "**9496",
+      "confianza": 0.8212132453918457,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 5,
+        "palabra": 3
+      }
+    },
+    {
+      "texto": "Beneficiario:",
+      "confianza": 0.939064085483551,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 6,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "0412-5318244",
+      "confianza": 0.5007277727127075,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 7,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "BINGO",
+      "confianza": 0.5733491778373718,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 7,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "TREBOL",
+      "confianza": 0.9982411861419678,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 7,
+        "palabra": 2
+      }
+    },
+    {
+      "texto": "V-",
+      "confianza": 0.9988436698913574,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 7,
+        "palabra": 3
+      }
+    },
+    {
+      "texto": "27061025",
+      "confianza": 0.9873611927032471,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 8,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "-",
+      "confianza": 0.9984353184700012,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 8,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "MERCANIIL",
+      "confianza": 0.6486865878105164,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 8,
+        "palabra": 2
+      }
+    },
+    {
+      "texto": "Monto:",
+      "confianza": 0.5420968532562256,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 9,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Bs.",
+      "confianza": 0.9250457286834717,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 10,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "105,00",
+      "confianza": 0.9989036321640015,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 10,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "Comision:",
+      "confianza": 0.8976872563362122,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 11,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Bs.",
+      "confianza": 0.9756190776824951,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 12,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "0,32",
+      "confianza": 0.9988725781440735,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 12,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "Total:",
+      "confianza": 0.9883272051811218,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 13,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Bs.",
+      "confianza": 0.9538659453392029,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 14,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "105,32",
+      "confianza": 0.9993407130241394,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 14,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "Reterencia:",
+      "confianza": 0.9054068326950073,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 15,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "490760968",
+      "confianza": 0.9941908717155457,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 16,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Côdigo",
+      "confianza": 0.663161039352417,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 17,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "autorizador:",
+      "confianza": 0.998180627822876,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 17,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "282689",
+      "confianza": 0.9996263980865479,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 18,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "CUENTAS",
+      "confianza": 0.9937471151351929,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 20,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "TARJETAS",
+      "confianza": 0.5144312977790833,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 21,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "BNC",
+      "confianza": 0.9266402125358582,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 22,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "PAGOS",
+      "confianza": 0.935416579246521,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 23,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "DIVISAS",
+      "confianza": 0.9990339279174805,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 24,
+        "palabra": 0
+      }
+    }
+  ],
+  "confianza_promedio": 0.862,
+  "estadisticas_onnxtr": {
+    "paginas_procesadas": 1,
+    "palabras_alta_confianza": 28,
+    "palabras_media_confianza": 5,
+    "palabras_baja_confianza": 6,
+    "min_confianza_aplicada": 0.5
+  },
+  "calidad_extraccion": {
+    "score_calidad": 76.0,
+    "categoria": "buena",
+    "confianza_promedio": 0.862,
+    "palabras_alta_confianza": 28,
+    "total_palabras": 39,
+    "longitud_texto": 305,
+    "recomendaciones": [
+      "Calidad de extracción satisfactoria"
+    ]
+  },
+  "deteccion_inteligente": {
+    "tipo_imagen": "documento_escaneado",
+    "esquema_color": "texto_oscuro_fondo_claro",
+    "inversion_requerida": false,
+    "ui_elements_detectados": false,
+    "aspect_ratio": 0.44651162790697674,
+    "calidad_digital": false,
+    "dark_percentage": 17.741172790527344,
+    "light_percentage": 82.25882720947266,
+    "edge_density": 0.05857558139534884,
+    "noise_estimate": 90.02096850339134,
+    "confianza_deteccion": 0.2
+  },
+  "datos_financieros": {
+    "amount": [
+      {
+        "valor": "7",
+        "posicion_texto": 0
+      },
+      {
+        "valor": "15",
+        "posicion_texto": 2
+      },
+      {
+        "valor": "60",
+        "posicion_texto": 12
+      },
+      {
+        "valor": "949",
+        "posicion_texto": 86
+      },
+      {
+        "valor": "6",
+        "posicion_texto": 12
+      }
+    ],
+    "time": [
+      {
+        "valor": "7:15",
+        "posicion_texto": 0
+      }
+    ],
+    "analisis_documento": {
+      "tipo": "estado_cuenta",
+      "confianza": 25.0,
+      "keywords_encontradas": [
+        "cuenta"
+      ]
+    },
+    "resumen_extraido": {
+      "montos_encontrados": 5,
+      "fechas_encontradas": 0,
+      "referencias_encontradas": 0,
+      "cuentas_encontradas": 0,
+      "telefonos_encontrados": 0,
+      "total_elementos": 5,
+      "completitud_porcentaje": 50
+    }
+  }
+}
