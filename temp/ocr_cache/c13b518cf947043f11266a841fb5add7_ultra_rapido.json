@@ -1,0 +1,322 @@
+{
+  "texto_completo": "Eldinero fue enviado Bs . 313,62 Dinero Rapido BBVA Provincial Banco : BANCO MERCANTIL Numero celular : 04125318244 Identificacion : V 27061025 Concepto : Pago Fecha : 20/06/ 2025 Referencia : 000012071",
+  "total_caracteres": 202,
+  "tiempo_procesamiento": 0.541,
+  "metodo_extraccion": "ONNXTR_SINGLE_PASS",
+  "configuracion_onnxtr": "ultra_rapido",
+  "total_palabras_detectadas": 23,
+  "palabras_detectadas": [
+    {
+      "texto": "Eldinero",
+      "confianza": 0.9719844460487366,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 0,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "fue",
+      "confianza": 0.9998860359191895,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 0,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "enviado",
+      "confianza": 0.9965296387672424,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 0,
+        "palabra": 2
+      }
+    },
+    {
+      "texto": "Bs.",
+      "confianza": 0.9983106851577759,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 1,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "313,62",
+      "confianza": 0.5610727667808533,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 1,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "Dinero",
+      "confianza": 0.9980239868164062,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 2,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Rapido",
+      "confianza": 0.8813668489456177,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 2,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "BBVA",
+      "confianza": 0.96855229139328,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 3,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Provincial",
+      "confianza": 0.879702091217041,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 3,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "Banco:",
+      "confianza": 0.9519730806350708,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 4,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "BANCO",
+      "confianza": 0.9897941946983337,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 5,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "MERCANTIL",
+      "confianza": 0.9470658302307129,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 5,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "Numero",
+      "confianza": 0.7763277292251587,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 6,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "celular:",
+      "confianza": 0.9993205070495605,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 6,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "04125318244",
+      "confianza": 0.9708089828491211,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 7,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Identificacion:",
+      "confianza": 0.66046142578125,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 8,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "V27061025",
+      "confianza": 0.9998863935470581,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 9,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Concepto:",
+      "confianza": 0.9798423647880554,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 10,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Pago",
+      "confianza": 0.9679677486419678,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 11,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Fecha:",
+      "confianza": 0.9992514252662659,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 12,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "20/06/2025",
+      "confianza": 0.9781606793403625,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 13,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Referencia:",
+      "confianza": 0.7342566847801208,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 14,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "000012071",
+      "confianza": 0.9997273087501526,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 15,
+        "palabra": 0
+      }
+    }
+  ],
+  "confianza_promedio": 0.922,
+  "estadisticas_onnxtr": {
+    "paginas_procesadas": 1,
+    "palabras_alta_confianza": 19,
+    "palabras_media_confianza": 3,
+    "palabras_baja_confianza": 1,
+    "min_confianza_aplicada": 0.5
+  },
+  "calidad_extraccion": {
+    "score_calidad": 81.7,
+    "categoria": "excelente",
+    "confianza_promedio": 0.922,
+    "palabras_alta_confianza": 19,
+    "total_palabras": 23,
+    "longitud_texto": 202,
+    "recomendaciones": [
+      "Calidad de extracción satisfactoria"
+    ]
+  },
+  "deteccion_inteligente": {
+    "tipo_imagen": "documento_escaneado",
+    "esquema_color": "texto_oscuro_fondo_claro",
+    "inversion_requerida": false,
+    "ui_elements_detectados": true,
+    "aspect_ratio": 0.9435185185185185,
+    "calidad_digital": false,
+    "dark_percentage": 47.04657745361328,
+    "light_percentage": 52.95342254638672,
+    "edge_density": 0.020272234943481262,
+    "noise_estimate": 57.67172958714207,
+    "confianza_deteccion": 0.4
+  },
+  "datos_financieros": {
+    "amount": [
+      {
+        "valor": "313,62",
+        "posicion_texto": 26
+      },
+      {
+        "valor": "041",
+        "posicion_texto": 104
+      },
+      {
+        "valor": "253",
+        "posicion_texto": 107
+      },
+      {
+        "valor": "182",
+        "posicion_texto": 110
+      },
+      {
+        "valor": "44",
+        "posicion_texto": 113
+      }
+    ],
+    "reference": [
+      {
+        "valor": "erencia",
+        "posicion_texto": 183
+      }
+    ],
+    "phone": [
+      {
+        "valor": "04125318244",
+        "posicion_texto": 104
+      }
+    ],
+    "analisis_documento": {
+      "tipo": "desconocido",
+      "confianza": 0,
+      "keywords_encontradas": []
+    },
+    "resumen_extraido": {
+      "montos_encontrados": 5,
+      "fechas_encontradas": 0,
+      "referencias_encontradas": 1,
+      "cuentas_encontradas": 0,
+      "telefonos_encontrados": 1,
+      "total_elementos": 7,
+      "completitud_porcentaje": 50
+    }
+  }
+}

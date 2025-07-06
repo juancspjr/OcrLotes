@@ -1,11 +1,11 @@
 {
   "status": "exitoso",
-  "request_id": "BATCH_20250706_184732_abe_20250706-J--219568531296463@lid_Maria_20-36_20250706_184728_006.png",
-  "filename": "20250706-J--219568531296463@lid_Maria_20-36_20250706_184728_006.png",
-  "tiempo_procesamiento": 0.11343908309936523,
-  "fecha_procesamiento": "2025-07-06T18:47:32.270698",
+  "request_id": "BATCH_20250706_193217_a7d_20250706-G--218253343817970@lid_Maria_02-07_20250706_193117_994.png",
+  "filename": "20250706-G--218253343817970@lid_Maria_02-07_20250706_193117_994.png",
+  "tiempo_procesamiento": 0.11786913871765137,
+  "fecha_procesamiento": "2025-07-06T19:32:17.959567",
   "archivo_info": {
-    "original_filename": "20250706-J--219568531296463@lid_Maria_20-36_20250706_184728_006.png",
+    "original_filename": "20250706-G--218253343817970@lid_Maria_02-07_20250706_193117_994.png",
     "tamaño": 82758,
     "formato": ".png"
   },
@@ -660,7 +660,7 @@
         "impacto": "preserva_imagen_original_completamente"
       }
     },
-    "tiempo_procesamiento": 0.012,
+    "tiempo_procesamiento": 0.01,
     "estrategia_aplicada": "Documento Escaneado - SIN PROCESAMIENTO",
     "metricas_despues": {
       "brillo_promedio": 205.52835608646188,
@@ -690,18 +690,284 @@
       }
     }
   },
-  "datos_extraidos": {},
-  "estadisticas": {},
-  "calidad_extraccion": {
-    "score_calidad": 86.1,
-    "categoria": "excelente",
+  "datos_extraidos": {
+    "texto_completo": "A PagomovilBDV Personas 104,54 Bs Fecha : 20/06/ 2025 Operacion : 003039387344 I Identificacion : 27061025 Origen : 0102 ****2 2679 Destino : 04125318244 Banco : 0105 = BANCO MERCANTIL",
+    "palabras_detectadas": [
+      {
+        "texto": "A",
+        "confianza": 0.9998718500137329,
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 0,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "PagomovilBDV",
+        "confianza": 0.8303691148757935,
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 1,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "Personas",
+        "confianza": 0.9940531849861145,
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 1,
+          "palabra": 1
+        }
+      },
+      {
+        "texto": "104,54",
+        "confianza": 0.986320436000824,
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 2,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "Bs",
+        "confianza": 0.9971524477005005,
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 2,
+          "palabra": 1
+        }
+      },
+      {
+        "texto": "Fecha:",
+        "confianza": 0.999195396900177,
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 3,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "20/06/2025",
+        "confianza": 0.998698353767395,
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 4,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "Operacion:",
+        "confianza": 0.9972694516181946,
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 5,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "003039387344",
+        "confianza": 0.8831079304218292,
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 6,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "I",
+        "confianza": 0.8611253499984741,
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 6,
+          "palabra": 4
+        }
+      },
+      {
+        "texto": "Identificacion:",
+        "confianza": 0.8251184225082397,
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 7,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "27061025",
+        "confianza": 0.9951680898666382,
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 8,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "Origen:",
+        "confianza": 0.5702247619628906,
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 9,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "0102****2",
+        "confianza": 0.9846217632293701,
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 10,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "2679",
+        "confianza": 0.9997937083244324,
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 10,
+          "palabra": 1
+        }
+      },
+      {
+        "texto": "Destino:",
+        "confianza": 0.9981735944747925,
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 11,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "04125318244",
+        "confianza": 0.9367906749248505,
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 12,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "Banco:",
+        "confianza": 0.9727823734283447,
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 13,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "0105",
+        "confianza": 0.9999414682388306,
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 14,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "=",
+        "confianza": 0.9779964685440063,
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 14,
+          "palabra": 1
+        }
+      },
+      {
+        "texto": "BANCO",
+        "confianza": 0.8908040523529053,
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 14,
+          "palabra": 2
+        }
+      },
+      {
+        "texto": "MERCANTIL",
+        "confianza": 0.902770459651947,
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 14,
+          "palabra": 3
+        }
+      }
+    ],
+    "metodo_extraccion": "ONNXTR_SINGLE_PASS",
+    "tiempo_procesamiento": 0.437,
+    "total_palabras_detectadas": 22,
     "confianza_promedio": 0.936,
-    "palabras_alta_confianza": 21,
-    "total_palabras": 22,
-    "longitud_texto": 184,
-    "recomendaciones": [
-      "Calidad de extracción satisfactoria"
-    ]
+    "datos_financieros": {
+      "amount": [
+        {
+          "valor": "104,54",
+          "posicion_texto": 24
+        },
+        {
+          "valor": "20",
+          "posicion_texto": 42
+        },
+        {
+          "valor": "06",
+          "posicion_texto": 45
+        },
+        {
+          "valor": "202",
+          "posicion_texto": 49
+        },
+        {
+          "valor": "5",
+          "posicion_texto": 28
+        }
+      ],
+      "phone": [
+        {
+          "valor": "00303938734",
+          "posicion_texto": 66
+        },
+        {
+          "valor": "04125318244",
+          "posicion_texto": 142
+        }
+      ],
+      "analisis_documento": {
+        "tipo": "desconocido",
+        "confianza": 0,
+        "keywords_encontradas": []
+      },
+      "resumen_extraido": {
+        "montos_encontrados": 5,
+        "fechas_encontradas": 0,
+        "referencias_encontradas": 0,
+        "cuentas_encontradas": 0,
+        "telefonos_encontrados": 2,
+        "total_elementos": 7,
+        "completitud_porcentaje": 50
+      }
+    }
   },
-  "texto_extraido": ""
+  "estadisticas": {},
+  "calidad_extraccion": {},
+  "texto_extraido": "A PagomovilBDV Personas 104,54 Bs Fecha : 20/06/ 2025 Operacion : 003039387344 I Identificacion : 27061025 Origen : 0102 ****2 2679 Destino : 04125318244 Banco : 0105 = BANCO MERCANTIL"
 }

@@ -1,0 +1,310 @@
+{
+  "texto_completo": "A Personas 104,54 Bs Fecha : 20/06/ 2025 Operacion; 003039387344 I - Identificacion : 2/ 061025 Origen : 0102 **** 2679 Destino : 04125318244 Banco : 0105 - BANCO MERCANTIL",
+  "total_caracteres": 172,
+  "tiempo_procesamiento": 0.394,
+  "metodo_extraccion": "ONNXTR_SINGLE_PASS",
+  "configuracion_onnxtr": "ultra_rapido",
+  "total_palabras_detectadas": 22,
+  "palabras_detectadas": [
+    {
+      "texto": "A",
+      "confianza": 0.9667848944664001,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 0,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Personas",
+      "confianza": 0.9927195310592651,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 1,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "104,54",
+      "confianza": 0.9967294931411743,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 2,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Bs",
+      "confianza": 0.9987064599990845,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 2,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "Fecha:",
+      "confianza": 0.9500440955162048,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 3,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "20/06/2025",
+      "confianza": 0.9990684390068054,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 4,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Operacion;",
+      "confianza": 0.6175447702407837,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 5,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "003039387344",
+      "confianza": 0.9877862930297852,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 6,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "I",
+      "confianza": 0.9475021362304688,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 6,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "-",
+      "confianza": 0.9415252804756165,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 6,
+        "palabra": 2
+      }
+    },
+    {
+      "texto": "Identificacion:",
+      "confianza": 0.9462568759918213,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 7,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "2/061025",
+      "confianza": 0.8452515602111816,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 8,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Origen:",
+      "confianza": 0.9992734789848328,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 9,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "0102****",
+      "confianza": 0.9686998128890991,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 10,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "2679",
+      "confianza": 0.5096032619476318,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 10,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "Destino:",
+      "confianza": 0.9970941543579102,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 11,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "04125318244",
+      "confianza": 0.9969721734523773,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 12,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Banco:",
+      "confianza": 0.9863489866256714,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 13,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "0105",
+      "confianza": 0.999997615814209,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 14,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "-",
+      "confianza": 0.9812107086181641,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 14,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "BANCO",
+      "confianza": 0.719585120677948,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 14,
+        "palabra": 2
+      }
+    },
+    {
+      "texto": "MERCANTIL",
+      "confianza": 0.9471012949943542,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 14,
+        "palabra": 3
+      }
+    }
+  ],
+  "confianza_promedio": 0.923,
+  "estadisticas_onnxtr": {
+    "paginas_procesadas": 1,
+    "palabras_alta_confianza": 19,
+    "palabras_media_confianza": 2,
+    "palabras_baja_confianza": 1,
+    "min_confianza_aplicada": 0.5
+  },
+  "calidad_extraccion": {
+    "score_calidad": 82.8,
+    "categoria": "excelente",
+    "confianza_promedio": 0.923,
+    "palabras_alta_confianza": 19,
+    "total_palabras": 22,
+    "longitud_texto": 172,
+    "recomendaciones": [
+      "Calidad de extracción satisfactoria"
+    ]
+  },
+  "deteccion_inteligente": {
+    "tipo_imagen": "screenshot_movil",
+    "esquema_color": "texto_claro_fondo_oscuro",
+    "inversion_requerida": true,
+    "ui_elements_detectados": true,
+    "aspect_ratio": 0.8191126279863481,
+    "calidad_digital": false,
+    "dark_percentage": 95.3119125366211,
+    "light_percentage": 4.6880927085876465,
+    "edge_density": 0.028499873593730247,
+    "noise_estimate": 64.5722161257968,
+    "confianza_deteccion": 0.7
+  },
+  "datos_financieros": {
+    "amount": [
+      {
+        "valor": "104,54",
+        "posicion_texto": 11
+      },
+      {
+        "valor": "20",
+        "posicion_texto": 29
+      },
+      {
+        "valor": "06",
+        "posicion_texto": 32
+      },
+      {
+        "valor": "202",
+        "posicion_texto": 36
+      },
+      {
+        "valor": "5",
+        "posicion_texto": 15
+      }
+    ],
+    "phone": [
+      {
+        "valor": "00303938734",
+        "posicion_texto": 52
+      },
+      {
+        "valor": "04125318244",
+        "posicion_texto": 130
+      }
+    ],
+    "analisis_documento": {
+      "tipo": "desconocido",
+      "confianza": 0,
+      "keywords_encontradas": []
+    },
+    "resumen_extraido": {
+      "montos_encontrados": 5,
+      "fechas_encontradas": 0,
+      "referencias_encontradas": 0,
+      "cuentas_encontradas": 0,
+      "telefonos_encontrados": 2,
+      "total_elementos": 7,
+      "completitud_porcentaje": 50
+    }
+  }
+}
