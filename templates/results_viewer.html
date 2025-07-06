@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualizador de Resultados - Sistema OCR</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --text-primary: #000000;
+            --text-secondary: #212529;
+            --accent-primary: #007bff;
+            --border-color: #dee2e6;
+        }
+        
+        body {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .navbar {
+            background: var(--bg-primary);
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .card {
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .result-item {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .result-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.15);
+        }
+        
+        .json-viewer {
+            background: #f8f9fa;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            max-height: 400px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+        
+        .btn-json {
+            background: #17a2b8;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-json:hover {
+            background: #138496;
+            color: white;
+            transform: translateY(-1px);
+        }
+        
+        .file-info {
+            background: #e9ecef;
+            border-radius: 6px;
+            padding: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid var(--accent-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-file-alt me-2"></i>
+                Visualizador de Resultados OCR
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/dashboard">
+                    <i class="fas fa-chart-line me-1"></i>Dashboard
+                </a>
+                <a class="nav-link" href="/batch">
+                    <i class="fas fa-layer-group me-1"></i>Lotes
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid py-4">
+        <!-- Header Controls -->
+        <div class="row mb-4">
+            <div class="col-md-8">
+                <h2 class="text-primary">
+                    <i class="fas fa-search me-2"></i>
+                    Resultados de Procesamiento OCR
+                </h2>
+                <p class="text-muted">Visualiza y descarga los resultados JSON de las imágenes procesadas</p>
+            </div>
+            <div class="col-md-4 text-end">
+                <button class="btn btn-primary" onclick="refreshResults()">
+                    <i class="fas fa-sync me-1"></i>Actualizar
+                </button>
+                <button class="btn btn-info ms-2" onclick="downloadAllResults()">
+                    <i class="fas fa-download me-1"></i>Descargar Todo
+                </button>
+            </div>
+        </div>
+
+        <!-- Summary Stats -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h4 class="text-primary" id="totalFiles">-</h4>
+                        <p class="mb-0">Archivos Procesados</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h4 class="text-success" id="filesWithJson">-</h4>
+                        <p class="mb-0">Con Resultado JSON</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h4 class="text-info" id="successRate">-</h4>
+                        <p class="mb-0">Tasa de Éxito</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h4 class="text-warning" id="lastUpdate">-</h4>
+                        <p class="mb-0">Última Actualización</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loadingState" class="text-center py-5">
+            <div class="loading-spinner me-3"></div>
+            <span class="h5">Cargando resultados...</span>
+        </div>
+
+        <!-- Results Container -->
+        <div id="resultsContainer" style="display: none;">
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-list me-2"></i>
+                                Archivos Procesados
+                            </h5>
+                        </div>
+                        <div class="card-body" id="filesList">
+                            <!-- Files will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-code me-2"></i>
+                                Visualizador JSON
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="jsonViewer" class="json-viewer">
+                                <p class="text-muted text-center py-4">
+                                    Selecciona un archivo para ver su contenido JSON
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Error State -->
+        <div id="errorState" class="text-center py-5" style="display: none;">
+            <div class="alert alert-danger">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                <span id="errorMessage">Error cargando resultados</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- JSON Modal for Large Content -->
+    <div class="modal fade" id="jsonModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-code me-2"></i>
+                        Contenido JSON - <span id="modalFileName"></span>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="modalJsonContent" class="json-viewer" style="max-height: 500px;"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary" id="downloadJsonBtn">
+                        <i class="fas fa-download me-1"></i>Descargar JSON
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let currentResults = [];
+        let selectedFileName = null;
+
+        // Load results on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            refreshResults();
+        });
+
+        // Refresh results from server
+        async function refreshResults() {
+            try {
+                document.getElementById('loadingState').style.display = 'block';
+                document.getElementById('resultsContainer').style.display = 'none';
+                document.getElementById('errorState').style.display = 'none';
+
+                const response = await fetch('/api/ocr/processed_files');
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    currentResults = data.processed_files;
+                    updateSummaryStats(data);
+                    renderResults(data.processed_files);
+                    
+                    document.getElementById('loadingState').style.display = 'none';
+                    document.getElementById('resultsContainer').style.display = 'block';
+                } else {
+                    showError(data.message || 'Error desconocido');
+                }
+            } catch (error) {
+                console.error('Error refreshing results:', error);
+                showError('Error de conexión al servidor');
+            }
+        }
+
+        // Update summary statistics
+        function updateSummaryStats(data) {
+            document.getElementById('totalFiles').textContent = data.total_files;
+            document.getElementById('filesWithJson').textContent = data.files_with_json;
+            
+            const successRate = data.total_files > 0 
+                ? Math.round((data.files_with_json / data.total_files) * 100) + '%'
+                : '0%';
+            document.getElementById('successRate').textContent = successRate;
+            
+            const lastUpdate = new Date(data.timestamp).toLocaleString('es-ES');
+            document.getElementById('lastUpdate').textContent = lastUpdate;
+        }
+
+        // Render results list
+        function renderResults(files) {
+            const container = document.getElementById('filesList');
+            
+            if (files.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-4">
+                        <i class="fas fa-folder-open fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No hay archivos procesados</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = files.map(file => `
+                <div class="result-item">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div class="flex-grow-1">
+                            <h6 class="mb-2">
+                                <i class="fas fa-image me-2 text-info"></i>
+                                ${file.filename}
+                            </h6>
+                            <div class="file-info">
+                                <small class="text-muted">
+                                    <i class="fas fa-calendar me-1"></i>
+                                    Procesado: ${new Date(file.processed_date).toLocaleString('es-ES')}
+                                    <br>
+                                    <i class="fas fa-weight me-1"></i>
+                                    Tamaño: ${formatFileSize(file.file_size)}
+                                    <br>
+                                    <i class="fas fa-file-code me-1"></i>
+                                    JSON: ${file.json_exists ? 'Disponible' : 'No disponible'}
+                                </small>
+                            </div>
+                        </div>
+                        <div class="ms-3">
+                            ${file.json_exists ? `
+                                <button class="btn btn-json btn-sm me-1" onclick="viewJson('${file.filename}')">
+                                    <i class="fas fa-eye me-1"></i>Ver JSON
+                                </button>
+                                <button class="btn btn-success btn-sm" onclick="downloadJson('${file.filename}')">
+                                    <i class="fas fa-download me-1"></i>Descargar
+                                </button>
+                            ` : `
+                                <span class="badge bg-warning">Sin JSON</span>
+                            `}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // View JSON content
+        async function viewJson(filename) {
+            try {
+                const response = await fetch(`/api/ocr/view_json/${filename}`);
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    selectedFileName = filename;
+                    const formattedJson = JSON.stringify(data.content, null, 2);
+                    
+                    // Show in sidebar viewer
+                    document.getElementById('jsonViewer').innerHTML = `
+                        <div class="mb-2">
+                            <strong>Archivo:</strong> ${data.json_file}<br>
+                            <strong>Tamaño:</strong> ${formatFileSize(data.file_size)}<br>
+                            <strong>Modificado:</strong> ${new Date(data.last_modified).toLocaleString('es-ES')}
+                        </div>
+                        <pre style="white-space: pre-wrap; word-break: break-word;">${formattedJson}</pre>
+                    `;
+
+                    // Also prepare modal for large view
+                    document.getElementById('modalFileName').textContent = filename;
+                    document.getElementById('modalJsonContent').innerHTML = `<pre>${formattedJson}</pre>`;
+                    
+                    // Show modal if content is large
+                    if (formattedJson.length > 2000) {
+                        const modal = new bootstrap.Modal(document.getElementById('jsonModal'));
+                        modal.show();
+                    }
+                } else {
+                    alert('Error al cargar JSON: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Error viewing JSON:', error);
+                alert('Error de conexión al servidor');
+            }
+        }
+
+        // Download JSON file
+        function downloadJson(filename) {
+            window.open(`/api/ocr/download_json/${filename}`, '_blank');
+        }
+
+        // Download all results as ZIP
+        async function downloadAllResults() {
+            try {
+                const response = await fetch('/api/download/batch_results/all');
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `resultados_ocr_${new Date().toISOString().split('T')[0]}.zip`;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    a.remove();
+                } else {
+                    alert('Error al descargar resultados');
+                }
+            } catch (error) {
+                console.error('Error downloading all results:', error);
+                alert('Error de conexión al servidor');
+            }
+        }
+
+        // Download JSON from modal
+        document.getElementById('downloadJsonBtn').addEventListener('click', function() {
+            if (selectedFileName) {
+                downloadJson(selectedFileName);
+            }
+        });
+
+        // Utility function to format file size
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        // Show error state
+        function showError(message) {
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('resultsContainer').style.display = 'none';
+            document.getElementById('errorState').style.display = 'block';
+            document.getElementById('errorMessage').textContent = message;
+        }
+    </script>
+</body>
+</html>

@@ -896,6 +896,210 @@ ensure_async_directories()
 logger.info("✅ Rutas API HTTP y directorios asíncronos inicializados")
 
 # ==============================================================================
+# FIX: NUEVOS ENDPOINTS PARA VISUALIZACIÓN DE RESULTADOS JSON Y DESCARGA
+# REASON: Usuario requiere visualizar archivos JSON al lado de imágenes procesadas
+# IMPACT: Capacidad completa de inspección de resultados con descarga individual
+# ==============================================================================
+
+@app.route('/api/ocr/processed_files', methods=['GET'])
+def api_get_processed_files():
+    """
+    FIX: Endpoint para obtener lista de archivos procesados con sus JSONs correspondientes
+    REASON: Usuario necesita ver resultados de procesamiento con opción de descarga JSON
+    IMPACT: Visualización completa de resultados procesados en interfaz web
+    """
+    try:
+        from config import get_async_directories
+        import glob
+        import os
+        
+        directories = get_async_directories()
+        
+        # Obtener archivos procesados
+        image_extensions = ['*.png', '*.jpg', '*.jpeg']
+        processed_images = []
+        
+        for ext in image_extensions:
+            processed_images.extend(glob.glob(os.path.join(directories['processed'], ext)))
+        
+        # Obtener archivos de resultados JSON
+        result_files = glob.glob(os.path.join(directories['results'], '*.json'))
+        result_dict = {}
+        
+        for result_file in result_files:
+            base_name = os.path.basename(result_file).replace('.json', '')
+            result_dict[base_name] = result_file
+        
+        # Crear lista de archivos con sus metadatos
+        file_list = []
+        for image_path in processed_images:
+            filename = os.path.basename(image_path)
+            base_name = os.path.splitext(filename)[0]
+            
+            # Buscar JSON correspondiente
+            json_file = None
+            json_exists = False
+            
+            # Buscar por diferentes patrones de nombres
+            possible_json_names = [
+                base_name,
+                filename.replace('.png', '').replace('.jpg', '').replace('.jpeg', ''),
+                # Patrón para archivos WhatsApp
+                base_name.split('_')[0] if '_' in base_name else base_name
+            ]
+            
+            for possible_name in possible_json_names:
+                if possible_name in result_dict:
+                    json_file = result_dict[possible_name]
+                    json_exists = True
+                    break
+            
+            # Obtener información del archivo
+            file_stats = os.stat(image_path)
+            file_info = {
+                'filename': filename,
+                'image_path': image_path,
+                'json_file': json_file,
+                'json_exists': json_exists,
+                'file_size': file_stats.st_size,
+                'processed_date': datetime.fromtimestamp(file_stats.st_mtime).isoformat(),
+                'download_url': f'/api/ocr/download_json/{filename}' if json_exists else None
+            }
+            
+            file_list.append(file_info)
+        
+        # Ordenar por fecha de procesamiento (más reciente primero)
+        file_list.sort(key=lambda x: x['processed_date'], reverse=True)
+        
+        return jsonify({
+            'status': 'success',
+            'processed_files': file_list,
+            'total_files': len(file_list),
+            'files_with_json': len([f for f in file_list if f['json_exists']]),
+            'timestamp': datetime.now().isoformat()
+        })
+        
+    except Exception as e:
+        logger.error(f"Error obteniendo archivos procesados: {e}")
+        return jsonify({
+            'status': 'error',
+            'message': 'No se pudieron obtener los archivos procesados',
+            'details': str(e)
+        }), 500
+
+@app.route('/api/ocr/download_json/<filename>')
+def api_download_json(filename):
+    """
+    FIX: Endpoint para descargar archivo JSON de resultado específico
+    REASON: Usuario necesita descargar resultados JSON individuales de cada imagen
+    IMPACT: Acceso directo a resultados de OCR para análisis externo
+    """
+    try:
+        from config import get_async_directories
+        import glob
+        
+        directories = get_async_directories()
+        
+        # Buscar archivo JSON correspondiente
+        base_name = os.path.splitext(filename)[0]
+        possible_json_files = [
+            os.path.join(directories['results'], f"{base_name}.json"),
+            os.path.join(directories['results'], f"{filename}.json"),
+            # Patrón para archivos WhatsApp
+            os.path.join(directories['results'], f"{base_name.split('_')[0]}.json")
+        ]
+        
+        json_file = None
+        for possible_file in possible_json_files:
+            if os.path.exists(possible_file):
+                json_file = possible_file
+                break
+        
+        if not json_file:
+            return jsonify({
+                'status': 'error',
+                'message': f'Archivo JSON no encontrado para {filename}'
+            }), 404
+        
+        return send_file(
+            json_file,
+            as_attachment=True,
+            download_name=f"resultado_{base_name}.json",
+            mimetype='application/json'
+        )
+        
+    except Exception as e:
+        logger.error(f"Error descargando JSON para {filename}: {e}")
+        return jsonify({
+            'status': 'error',
+            'message': 'No se pudo descargar el archivo JSON',
+            'details': str(e)
+        }), 500
+
+@app.route('/api/ocr/view_json/<filename>')
+def api_view_json(filename):
+    """
+    FIX: Endpoint para visualizar contenido JSON de resultado específico
+    REASON: Usuario necesita ver contenido JSON en interfaz web antes de descargar
+    IMPACT: Inspección rápida de resultados OCR sin necesidad de descarga
+    """
+    try:
+        from config import get_async_directories
+        
+        directories = get_async_directories()
+        
+        # Buscar archivo JSON correspondiente
+        base_name = os.path.splitext(filename)[0]
+        possible_json_files = [
+            os.path.join(directories['results'], f"{base_name}.json"),
+            os.path.join(directories['results'], f"{filename}.json"),
+            # Patrón para archivos WhatsApp
+            os.path.join(directories['results'], f"{base_name.split('_')[0]}.json")
+        ]
+        
+        json_file = None
+        for possible_file in possible_json_files:
+            if os.path.exists(possible_file):
+                json_file = possible_file
+                break
+        
+        if not json_file:
+            return jsonify({
+                'status': 'error',
+                'message': f'Archivo JSON no encontrado para {filename}'
+            }), 404
+        
+        # Leer y parsear contenido JSON
+        with open(json_file, 'r', encoding='utf-8') as f:
+            json_content = json.load(f)
+        
+        return jsonify({
+            'status': 'success',
+            'filename': filename,
+            'json_file': os.path.basename(json_file),
+            'content': json_content,
+            'file_size': os.path.getsize(json_file),
+            'last_modified': datetime.fromtimestamp(os.path.getmtime(json_file)).isoformat()
+        })
+        
+    except Exception as e:
+        logger.error(f"Error visualizando JSON para {filename}: {e}")
+        return jsonify({
+            'status': 'error',
+            'message': 'No se pudo leer el archivo JSON',
+            'details': str(e)
+        }), 500
+
+@app.route('/results')
+def results_viewer():
+    """
+    FIX: Nueva página para visualización de resultados procesados
+    REASON: Usuario necesita interfaz dedicada para ver resultados con JSONs
+    IMPACT: Experiencia mejorada para inspección de resultados de procesamiento
+    """
+    return render_template('results_viewer.html')
+
+# ==============================================================================
 # FIX: NUEVOS ENDPOINTS PARA PROCESAMIENTO POR LOTES Y MONITOREO DE RECURSOS
 # REASON: Implementar interfaz de usuario para carga masiva con medición adaptativa
 # IMPACT: Sistema completo de procesamiento por lotes con optimización automática

@@ -483,6 +483,12 @@
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="results-tab" data-bs-toggle="tab" 
+                                data-bs-target="#results" type="button" role="tab">
+                            <i class="fas fa-file-download me-2"></i>Resultados
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
                         <button class="nav-link" id="docs-tab" data-bs-toggle="tab" 
                                 data-bs-target="#docs" type="button" role="tab">
                             <i class="fas fa-file-alt me-2"></i>Documentación
@@ -668,6 +674,85 @@ curl -X GET http://localhost:5000/api/ocr/queue/status
                         </div>
                     </div>
 
+                    <!-- Results Tab -->
+                    <div class="tab-pane fade" id="results" role="tabpanel">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-file-download me-2"></i>Resultados de Procesamiento
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <p class="mb-0 text-muted">
+                                        Visualiza archivos procesados y descarga sus resultados JSON
+                                    </p>
+                                    <div>
+                                        <button class="btn btn-primary btn-sm" onclick="refreshProcessedFiles()">
+                                            <i class="fas fa-sync me-1"></i>Actualizar
+                                        </button>
+                                        <a href="/results" class="btn btn-info btn-sm ms-2" target="_blank">
+                                            <i class="fas fa-external-link-alt me-1"></i>Vista Completa
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <!-- Summary Stats -->
+                                <div class="row mb-4">
+                                    <div class="col-md-3">
+                                        <div class="metric-card">
+                                            <span class="metric-value" id="resultsTotal">-</span>
+                                            <div class="metric-label">Archivos Procesados</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="metric-card">
+                                            <span class="metric-value" id="resultsWithJson">-</span>
+                                            <div class="metric-label">Con JSON Disponible</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="metric-card">
+                                            <span class="metric-value" id="resultsSuccessRate">-</span>
+                                            <div class="metric-label">Tasa de Éxito</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="metric-card">
+                                            <span class="metric-value" id="resultsLastUpdate">-</span>
+                                            <div class="metric-label">Última Actualización</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Results List -->
+                                <div id="processedFilesList">
+                                    <div class="text-center py-4">
+                                        <div class="loading-spinner me-3"></div>
+                                        <span>Cargando resultados...</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- JSON Viewer -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-code me-2"></i>Visualizador JSON
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div id="jsonViewerContent" class="json-viewer" style="min-height: 300px;">
+                                    <div class="text-center py-4 text-muted">
+                                        <i class="fas fa-file-code fa-3x mb-3"></i>
+                                        <p>Selecciona un archivo de la lista para ver su contenido JSON</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Test Tab -->
                     <div class="tab-pane fade" id="test" role="tabpanel">
                         <div class="card mb-4">
@@ -750,19 +835,139 @@ curl -X GET http://localhost:5000/api/ocr/queue/status
 
                     <!-- Documentation Tab -->
                     <div class="tab-pane fade" id="docs" role="tabpanel">
-                        <div class="card">
+                        <div class="card mb-4">
                             <div class="card-header">
                                 <h5 class="mb-0">
-                                    <i class="fas fa-file-alt me-2"></i>Documentación Completa
+                                    <i class="fas fa-book me-2"></i>¿Qué es este Sistema OCR?
                                 </h5>
                             </div>
                             <div class="card-body">
-                                <div class="alert alert-info">
-                                    <i class="fas fa-info-circle me-2"></i>
-                                    Para documentación completa, consultar <strong>DOCUMENTACION_COMPLETA.md</strong>
+                                <div class="alert alert-primary">
+                                    <h6><i class="fas fa-lightbulb me-2"></i>En Términos Simples</h6>
+                                    <p class="mb-0">
+                                        Este sistema <strong>convierte imágenes de recibos en texto digital</strong> de forma automática. 
+                                        Es como tener un asistente que lee todos tus recibos de WhatsApp y extrae la información importante 
+                                        (monto, fecha, lugar) sin que tengas que hacerlo manualmente.
+                                    </p>
                                 </div>
 
-                                <h6>Configuración para n8n:</h6>
+                                <h6><i class="fas fa-rocket me-2"></i>¿Por Qué es Útil?</h6>
+                                <ul class="mb-4">
+                                    <li><strong>Ahorra Tiempo:</strong> No necesitas escribir manualmente la información de tus recibos</li>
+                                    <li><strong>Evita Errores:</strong> La computadora lee mejor que nosotros los números pequeños</li>
+                                    <li><strong>Organiza Automáticamente:</strong> Toda la información queda guardada en formato digital</li>
+                                    <li><strong>Para WhatsApp Business:</strong> Perfecto para negocios que reciben muchos comprobantes de pago</li>
+                                </ul>
+
+                                <h6><i class="fas fa-cogs me-2"></i>¿Cómo Funciona?</h6>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="border rounded p-3 mb-3">
+                                            <h6 class="text-primary">1. Subir Imagen</h6>
+                                            <p class="small mb-0">Subes la foto del recibo desde tu teléfono o computadora</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="border rounded p-3 mb-3">
+                                            <h6 class="text-success">2. El Sistema Lee</h6>
+                                            <p class="small mb-0">La computadora analiza la imagen y extrae todo el texto</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="border rounded p-3 mb-3">
+                                            <h6 class="text-info">3. Encuentra Datos</h6>
+                                            <p class="small mb-0">Identifica automáticamente montos, fechas y referencias</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="border rounded p-3 mb-3">
+                                            <h6 class="text-warning">4. Te Entrega Resultados</h6>
+                                            <p class="small mb-0">Recibes toda la información organizada y lista para usar</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-mobile-alt me-2"></i>Guía de Uso Simple
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="alert alert-success">
+                                    <h6><i class="fas fa-star me-2"></i>Para Usuarios Normales (Interfaz Web)</h6>
+                                    <ol>
+                                        <li>Ve a la pestaña <strong>"Pruebas"</strong> arriba</li>
+                                        <li>Haz clic en <strong>"Seleccionar archivo"</strong> y elige tu imagen</li>
+                                        <li>Llena los datos opcionales (como nombre del remitente)</li>
+                                        <li>Haz clic en <strong>"Procesar Imagen"</strong></li>
+                                        <li>Espera unos segundos y ve a <strong>"Resultados"</strong> para ver el texto extraído</li>
+                                    </ol>
+                                </div>
+
+                                <div class="alert alert-info">
+                                    <h6><i class="fas fa-robot me-2"></i>Para Sistemas Automáticos (n8n, Zapier, etc.)</h6>
+                                    <p>Si usas herramientas de automatización, puedes conectar este sistema usando estas direcciones:</p>
+                                    <ul class="small">
+                                        <li><code>POST /api/ocr/process_image</code> - Para subir imágenes</li>
+                                        <li><code>POST /api/ocr/process_batch</code> - Para procesar en lotes</li>
+                                        <li><code>GET /api/ocr/result/{id}</code> - Para obtener resultados</li>
+                                    </ul>
+                                    <p class="small">Ve a la pestaña <strong>"API"</strong> para ejemplos completos.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-question-circle me-2"></i>Preguntas Frecuentes
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h6>¿Qué tipos de imágenes puedo subir?</h6>
+                                        <p class="small">Cualquier foto de recibo: PNG, JPG, JPEG. Funciona mejor con fotos claras y bien iluminadas.</p>
+
+                                        <h6>¿Cuánto tiempo tarda?</h6>
+                                        <p class="small">Entre 0.5 y 2 segundos por imagen, dependiendo de la calidad y el perfil de procesamiento.</p>
+
+                                        <h6>¿Qué información extrae?</h6>
+                                        <p class="small">Todo el texto visible + específicamente montos, fechas, referencias, nombres de lugares y números de cuenta.</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6>¿Es seguro subir mis recibos?</h6>
+                                        <p class="small">Sí, todo se procesa localmente en este servidor. Las imágenes se eliminan después del procesamiento.</p>
+
+                                        <h6>¿Funciona con recibos en español?</h6>
+                                        <p class="small">Sí, está optimizado para documentos financieros en español e inglés.</p>
+
+                                        <h6>¿Puedo procesar muchas imágenes a la vez?</h6>
+                                        <p class="small">Sí, ve a la sección <strong>"Lotes"</strong> para procesamiento masivo o usa la API para automatización.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-tools me-2"></i>Para Desarrolladores y Técnicos
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <h6>Arquitectura del Sistema:</h6>
+                                <ul class="small">
+                                    <li><strong>Motor OCR:</strong> ONNX-TR optimizado para CPU con modelos MobileNet y ResNet50</li>
+                                    <li><strong>Backend:</strong> Flask con procesamiento asíncrono y sistema de colas</li>
+                                    <li><strong>Extracción Inteligente:</strong> Algoritmos de proximidad para identificación de campos</li>
+                                    <li><strong>Validación:</strong> Reglas de negocio para documentos financieros</li>
+                                </ul>
+
+                                <h6>Integración n8n:</h6>
                                 <div class="row mt-4">
                                     <div class="col-md-4 mb-4">
                                         <div class="card border-success">
@@ -1292,6 +1497,152 @@ GET /api/ocr/result/request_id
             document.getElementById('successRate').textContent = `${(Math.random() * 10 + 90).toFixed(1)}%`;
             document.getElementById('estimatedCapacity').textContent = `${Math.floor(Math.random() * 50 + 100)} img/hora`;
         }
+
+        // ==============================================================================
+        // FIX: FUNCIONES PARA MANEJO DE RESULTADOS Y VISUALIZACIÓN JSON
+        // REASON: Usuario requiere ver archivos procesados con descarga de JSON
+        // IMPACT: Interfaz completa de inspección de resultados en tiempo real
+        // ==============================================================================
+
+        // Refresh processed files list
+        async function refreshProcessedFiles() {
+            try {
+                const response = await fetch('/api/ocr/processed_files');
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    updateResultsStats(data);
+                    renderProcessedFiles(data.processed_files);
+                } else {
+                    console.error('Error loading processed files:', data.message);
+                }
+            } catch (error) {
+                console.error('Error fetching processed files:', error);
+            }
+        }
+
+        // Update results statistics
+        function updateResultsStats(data) {
+            document.getElementById('resultsTotal').textContent = data.total_files;
+            document.getElementById('resultsWithJson').textContent = data.files_with_json;
+            
+            const successRate = data.total_files > 0 
+                ? Math.round((data.files_with_json / data.total_files) * 100) + '%'
+                : '0%';
+            document.getElementById('resultsSuccessRate').textContent = successRate;
+            
+            const lastUpdate = new Date(data.timestamp).toLocaleString('es-ES');
+            document.getElementById('resultsLastUpdate').textContent = lastUpdate.split(' ')[1]; // Solo hora
+        }
+
+        // Render processed files list
+        function renderProcessedFiles(files) {
+            const container = document.getElementById('processedFilesList');
+            
+            if (files.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-4 text-muted">
+                        <i class="fas fa-folder-open fa-2x mb-3"></i>
+                        <p>No hay archivos procesados</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Mostrar solo los primeros 5 archivos en la vista del dashboard
+            const displayFiles = files.slice(0, 5);
+            
+            container.innerHTML = displayFiles.map(file => `
+                <div class="d-flex justify-content-between align-items-center border-bottom py-2">
+                    <div class="flex-grow-1">
+                        <div class="fw-medium">${file.filename}</div>
+                        <small class="text-muted">
+                            ${new Date(file.processed_date).toLocaleString('es-ES')}
+                        </small>
+                    </div>
+                    <div>
+                        ${file.json_exists ? `
+                            <button class="btn btn-sm btn-outline-primary me-1" onclick="viewJsonInDashboard('${file.filename}')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-success" onclick="downloadJsonFile('${file.filename}')">
+                                <i class="fas fa-download"></i>
+                            </button>
+                        ` : `
+                            <span class="badge bg-warning">Sin JSON</span>
+                        `}
+                    </div>
+                </div>
+            `).join('');
+
+            if (files.length > 5) {
+                container.innerHTML += `
+                    <div class="text-center py-3">
+                        <a href="/results" class="btn btn-sm btn-outline-primary" target="_blank">
+                            Ver todos los ${files.length} archivos
+                        </a>
+                    </div>
+                `;
+            }
+        }
+
+        // View JSON content in dashboard
+        async function viewJsonInDashboard(filename) {
+            try {
+                const response = await fetch(`/api/ocr/view_json/${filename}`);
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    const formattedJson = JSON.stringify(data.content, null, 2);
+                    
+                    document.getElementById('jsonViewerContent').innerHTML = `
+                        <div class="mb-2 text-small">
+                            <strong>Archivo:</strong> ${data.json_file}<br>
+                            <strong>Tamaño:</strong> ${formatFileSize(data.file_size)}<br>
+                            <strong>Modificado:</strong> ${new Date(data.last_modified).toLocaleString('es-ES')}
+                        </div>
+                        <hr>
+                        <pre style="white-space: pre-wrap; word-break: break-word; font-size: 0.85rem;">${formattedJson}</pre>
+                    `;
+                } else {
+                    document.getElementById('jsonViewerContent').innerHTML = `
+                        <div class="text-center py-4 text-danger">
+                            <i class="fas fa-exclamation-triangle fa-2x mb-3"></i>
+                            <p>Error al cargar JSON: ${data.message}</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error viewing JSON:', error);
+                document.getElementById('jsonViewerContent').innerHTML = `
+                    <div class="text-center py-4 text-danger">
+                        <i class="fas fa-exclamation-triangle fa-2x mb-3"></i>
+                        <p>Error de conexión al servidor</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Download JSON file
+        function downloadJsonFile(filename) {
+            window.open(`/api/ocr/download_json/${filename}`, '_blank');
+        }
+
+        // Format file size utility
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        // Load processed files when results tab is shown
+        document.addEventListener('shown.bs.tab', function(event) {
+            if (event.target.id === 'results-tab') {
+                refreshProcessedFiles();
+            }
+        });
 
         // Cleanup on page unload
         window.addEventListener('beforeunload', () => {
