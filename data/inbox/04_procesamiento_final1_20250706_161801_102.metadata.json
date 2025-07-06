@@ -1,0 +1,29 @@
+{
+  "filename_original": "04_procesamiento_final(1).png",
+  "filename_final": "04_procesamiento_final1_20250706_161801_102.png",
+  "request_id": "04_procesamiento_final1.png",
+  "upload_timestamp": "2025-07-06T16:18:01.102325",
+  "file_size": 82758,
+  "numerosorteo": "04",
+  "idWhatsapp": "final1",
+  "nombre": "20250706_161801_102",
+  "horamin": "png",
+  "fechasorteo": "20250706",
+  "texto_mensaje_whatsapp": "Archivo recibido de 20250706_161801_102 a las png",
+  "caption": "Archivo recibido de 20250706_161801_102 a las png",
+  "otro_valor": "subir_con_metadata",
+  "form_data_used": false,
+  "whatsapp_metadata": {
+    "numerosorteo": "04",
+    "idWhatsapp": "final1",
+    "nombre": "20250706_161801_102",
+    "horamin": "png",
+    "extension": "png",
+    "sorteo_fecha": "04",
+    "sorteo_conteo": "04",
+    "sender_id": "final1",
+    "sender_name": "20250706_161801_102",
+    "hora_min": "png",
+    "texto_mensaje_whatsapp": "Archivo recibido de 20250706_161801_102 a las png"
+  }
+}
