@@ -21,9 +21,12 @@ Sistema OCR asíncrono de alto rendimiento para procesamiento de recibos de pago
 - ✅ Corrección de extracción de coordenadas
 - ✅ Respuestas en español implementadas
 - ✅ Algoritmo de detección JSON corregido
-- ✅ Interfaz simplificada: un solo renglón con botón "Subir"
-- ✅ Método process_queue_batch agregado al OrquestadorOCR
-- ✅ Resultados de ambos sistemas visibles en interfaz
+- ✅ Interfaz mejorada con dashboard empresarial de pestañas
+- ✅ Sistema de gestión de API Keys implementado
+- ✅ Documentación completa de APIs externas
+- ✅ Ejemplos de uso con cURL, JavaScript y Python
+- ✅ Autenticación Bearer Token para APIs externas
+- ✅ Formulario de subida de archivos visible y funcional
 
 ## Preferencias del Usuario
 - Interfaz completamente en español

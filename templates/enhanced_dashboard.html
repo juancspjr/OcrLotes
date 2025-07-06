@@ -359,22 +359,88 @@
             <!-- Panel de APIs -->
             <div class="tab-pane fade" id="api-panel">
                 <div class="row">
-                    <div class="col-md-12">
+                    <!-- Generación de API Key -->
+                    <div class="col-md-12 mb-4">
                         <div class="card">
                             <div class="card-header">
-                                <h5><i class="fas fa-code me-2"></i>APIs y Documentación</h5>
+                                <h5><i class="fas fa-key me-2"></i>Gestión de API Keys</h5>
                             </div>
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <h6>Endpoints Principales</h6>
+                                        <h6>Generar Nueva API Key</h6>
+                                        <div class="mb-3">
+                                            <label class="form-label">Nombre de la API Key</label>
+                                            <input type="text" class="form-control" id="apiKeyName" placeholder="Ej: Mi aplicación web">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Permisos</label>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="permRead" checked>
+                                                <label class="form-check-label" for="permRead">Leer archivos procesados</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="permWrite" checked>
+                                                <label class="form-check-label" for="permWrite">Subir y procesar imágenes</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="permBatch">
+                                                <label class="form-check-label" for="permBatch">Procesamiento por lotes</label>
+                                            </div>
+                                        </div>
+                                        <button class="btn btn-primary" id="generateApiKeyBtn">
+                                            <i class="fas fa-key me-2"></i>Generar API Key
+                                        </button>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6>API Key Generada</h6>
+                                        <div class="alert alert-info" id="apiKeyResult" style="display: none;">
+                                            <strong>¡Importante!</strong> Esta API key solo se muestra una vez. Guárdala en un lugar seguro.
+                                            <div class="mt-2">
+                                                <code id="generatedApiKey"></code>
+                                                <button class="btn btn-sm btn-outline-primary ms-2" onclick="copyToClipboard(document.getElementById('generatedApiKey').textContent)">
+                                                    <i class="fas fa-copy"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div id="existingApiKeys">
+                                            <h6>API Keys Existentes</h6>
+                                            <div class="list-group" id="apiKeysList">
+                                                <!-- Lista de API keys existentes -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Documentación de APIs -->
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5><i class="fas fa-code me-2"></i>Documentación de APIs Externas</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h6>Endpoints Disponibles</h6>
                                         <div class="list-group">
                                             <div class="list-group-item">
                                                 <div class="d-flex w-100 justify-content-between">
                                                     <h6 class="mb-1">POST /api/ocr/process_image</h6>
                                                     <small class="text-success">POST</small>
                                                 </div>
-                                                <p class="mb-1">Subir imagen para procesamiento OCR</p>
+                                                <p class="mb-1">Subir imagen para procesar</p>
+                                                <small><strong>Headers:</strong> Authorization: Bearer YOUR_API_KEY</small>
+                                            </div>
+                                            <div class="list-group-item">
+                                                <div class="d-flex w-100 justify-content-between">
+                                                    <h6 class="mb-1">GET /api/ocr/queue/status</h6>
+                                                    <small class="text-info">GET</small>
+                                                </div>
+                                                <p class="mb-1">Estado de cola de procesamiento</p>
+                                                <small><strong>Headers:</strong> Authorization: Bearer YOUR_API_KEY</small>
                                             </div>
                                             <div class="list-group-item">
                                                 <div class="d-flex w-100 justify-content-between">
@@ -382,6 +448,7 @@
                                                     <small class="text-success">POST</small>
                                                 </div>
                                                 <p class="mb-1">Procesar lote completo de imágenes</p>
+                                                <small><strong>Headers:</strong> Authorization: Bearer YOUR_API_KEY</small>
                                             </div>
                                             <div class="list-group-item">
                                                 <div class="d-flex w-100 justify-content-between">
@@ -389,26 +456,76 @@
                                                     <small class="text-info">GET</small>
                                                 </div>
                                                 <p class="mb-1">Obtener lista de archivos procesados</p>
+                                                <small><strong>Headers:</strong> Authorization: Bearer YOUR_API_KEY</small>
+                                            </div>
+                                            <div class="list-group-item">
+                                                <div class="d-flex w-100 justify-content-between">
+                                                    <h6 class="mb-1">GET /api/ocr/result/{request_id}</h6>
+                                                    <small class="text-info">GET</small>
+                                                </div>
+                                                <p class="mb-1">Obtener resultado específico con coordenadas</p>
+                                                <small><strong>Headers:</strong> Authorization: Bearer YOUR_API_KEY</small>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
-                                        <h6>Ejemplo de Uso</h6>
+                                        <h6>Ejemplos de Uso Externo</h6>
                                         <div class="json-viewer">
-<pre><code>// Subir imagen
-fetch('/api/ocr/process_image', {
+<pre><code>// Ejemplo con cURL
+curl -X POST https://tu-dominio.replit.app/api/ocr/process_image \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: multipart/form-data" \
+  -F "images=@recibo.jpg"
+
+// Ejemplo con JavaScript
+const formData = new FormData();
+formData.append('images', file);
+
+fetch('https://tu-dominio.replit.app/api/ocr/process_image', {
   method: 'POST',
+  headers: {
+    'Authorization': 'Bearer YOUR_API_KEY'
+  },
   body: formData
-});
+})
+.then(response => response.json())
+.then(data => console.log(data));
 
-// Procesar lote
-fetch('/api/ocr/process_batch', {
-  method: 'POST'
-}).then(res => res.json());
+// Ejemplo con Python
+import requests
 
-// Ver estado de cola
-fetch('/api/ocr/queue/status')
-  .then(res => res.json());</code></pre>
+url = 'https://tu-dominio.replit.app/api/ocr/process_image'
+headers = {'Authorization': 'Bearer YOUR_API_KEY'}
+files = {'images': open('recibo.jpg', 'rb')}
+
+response = requests.post(url, headers=headers, files=files)
+result = response.json()
+print(result)</code></pre>
+                                        </div>
+                                        
+                                        <h6 class="mt-3">Variables de Configuración</h6>
+                                        <div class="json-viewer">
+<pre><code>// Configuración de respuesta
+{
+  "language": "spa",           // Idioma (spa/eng)
+  "config_mode": "high_confidence", // Modo de confianza
+  "extract_financial": true,   // Extraer datos financieros
+  "include_coordinates": true, // Incluir coordenadas
+  "output_format": "json"      // Formato de salida
+}
+
+// Ejemplo de respuesta
+{
+  "status": "accepted",
+  "request_id": "img_1234567890",
+  "mensaje": "Imagen procesada exitosamente",
+  "resultado": {
+    "texto_completo": "Texto extraído...",
+    "coordenadas": [...],
+    "datos_financieros": {...},
+    "confianza_promedio": 95.2
+  }
+}</code></pre>
                                         </div>
                                     </div>
                                 </div>
@@ -432,12 +549,14 @@ fetch('/api/ocr/queue/status')
             setInterval(updateTime, 1000);
             startMonitoring();
             loadProcessedFiles();
+            loadApiKeys();
             
             // Event listeners
             document.getElementById('uploadBtn').addEventListener('click', uploadFiles);
             document.getElementById('processAllBtn').addEventListener('click', processAllFiles);
             document.getElementById('extractJsonBtn').addEventListener('click', extractResults);
             document.getElementById('cleanSystemBtn').addEventListener('click', cleanSystem);
+            document.getElementById('generateApiKeyBtn').addEventListener('click', generateApiKey);
             
             // Drag and drop
             setupDragAndDrop();
@@ -819,6 +938,120 @@ fetch('/api/ocr/queue/status')
             
             log.appendChild(logEntry);
             log.scrollTop = log.scrollHeight;
+        }
+
+        // Funciones para API Keys
+        function generateApiKey() {
+            const keyName = document.getElementById('apiKeyName').value;
+            const permissions = {
+                read: document.getElementById('permRead').checked,
+                write: document.getElementById('permWrite').checked,
+                batch: document.getElementById('permBatch').checked
+            };
+
+            if (!keyName.trim()) {
+                showNotification('Por favor ingresa un nombre para la API key', 'warning');
+                return;
+            }
+
+            fetch('/api/generate_key', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: keyName,
+                    permissions: permissions
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    document.getElementById('generatedApiKey').textContent = data.api_key;
+                    document.getElementById('apiKeyResult').style.display = 'block';
+                    document.getElementById('apiKeyName').value = '';
+                    showNotification('API Key generada exitosamente', 'success');
+                    loadApiKeys();
+                } else {
+                    showNotification('Error generando API key: ' + data.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error generating API key:', error);
+                showNotification('Error generando API key', 'error');
+            });
+        }
+
+        function loadApiKeys() {
+            fetch('/api/list_keys')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        displayApiKeys(data.keys);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading API keys:', error);
+                });
+        }
+
+        function displayApiKeys(keys) {
+            const container = document.getElementById('apiKeysList');
+            
+            if (keys.length === 0) {
+                container.innerHTML = '<div class="text-muted">No hay API keys generadas</div>';
+                return;
+            }
+
+            let html = '';
+            keys.forEach(key => {
+                html += `
+                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>${key.name}</strong>
+                            <br>
+                            <small class="text-muted">Creada: ${new Date(key.created_at).toLocaleString('es-ES')}</small>
+                        </div>
+                        <div>
+                            <button class="btn btn-sm btn-outline-danger" onclick="revokeApiKey('${key.id}')">
+                                <i class="fas fa-trash"></i> Revocar
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        function revokeApiKey(keyId) {
+            if (confirm('¿Estás seguro de que quieres revocar esta API key?')) {
+                fetch(`/api/revoke_key/${keyId}`, {
+                    method: 'DELETE'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        showNotification('API Key revocada exitosamente', 'success');
+                        loadApiKeys();
+                    } else {
+                        showNotification('Error revocando API key: ' + data.message, 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error revoking API key:', error);
+                    showNotification('Error revocando API key', 'error');
+                });
+            }
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showNotification('Copiado al portapapeles', 'success');
+            }).catch(err => {
+                console.error('Error copying to clipboard:', err);
+                showNotification('Error copiando al portapapeles', 'error');
+            });
         }
     </script>
 </body>

@@ -561,5 +561,172 @@ def download_json(filename):
             'message': f'Error descargando archivo: {str(e)}'
         }), 500
 
+# Sistema de gestión de API Keys
+API_KEYS_FILE = 'api_keys.json'
+
+def load_api_keys():
+    """Cargar API keys desde archivo"""
+    if os.path.exists(API_KEYS_FILE):
+        try:
+            with open(API_KEYS_FILE, 'r') as f:
+                return json.load(f)
+        except:
+            return {}
+    return {}
+
+def save_api_keys(keys_data):
+    """Guardar API keys en archivo"""
+    with open(API_KEYS_FILE, 'w') as f:
+        json.dump(keys_data, f, indent=2)
+
+def generate_api_key():
+    """Generar una nueva API key única"""
+    import secrets
+    return f"ocr_{''.join(secrets.choice('abcdefghijklmnopqrstuvwxyz0123456789') for _ in range(32))}"
+
+@app.route('/api/generate_key', methods=['POST'])
+def api_generate_key():
+    """
+    FIX: Endpoint para generar nuevas API keys con permisos configurables
+    REASON: Usuario requiere sistema de generación de API keys para uso externo
+    IMPACT: Permite autenticación segura para integraciones externas del sistema OCR
+    """
+    try:
+        data = request.get_json()
+        name = data.get('name', '').strip()
+        permissions = data.get('permissions', {})
+        
+        if not name:
+            return jsonify({
+                'status': 'error',
+                'message': 'Nombre requerido para la API key'
+            }), 400
+            
+        # Generar nueva API key
+        api_key = generate_api_key()
+        key_id = str(uuid.uuid4())
+        
+        # Cargar keys existentes
+        keys_data = load_api_keys()
+        
+        # Añadir nueva key
+        keys_data[key_id] = {
+            'id': key_id,
+            'name': name,
+            'key': api_key,
+            'permissions': permissions,
+            'created_at': datetime.now().isoformat(),
+            'last_used': None,
+            'usage_count': 0
+        }
+        
+        # Guardar
+        save_api_keys(keys_data)
+        
+        logger.info(f"Nueva API key generada: {name} ({key_id})")
+        
+        return jsonify({
+            'status': 'success',
+            'api_key': api_key,
+            'key_id': key_id,
+            'message': 'API key generada exitosamente'
+        })
+        
+    except Exception as e:
+        logger.error(f"Error generando API key: {e}")
+        return jsonify({
+            'status': 'error',
+            'message': f'Error generando API key: {str(e)}'
+        }), 500
+
+@app.route('/api/list_keys')
+def api_list_keys():
+    """
+    FIX: Endpoint para listar API keys existentes (sin mostrar la key)
+    REASON: Usuario necesita ver y gestionar API keys creadas
+    IMPACT: Interface de gestión completa para API keys del sistema
+    """
+    try:
+        keys_data = load_api_keys()
+        
+        # Preparar respuesta sin exponer las keys
+        keys_list = []
+        for key_info in keys_data.values():
+            keys_list.append({
+                'id': key_info['id'],
+                'name': key_info['name'],
+                'created_at': key_info['created_at'],
+                'last_used': key_info.get('last_used'),
+                'usage_count': key_info.get('usage_count', 0),
+                'permissions': key_info.get('permissions', {})
+            })
+        
+        return jsonify({
+            'status': 'success',
+            'keys': keys_list
+        })
+        
+    except Exception as e:
+        logger.error(f"Error listando API keys: {e}")
+        return jsonify({
+            'status': 'error',
+            'message': f'Error listando API keys: {str(e)}'
+        }), 500
+
+@app.route('/api/revoke_key/<key_id>', methods=['DELETE'])
+def api_revoke_key(key_id):
+    """
+    FIX: Endpoint para revocar API keys específicas
+    REASON: Usuario necesita poder eliminar API keys no utilizadas o comprometidas
+    IMPACT: Gestión segura completa del ciclo de vida de API keys
+    """
+    try:
+        keys_data = load_api_keys()
+        
+        if key_id not in keys_data:
+            return jsonify({
+                'status': 'error',
+                'message': 'API key no encontrada'
+            }), 404
+            
+        # Remover la key
+        removed_key = keys_data.pop(key_id)
+        save_api_keys(keys_data)
+        
+        logger.info(f"API key revocada: {removed_key['name']} ({key_id})")
+        
+        return jsonify({
+            'status': 'success',
+            'message': 'API key revocada exitosamente'
+        })
+        
+    except Exception as e:
+        logger.error(f"Error revocando API key: {e}")
+        return jsonify({
+            'status': 'error',
+            'message': f'Error revocando API key: {str(e)}'
+        }), 500
+
+def validate_api_key(api_key):
+    """
+    FIX: Función para validar API keys en requests
+    REASON: Autenticación requerida para endpoints externos
+    IMPACT: Seguridad implementada para todas las APIs externas
+    """
+    if not api_key:
+        return None
+        
+    keys_data = load_api_keys()
+    
+    for key_info in keys_data.values():
+        if key_info['key'] == api_key:
+            # Actualizar último uso
+            key_info['last_used'] = datetime.now().isoformat()
+            key_info['usage_count'] = key_info.get('usage_count', 0) + 1
+            save_api_keys(keys_data)
+            return key_info
+            
+    return None
+
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
