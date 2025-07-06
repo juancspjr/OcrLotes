@@ -1,0 +1,286 @@
+{
+  "texto_completo": "Personas 200,00 Bs Fecha : 01/04/ 2025 Operacion : 002501174438 Identificacion : 26714848 Origen : Destino : 04247504 /16 Banco : 0102 = BANCO DE VENEZUELA Concepto : pago",
+  "total_caracteres": 171,
+  "tiempo_procesamiento": 0.501,
+  "metodo_extraccion": "ONNXTR_SINGLE_PASS",
+  "configuracion_onnxtr": "ultra_rapido",
+  "total_palabras_detectadas": 20,
+  "palabras_detectadas": [
+    {
+      "texto": "Personas",
+      "confianza": 0.9933372735977173,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 0,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "200,00",
+      "confianza": 0.8359664082527161,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 1,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Bs",
+      "confianza": 0.9990013241767883,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 1,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "Fecha:",
+      "confianza": 0.9926048517227173,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 2,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "01/04/2025",
+      "confianza": 0.8702521920204163,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 3,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Operacion:",
+      "confianza": 0.923349916934967,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 4,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "002501174438",
+      "confianza": 0.942356288433075,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 5,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Identificacion:",
+      "confianza": 0.9483698010444641,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 6,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "26714848",
+      "confianza": 0.9802836775779724,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 7,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Origen:",
+      "confianza": 0.9996747970581055,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 8,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Destino:",
+      "confianza": 0.9789829254150391,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 10,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "04247504/16",
+      "confianza": 0.6958265900611877,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 11,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Banco:",
+      "confianza": 0.9799686670303345,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 12,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "0102",
+      "confianza": 0.9999983310699463,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 13,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "=",
+      "confianza": 0.8800356388092041,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 13,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "BANCO",
+      "confianza": 0.7836209535598755,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 13,
+        "palabra": 2
+      }
+    },
+    {
+      "texto": "DE",
+      "confianza": 0.9925639033317566,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 13,
+        "palabra": 3
+      }
+    },
+    {
+      "texto": "VENEZUELA",
+      "confianza": 0.9689043164253235,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 13,
+        "palabra": 4
+      }
+    },
+    {
+      "texto": "Concepto:",
+      "confianza": 0.9965718984603882,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 14,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "pago",
+      "confianza": 0.9978006482124329,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 15,
+        "palabra": 0
+      }
+    }
+  ],
+  "confianza_promedio": 0.938,
+  "estadisticas_onnxtr": {
+    "paginas_procesadas": 1,
+    "palabras_alta_confianza": 18,
+    "palabras_media_confianza": 2,
+    "palabras_baja_confianza": 0,
+    "min_confianza_aplicada": 0.5
+  },
+  "calidad_extraccion": {
+    "score_calidad": 79.5,
+    "categoria": "buena",
+    "confianza_promedio": 0.938,
+    "palabras_alta_confianza": 18,
+    "total_palabras": 20,
+    "longitud_texto": 171,
+    "recomendaciones": [
+      "Calidad de extracción satisfactoria"
+    ]
+  },
+  "deteccion_inteligente": {
+    "tipo_imagen": "screenshot_movil",
+    "esquema_color": "texto_claro_fondo_oscuro",
+    "inversion_requerida": true,
+    "ui_elements_detectados": true,
+    "aspect_ratio": 0.821917808219178,
+    "calidad_digital": false,
+    "dark_percentage": 95.57283782958984,
+    "light_percentage": 4.4271626472473145,
+    "edge_density": 0.028139269406392695,
+    "noise_estimate": 64.32817327003762,
+    "confianza_deteccion": 0.7
+  },
+  "datos_financieros": {
+    "amount": [
+      {
+        "valor": "200,00",
+        "posicion_texto": 9
+      },
+      {
+        "valor": "01",
+        "posicion_texto": 27
+      },
+      {
+        "valor": "04",
+        "posicion_texto": 30
+      },
+      {
+        "valor": "202",
+        "posicion_texto": 34
+      },
+      {
+        "valor": "5",
+        "posicion_texto": 37
+      }
+    ],
+    "phone": [
+      {
+        "valor": "00250117443",
+        "posicion_texto": 51
+      }
+    ],
+    "analisis_documento": {
+      "tipo": "desconocido",
+      "confianza": 0,
+      "keywords_encontradas": []
+    },
+    "resumen_extraido": {
+      "montos_encontrados": 5,
+      "fechas_encontradas": 0,
+      "referencias_encontradas": 0,
+      "cuentas_encontradas": 0,
+      "telefonos_encontrados": 1,
+      "total_elementos": 6,
+      "completitud_porcentaje": 50
+    }
+  }
+}
