@@ -50,16 +50,18 @@ except Exception as e:
 @app.route('/')
 def index():
     """
-    FIX: Página principal con dashboard empresarial mejorado
-    REASON: Usuario requiere interfaz mejorada con archivos procesados, selectores y visor
-    IMPACT: Interface moderna con gestión completa de archivos y monitoreo en tiempo real
+    FIX: Página principal con Interface Excellence Dashboard
+    REASON: Following Interface Excellence philosophy for enhanced filename visibility and professional appearance
+    IMPACT: Better user experience with enhanced file tracking and external environment styling
+    INTERFACE: Comprehensive validation and enhanced UI components with real-time feedback
+    VISUAL_CHANGE: Enhanced filename display with metadata and copy functionality
     """
-    return render_template('enhanced_dashboard.html')
+    return render_template('interface_excellence_dashboard.html')
 
 @app.route('/dashboard')
 def dashboard():
-    """Dashboard principal del sistema OCR empresarial"""
-    return render_template('enhanced_dashboard.html')
+    """Dashboard principal del sistema OCR empresarial con Interface Excellence"""
+    return render_template('interface_excellence_dashboard.html')
 
 @app.route('/dashboard_old')
 def dashboard_old():

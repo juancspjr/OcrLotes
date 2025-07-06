@@ -1,0 +1,15 @@
+{
+  "7c2512e5-c094-4704-97dc-330a86b5e60d": {
+    "id": "7c2512e5-c094-4704-97dc-330a86b5e60d",
+    "name": "militar",
+    "key": "ocr_54kjeyzl7jqs6bk6ty9q78dwa8y63r5k",
+    "permissions": {
+      "read": true,
+      "write": true,
+      "batch": false
+    },
+    "created_at": "2025-07-06T15:49:27.057598",
+    "last_used": null,
+    "usage_count": 0
+  }
+}

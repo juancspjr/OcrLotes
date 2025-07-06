@@ -1,0 +1,1444 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema OCR Empresarial - Interface Excellence</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* FIX: Enhanced filename visibility and external environment styling */
+        /* REASON: Following Interface Excellence philosophy for improved user experience */
+        /* IMPACT: Better file tracking and professional appearance */
+        
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #64748b;
+            --success-color: #059669;
+            --warning-color: #d97706;
+            --danger-color: #dc2626;
+            --background-color: #f8fafc;
+            --surface-color: #ffffff;
+            --border-color: #e2e8f0;
+        }
+
+        body {
+            background-color: var(--background-color);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        .enterprise-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem 0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .interface-excellence-card {
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .interface-excellence-card:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* INTERFACE: Enhanced filename display with full visibility */
+        .filename-display {
+            background: #f1f5f9;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin: 8px 0;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            font-weight: 500;
+            color: #1e293b;
+            word-break: break-all;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        .filename-display:hover {
+            border-color: var(--primary-color);
+            background: #e0f2fe;
+        }
+
+        .filename-display .filename-label {
+            position: absolute;
+            top: -8px;
+            left: 12px;
+            background: var(--surface-color);
+            padding: 2px 8px;
+            font-size: 11px;
+            color: var(--secondary-color);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .filename-display .copy-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .filename-display:hover .copy-btn {
+            opacity: 1;
+        }
+
+        /* VISUAL_CHANGE: File status indicators with enhanced visibility */
+        .file-status-indicator {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-left: 8px;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+            border: 1px solid #f59e0b;
+        }
+
+        .status-processing {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #3b82f6;
+            animation: pulse 2s infinite;
+        }
+
+        .status-completed {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #10b981;
+        }
+
+        .status-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #ef4444;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        /* INTERFACE: Enhanced file list with metadata visibility */
+        .enhanced-file-item {
+            background: var(--surface-color);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .enhanced-file-item:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+        }
+
+        .enhanced-file-item.selected {
+            border-color: var(--primary-color);
+            background: linear-gradient(135deg, #eff6ff 0%, #f0f9ff 100%);
+        }
+
+        .file-metadata {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .metadata-item {
+            text-align: center;
+        }
+
+        .metadata-label {
+            font-size: 11px;
+            color: var(--secondary-color);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .metadata-value {
+            font-size: 13px;
+            color: #1e293b;
+            font-weight: 500;
+        }
+
+        /* INTERFACE: Enhanced upload zone with validation */
+        .excellence-upload-zone {
+            border: 3px dashed var(--border-color);
+            border-radius: 16px;
+            padding: 3rem 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .excellence-upload-zone:hover {
+            border-color: var(--primary-color);
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+        }
+
+        .excellence-upload-zone.dragover {
+            border-color: var(--success-color);
+            background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+            transform: scale(1.02);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .excellence-upload-zone:hover .upload-icon {
+            transform: scale(1.1);
+        }
+
+        /* INTERFACE: Navigation with enhanced visual feedback */
+        .excellence-nav {
+            background: var(--surface-color);
+            border-radius: 12px;
+            padding: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .excellence-nav .nav-link {
+            color: var(--secondary-color);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .excellence-nav .nav-link:hover {
+            background: #f1f5f9;
+            color: var(--primary-color);
+        }
+
+        .excellence-nav .nav-link.active {
+            background: var(--primary-color);
+            color: white;
+            box-shadow: 0 2px 4px rgba(37, 99, 235, 0.3);
+        }
+
+        /* INTERFACE: Buttons with enhanced feedback */
+        .excellence-btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .excellence-btn:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .excellence-btn:hover:before {
+            left: 100%;
+        }
+
+        /* VISUAL_CHANGE: Real-time monitoring indicators */
+        .live-indicator {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .live-indicator:before {
+            content: '';
+            position: absolute;
+            left: -12px;
+            width: 8px;
+            height: 8px;
+            background: var(--success-color);
+            border-radius: 50%;
+            animation: blink 1.5s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.3; }
+        }
+
+        /* INTERFACE: Result viewer with enhanced formatting */
+        .excellence-result-viewer {
+            background: #1e293b;
+            color: #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            max-height: 500px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .excellence-result-viewer::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .excellence-result-viewer::-webkit-scrollbar-track {
+            background: #334155;
+            border-radius: 4px;
+        }
+
+        .excellence-result-viewer::-webkit-scrollbar-thumb {
+            background: #64748b;
+            border-radius: 4px;
+        }
+
+        .json-key {
+            color: #60a5fa;
+        }
+
+        .json-string {
+            color: #34d399;
+        }
+
+        .json-number {
+            color: #fbbf24;
+        }
+
+        .coordinate-highlight {
+            background: rgba(251, 191, 36, 0.2);
+            padding: 2px 4px;
+            border-radius: 4px;
+            border: 1px solid #fbbf24;
+        }
+
+        /* INTERFACE: Progress indicators */
+        .excellence-progress {
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .excellence-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), var(--success-color));
+            border-radius: 4px;
+            transition: width 0.3s ease;
+            position: relative;
+        }
+
+        .excellence-progress-bar:after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background-image: linear-gradient(
+                -45deg,
+                rgba(255, 255, 255, .2) 25%,
+                transparent 25%,
+                transparent 50%,
+                rgba(255, 255, 255, .2) 50%,
+                rgba(255, 255, 255, .2) 75%,
+                transparent 75%,
+                transparent
+            );
+            background-size: 50px 50px;
+            animation: move 2s linear infinite;
+        }
+
+        @keyframes move {
+            0% { background-position: 0 0; }
+            100% { background-position: 50px 50px; }
+        }
+
+        /* INTERFACE: Responsive design */
+        @media (max-width: 768px) {
+            .file-metadata {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+            
+            .excellence-upload-zone {
+                padding: 2rem 1rem;
+            }
+            
+            .upload-icon {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- FIX: Enterprise header with branding -->
+    <div class="enterprise-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h1 class="mb-0">
+                        <i class="fas fa-microscope me-3"></i>
+                        Sistema OCR Empresarial
+                    </h1>
+                    <p class="mb-0 opacity-75">Interface Excellence Dashboard</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <div class="live-indicator">
+                        <span class="me-2">Sistema Activo</span>
+                        <span class="badge bg-success">
+                            <i class="fas fa-check-circle me-1"></i>Operacional
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mt-4">
+        <!-- INTERFACE: Enhanced navigation -->
+        <ul class="nav nav-tabs excellence-nav" id="mainTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="upload-tab" data-bs-toggle="tab" data-bs-target="#upload-panel" type="button" role="tab">
+                    <i class="fas fa-cloud-upload-alt me-2"></i>Subir Archivos
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="queue-tab" data-bs-toggle="tab" data-bs-target="#queue-panel" type="button" role="tab">
+                    <i class="fas fa-list-ul me-2"></i>Cola de Procesamiento
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="processed-tab" data-bs-toggle="tab" data-bs-target="#processed-panel" type="button" role="tab">
+                    <i class="fas fa-check-circle me-2"></i>Archivos Procesados
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="monitor-tab" data-bs-toggle="tab" data-bs-target="#monitor-panel" type="button" role="tab">
+                    <i class="fas fa-chart-line me-2"></i>Monitoreo en Tiempo Real
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="api-tab" data-bs-toggle="tab" data-bs-target="#api-panel" type="button" role="tab">
+                    <i class="fas fa-code me-2"></i>APIs & Documentación
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="mainTabsContent">
+            <!-- INTERFACE: Enhanced upload panel -->
+            <div class="tab-pane fade show active" id="upload-panel" role="tabpanel">
+                <div class="row mt-4">
+                    <div class="col-md-8">
+                        <div class="interface-excellence-card">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-upload me-2"></i>Subida de Archivos
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <form id="uploadForm" enctype="multipart/form-data">
+                                    <div class="excellence-upload-zone" id="uploadZone">
+                                        <div class="upload-icon">
+                                            <i class="fas fa-cloud-upload-alt"></i>
+                                        </div>
+                                        <h4>Arrastrar archivos aquí</h4>
+                                        <p class="text-muted mb-3">o hacer clic para seleccionar</p>
+                                        <input type="file" class="form-control d-none" id="fileInput" name="images" multiple accept="image/*">
+                                        <button type="button" class="btn btn-primary excellence-btn" id="selectFilesBtn">
+                                            <i class="fas fa-folder-open me-2"></i>Seleccionar Archivos
+                                        </button>
+                                    </div>
+                                </form>
+                                
+                                <!-- VISUAL_CHANGE: Enhanced file preview with metadata -->
+                                <div id="filePreview" class="mt-4" style="display: none;">
+                                    <h6>Archivos Seleccionados:</h6>
+                                    <div id="selectedFilesList"></div>
+                                    <div class="mt-3">
+                                        <button type="button" class="btn btn-success excellence-btn" id="uploadBtn">
+                                            <i class="fas fa-upload me-2"></i>Subir Archivos
+                                        </button>
+                                        <button type="button" class="btn btn-secondary ms-2" id="clearFilesBtn">
+                                            <i class="fas fa-times me-2"></i>Limpiar Selección
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- INTERFACE: Enhanced progress indicator -->
+                                <div id="uploadProgress" class="mt-4" style="display: none;">
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span id="progressText">Subiendo archivos...</span>
+                                        <span id="progressPercent">0%</span>
+                                    </div>
+                                    <div class="excellence-progress">
+                                        <div class="excellence-progress-bar" id="progressBar" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="interface-excellence-card">
+                            <div class="card-header bg-info text-white">
+                                <h6 class="mb-0">
+                                    <i class="fas fa-info-circle me-2"></i>Estado del Sistema
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="metadata-item mb-3">
+                                    <div class="metadata-label">Motor OCR</div>
+                                    <div class="metadata-value">
+                                        <span class="file-status-indicator status-completed" id="ocrStatus">
+                                            <i class="fas fa-check me-1"></i>Activo
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="metadata-item mb-3">
+                                    <div class="metadata-label">Worker Asíncrono</div>
+                                    <div class="metadata-value">
+                                        <span class="file-status-indicator status-completed" id="workerStatus">
+                                            <i class="fas fa-check me-1"></i>Operacional
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="metadata-item mb-3">
+                                    <div class="metadata-label">Archivos en Cola</div>
+                                    <div class="metadata-value">
+                                        <span class="badge bg-warning" id="inboxCount">0</span>
+                                    </div>
+                                </div>
+                                <div class="metadata-item">
+                                    <div class="metadata-label">Archivos Procesados</div>
+                                    <div class="metadata-value">
+                                        <span class="badge bg-success" id="processedCount">0</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- INTERFACE: Enhanced queue panel -->
+            <div class="tab-pane fade" id="queue-panel" role="tabpanel">
+                <div class="row mt-4">
+                    <div class="col-md-12">
+                        <div class="interface-excellence-card">
+                            <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-list-ul me-2"></i>Archivos en Cola de Procesamiento
+                                </h5>
+                                <button class="btn btn-success excellence-btn" id="processAllBtn">
+                                    <i class="fas fa-play me-2"></i>Procesar Todo el Lote
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <div id="queueList">
+                                    <div class="text-center text-muted py-5">
+                                        <i class="fas fa-inbox fa-4x mb-3" style="color: #e2e8f0;"></i>
+                                        <h5>No hay archivos en cola</h5>
+                                        <p>Los archivos aparecerán aquí después de ser subidos</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- INTERFACE: Enhanced processed files panel -->
+            <div class="tab-pane fade" id="processed-panel" role="tabpanel">
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <div class="interface-excellence-card">
+                            <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-check-circle me-2"></i>Archivos Procesados
+                                </h5>
+                                <div>
+                                    <button class="btn btn-light btn-sm me-2 excellence-btn" id="extractJsonBtn">
+                                        <i class="fas fa-download me-1"></i>Extraer JSON
+                                    </button>
+                                    <button class="btn btn-outline-light btn-sm excellence-btn" id="cleanSystemBtn">
+                                        <i class="fas fa-broom me-1"></i>Limpiar
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div id="processedFilesList">
+                                    <div class="text-center text-muted py-5">
+                                        <i class="fas fa-file-alt fa-4x mb-3" style="color: #e2e8f0;"></i>
+                                        <h5>No hay archivos procesados</h5>
+                                        <p>Los resultados aparecerán aquí después del procesamiento</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="interface-excellence-card">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-eye me-2"></i>Visor de Resultados
+                                </h5>
+                            </div>
+                            <div class="card-body p-0">
+                                <div id="resultViewer" class="excellence-result-viewer">
+                                    <div class="text-center text-muted py-5">
+                                        <i class="fas fa-mouse-pointer fa-3x mb-3"></i>
+                                        <p>Selecciona un archivo procesado para ver sus resultados</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- INTERFACE: Enhanced monitoring panel -->
+            <div class="tab-pane fade" id="monitor-panel" role="tabpanel">
+                <div class="row mt-4">
+                    <div class="col-md-12">
+                        <div class="interface-excellence-card">
+                            <div class="card-header bg-dark text-white">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-chart-line me-2"></i>Monitoreo en Tiempo Real
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row mb-4">
+                                    <div class="col-md-3">
+                                        <div class="interface-excellence-card text-center p-3">
+                                            <h3 class="text-warning" id="liveInboxCount">0</h3>
+                                            <p class="mb-0 text-muted">En Cola</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="interface-excellence-card text-center p-3">
+                                            <h3 class="text-primary" id="liveProcessingCount">0</h3>
+                                            <p class="mb-0 text-muted">Procesando</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="interface-excellence-card text-center p-3">
+                                            <h3 class="text-success" id="liveProcessedCount">0</h3>
+                                            <p class="mb-0 text-muted">Completados</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="interface-excellence-card text-center p-3">
+                                            <h3 class="text-danger" id="liveErrorsCount">0</h3>
+                                            <p class="mb-0 text-muted">Errores</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="interface-excellence-card">
+                                    <div class="card-header">
+                                        <h6 class="mb-0">
+                                            <i class="fas fa-terminal me-2"></i>Log de Actividad en Tiempo Real
+                                        </h6>
+                                    </div>
+                                    <div class="card-body p-0">
+                                        <div id="activityLog" class="excellence-result-viewer" style="height: 300px;">
+                                            <div class="text-success">
+                                                <i class="fas fa-check-circle me-2"></i>Sistema iniciado. Esperando actividad...
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- INTERFACE: Enhanced API panel -->
+            <div class="tab-pane fade" id="api-panel" role="tabpanel">
+                <div class="row mt-4">
+                    <div class="col-md-12">
+                        <div class="interface-excellence-card">
+                            <div class="card-header bg-secondary text-white">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-key me-2"></i>Gestión de API Keys & Documentación
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h6>Generar Nueva API Key</h6>
+                                        <div class="mb-3">
+                                            <label class="form-label">Nombre de la API Key</label>
+                                            <input type="text" class="form-control" id="apiKeyName" placeholder="Mi aplicación web">
+                                        </div>
+                                        <button class="btn btn-primary excellence-btn" id="generateApiKeyBtn">
+                                            <i class="fas fa-key me-2"></i>Generar API Key
+                                        </button>
+                                        
+                                        <div class="alert alert-info mt-3" id="apiKeyResult" style="display: none;">
+                                            <div class="filename-display">
+                                                <div class="filename-label">API Key Generada</div>
+                                                <span id="generatedApiKey"></span>
+                                                <button class="copy-btn" onclick="copyToClipboard('generatedApiKey')">
+                                                    <i class="fas fa-copy"></i>
+                                                </button>
+                                            </div>
+                                            <small class="text-muted">⚠️ Esta API key solo se muestra una vez. Guárdala en un lugar seguro.</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6>Documentación de API</h6>
+                                        <div class="list-group">
+                                            <a href="/api/documentation" class="list-group-item list-group-item-action" target="_blank">
+                                                <i class="fas fa-book me-2"></i>Documentación Completa
+                                            </a>
+                                            <a href="#" class="list-group-item list-group-item-action" onclick="showEndpointExamples()">
+                                                <i class="fas fa-code me-2"></i>Ejemplos de Código
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // FIX: Enhanced JavaScript with Interface Excellence philosophy
+        // REASON: Improved user interaction and real-time feedback
+        // IMPACT: Better user experience and error detection
+        
+        class InterfaceExcellenceManager {
+            constructor() {
+                this.init();
+                this.setupEventListeners();
+                this.startMonitoring();
+            }
+
+            init() {
+                // INTERFACE: Initialize all components
+                this.validateAllComponents();
+                this.updateSystemStatus();
+            }
+
+            setupEventListeners() {
+                // VISUAL_CHANGE: Enhanced file selection
+                document.getElementById('selectFilesBtn').addEventListener('click', () => {
+                    document.getElementById('fileInput').click();
+                });
+
+                document.getElementById('fileInput').addEventListener('change', (e) => {
+                    this.handleFileSelection(e.target.files);
+                });
+
+                // INTERFACE: Drag and drop functionality
+                const uploadZone = document.getElementById('uploadZone');
+                uploadZone.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    uploadZone.classList.add('dragover');
+                });
+
+                uploadZone.addEventListener('dragleave', () => {
+                    uploadZone.classList.remove('dragover');
+                });
+
+                uploadZone.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    uploadZone.classList.remove('dragover');
+                    this.handleFileSelection(e.dataTransfer.files);
+                });
+
+                // INTERFACE: Button event listeners
+                document.getElementById('uploadBtn').addEventListener('click', () => {
+                    this.uploadFiles();
+                });
+
+                document.getElementById('clearFilesBtn').addEventListener('click', () => {
+                    this.clearFileSelection();
+                });
+
+                document.getElementById('processAllBtn').addEventListener('click', () => {
+                    this.processAllFiles();
+                });
+
+                document.getElementById('extractJsonBtn').addEventListener('click', () => {
+                    this.extractResults();
+                });
+
+                document.getElementById('cleanSystemBtn').addEventListener('click', () => {
+                    this.cleanSystem();
+                });
+
+                document.getElementById('generateApiKeyBtn').addEventListener('click', () => {
+                    this.generateApiKey();
+                });
+            }
+
+            // INTERFACE: Enhanced file selection with metadata display
+            handleFileSelection(files) {
+                const fileArray = Array.from(files);
+                const previewContainer = document.getElementById('filePreview');
+                const filesList = document.getElementById('selectedFilesList');
+                
+                if (fileArray.length === 0) return;
+
+                // VISUAL_CHANGE: Show file preview with enhanced metadata
+                previewContainer.style.display = 'block';
+                filesList.innerHTML = '';
+
+                fileArray.forEach((file, index) => {
+                    const fileItem = document.createElement('div');
+                    fileItem.className = 'enhanced-file-item';
+                    fileItem.innerHTML = `
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div class="flex-grow-1">
+                                <div class="filename-display">
+                                    <div class="filename-label">Archivo ${index + 1}</div>
+                                    ${file.name}
+                                    <button class="copy-btn" onclick="copyToClipboard('filename-${index}')">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <span class="file-status-indicator status-pending">
+                                <i class="fas fa-clock me-1"></i>Pendiente
+                            </span>
+                        </div>
+                        <div class="file-metadata">
+                            <div class="metadata-item">
+                                <div class="metadata-label">Tamaño</div>
+                                <div class="metadata-value">${this.formatFileSize(file.size)}</div>
+                            </div>
+                            <div class="metadata-item">
+                                <div class="metadata-label">Tipo</div>
+                                <div class="metadata-value">${file.type}</div>
+                            </div>
+                            <div class="metadata-item">
+                                <div class="metadata-label">Última Modificación</div>
+                                <div class="metadata-value">${new Date(file.lastModified).toLocaleDateString()}</div>
+                            </div>
+                        </div>
+                    `;
+                    filesList.appendChild(fileItem);
+                });
+
+                this.logActivity(`📁 ${fileArray.length} archivo(s) seleccionado(s) para subida`);
+            }
+
+            // INTERFACE: Enhanced file upload with progress tracking
+            async uploadFiles() {
+                const fileInput = document.getElementById('fileInput');
+                const files = fileInput.files;
+                
+                if (files.length === 0) {
+                    this.showAlert('Por favor selecciona archivos para subir', 'warning');
+                    return;
+                }
+
+                const progressContainer = document.getElementById('uploadProgress');
+                const progressBar = document.getElementById('progressBar');
+                const progressText = document.getElementById('progressText');
+                const progressPercent = document.getElementById('progressPercent');
+
+                // VISUAL_CHANGE: Show progress with enhanced animation
+                progressContainer.style.display = 'block';
+                
+                const formData = new FormData();
+                Array.from(files).forEach(file => {
+                    formData.append('images', file);
+                });
+
+                try {
+                    this.logActivity(`🚀 Iniciando subida de ${files.length} archivo(s)...`);
+                    
+                    const xhr = new XMLHttpRequest();
+                    
+                    xhr.upload.onprogress = (e) => {
+                        if (e.lengthComputable) {
+                            const percent = Math.round((e.loaded / e.total) * 100);
+                            progressBar.style.width = percent + '%';
+                            progressPercent.textContent = percent + '%';
+                            progressText.textContent = `Subiendo... ${percent}%`;
+                        }
+                    };
+
+                    xhr.onload = () => {
+                        if (xhr.status === 200) {
+                            const result = JSON.parse(xhr.responseText);
+                            this.logActivity(`✅ ${result.uploaded_count || files.length} archivo(s) subido(s) exitosamente`);
+                            this.showAlert('Archivos subidos exitosamente', 'success');
+                            this.clearFileSelection();
+                            this.updateCounts();
+                            this.loadQueueFiles();
+                        } else {
+                            throw new Error('Error en la subida');
+                        }
+                        progressContainer.style.display = 'none';
+                    };
+
+                    xhr.onerror = () => {
+                        this.logActivity(`❌ Error en la subida de archivos`);
+                        this.showAlert('Error al subir archivos', 'danger');
+                        progressContainer.style.display = 'none';
+                    };
+
+                    xhr.open('POST', '/api/ocr/process_image');
+                    xhr.send(formData);
+
+                } catch (error) {
+                    this.logActivity(`❌ Error: ${error.message}`);
+                    this.showAlert('Error al subir archivos: ' + error.message, 'danger');
+                    progressContainer.style.display = 'none';
+                }
+            }
+
+            // INTERFACE: Enhanced queue loading with metadata
+            async loadQueueFiles() {
+                try {
+                    const response = await fetch('/api/ocr/queue/status');
+                    const data = await response.json();
+                    
+                    const queueList = document.getElementById('queueList');
+                    
+                    if (data.inbox_files && data.inbox_files.length > 0) {
+                        queueList.innerHTML = '';
+                        data.inbox_files.forEach((file, index) => {
+                            const fileItem = document.createElement('div');
+                            fileItem.className = 'enhanced-file-item';
+                            fileItem.innerHTML = `
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div class="flex-grow-1">
+                                        <div class="filename-display">
+                                            <div class="filename-label">Archivo en Cola ${index + 1}</div>
+                                            ${file}
+                                            <button class="copy-btn" onclick="copyToClipboard('queue-file-${index}')">
+                                                <i class="fas fa-copy"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <span class="file-status-indicator status-pending">
+                                        <i class="fas fa-hourglass-half me-1"></i>En Cola
+                                    </span>
+                                </div>
+                                <div class="file-metadata">
+                                    <div class="metadata-item">
+                                        <div class="metadata-label">Estado</div>
+                                        <div class="metadata-value">Esperando Procesamiento</div>
+                                    </div>
+                                    <div class="metadata-item">
+                                        <div class="metadata-label">Posición</div>
+                                        <div class="metadata-value">${index + 1} de ${data.inbox_files.length}</div>
+                                    </div>
+                                    <div class="metadata-item">
+                                        <div class="metadata-label">Prioridad</div>
+                                        <div class="metadata-value">Normal</div>
+                                    </div>
+                                </div>
+                            `;
+                            queueList.appendChild(fileItem);
+                        });
+                    } else {
+                        queueList.innerHTML = `
+                            <div class="text-center text-muted py-5">
+                                <i class="fas fa-inbox fa-4x mb-3" style="color: #e2e8f0;"></i>
+                                <h5>No hay archivos en cola</h5>
+                                <p>Los archivos aparecerán aquí después de ser subidos</p>
+                            </div>
+                        `;
+                    }
+                } catch (error) {
+                    this.logActivity(`❌ Error al cargar cola: ${error.message}`);
+                }
+            }
+
+            // INTERFACE: Enhanced processed files loading
+            async loadProcessedFiles() {
+                try {
+                    const response = await fetch('/api/ocr/processed_files');
+                    const data = await response.json();
+                    
+                    const processedList = document.getElementById('processedFilesList');
+                    
+                    if (data.files && data.files.length > 0) {
+                        processedList.innerHTML = '';
+                        data.files.forEach((file, index) => {
+                            const fileItem = document.createElement('div');
+                            fileItem.className = 'enhanced-file-item';
+                            fileItem.style.cursor = 'pointer';
+                            fileItem.onclick = () => this.loadFileResult(file.original_filename, fileItem);
+                            
+                            fileItem.innerHTML = `
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div class="flex-grow-1">
+                                        <div class="filename-display">
+                                            <div class="filename-label">Archivo Procesado ${index + 1}</div>
+                                            ${file.original_filename}
+                                            <button class="copy-btn" onclick="copyToClipboard('processed-file-${index}')">
+                                                <i class="fas fa-copy"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <span class="file-status-indicator status-completed">
+                                        <i class="fas fa-check-circle me-1"></i>Completado
+                                    </span>
+                                </div>
+                                <div class="file-metadata">
+                                    <div class="metadata-item">
+                                        <div class="metadata-label">Tiempo de Procesamiento</div>
+                                        <div class="metadata-value">${file.processing_time || 'N/A'}</div>
+                                    </div>
+                                    <div class="metadata-item">
+                                        <div class="metadata-label">Palabras Detectadas</div>
+                                        <div class="metadata-value">${file.words_detected || 'N/A'}</div>
+                                    </div>
+                                    <div class="metadata-item">
+                                        <div class="metadata-label">Confianza</div>
+                                        <div class="metadata-value">${file.confidence || 'N/A'}%</div>
+                                    </div>
+                                </div>
+                            `;
+                            processedList.appendChild(fileItem);
+                        });
+                    } else {
+                        processedList.innerHTML = `
+                            <div class="text-center text-muted py-5">
+                                <i class="fas fa-file-alt fa-4x mb-3" style="color: #e2e8f0;"></i>
+                                <h5>No hay archivos procesados</h5>
+                                <p>Los resultados aparecerán aquí después del procesamiento</p>
+                            </div>
+                        `;
+                    }
+                } catch (error) {
+                    this.logActivity(`❌ Error al cargar archivos procesados: ${error.message}`);
+                }
+            }
+
+            // INTERFACE: Enhanced result viewer
+            async loadFileResult(filename, fileElement) {
+                try {
+                    // VISUAL_CHANGE: Highlight selected file
+                    document.querySelectorAll('.enhanced-file-item').forEach(item => {
+                        item.classList.remove('selected');
+                    });
+                    fileElement.classList.add('selected');
+
+                    const response = await fetch(`/api/ocr/result/${encodeURIComponent(filename)}`);
+                    const result = await response.json();
+                    
+                    const resultViewer = document.getElementById('resultViewer');
+                    
+                    if (result.ocr_result) {
+                        const jsonData = typeof result.ocr_result === 'string' 
+                            ? JSON.parse(result.ocr_result) 
+                            : result.ocr_result;
+                        
+                        resultViewer.innerHTML = this.formatJsonWithSyntaxHighlighting(jsonData);
+                        this.logActivity(`📄 Cargando resultados para: ${filename}`);
+                    } else {
+                        resultViewer.innerHTML = `
+                            <div class="text-center text-warning py-4">
+                                <i class="fas fa-exclamation-triangle fa-2x mb-3"></i>
+                                <p>No hay resultados disponibles para este archivo</p>
+                            </div>
+                        `;
+                    }
+                } catch (error) {
+                    this.logActivity(`❌ Error al cargar resultado: ${error.message}`);
+                    document.getElementById('resultViewer').innerHTML = `
+                        <div class="text-center text-danger py-4">
+                            <i class="fas fa-times-circle fa-2x mb-3"></i>
+                            <p>Error al cargar el resultado: ${error.message}</p>
+                        </div>
+                    `;
+                }
+            }
+
+            // INTERFACE: Enhanced JSON formatting with syntax highlighting
+            formatJsonWithSyntaxHighlighting(obj) {
+                const json = JSON.stringify(obj, null, 2);
+                return json
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, (match) => {
+                        let cls = 'json-number';
+                        if (/^"/.test(match)) {
+                            if (/:$/.test(match)) {
+                                cls = 'json-key';
+                            } else {
+                                cls = 'json-string';
+                            }
+                        } else if (/true|false/.test(match)) {
+                            cls = 'json-boolean';
+                        } else if (/null/.test(match)) {
+                            cls = 'json-null';
+                        }
+                        return '<span class="' + cls + '">' + match + '</span>';
+                    })
+                    .replace(/(\[[\d,\s]+\])/g, '<span class="coordinate-highlight">$1</span>');
+            }
+
+            // INTERFACE: Process all files with enhanced feedback
+            async processAllFiles() {
+                try {
+                    this.logActivity(`⚙️ Iniciando procesamiento de lote...`);
+                    const response = await fetch('/api/ocr/process_batch', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    
+                    const result = await response.json();
+                    this.logActivity(`✅ Procesamiento iniciado. Request ID: ${result.request_id}`);
+                    this.showAlert('Procesamiento iniciado exitosamente', 'success');
+                    
+                    // Monitor processing progress
+                    this.monitorProcessing(result.request_id);
+                } catch (error) {
+                    this.logActivity(`❌ Error en procesamiento: ${error.message}`);
+                    this.showAlert('Error al iniciar procesamiento: ' + error.message, 'danger');
+                }
+            }
+
+            // INTERFACE: Monitor processing with real-time updates
+            async monitorProcessing(requestId) {
+                const checkProgress = async () => {
+                    try {
+                        const response = await fetch(`/api/ocr/result/${requestId}`);
+                        const result = await response.json();
+                        
+                        if (result.status === 'completed') {
+                            this.logActivity(`🎉 Procesamiento completado para lote: ${requestId}`);
+                            this.updateCounts();
+                            this.loadQueueFiles();
+                            this.loadProcessedFiles();
+                            return;
+                        } else if (result.status === 'processing') {
+                            this.logActivity(`⏳ Procesando lote: ${requestId}...`);
+                            setTimeout(checkProgress, 2000);
+                        } else if (result.status === 'error') {
+                            this.logActivity(`❌ Error en procesamiento del lote: ${requestId}`);
+                        }
+                    } catch (error) {
+                        this.logActivity(`❌ Error al verificar progreso: ${error.message}`);
+                    }
+                };
+                
+                setTimeout(checkProgress, 1000);
+            }
+
+            // INTERFACE: Enhanced API key generation
+            async generateApiKey() {
+                const nameInput = document.getElementById('apiKeyName');
+                const name = nameInput.value.trim();
+                
+                if (!name) {
+                    this.showAlert('Por favor ingresa un nombre para la API Key', 'warning');
+                    return;
+                }
+
+                try {
+                    const response = await fetch('/api/generate_key', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ name: name })
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.api_key) {
+                        document.getElementById('generatedApiKey').textContent = result.api_key;
+                        document.getElementById('apiKeyResult').style.display = 'block';
+                        nameInput.value = '';
+                        this.logActivity(`🔑 Nueva API key generada: ${name}`);
+                        this.showAlert('API Key generada exitosamente', 'success');
+                    } else {
+                        throw new Error('No se pudo generar la API Key');
+                    }
+                } catch (error) {
+                    this.logActivity(`❌ Error al generar API Key: ${error.message}`);
+                    this.showAlert('Error al generar API Key: ' + error.message, 'danger');
+                }
+            }
+
+            // INTERFACE: Enhanced system monitoring
+            async updateCounts() {
+                try {
+                    const response = await fetch('/api/ocr/queue/status');
+                    const data = await response.json();
+                    
+                    // Update UI counters
+                    document.getElementById('inboxCount').textContent = data.inbox_count || 0;
+                    document.getElementById('processedCount').textContent = data.processed_count || 0;
+                    document.getElementById('liveInboxCount').textContent = data.inbox_count || 0;
+                    document.getElementById('liveProcessingCount').textContent = data.processing_count || 0;
+                    document.getElementById('liveProcessedCount').textContent = data.processed_count || 0;
+                    document.getElementById('liveErrorsCount').textContent = data.error_count || 0;
+                } catch (error) {
+                    this.logActivity(`❌ Error al actualizar contadores: ${error.message}`);
+                }
+            }
+
+            // INTERFACE: Real-time monitoring system
+            startMonitoring() {
+                // Update every 5 seconds
+                setInterval(() => {
+                    this.updateCounts();
+                    this.updateSystemStatus();
+                }, 5000);
+                
+                // Load data on tab switch
+                document.querySelectorAll('[data-bs-toggle="tab"]').forEach(tab => {
+                    tab.addEventListener('shown.bs.tab', (e) => {
+                        const target = e.target.getAttribute('data-bs-target');
+                        if (target === '#queue-panel') {
+                            this.loadQueueFiles();
+                        } else if (target === '#processed-panel') {
+                            this.loadProcessedFiles();
+                        }
+                    });
+                });
+            }
+
+            // INTERFACE: System status validation
+            async updateSystemStatus() {
+                try {
+                    const response = await fetch('/api/ocr/queue/status');
+                    const data = await response.json();
+                    
+                    // Update status indicators
+                    const ocrStatus = document.getElementById('ocrStatus');
+                    const workerStatus = document.getElementById('workerStatus');
+                    
+                    if (data.system_status) {
+                        ocrStatus.className = 'file-status-indicator status-completed';
+                        ocrStatus.innerHTML = '<i class="fas fa-check me-1"></i>Activo';
+                        
+                        workerStatus.className = 'file-status-indicator status-completed';
+                        workerStatus.innerHTML = '<i class="fas fa-check me-1"></i>Operacional';
+                    } else {
+                        ocrStatus.className = 'file-status-indicator status-error';
+                        ocrStatus.innerHTML = '<i class="fas fa-times me-1"></i>Error';
+                        
+                        workerStatus.className = 'file-status-indicator status-error';
+                        workerStatus.innerHTML = '<i class="fas fa-times me-1"></i>Error';
+                    }
+                } catch (error) {
+                    // Silently handle errors for status updates
+                }
+            }
+
+            // INTERFACE: Enhanced utility functions
+            clearFileSelection() {
+                document.getElementById('fileInput').value = '';
+                document.getElementById('filePreview').style.display = 'none';
+                document.getElementById('selectedFilesList').innerHTML = '';
+                this.logActivity(`🗑️ Selección de archivos limpiada`);
+            }
+
+            async extractResults() {
+                try {
+                    this.logActivity(`📥 Extrayendo resultados JSON...`);
+                    const response = await fetch('/api/ocr/extract_results');
+                    
+                    if (response.ok) {
+                        const blob = await response.blob();
+                        const url = window.URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = `ocr_results_${new Date().toISOString().slice(0,10)}.json`;
+                        document.body.appendChild(a);
+                        a.click();
+                        window.URL.revokeObjectURL(url);
+                        document.body.removeChild(a);
+                        
+                        this.logActivity(`✅ Resultados JSON extraídos exitosamente`);
+                        this.showAlert('Resultados extraídos exitosamente', 'success');
+                    } else {
+                        throw new Error('No se pudieron extraer los resultados');
+                    }
+                } catch (error) {
+                    this.logActivity(`❌ Error al extraer resultados: ${error.message}`);
+                    this.showAlert('Error al extraer resultados: ' + error.message, 'danger');
+                }
+            }
+
+            async cleanSystem() {
+                if (!confirm('¿Estás seguro de que quieres limpiar todo el sistema? Esta acción no se puede deshacer.')) {
+                    return;
+                }
+
+                try {
+                    this.logActivity(`🧹 Iniciando limpieza del sistema...`);
+                    const response = await fetch('/api/ocr/clean', {
+                        method: 'POST'
+                    });
+                    
+                    const result = await response.json();
+                    this.logActivity(`✅ Sistema limpiado: ${result.message}`);
+                    this.showAlert('Sistema limpiado exitosamente', 'success');
+                    
+                    // Refresh all data
+                    this.updateCounts();
+                    this.loadQueueFiles();
+                    this.loadProcessedFiles();
+                    
+                    // Clear result viewer
+                    document.getElementById('resultViewer').innerHTML = `
+                        <div class="text-center text-muted py-5">
+                            <i class="fas fa-mouse-pointer fa-3x mb-3"></i>
+                            <p>Sistema limpiado. Selecciona un archivo procesado para ver sus resultados</p>
+                        </div>
+                    `;
+                } catch (error) {
+                    this.logActivity(`❌ Error al limpiar sistema: ${error.message}`);
+                    this.showAlert('Error al limpiar sistema: ' + error.message, 'danger');
+                }
+            }
+
+            // INTERFACE: Enhanced activity logging
+            logActivity(message) {
+                const activityLog = document.getElementById('activityLog');
+                const timestamp = new Date().toLocaleTimeString();
+                const logEntry = document.createElement('div');
+                logEntry.className = 'mb-1';
+                logEntry.innerHTML = `<span class="text-secondary">[${timestamp}]</span> ${message}`;
+                
+                activityLog.insertBefore(logEntry, activityLog.firstChild);
+                
+                // Keep only last 50 entries
+                while (activityLog.children.length > 50) {
+                    activityLog.removeChild(activityLog.lastChild);
+                }
+            }
+
+            // INTERFACE: Enhanced alert system
+            showAlert(message, type = 'info') {
+                const alert = document.createElement('div');
+                alert.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+                alert.style.cssText = 'top: 20px; right: 20px; z-index: 9999; max-width: 400px;';
+                alert.innerHTML = `
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                `;
+                
+                document.body.appendChild(alert);
+                
+                // Auto-remove after 5 seconds
+                setTimeout(() => {
+                    if (alert.parentNode) {
+                        alert.parentNode.removeChild(alert);
+                    }
+                }, 5000);
+            }
+
+            // INTERFACE: Format file size helper
+            formatFileSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            }
+
+            // INTERFACE: Component validation
+            validateAllComponents() {
+                const requiredElements = [
+                    'uploadZone', 'fileInput', 'uploadBtn', 'processAllBtn',
+                    'queueList', 'processedFilesList', 'resultViewer',
+                    'activityLog', 'generateApiKeyBtn'
+                ];
+                
+                requiredElements.forEach(id => {
+                    const element = document.getElementById(id);
+                    if (!element) {
+                        console.error(`Required component missing: ${id}`);
+                    }
+                });
+            }
+        }
+
+        // INTERFACE: Global utility functions
+        function copyToClipboard(elementId) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                const text = element.textContent || element.value;
+                navigator.clipboard.writeText(text).then(() => {
+                    // Show temporary success indicator
+                    const icon = element.parentElement?.querySelector('.copy-btn i');
+                    if (icon) {
+                        icon.className = 'fas fa-check';
+                        setTimeout(() => {
+                            icon.className = 'fas fa-copy';
+                        }, 1000);
+                    }
+                });
+            }
+        }
+
+        function showEndpointExamples() {
+            // Open API documentation in new tab
+            window.open('/api/documentation', '_blank');
+        }
+
+        // INTERFACE: Initialize the application
+        document.addEventListener('DOMContentLoaded', () => {
+            window.interfaceManager = new InterfaceExcellenceManager();
+        });
+    </script>
+</body>
+</html>
