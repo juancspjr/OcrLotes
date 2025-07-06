@@ -1,0 +1,300 @@
+
+
+SEGUNDO PROMPT ANEXADO AJUSTADO: INGESTA DE DATOS VÍA API HTTP EN SERVIDOR FLASK
+ASUNTO: Expansión del Mecanismo de Ingestión de Datos mediante una API HTTP en el Servidor Flask, con Consideraciones para Datos Adicionales en Lote.
+________________________________________
+1. Contexto y Justificación:
+El prompt principal se centró en el sistema de archivos como la cola de trabajo primaria para la ingestión de imágenes. Si bien n8n maneja un webhook inicial, el servidor Flask en sí no fue descrito con un endpoint HTTP explícito para recibir imágenes directamente.
+Para maximizar las "ventajas del web" (como la integración directa con otros servicios web, un modelo de "push" más inmediato, y la conformidad con protocolos estándar), se propone la implementación de un endpoint API HTTP en el servidor Flask que pueda recibir imágenes y sus datos asociados directamente. Esto no reemplaza la arquitectura basada en el sistema de archivos, sino que la complementa o proporciona una alternativa de ingestión más directa.
+________________________________________
+2. Requisitos para la Implementación del Endpoint API HTTP:
+La IA desarrolladora debe implementar un endpoint HTTP en el servidor Flask con las siguientes características:
+•	Método y Ruta: Un endpoint HTTP POST, por ejemplo, /api/ocr/process_image.
+•	Formato de Petición (Request):
+o	Tipo de Contenido: Se recomienda multipart/form-data para facilitar el envío de archivos binarios (imágenes) junto con otros campos de texto.
+o	Campos de la Petición: Los campos primarios (sender_id, sender_name, sorteo_fecha, sorteo_conteo, hora_min) serán utilizados para construir el request_id (nombre de archivo). El caption es un dato anexo fundamental. Se incluye una provisión para futuros datos adicionales acumulables por lote.
+	image: El archivo de la imagen (tipo binario, ej., .png, .jpg). (Obligatorio)
+	caption: El texto del caption de WhatsApp (cadena de texto). (Obligatorio)
+	sender_id: Identificador del remitente (cadena de texto, ej., ID de WhatsApp). (Obligatorio, para request_id)
+	sender_name: Nombre registrado del remitente (cadena de texto, ej., "Juanc"). (Obligatorio, para request_id)
+	sorteo_fecha: Fecha del sorteo (cadena de texto en formato YYYYMMDD, ej., "20250620"). (Obligatorio, para request_id)
+	sorteo_conteo: Conteo del sorteo (cadena de texto, ej., "A"). (Obligatorio, para request_id)
+	hora_min: Hora y minuto del envío (cadena de texto en formato HH-MM, ej., "17-31"). (Obligatorio, para request_id)
+	additional_data (Opcional): Un campo de tipo JSON String o similar, que contenga datos extras estructurados que puedan ser relevantes para el procesamiento en lote o para enriquecer los resultados futuros, y que aún no hemos especificado. Esto permite flexibilidad sin modificar el endpoint para cada nuevo campo. La IA desarrolladora debe prever cómo estos datos se asociarán y acumularán por cada imagen en el lote.
+•	Procesamiento del Endpoint:
+o	Al recibir una petición POST válida, el endpoint deberá:
+1.	Generar el request_id: Construir el nombre de archivo único (YYYYMMDD-C_SENDERID_NOMBRE_HORA-MIN.png) utilizando los datos proporcionados en la petición (excluyendo caption y additional_data del nombre del archivo, ya que serán guardados aparte o en metadata interna).
+2.	Guardar Archivos en data/inbox/:
+	Guardar el archivo de imagen recibido en data/inbox/ con el request_id como nombre.
+	Crear y guardar un archivo [request_id_sin_ext].caption.txt en data/inbox/ con el contenido del campo caption recibido.
+	Si additional_data está presente, guardar también un archivo [request_id_sin_ext].additional_data.json en data/inbox/ con su contenido.
+3.	Respuesta Inmediata al Cliente: Devolver una respuesta HTTP 202 Accepted (o similar) al cliente que hizo la petición, indicando que la solicitud ha sido recibida y encolada para procesamiento asíncrono. La respuesta debe incluir el request_id para que el cliente pueda rastrear el estado.
+	Ejemplo de Respuesta JSON: {"status": "accepted", "message": "Image enqueued for processing.", "request_id": "20250620-A_...Juanc_17-31.png"}
+4.	Manejo de Errores en la Petición: Implementar validación de entrada (ej., archivo de imagen presente, campos obligatorios de metadata) y devolver códigos de estado HTTP apropiados (ej., 400 Bad Request) en caso de errores en la petición.
+________________________________________
+3. Ventajas de la Ingesta vía API HTTP (/api/ocr/process_image):
+La implementación de este endpoint ofrece los siguientes beneficios, aprovechando directamente las ventajas de la web:
+•	Integración Directa: Permite que cualquier otro servicio o aplicación web (no solo n8n) envíe imágenes directamente al sistema OCR usando un protocolo estándar HTTP, sin necesidad de acceso directo al sistema de archivos.
+•	Modelo Push en Tiempo Real: Las solicitudes son "empujadas" al sistema en el momento en que ocurren, lo que puede ser más reactivo que un modelo de polling puro si el cliente necesita confirmación inmediata.
+•	Estandarización: Utiliza convenciones de API RESTful, lo que facilita la documentación, el consumo por parte de desarrolladores externos y la interoperabilidad general.
+•	Escalabilidad Potencial: Este endpoint podría estar detrás de un balanceador de carga, permitiendo escalar la ingestión de peticiones de manera más sencilla que con la manipulación directa de archivos compartidos si el volumen es extremadamente alto desde múltiples fuentes.
+•	Respuesta Asíncrona Clara: La respuesta 202 Accepted comunica de inmediato al cliente que la solicitud fue recibida correctamente, mientras el procesamiento ocurre en segundo plano.
+________________________________________
+4. Integración con el Diseño Existente (No Reemplazo, sino Complemento):
+Es fundamental que la implementación de este endpoint API HTTP se integre fluidamente con la arquitectura de sistema de archivos ya definida, no que la reemplace.
+•	El endpoint API simplemente actuará como un punto de entrada adicional que realizará la misma acción que n8n hace actualmente: recibir la imagen y el caption, construir el request_id, y luego escribir la imagen y el archivo caption.txt (y additional_data.json si existe) en el data/inbox/.
+•	El batch_processing_worker en el servidor Flask seguirá monitoreando data/inbox/ de la misma manera, sin necesidad de conocer si el archivo provino de n8n directamente o a través de la nueva API HTTP. Esto mantiene la lógica de la cola y el procesamiento de lotes centralizada y robusta.
+________________________________________
+5. Consideración para el Flujo de n8n:
+Con la implementación de este endpoint API:
+•	N8N podría optar por seguir escribiendo directamente al sistema de archivos como se describe en el prompt principal (si tiene acceso directo y es eficiente para su caso de uso).
+•	Alternativamente, n8n podría configurarse para hacer una petición POST HTTP a este nuevo endpoint del servidor Flask, en lugar de escribir directamente al sistema de archivos. Esto podría simplificar la configuración de n8n si el servidor Flask se despliega en un entorno separado sin acceso compartido al sistema de archivos.
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc-
+
+PROMPT DE DESARROLLO PARA IA ESPECIALIZADA EN PROGRAMACIÓN Y DESARROLLO COMPLETO
+ASUNTO: Desarrollo de un Sistema OCR Asíncrono de Alto Volumen para Recibos de Pagos Móviles con Extracción Contextual y Posicional Inteligente.
+________________________________________
+1. Visión General del Proyecto y Objetivo Principal:
+El objetivo es transformar el actual sistema de OCR de una imagen a la vez en una arquitectura robusta, persistente y de alto rendimiento, capaz de procesar lotes de recibos de pagos móviles de manera asíncrona. La solución debe ser tolerante a fallos, garantizar la no duplicidad y ofrecer una salida de datos extremadamente estructurada, incluyendo información posicional y contextual del usuario (WhatsApp caption). La IA desarrolladora tiene libertad en la elección de la implementación de bajo nivel siempre que cumpla con los requisitos funcionales y de arquitectura descritos.
+________________________________________
+2. Principios Fundamentales del Diseño (Guías para la Implementación):
+•	Persistencia Total y Reanudación: El sistema de archivos será la cola de trabajo principal y el registro de estado. Esto significa que si el servidor se apaga o reinicia, el procesamiento debe continuar exactamente donde quedó, sin perder imágenes ni reprocesar documentos ya completados.
+•	Procesamiento Estrictamente en Orden de Llegada: Las imágenes deben ser procesadas en la secuencia cronológica exacta en que fueron recibidas y depositadas en la cola de entrada.
+•	Batching Dinámico e Inteligente: Agrupar eficientemente imágenes para el procesamiento OCR simultáneo, optimizando el rendimiento. La transición entre lotes debe ser fluida e inmediata.
+•	Conocimiento Posicional Explícito: La salida de datos no solo incluirá el texto extraído, sino también las coordenadas exactas y una descripción de la posición relativa de cada dato en la imagen. Esto es crucial para un análisis estructural sin IA adicional.
+•	Contextualización Profunda: El texto que el usuario envía con la imagen (WhatsApp caption) debe ser integrado y asociado directamente al resultado del OCR del recibo correspondiente.
+•	Validación de Errores Inteligente: El sistema debe discernir si un recibo es "válido" o "erróneo" basándose en la presencia de campos obligatorios específicos, más allá de la simple legibilidad OCR.
+•	Salida JSON Estructurada y Exhaustiva: Los resultados deben ser presentados en un formato JSON altamente organizado y listo para ser importado directamente a una base de datos. Debe incluir tanto los campos mapeados como una "copia" completa de todo el texto OCR sin procesar.
+________________________________________
+3. Arquitectura del Sistema por Componentes:
+Se espera la implementación y/o adaptación de los siguientes componentes, con un enfoque en la interoperabilidad a través del sistema de archivos:
+3.1. Estructura de Directorios (La Base Persistente del Sistema):
+La IA desarrolladora debe asegurar que se establezca y se mantenga una estructura de directorios claramente definida, la cual servirá como la principal forma de comunicación y persistencia entre los componentes.
+•	data/inbox/:
+o	Función: Actúa como la "bandeja de entrada" y la cola de trabajo principal.
+o	Contenido Esperado:
+	Archivos de imagen (ej., .png, .jpg). Cada nombre de archivo debe ser el request_id único, conteniendo la metadata ya acordada (fecha de sorteo, conteo, ID de WhatsApp del remitente, nombre registrado, hora y minuto). Ejemplo: 20250620-A_214056942235719@lid_Juanc_17-31.png.
+	Un archivo de texto asociado a cada imagen (ej., 20250620-A_...Juanc_17-31.caption.txt), conteniendo el texto del caption de WhatsApp.
+•	data/processing/:
+o	Función: Directorio temporal para las imágenes y sus captions que han sido seleccionadas por el worker de lotes y están en proceso activo de ser acumuladas en un lote o ser procesadas por el OCR.
+•	data/processed/:
+o	Función: Almacena imágenes que han sido exitosamente procesadas por el OCR y sus resultados guardados.
+•	data/errors/:
+o	Función: Destino para imágenes que fallaron en cualquier etapa del procesamiento o no cumplieron con las reglas de validación de campos obligatorios.
+•	data/results/:
+o	Función: Contiene los archivos JSON con los resultados estructurados del OCR.
+o	Mecanismo: El nombre de cada archivo JSON debe corresponder al nombre base del request_id de la imagen original (ej., 20250620-A_...Juanc_17-31.json). La existencia de este archivo es la confirmación definitiva del procesamiento.
+3.2. Configuración Centralizada (config.py):
+La IA desarrolladora debe crear o adaptar un archivo de configuración para centralizar todos los parámetros importantes del sistema.
+•	Rutas de Directorios: Definiciones claras y absolutas para OCR_INBOX_DIR, OCR_PROCESSING_DIR, OCR_PROCESSED_DIR, OCR_ERRORS_DIR, OCR_RESULTS_DIR.
+•	Parámetros de Batching:
+o	OCR_BATCH_SIZE: Número ideal de imágenes para formar un lote (ej., 10 imágenes).
+o	OCR_BATCH_TIMEOUT_SECONDS: Tiempo máximo de espera para que se complete un lote antes de que se procese lo que se ha acumulado (ej., 60 segundos).
+•	Frecuencia de Monitoreo: OCR_POLLING_INTERVAL_SECONDS: La frecuencia con la que el worker escaneará el INBOX_DIR (ej., 5 segundos).
+3.3. Flujo de Trabajo en n8n (Adaptado):
+El rol de n8n se enfocará en la entrada y salida de datos del sistema, utilizando el sistema de archivos como intermediario.
+•	Recepción de Mensajes (WhatsApp Webhook):
+o	Recibirá la imagen adjunta y su caption (texto asociado) de WhatsApp.
+o	Extraerá toda la metadata necesaria del remitente y del mensaje.
+•	Almacenamiento de Datos Brutos y Contexto:
+o	Guardado de Imagen: La imagen recibida debe ser guardada directamente en el data/inbox/ del servidor Flask (asumiendo acceso compartido al sistema de archivos). El nombre de archivo debe ser el request_id previamente definido.
+o	Guardado de Caption: Un archivo de texto (.caption.txt) con el mismo nombre base que la imagen y el contenido del caption de WhatsApp debe ser guardado junto a la imagen en data/inbox/.
+•	Seguimiento y Confirmación:
+o	Registrará el request_id de la imagen y la metadata de WhatsApp en una base de datos interna de n8n para seguimiento.
+o	Enviará un mensaje de confirmación inmediato al usuario de WhatsApp ("Tu imagen ha sido recibida y está en proceso. ID de referencia: [request_id]").
+•	Recuperación y Envío de Resultados (Bucle Asíncrono):
+o	Un programador en n8n se activará periódicamente.
+o	Consultará su base de datos interna para obtener request_ids pendientes.
+o	Para cada request_id, intentará leer el archivo data/results/[request_id_sin_ext].json desde el sistema de archivos.
+o	Si el JSON existe: Leerá el resultado, extraerá la información estructurada y el processing_status.
+	Si processing_status es success, formulará un mensaje detallado con los campos extraídos (monto, referencia, banco, etc., y el caption original para contexto) y lo enviará al usuario.
+	Si processing_status es error, notificará al usuario sobre el problema y la razón del error.
+	Finalmente, actualizará el estado de la solicitud a "completada" en su base de datos interna.
+o	Si el JSON no existe: La solicitud se mantendrá como pendiente.
+3.4. Servidor Flask (El Motor de Procesamiento Asíncrono):
+La IA desarrolladora debe implementar un servidor Flask que albergue el motor OCR y un worker de procesamiento en segundo plano.
+•	Pre-carga de Componentes OCR (preload_ocr_components):
+o	Esta función debe ejecutarse una vez al inicio del servidor Flask para cargar y "calentar" (warm-up) todos los modelos ONNX y las instancias de las clases OCR (ValidadorOCR, MejoradorOCR, AplicadorOCR) en la memoria.
+o	Importante: Asegurar que el reloader de Flask esté deshabilitado si se usa threading para el worker, para evitar doble inicio de hilos.
+•	Worker de Procesamiento en Lotes (batch_processing_worker - Hilo o Proceso en Segundo Plano):
+o	Función: Este es el corazón del sistema, ejecutándose continuamente para gestionar la cola de procesamiento.
+o	Acciones Detalladas:
+1.	Inicialización: Al iniciar, verificará y creará todos los directorios del sistema de archivos (inbox, processing, etc.).
+2.	Monitoreo y Orden de Llegada:
+	Cada OCR_POLLING_INTERVAL_SECONDS, escaneará el data/inbox/.
+	Crucial: Identificará todas las imágenes nuevas pendientes, ordenándolas estrictamente por su marca de tiempo de creación/modificación (la más antigua primero).
+	Control de Duplicados y Reanudación: Para cada imagen detectada:
+	Verificará si ya existe un archivo [request_id_sin_ext].json en data/results/.
+	Si existe: moverá la imagen (.png/.jpg) y su caption.txt directamente a data/processed/ (sin procesar), ya que se considera completada.
+	Si no existe: la moverá inmediatamente de data/inbox/ a data/processing/ para indicar que está siendo gestionada y para evitar su selección por otras instancias o iteraciones.
+3.	Construcción Dinámica del Lote:
+	Acumulará imágenes (y sus caption.txt) en memoria para formar un lote hasta que se cumpla una de estas condiciones:
+	El número de imágenes alcanza OCR_BATCH_SIZE (ej., 10).
+	Ha transcurrido OCR_BATCH_TIMEOUT_SECONDS (ej., 60 segundos) desde que la primera imagen fue añadida al lote actual, y el lote no está lleno.
+	Procesamiento Inmediato: Tan pronto como un lote termina de procesarse, el worker debe intentar inmediatamente formar y procesar el siguiente lote disponible, sin esperas adicionales.
+4.	Invocación del OCR Central:
+	Pasará la lista de rutas completas de las imágenes del lote (desde data/processing/) y la lista paralela de los textos de sus caption al método OrquestadorOCR.procesar_lote_imagenes.
+5.	Gestión de Salidas y Movimiento de Archivos:
+	Éxito: Para cada imagen procesada exitosamente en el lote: guardará el resultado JSON estructurado en data/results/ y moverá la imagen original (con su caption.txt) a data/processed/.
+	Error: Si una imagen individual o el lote completo falla por cualquier motivo (incluyendo la validación de campos obligatorios), el worker:
+	Registrará el error detalladamente.
+	Moverá la imagen (y su caption.txt) a data/errors/.
+3.5. Modificaciones Internas del Sistema OCR (Inteligencia de Extracción y Validación):
+Las clases OrquestadorOCR, MejoradorOCR y AplicadorOCR deben adaptarse para trabajar con lotes, extraer información posicional y aplicar la lógica de negocio para la validación.
+•	A. OrquestadorOCR (Método procesar_lote_imagenes - Adaptado):
+o	Función: El orquestador principal del OCR para lotes.
+o	Entrada: Recibirá una lista de rutas completas de imágenes y una lista paralela de sus respectivos textos caption de WhatsApp.
+o	Acciones:
+1.	Preprocesamiento por MejoradorOCR:
+	Para cada imagen del lote, MejoradorOCR debe realizar mejoras (ej., nitidez, binarización) y redimensionar o ajustar las imágenes a un tamaño uniforme (ej., todas a 640x640 píxeles) para una inferencia batcheada eficiente.
+	MejoradorOCR debe devolver el array NumPy de la imagen preprocesada, junto con sus dimensiones originales y cualquier otra metadata relevante necesaria para el cálculo preciso de coordenadas relativas.
+2.	Extracción de Texto y Coordenadas por AplicadorOCR:
+	Pasará la lista de arrays NumPy preprocesados al método AplicadorOCR.extraer_texto_batch.
+	AplicadorOCR.extraer_texto_batch (CRÍTICO): Este método es el que invoca el modelo ONNX-TR. Debe devolver una lista de objetos (uno por cada imagen en el lote), donde cada objeto contiene:
+	Todo el texto reconocido de la imagen.
+	Para cada palabra o segmento de texto, sus coordenadas precisas de la caja delimitadora (bounding box) en píxeles (ej., [x_min, y_min, x_max, y_max] o un polígono de 4 puntos).
+	El nivel de confianza OCR para cada extracción de texto.
+3.	Post-Procesamiento y Mapeo de Campos (La "Inteligencia Posicional" Avanzada):
+	Esta es la fase donde se aplica la lógica de negocio para estructurar los datos y validar el recibo.
+	Campo full_raw_ocr_text: Primero, se construirá este campo con todo el texto extraído por el OCR, sin filtrar ni mapear, para cada imagen.
+	Identificación y Mapeo de Campos Basado en Posición:
+	Para cada campo predefinido (ej., numero_referencia, monto, banco_origen, cedula_beneficiario, telefono_beneficiario, nombre_beneficiario, fecha_transaccion, tipo_transaccion, etc.):
+	Se buscará el texto que lo identifica (ej., "Ref:", "Total:", "Banco:") entre los segmentos de texto extraídos por el OCR.
+	Una vez identificado un posible "título" o keyword, se buscará el valor más cercano y lógicamente asociado a este título. La lógica deberá manejar:
+	Esquemas "Título Arriba, Valor Abajo": Buscar el texto más cercano directamente debajo del título, dentro de una tolerancia horizontal (misma columna).
+	Esquemas "Título Izquierda, Valor Derecha": Buscar el texto más cercano a la derecha del título, dentro de una tolerancia vertical (misma fila).
+	Flexibilidad de Proximidad: No se debe ser restrictivo si un título está "muy cercano" pero no exactamente "debajo" o "a la derecha". La implementación debe buscar el segmento de texto más probable por proximidad general (ej., usando la distancia entre centroides de bounding boxes) para asociar un valor a un título, cubriendo diversas disposiciones.
+	Campo descripcion_motivo:
+	Se priorizará el texto del caption de WhatsApp (caption_whatsapp de la metadata). Este será su valor principal.
+	Si el caption está vacío, se podría implementar una lógica para buscar bloques de texto descriptivos en el recibo que no se mapearon a otros campos estructurados.
+	Cálculo de relative_position: Para cada campo identificado, se debe calcular una descripción de su posición relativa dentro de la imagen (ej., "superior-izquierda", "central", "inferior-derecha", "cabecera", "pie de página", "adyacente-a-monto") basándose en sus coordenadas absolutas y las dimensiones totales de la imagen.
+	Validación de Campos Obligatorios y Determinación de processing_status:
+	Después de intentar mapear todos los campos, se realizará una validación para determinar el processing_status del recibo:
+	Obligatorios para un recibo success: numero_referencia, monto, banco_origen.
+	Obligatorio para la identificación de cuenta: Debe estar presente cedula_beneficiario O (telefono_beneficiario Y banco_beneficiario). Es decir, si se puede identificar la cuenta destino (ya sea por cédula o por la combinación teléfono+banco), el recibo es válido en este aspecto, incluso si un campo específico (ej. solo cédula) falta.
+	Opcional: La fecha_transaccion es un campo deseable pero no obligatorio; su ausencia no causará un error.
+	Asignación de processing_status:
+	Si TODOS los campos obligatorios (según las reglas anteriores) se encuentran y mapean, el processing_status será success.
+	Si FALTA alguno de los campos obligatorios (o la condición compuesta del beneficiario no se cumple), el processing_status será error. Se deberá proporcionar un error_reason específico (ej., "Missing mandatory fields: Amount, Reference, and/or Beneficiary info").
+4.	Construcción del JSON de Salida: Finalmente, se ensambla el objeto JSON para cada imagen con toda la información extraída, la metadata, el caption, el full_raw_ocr_text y el processing_status.
+________________________________________
+4. Estructura de Salida JSON (Formato Final para data/results/[request_id_sin_ext].json):
+La IA desarrolladora debe asegurar que cada archivo JSON generado para un recibo tenga la siguiente estructura, ideal para una carga directa a base de datos relacional o NoSQL:
+JSON
+{
+  "request_id": "20250620-A_214056942235719@lid_Juanc_17-31.png", // Identificador único de la solicitud (nombre de archivo original)
+  "processing_status": "success", // O "error" si faltan campos obligatorios
+  "error_reason": null, // Cadena descriptiva del error si processing_status es "error" (ej. "Missing mandatory fields: Amount, Reference, and/or Beneficiary info")
+  "metadata": {
+    "fecha_procesamiento": "YYYY-MM-DD HH:MM:SS",
+    "perfil_ocr_usado": "ultra_rapido",
+    "tiempo_procesamiento_ms": 250, // Tiempo que tomó procesar esta imagen individual dentro del lote
+    "fuente_whatsapp": {
+      "sender_id": "214056942235719@lid",
+      "sender_name_registered": "Juanc",
+      "fecha_envio_whatsapp": "2025-06-20", // Extraído del nombre de archivo
+      "hora_envio_whatsapp": "17:31",     // Extraído del nombre de archivo
+      "sorteo_fecha": "20250620",         // Extraído del nombre de archivo
+      "sorteo_conteo": "A",             // Extraído del nombre de archivo
+      "caption_whatsapp": "Pago de camisa azul talla M" // Contenido exacto del archivo .caption.txt
+    }
+  },
+  "full_raw_ocr_text": "Este es todo el texto extraído por el motor OCR, palabra por palabra, línea por línea, en el orden de lectura. Puede ser extenso y no filtrado.",
+  "extracted_fields": [
+    {
+      "field_name": "numero_referencia",
+      "value": "123456789012",
+      "confidence": 0.98, // Confianza OCR para este campo mapeado
+      "coordinates": [x1, y1, x2, y2], // Bounding box en píxeles (ej. [x_min, y_min, x_max, y_max])
+      "relative_position": "top-right", // Descripción categórica de la posición (ej. "top-left", "center", "below-label-monto", "right-of-total")
+      "raw_text_segment": "Ref. 123456789012" // El segmento de texto exacto detectado por OCR para este campo
+    },
+    {
+      "field_name": "monto",
+      "value": "25.50",
+      "confidence": 0.95,
+      "coordinates": [x1, y1, x2, y2],
+      "relative_position": "below-total-label",
+      "raw_text_segment": "$ 25.50"
+    },
+    {
+      "field_name": "banco_origen",
+      "value": "Banco Ejemplo",
+      "confidence": 0.90,
+      "coordinates": [x1, y1, x2, y2],
+      "relative_position": "middle-left",
+      "raw_text_segment": "Bco. Ejemplo C.A."
+    },
+    {
+      "field_name": "cedula_beneficiario",
+      "value": "V12345678",
+      "confidence": 0.96,
+      "coordinates": [x1, y1, x2, y2],
+      "relative_position": "below-beneficiary-name",
+      "raw_text_segment": "CI: V-12.345.678"
+    },
+    {
+      "field_name": "telefono_beneficiario",
+      "value": "04121234567", // Este o la cédula son necesarios para el beneficiario
+      "confidence": 0.88,
+      "coordinates": [x1, y1, x2, y2],
+      "relative_position": "right-of-beneficiary-name",
+      "raw_text_segment": "Telf: 0412-1234567"
+    },
+    {
+      "field_name": "nombre_beneficiario",
+      "value": "Maria Perez", // Importante, pero no genera error si falta
+      "confidence": 0.93,
+      "coordinates": [x1, y1, x2, y2],
+      "relative_position": "header-right",
+      "raw_text_segment": "Beneficiario: Maria Perez"
+    },
+    {
+      "field_name": "fecha_transaccion",
+      "value": "2025-06-19", // Si presente, se incluye; si no, no genera error
+      "confidence": 0.97,
+      "coordinates": [x1, y1, x2, y2],
+      "relative_position": "top-left",
+      "raw_text_segment": "19/06/2025"
+    },
+    {
+      "field_name": "descripcion_motivo",
+      "value": "Pago de camisa azul talla M", // Este valor proviene principalmente del caption_whatsapp
+      "confidence": 1.0, // Alta confianza si es directamente del caption
+      "coordinates": null, // No aplica, ya que viene del caption
+      "relative_position": null, // No aplica
+      "raw_text_segment": null // No aplica
+    },
+    {
+      "field_name": "tipo_transaccion",
+      "value": null, // Ejemplo de campo predefinido que no se encontró en este recibo
+      "confidence": null,
+      "coordinates": null,
+      "relative_position": null,
+      "raw_text_segment": null
+    }
+    // ... todos los demás campos predefinidos que puedan ser relevantes, incluso si su valor es nulo
+  ],
+  "unmapped_text_segments": [
+    {
+      "text": "Gracias por su preferencia",
+      "confidence": 0.85,
+      "coordinates": [x1, y1, x2, y2],
+      "relative_position": "bottom-center"
+    },
+    {
+      "text": "Versión 1.0",
+      "confidence": 0.70,
+      "coordinates": [x1, y1, x2, y2],
+      "relative_position": "footer-left"
+    }
+    // ... otros segmentos de texto detectados por OCR que no se pudieron mapear a un campo específico
+  ]
+}
+________________________________________
+5. Consideraciones Adicionales para la IA Desarrolladora:
+•	Reuso de Mejoras Existentes: La pre-carga y el warm-up de modelos, así como las optimizaciones de OCR ya implementadas, deben ser integradas en este nuevo flujo de procesamiento por lotes, no eliminadas, a menos que el batching requiera un cambio fundamental en cómo se manejan.
+•	Manejo de Errores Robustos: Implementar un registro de errores detallado que ayude a diagnosticar problemas en las fases de preprocesamiento, OCR o mapeo de campos.
+•	Concurrencia y Bloqueos: Asegurar que el worker de lotes maneje la concurrencia de forma segura (ej., al mover archivos entre directorios) para evitar condiciones de carrera si se escala a múltiples workers.
+•	Rendimiento: Priorizar la eficiencia del procesamiento en lote, incluyendo el uso de inferencia batch del modelo ONNX y la minimización de operaciones de I/O innecesarias.
+
