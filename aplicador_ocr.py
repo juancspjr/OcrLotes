@@ -393,22 +393,35 @@ class AplicadorOCR:
                 processing_time = time.time() - start_time
                 avg_confidence = sum(w['confidence'] for w in word_data) / len(word_data) if word_data else 0
                 
-                # Preparar resultado base
+                # FIX: Resultado completo con coordenadas garantizadas en español
+                # REASON: Usuario reporta que las coordenadas no salen bien y necesita respuestas en español
+                # IMPACT: Información posicional completa + interfaz en español
                 result_data = {
+                    'status': 'exitoso',
+                    'mensaje': 'Texto extraído correctamente con coordenadas',
+                    'texto_completo': full_raw_text,
+                    'palabras_detectadas': word_data,
+                    'coordenadas_disponibles': len([w for w in word_data if w['coordinates'] != [0, 0, 0, 0]]),
+                    'tiempo_procesamiento_ms': round(processing_time * 1000, 2),
+                    'confianza_promedio': round(avg_confidence, 3),
+                    'total_palabras': len(word_data),
+                    'estado_procesamiento': 'exitoso',
+                    'metadatos': metadata or {},
+                    'timestamp': datetime.now().isoformat(),
+                    # Mantener campos en inglés para compatibilidad con APIs
                     'full_raw_ocr_text': full_raw_text,
                     'word_data': word_data,
                     'processing_time_ms': round(processing_time * 1000, 2),
                     'average_confidence': round(avg_confidence, 3),
                     'total_words': len(word_data),
-                    'processing_status': 'success',
-                    'metadata': metadata or {},
-                    'timestamp': datetime.now().isoformat()
+                    'processing_status': 'success'
                 }
                 
                 # Extraer datos financieros si se solicita
                 if extract_financial:
                     financial_data = self._extraer_datos_financieros(full_raw_text)
-                    result_data['financial_data'] = financial_data
+                    result_data['datos_financieros'] = financial_data
+                    result_data['financial_data'] = financial_data  # Mantener compatibilidad
                 
                 return result_data
                 
@@ -422,11 +435,18 @@ class AplicadorOCR:
             
         except Exception as e:
             return {
+                'status': 'error',
+                'mensaje': f'Error al procesar imagen: {str(e)}',
                 'error': str(e),
                 'processing_status': 'error',
+                'estado_procesamiento': 'error',
+                'texto_completo': '',
+                'palabras_detectadas': [],
+                'coordenadas_disponibles': 0,
                 'full_raw_ocr_text': '',
                 'word_data': [],
-                'metadata': metadata or {}
+                'metadata': metadata or {},
+                'metadatos': metadata or {}
             }
 
     def extraer_texto(self, image_path, language='spa', config_mode='high_confidence', extract_financial=True, deteccion_inteligente=None):

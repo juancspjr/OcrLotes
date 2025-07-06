@@ -8,6 +8,7 @@ import threading
 import time
 import json
 import shutil
+from datetime import datetime
 from flask import Flask
 from werkzeug.middleware.proxy_fix import ProxyFix
 
@@ -148,12 +149,30 @@ def process_batch(image_paths, directories):
                     filename = os.path.basename(processing_paths[i])
                     request_id = result.get('request_id', filename)
                     
-                    # Guardar JSON resultado
-                    result_filename = request_id.replace('.png', '.json').replace('.jpg', '.json')
+                    # FIX: Guardar JSON resultado con conversión de tipos NumPy y manejo robusto
+                    # REASON: Usuario reporta que los JSONs no se guardan o tienen errores de serialización
+                    # IMPACT: Garantiza guardado correcto de todos los resultados JSON con coordenadas
+                    result_filename = request_id.replace('.png', '.json').replace('.jpg', '.json').replace('.jpeg', '.json')
                     result_path = os.path.join(directories['results'], result_filename)
                     
+                    # Convertir tipos NumPy antes de guardar JSON
+                    if _ocr_orchestrator and hasattr(_ocr_orchestrator.aplicador, '_convert_numpy_types'):
+                        result_converted = _ocr_orchestrator.aplicador._convert_numpy_types(result)
+                    else:
+                        result_converted = result
+                    
+                    # Añadir información adicional para debug en español
+                    result_converted['info_guardado'] = {
+                        'archivo_guardado': result_filename,
+                        'timestamp_guardado': json.dumps(datetime.now().isoformat()),
+                        'coordenadas_incluidas': 'coordenadas_disponibles' in result_converted,
+                        'palabras_con_coordenadas': result_converted.get('coordenadas_disponibles', 0)
+                    }
+                    
                     with open(result_path, 'w', encoding='utf-8') as f:
-                        json.dump(result, f, ensure_ascii=False, indent=2)
+                        json.dump(result_converted, f, ensure_ascii=False, indent=2)
+                    
+                    logger.info(f"✅ JSON guardado exitosamente: {result_filename} ({result_converted.get('coordenadas_disponibles', 0)} coordenadas)")
                     
                     # Mover imagen según resultado
                     if result.get('processing_status') == 'success':

@@ -337,7 +337,7 @@ def api_process_image():
         # Validar que se envió una imagen
         if 'image' not in request.files:
             return jsonify({
-                'status': 'error',
+                'status': 'error', 'estado': 'error',
                 'message': 'No image file provided',
                 'required_fields': ['image']
             }), 400
@@ -345,7 +345,7 @@ def api_process_image():
         file = request.files['image']
         if file.filename == '':
             return jsonify({
-                'status': 'error',
+                'status': 'error', 'estado': 'error',
                 'message': 'Empty filename provided'
             }), 400
         
@@ -353,7 +353,7 @@ def api_process_image():
         api_config = get_api_config()
         if file.content_type not in api_config['allowed_image_types']:
             return jsonify({
-                'status': 'error',
+                'status': 'error', 'estado': 'error',
                 'message': f'Unsupported file type: {file.content_type}',
                 'supported_types': api_config['allowed_image_types']
             }), 400
@@ -447,7 +447,7 @@ def api_process_image():
     except Exception as e:
         logger.error(f"Error en API process_image: {e}")
         return jsonify({
-            'status': 'error',
+            'status': 'error', 'estado': 'error',
             'message': 'Internal server error',
             'details': str(e)
         }), 500
@@ -502,7 +502,7 @@ def api_process_batch():
         
         if not image_files:
             return jsonify({
-                'status': 'success',
+                'status': 'exitoso', 'estado': 'exitoso',
                 'message': 'No images in queue to process',
                 'batch_info': {
                     'processed_count': 0,
@@ -630,7 +630,7 @@ def api_process_batch():
             logger.info(f"✅ Lote {batch_id} procesado: {successful_results} éxitos, {failed_results} errores")
             
             return jsonify({
-                'status': 'success',
+                'status': 'exitoso', 'estado': 'exitoso',
                 'message': f'Batch processed successfully',
                 'batch_info': {
                     'batch_id': batch_id,
@@ -652,14 +652,14 @@ def api_process_batch():
         
         else:
             return jsonify({
-                'status': 'error',
+                'status': 'error', 'estado': 'error',
                 'message': 'OCR system not initialized'
             }), 500
         
     except Exception as e:
         logger.error(f"Error en API process_batch: {e}")
         return jsonify({
-            'status': 'error',
+            'status': 'error', 'estado': 'error',
             'message': 'Batch processing failed',
             'details': str(e)
         }), 500
@@ -719,7 +719,7 @@ def api_get_result(request_id):
         error_files = glob.glob(error_pattern)
         if error_files:
             return jsonify({
-                'status': 'error',
+                'status': 'error', 'estado': 'error',
                 'request_id': request_id,
                 'message': 'Processing failed',
                 'error_reason': 'Check system logs for details'
@@ -735,7 +735,7 @@ def api_get_result(request_id):
     except Exception as e:
         logger.error(f"Error consultando resultado {request_id}: {e}")
         return jsonify({
-            'status': 'error',
+            'status': 'error', 'estado': 'error',
             'message': 'Could not retrieve result',
             'details': str(e)
         }), 500
@@ -774,7 +774,7 @@ def api_queue_status():
         results_count = len(glob.glob(os.path.join(directories['results'], "*.json")))
         
         return jsonify({
-            'status': 'success',
+            'status': 'exitoso', 'estado': 'exitoso',
             'queue_status': {
                 'inbox': inbox_count,
                 'processing': processing_count,
@@ -792,7 +792,7 @@ def api_queue_status():
     except Exception as e:
         logger.error(f"Error en queue status: {e}")
         return jsonify({
-            'status': 'error',
+            'status': 'error', 'estado': 'error',
             'message': 'Error al obtener estado de la cola',
             'details': str(e)
         }), 500
@@ -863,7 +863,7 @@ def api_daily_stats():
         yesterday_stats = get_day_stats(yesterday)
         
         return jsonify({
-            'status': 'success',
+            'status': 'exitoso', 'estado': 'exitoso',
             'date': today.isoformat(),
             'today': today_stats,
             'yesterday': yesterday_stats,
@@ -878,7 +878,7 @@ def api_daily_stats():
     except Exception as e:
         logger.error(f"Error consultando estado de cola: {e}")
         return jsonify({
-            'status': 'error',
+            'status': 'error', 'estado': 'error',
             'message': 'Could not retrieve queue status',
             'details': str(e)
         }), 500
@@ -939,7 +939,7 @@ def api_system_status():
     except Exception as e:
         logger.error(f"Error en API system_status: {e}")
         return jsonify({
-            'status': 'error',
+            'status': 'error', 'estado': 'error',
             'message': 'Could not retrieve system status',
             'details': str(e)
         }), 500
@@ -1089,9 +1089,12 @@ def api_get_processed_files():
         file_list.sort(key=lambda x: x['processed_date'], reverse=True)
         
         return jsonify({
-            'status': 'success',
+            'status': 'exitoso',
+            'estado': 'exitoso',
             'processed_files': file_list,
+            'total_archivos': len(file_list),
             'total_files': len(file_list),
+            'archivos_con_json': len([f for f in file_list if f['json_exists']]),
             'files_with_json': len([f for f in file_list if f['json_exists']]),
             'timestamp': datetime.now().isoformat()
         })
@@ -1099,8 +1102,8 @@ def api_get_processed_files():
     except Exception as e:
         logger.error(f"Error obteniendo archivos procesados: {e}")
         return jsonify({
-            'status': 'error',
-            'message': 'No se pudieron obtener los archivos procesados',
+            'status': 'error', 'estado': 'error',
+            'mensaje': 'No se pudieron obtener los archivos procesados', 'message': 'No se pudieron obtener los archivos procesados',
             'details': str(e)
         }), 500
 
@@ -1134,8 +1137,8 @@ def api_download_json(filename):
         
         if not json_file:
             return jsonify({
-                'status': 'error',
-                'message': f'Archivo JSON no encontrado para {filename}'
+                'status': 'error', 'estado': 'error',
+                'mensaje': f'Archivo JSON no encontrado para {filename}', 'message': f'Archivo JSON no encontrado para {filename}'
             }), 404
         
         return send_file(
@@ -1148,8 +1151,8 @@ def api_download_json(filename):
     except Exception as e:
         logger.error(f"Error descargando JSON para {filename}: {e}")
         return jsonify({
-            'status': 'error',
-            'message': 'No se pudo descargar el archivo JSON',
+            'status': 'error', 'estado': 'error',
+            'mensaje': 'No se pudo descargar el archivo JSON', 'message': 'No se pudo descargar el archivo JSON',
             'details': str(e)
         }), 500
 
@@ -1182,8 +1185,8 @@ def api_view_json(filename):
         
         if not json_file:
             return jsonify({
-                'status': 'error',
-                'message': f'Archivo JSON no encontrado para {filename}'
+                'status': 'error', 'estado': 'error',
+                'mensaje': f'Archivo JSON no encontrado para {filename}', 'message': f'Archivo JSON no encontrado para {filename}'
             }), 404
         
         # Leer y parsear contenido JSON
@@ -1191,7 +1194,7 @@ def api_view_json(filename):
             json_content = json.load(f)
         
         return jsonify({
-            'status': 'success',
+            'status': 'exitoso', 'estado': 'exitoso',
             'filename': filename,
             'json_file': os.path.basename(json_file),
             'content': json_content,
@@ -1202,7 +1205,7 @@ def api_view_json(filename):
     except Exception as e:
         logger.error(f"Error visualizando JSON para {filename}: {e}")
         return jsonify({
-            'status': 'error',
+            'status': 'error', 'estado': 'error',
             'message': 'No se pudo leer el archivo JSON',
             'details': str(e)
         }), 500
@@ -1243,14 +1246,14 @@ def api_upload_batch():
         # Validar que hay archivos
         if 'images' not in request.files:
             return jsonify({
-                'status': 'error',
+                'status': 'error', 'estado': 'error',
                 'message': 'No images provided'
             }), 400
         
         files = request.files.getlist('images')
         if not files or all(f.filename == '' for f in files):
             return jsonify({
-                'status': 'error',
+                'status': 'error', 'estado': 'error',
                 'message': 'No files selected'
             }), 400
         
@@ -1258,7 +1261,7 @@ def api_upload_batch():
         max_files = batch_config.get('max_files_per_batch', 50)
         if len(files) > max_files:
             return jsonify({
-                'status': 'error',
+                'status': 'error', 'estado': 'error',
                 'message': f'Too many files. Maximum allowed: {max_files}'
             }), 400
         
@@ -1274,7 +1277,7 @@ def api_upload_batch():
                 additional_data_parsed = json.loads(additional_data_batch)
             except json.JSONDecodeError:
                 return jsonify({
-                    'status': 'error',
+                    'status': 'error', 'estado': 'error',
                     'message': 'Invalid JSON format in additional_data_batch'
                 }), 400
         
@@ -1322,6 +1325,7 @@ def api_upload_batch():
                         'batch_info': {
                             'batch_id': batch_id,
                             'file_index': i,
+                            'total_archivos': len(files),
                             'total_files': len(files),
                             'batch_timestamp': current_time.isoformat(),
                             'original_filename': file.filename,
@@ -1342,7 +1346,7 @@ def api_upload_batch():
         
         if not enqueued_ids:
             return jsonify({
-                'status': 'error',
+                'status': 'error', 'estado': 'error',
                 'message': 'No files could be processed'
             }), 400
         
@@ -1350,6 +1354,7 @@ def api_upload_batch():
             'status': 'accepted',
             'message': 'Batch enqueued for processing',
             'enqueued_ids': enqueued_ids,
+            'total_archivos': len(enqueued_ids),
             'total_files': len(enqueued_ids),
             'batch_id': batch_id,
             'estimated_processing_time_seconds': len(enqueued_ids) * 10,
@@ -1359,7 +1364,7 @@ def api_upload_batch():
     except Exception as e:
         logger.error(f"Error en upload_batch: {e}")
         return jsonify({
-            'status': 'error',
+            'status': 'error', 'estado': 'error',
             'message': 'Internal server error',
             'details': str(e)
         }), 500
@@ -1444,7 +1449,7 @@ def api_system_resources():
     except Exception as e:
         logger.error(f"Error obteniendo recursos del sistema: {e}")
         return jsonify({
-            'status': 'error',
+            'status': 'error', 'estado': 'error',
             'message': 'Could not retrieve system resources',
             'details': str(e)
         }), 500
@@ -1462,7 +1467,7 @@ def api_configure_batch():
         data = request.get_json()
         if not data:
             return jsonify({
-                'status': 'error',
+                'status': 'error', 'estado': 'error',
                 'message': 'No configuration data provided'
             }), 400
         
@@ -1472,7 +1477,7 @@ def api_configure_batch():
         
         if not isinstance(batch_size, int) or batch_size < 1 or batch_size > 50:
             return jsonify({
-                'status': 'error',
+                'status': 'error', 'estado': 'error',
                 'message': 'batch_size must be an integer between 1 and 50'
             }), 400
         
@@ -1482,7 +1487,7 @@ def api_configure_batch():
         logger.info(f"Configuración de lote actualizada: batch_size={batch_size}, auto_optimize={auto_optimize}")
         
         return jsonify({
-            'status': 'success',
+            'status': 'exitoso', 'estado': 'exitoso',
             'message': 'Batch configuration updated',
             'configuration': {
                 'batch_size': batch_size,
@@ -1494,7 +1499,7 @@ def api_configure_batch():
     except Exception as e:
         logger.error(f"Error configurando lote: {e}")
         return jsonify({
-            'status': 'error',
+            'status': 'error', 'estado': 'error',
             'message': 'Could not update batch configuration',
             'details': str(e)
         }), 500
@@ -1525,7 +1530,7 @@ def api_download_batch_results(batch_id):
         
         if not result_files:
             return jsonify({
-                'status': 'error',
+                'status': 'error', 'estado': 'error',
                 'message': f'No results found for batch {batch_id}'
             }), 404
         
@@ -1549,7 +1554,7 @@ def api_download_batch_results(batch_id):
     except Exception as e:
         logger.error(f"Error descargando resultados del lote {batch_id}: {e}")
         return jsonify({
-            'status': 'error',
+            'status': 'error', 'estado': 'error',
             'message': 'Could not download batch results',
             'details': str(e)
         }), 500
@@ -1610,7 +1615,7 @@ def api_clean_system():
         logger.info(f"Sistema limpiado: {cleaned_counts}")
         
         return jsonify({
-            'status': 'success',
+            'status': 'exitoso', 'estado': 'exitoso',
             'message': 'Sistema limpiado exitosamente',
             'cleaned_counts': cleaned_counts,
             'timestamp': datetime.now().isoformat()
@@ -1619,7 +1624,7 @@ def api_clean_system():
     except Exception as e:
         logger.error(f"Error al limpiar sistema: {e}")
         return jsonify({
-            'status': 'error',
+            'status': 'error', 'estado': 'error',
             'message': 'Error al limpiar el sistema',
             'details': str(e)
         }), 500
@@ -1710,7 +1715,7 @@ def api_queue_files():
                 processed_files.append(file_info)
         
         return jsonify({
-            'status': 'success',
+            'status': 'exitoso', 'estado': 'exitoso',
             'inbox_files': inbox_files,
             'processed_files': processed_files,
             'counts': {
@@ -1723,7 +1728,7 @@ def api_queue_files():
     except Exception as e:
         logger.error(f"Error obteniendo archivos de cola: {e}")
         return jsonify({
-            'status': 'error',
+            'status': 'error', 'estado': 'error',
             'message': 'Error obteniendo lista de archivos',
             'details': str(e)
         }), 500
@@ -1755,7 +1760,7 @@ def api_preview_image(request_id):
         
         if not found_file:
             return jsonify({
-                'status': 'error',
+                'status': 'error', 'estado': 'error',
                 'message': 'Imagen no encontrada'
             }), 404
         
@@ -1764,7 +1769,7 @@ def api_preview_image(request_id):
     except Exception as e:
         logger.error(f"Error obteniendo vista previa {request_id}: {e}")
         return jsonify({
-            'status': 'error',
+            'status': 'error', 'estado': 'error',
             'message': 'Error obteniendo vista previa',
             'details': str(e)
         }), 500
@@ -1784,7 +1789,7 @@ def api_download_result(request_id):
         
         if not os.path.exists(result_file):
             return jsonify({
-                'status': 'error',
+                'status': 'error', 'estado': 'error',
                 'message': 'Resultado no encontrado'
             }), 404
         
@@ -1798,7 +1803,7 @@ def api_download_result(request_id):
     except Exception as e:
         logger.error(f"Error descargando resultado {request_id}: {e}")
         return jsonify({
-            'status': 'error',
+            'status': 'error', 'estado': 'error',
             'message': 'Error descargando resultado',
             'details': str(e)
         }), 500
@@ -1838,7 +1843,7 @@ def api_clear_queue():
         logger.info(f"✅ Cola limpiada: {removed_count} archivos removidos")
         
         return jsonify({
-            'status': 'success',
+            'status': 'exitoso', 'estado': 'exitoso',
             'message': f'Queue cleared successfully',
             'files_removed': removed_count,
             'directories_cleared': ['inbox', 'processing', 'processed', 'errors']
@@ -1847,7 +1852,7 @@ def api_clear_queue():
     except Exception as e:
         logger.error(f"Error limpiando cola: {e}")
         return jsonify({
-            'status': 'error',
+            'status': 'error', 'estado': 'error',
             'message': 'Error clearing queue',
             'details': str(e)
         }), 500
