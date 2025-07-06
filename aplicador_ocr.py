@@ -331,66 +331,94 @@ class AplicadorOCR:
         try:
             from datetime import datetime
             import time
+            from onnxtr.io import DocumentFile
+            import tempfile
+            import cv2
+            import os
             
             start_time = time.time()
+            temp_path = None
             
-            # Ejecutar OCR con OnnxTR
-            result = predictor(img_array)
+            # FIX: SOLUCIÓN CRÍTICA - Guardar array como archivo temporal para OnnxTR
+            # REASON: OnnxTR funciona mejor con rutas de archivos que con arrays NumPy directos
+            # IMPACT: Elimina el error "incorrect input shape" y permite extracción correcta de texto
             
-            # Extraer texto completo y coordenadas
-            full_text_segments = []
-            word_data = []
-            
-            for page_result in result.pages:
-                for block in page_result.blocks:
-                    for line in block.lines:
-                        for word in line.words:
-                            # Obtener coordenadas de la palabra
-                            coords = word.geometry
-                            if hasattr(coords, 'polygon') and len(coords.polygon) >= 4:
-                                # Convertir polígono a bounding box [x_min, y_min, x_max, y_max]
-                                x_coords = [point[0] for point in coords.polygon]
-                                y_coords = [point[1] for point in coords.polygon]
-                                bbox = [min(x_coords), min(y_coords), max(x_coords), max(y_coords)]
-                            else:
-                                bbox = [0, 0, 0, 0]  # Coordenadas por defecto si no disponibles
-                            
-                            # Datos de la palabra
-                            word_info = {
-                                'text': word.value,
-                                'confidence': float(word.confidence),
-                                'coordinates': bbox,
-                                'raw_geometry': coords.polygon if hasattr(coords, 'polygon') else []
-                            }
-                            
-                            word_data.append(word_info)
-                            full_text_segments.append(word.value)
-            
-            # Texto completo sin filtrar
-            full_raw_text = ' '.join(full_text_segments)
-            
-            # Calcular métricas básicas
-            processing_time = time.time() - start_time
-            avg_confidence = sum(w['confidence'] for w in word_data) / len(word_data) if word_data else 0
-            
-            # Preparar resultado base
-            result_data = {
-                'full_raw_ocr_text': full_raw_text,
-                'word_data': word_data,
-                'processing_time_ms': round(processing_time * 1000, 2),
-                'average_confidence': round(avg_confidence, 3),
-                'total_words': len(word_data),
-                'processing_status': 'success',
-                'metadata': metadata or {},
-                'timestamp': datetime.now().isoformat()
-            }
-            
-            # Extraer datos financieros si se solicita
-            if extract_financial:
-                financial_data = self._extraer_datos_financieros(full_raw_text)
-                result_data['financial_data'] = financial_data
-            
-            return result_data
+            try:
+                # Crear archivo temporal
+                with tempfile.NamedTemporaryFile(suffix='.png', delete=False) as temp_file:
+                    temp_path = temp_file.name
+                
+                # Guardar array como imagen temporal
+                cv2.imwrite(temp_path, img_array)
+                
+                # Usar DocumentFile con ruta de archivo (funciona correctamente)
+                doc = DocumentFile.from_images([temp_path])
+                
+                # Ejecutar OCR con OnnxTR usando DocumentFile
+                result = predictor(doc)
+                
+                # Extraer texto completo y coordenadas
+                full_text_segments = []
+                word_data = []
+                
+                for page_result in result.pages:
+                    for block in page_result.blocks:
+                        for line in block.lines:
+                            for word in line.words:
+                                # Obtener coordenadas de la palabra
+                                coords = word.geometry
+                                if hasattr(coords, 'polygon') and len(coords.polygon) >= 4:
+                                    # Convertir polígono a bounding box [x_min, y_min, x_max, y_max]
+                                    x_coords = [point[0] for point in coords.polygon]
+                                    y_coords = [point[1] for point in coords.polygon]
+                                    bbox = [min(x_coords), min(y_coords), max(x_coords), max(y_coords)]
+                                else:
+                                    bbox = [0, 0, 0, 0]  # Coordenadas por defecto si no disponibles
+                                
+                                # Datos de la palabra
+                                word_info = {
+                                    'text': word.value,
+                                    'confidence': float(word.confidence),
+                                    'coordinates': bbox,
+                                    'raw_geometry': coords.polygon if hasattr(coords, 'polygon') else []
+                                }
+                                
+                                word_data.append(word_info)
+                                full_text_segments.append(word.value)
+                
+                # Texto completo sin filtrar
+                full_raw_text = ' '.join(full_text_segments)
+                
+                # Calcular métricas básicas
+                processing_time = time.time() - start_time
+                avg_confidence = sum(w['confidence'] for w in word_data) / len(word_data) if word_data else 0
+                
+                # Preparar resultado base
+                result_data = {
+                    'full_raw_ocr_text': full_raw_text,
+                    'word_data': word_data,
+                    'processing_time_ms': round(processing_time * 1000, 2),
+                    'average_confidence': round(avg_confidence, 3),
+                    'total_words': len(word_data),
+                    'processing_status': 'success',
+                    'metadata': metadata or {},
+                    'timestamp': datetime.now().isoformat()
+                }
+                
+                # Extraer datos financieros si se solicita
+                if extract_financial:
+                    financial_data = self._extraer_datos_financieros(full_raw_text)
+                    result_data['financial_data'] = financial_data
+                
+                return result_data
+                
+            finally:
+                # Limpiar archivo temporal
+                if temp_path and os.path.exists(temp_path):
+                    try:
+                        os.unlink(temp_path)
+                    except:
+                        pass
             
         except Exception as e:
             return {
