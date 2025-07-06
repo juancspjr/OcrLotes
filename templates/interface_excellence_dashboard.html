@@ -675,9 +675,14 @@
                                 <h5 class="mb-0">
                                     <i class="fas fa-list-ul me-2"></i>Archivos en Cola de Procesamiento
                                 </h5>
-                                <button class="btn btn-success excellence-btn" id="processAllBtn">
-                                    <i class="fas fa-play me-2"></i>Procesar Todo el Lote
-                                </button>
+                                <div>
+                                    <button class="btn btn-success excellence-btn me-2" id="processAllBtn">
+                                        <i class="fas fa-play me-2"></i>Procesar Todo el Lote
+                                    </button>
+                                    <button class="btn btn-outline-danger excellence-btn" id="clearQueueBtn">
+                                        <i class="fas fa-trash me-2"></i>Limpiar Cola
+                                    </button>
+                                </div>
                             </div>
                             <div class="card-body">
                                 <div id="queueList">
@@ -948,6 +953,10 @@
 
                 document.getElementById('cleanSystemBtn').addEventListener('click', () => {
                     this.cleanSystem();
+                });
+
+                document.getElementById('clearQueueBtn').addEventListener('click', () => {
+                    this.clearQueue();
                 });
 
                 document.getElementById('generateApiKeyBtn').addEventListener('click', () => {
@@ -1370,7 +1379,11 @@
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
-                        }
+                        },
+                        body: JSON.stringify({
+                            profile: 'ultra_rapido',
+                            batch_size: 10
+                        })
                     });
                     
                     const result = await response.json();
@@ -1580,6 +1593,30 @@
                 } catch (error) {
                     this.logActivity(`❌ Error al limpiar sistema: ${error.message}`);
                     this.showAlert('Error al limpiar sistema: ' + error.message, 'danger');
+                }
+            }
+
+            async clearQueue() {
+                if (!confirm('¿Estás seguro de que quieres limpiar la cola de archivos? Esto eliminará todos los archivos pendientes.')) {
+                    return;
+                }
+
+                try {
+                    this.logActivity(`🗑️ Limpiando cola de archivos...`);
+                    const response = await fetch('/api/clean_queue', {
+                        method: 'POST'
+                    });
+                    
+                    const result = await response.json();
+                    this.logActivity(`✅ Cola limpiada: ${result.message}`);
+                    this.showAlert('Cola limpiada exitosamente', 'success');
+                    
+                    // Refresh queue and counts
+                    this.updateCounts();
+                    this.loadQueueFiles();
+                } catch (error) {
+                    this.logActivity(`❌ Error al limpiar cola: ${error.message}`);
+                    this.showAlert('Error al limpiar cola: ' + error.message, 'danger');
                 }
             }
 

@@ -669,41 +669,7 @@ def api_queue_status():
             'message': f'Error getting queue status: {str(e)}'
         }), 500
 
-@app.route('/api/ocr/clean_queue', methods=['POST'])
-def api_clean_queue():
-    """Limpiar cola de procesamiento"""
-    try:
-        from config import get_async_directories
-        directories = get_async_directories()
-        
-        # Limpiar directorios
-        removed_files = 0
-        for dir_name in ['inbox', 'processing']:
-            dir_path = directories[dir_name]
-            for filename in os.listdir(dir_path):
-                file_path = os.path.join(dir_path, filename)
-                if os.path.isfile(file_path):
-                    os.remove(file_path)
-                    removed_files += 1
-        
-        logger.info(f"✅ Cola limpiada: {removed_files} archivos removidos")
-        
-        return jsonify({
-            'status': 'exitoso',
-            'estado': 'exitoso',
-            'mensaje': f'Cola limpiada: {removed_files} archivos removidos',
-            'message': f'Queue cleaned: {removed_files} files removed',
-            'files_removed': removed_files
-        })
-        
-    except Exception as e:
-        logger.error(f"Error limpiando cola: {e}")
-        return jsonify({
-            'status': 'error',
-            'estado': 'error',
-            'mensaje': f'Error al limpiar cola: {str(e)}',
-            'message': f'Error cleaning queue: {str(e)}'
-        }), 500
+
 
 @app.route('/api/ocr/processed_files')
 def api_processed_files():
@@ -1194,6 +1160,57 @@ def api_revoke_key(key_id):
         return jsonify({
             'status': 'error',
             'message': f'Error revocando API key: {str(e)}'
+        }), 500
+
+@app.route('/api/clean_queue', methods=['POST'])
+def api_clean_queue_new():
+    """
+    FIX: Endpoint específico para limpiar cola de archivos no procesados
+    REASON: Usuario requiere limpieza selectiva de cola sin afectar procesados
+    IMPACT: Permite limpiar solo archivos pendientes manteniendo historial procesado
+    TEST: Limpia solo directorio inbox sin tocar processed/results
+    MONITOR: Logging específico de limpieza de cola con contadores
+    INTERFACE: Llamado por botón "Limpiar Cola" en sección de archivos en cola
+    VISUAL_CHANGE: Limpia lista de cola sin afectar archivos procesados
+    REFERENCE_INTEGRITY: Endpoint /api/clean_queue específico para gestión de cola
+    """
+    try:
+        from config import get_async_directories
+        import glob
+        
+        directories = get_async_directories()
+        
+        # FIX: Limpiar solo directorio inbox (cola de archivos)
+        # REASON: Usuario requiere limpieza selectiva sin afectar archivos procesados
+        # IMPACT: Mantiene historial de procesados mientras limpia pendientes
+        inbox_files = glob.glob(os.path.join(directories['inbox'], "*.*"))
+        inbox_cleaned = 0
+        for file_path in inbox_files:
+            try:
+                os.remove(file_path)
+                inbox_cleaned += 1
+            except Exception as e:
+                logger.warning(f"No se pudo eliminar archivo de cola {file_path}: {e}")
+        
+        logger.info(f"✅ Cola de archivos limpiada: {inbox_cleaned} archivos eliminados")
+        
+        return jsonify({
+            'status': 'exitoso',
+            'estado': 'exitoso',
+            'message': f'Cola limpiada exitosamente: {inbox_cleaned} archivos eliminados',
+            'mensaje': f'Cola limpiada exitosamente: {inbox_cleaned} archivos eliminados',
+            'inbox_cleaned': inbox_cleaned,
+            'timestamp': datetime.now().isoformat(),
+            'success': True
+        }), 200
+        
+    except Exception as e:
+        logger.error(f"Error crítico limpiando cola: {e}")
+        return jsonify({
+            'status': 'error',
+            'estado': 'error',
+            'message': f'Error al limpiar cola: {str(e)}',
+            'error_code': 'QUEUE_CLEAN_ERROR'
         }), 500
 
 @app.route('/api/clean', methods=['POST'])
