@@ -158,6 +158,35 @@ def api_get_processed_files():
                     with open(archivo_path, 'r', encoding='utf-8') as f:
                         contenido_json = json.load(f)
                     
+                    # FIX: Detección corregida de contenido OCR y coordenadas en estructura JSON real
+                    # REASON: La función anterior buscaba campos incorrectos causando has_ocr_data false
+                    # IMPACT: Corrección de detección de texto extraído y coordenadas existentes
+                    # TEST: Verificación con estructura real de archivos JSON procesados
+                    # MONITOR: Logging de campos detectados para debugging
+                    # INTERFACE: Archivos procesados ahora muestran datos OCR correctamente
+                    # VISUAL_CHANGE: Lista de archivos procesados muestra contenido real extraído
+                    # REFERENCE_INTEGRITY: Campos verificados contra estructura JSON real generada
+                    
+                    # Extraer datos OCR desde estructura real
+                    datos_extraidos = contenido_json.get('datos_extraidos', {})
+                    texto_completo = (
+                        datos_extraidos.get('texto_completo', '') or
+                        contenido_json.get('texto_extraido', '') or
+                        contenido_json.get('full_raw_ocr_text', '')
+                    )
+                    
+                    palabras_detectadas = (
+                        datos_extraidos.get('palabras_detectadas', []) or
+                        contenido_json.get('word_data', [])
+                    )
+                    
+                    # Calcular confianza promedio desde palabras detectadas
+                    confianza_promedio = 0
+                    if palabras_detectadas:
+                        confidencias = [p.get('confianza', 0) for p in palabras_detectadas if isinstance(p, dict)]
+                        if confidencias:
+                            confianza_promedio = sum(confidencias) / len(confidencias)
+                    
                     # Información básica del archivo
                     info_archivo = {
                         'filename': archivo,
@@ -166,12 +195,15 @@ def api_get_processed_files():
                         'size_readable': f"{tamaño / 1024:.1f} KB" if tamaño > 1024 else f"{tamaño} bytes",
                         'modified_date': fecha_mod.isoformat(),
                         'modified_readable': fecha_mod.strftime('%d/%m/%Y %H:%M:%S'),
-                        'has_ocr_data': 'texto_completo' in contenido_json or 'full_raw_ocr_text' in contenido_json,
-                        'has_coordinates': 'palabras_detectadas' in contenido_json or 'word_data' in contenido_json,
-                        'word_count': len(contenido_json.get('palabras_detectadas', contenido_json.get('word_data', []))),
-                        'confidence': contenido_json.get('confianza_promedio', contenido_json.get('average_confidence', 0)),
-                        'processing_time': contenido_json.get('tiempo_procesamiento_ms', contenido_json.get('processing_time_ms', 0))
+                        'has_ocr_data': bool(texto_completo and len(texto_completo.strip()) > 0),
+                        'has_coordinates': bool(palabras_detectadas and len(palabras_detectadas) > 0),
+                        'word_count': len(palabras_detectadas),
+                        'confidence': confianza_promedio,
+                        'processing_time': contenido_json.get('tiempo_procesamiento', contenido_json.get('processing_time_ms', 0)),
+                        'texto_preview': texto_completo[:100] + '...' if len(texto_completo) > 100 else texto_completo
                     }
+                    
+                    logger.debug(f"Archivo {archivo}: OCR={info_archivo['has_ocr_data']}, Coords={info_archivo['has_coordinates']}, Words={info_archivo['word_count']}, Texto={len(texto_completo)} chars")
                     
                     archivos_json.append(info_archivo)
                     
@@ -1292,18 +1324,45 @@ def api_clean_system():
                 logger.warning(f"No se pudo eliminar archivo procesado {file_path}: {e}")
         cleaned_counts['processed'] = processed_cleaned
         
-        # FIX: Limpiar directorio results (archivos JSON de resultados)
-        # REASON: Limpiar resultados previos después de extraer ZIP
-        # IMPACT: Evita acumulación de archivos JSON antiguos
+        # FIX: Limpiar directorio results con retención de 24 horas
+        # REASON: Usuario requiere mantener archivos al menos 24 horas antes de limpiar
+        # IMPACT: Preserva archivos recientes y solo elimina archivos antiguos (>24h)
+        # TEST: Solo elimina archivos con más de 24 horas de antigüedad
+        # MONITOR: Logging de archivos preservados vs eliminados
+        # INTERFACE: Sistema mantiene archivos visibles por 24 horas mínimo
+        # VISUAL_CHANGE: Archivos procesados permanecen visibles por 24 horas
+        # REFERENCE_INTEGRITY: Implementa retención solicitada por usuario
+        
+        from datetime import datetime, timedelta
+        
         result_files = glob.glob(os.path.join(directories['results'], "*.json"))
         results_cleaned = 0
+        results_preserved = 0
+        cutoff_time = datetime.now() - timedelta(hours=24)
+        
         for file_path in result_files:
             try:
-                os.remove(file_path)
-                results_cleaned += 1
+                file_stat = os.stat(file_path)
+                file_time = datetime.fromtimestamp(file_stat.st_mtime)
+                
+                if file_time < cutoff_time:
+                    # Archivo tiene más de 24 horas, eliminar
+                    os.remove(file_path)
+                    results_cleaned += 1
+                    logger.debug(f"Archivo JSON eliminado (>24h): {os.path.basename(file_path)}")
+                else:
+                    # Archivo reciente, preservar
+                    results_preserved += 1
+                    logger.debug(f"Archivo JSON preservado (<24h): {os.path.basename(file_path)}")
+                    
             except Exception as e:
-                logger.warning(f"No se pudo eliminar resultado {file_path}: {e}")
+                logger.warning(f"No se pudo procesar archivo de resultado {file_path}: {e}")
+                
         cleaned_counts['results'] = results_cleaned
+        cleaned_counts['results_preserved'] = results_preserved
+        
+        if results_preserved > 0:
+            logger.info(f"🕒 Retención 24h: {results_preserved} archivos preservados, {results_cleaned} eliminados")
         
         # FIX: Limpiar directorio errors (opcional para archivos con errores)
         # REASON: Limpiar archivos que fallaron en procesamiento anterior
