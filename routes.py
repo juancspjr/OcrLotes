@@ -443,10 +443,35 @@ def api_process_batch():
         batch_uuid = str(uuid.uuid4())[:8]
         request_id = f"BATCH_{batch_timestamp}_{batch_uuid}"
         
-        # Obtener configuración
-        data = request.get_json() or {}
+        # FIX: Manejo robusto de datos JSON y form-data
+        # REASON: Error 400 puede ser causado por datos malformados o contenido mixto
+        # IMPACT: Procesamiento estable independiente del tipo de contenido
+        # TEST: Maneja tanto JSON como form-data correctamente
+        # MONITOR: Logging detallado del tipo de contenido recibido
+        # INTERFACE: Compatible con diferentes tipos de requests desde frontend
+        # VISUAL_CHANGE: Procesamiento exitoso elimina errores 400
+        # REFERENCE_INTEGRITY: Validación de tipos de datos antes de procesamiento
+        
+        data = {}
+        content_type = request.content_type or ''
+        
+        if 'application/json' in content_type:
+            data = request.get_json() or {}
+        elif 'application/x-www-form-urlencoded' in content_type or 'multipart/form-data' in content_type:
+            data = request.form.to_dict()
+        else:
+            # Intentar ambos métodos
+            try:
+                data = request.get_json() or {}
+            except:
+                data = request.form.to_dict() if request.form else {}
+        
+        logger.info(f"📨 Procesando lote con datos: {data}")
+        logger.info(f"📝 Content-Type: {content_type}")
+        
+        # Obtener configuración con valores por defecto
         profile = data.get('profile', 'ultra_rapido')
-        batch_size = data.get('batch_size', 5)
+        batch_size = int(data.get('batch_size', 5))
         
         logger.info(f"✅ Procesamiento de lote iniciado. Request ID: {request_id}")
         logger.info(f"⚙️ Configuración: profile={profile}, batch_size={batch_size}")
@@ -720,16 +745,72 @@ def api_processed_files():
                             image_name = fallback_name
                             break
                 
+                # FIX: Estructura de datos completa para prevenir valores "undefined"
+                # REASON: Frontend esperaba campos específicos que no existían
+                # IMPACT: Datos consistentes y completos en todas las respuestas
+                # TEST: Validación de todos los campos requeridos por frontend
+                # MONITOR: Logging de campos faltantes para debugging
+                # INTERFACE: Estructura de datos compatible con dashboard
+                # VISUAL_CHANGE: Información correcta visible en lugar de "undefined"
+                # REFERENCE_INTEGRITY: Todos los campos validados y con valores por defecto
+                
+                # Extraer estadísticas de procesamiento
+                calidad_extraccion = result_data.get('calidad_extraccion', {})
+                estadisticas = result_data.get('estadisticas', {})
+                datos_extraidos = result_data.get('datos_extraidos', {})
+                
+                # Calcular tiempo de procesamiento
+                tiempo_procesamiento = result_data.get('tiempo_procesamiento', 0)
+                tiempo_procesamiento_formatted = f"{tiempo_procesamiento:.2f}s" if tiempo_procesamiento > 0 else "N/A"
+                
+                # Extraer palabras detectadas
+                palabras_detectadas = estadisticas.get('total_palabras', 0)
+                if palabras_detectadas == 0:
+                    # Intentar extraer de otras fuentes
+                    palabras_detectadas = len(datos_extraidos.get('palabras_individuales', []))
+                
+                # Extraer confianza promedio
+                confianza_promedio = calidad_extraccion.get('confianza_promedio', 0)
+                if confianza_promedio == 0:
+                    confianza_promedio = estadisticas.get('confianza_promedio', 0)
+                
+                # Formatear confianza
+                confianza_formatted = f"{confianza_promedio:.1f}%" if confianza_promedio > 0 else "N/A"
+                
+                # Extraer texto completo
+                texto_completo = datos_extraidos.get('texto_completo', '')
+                if not texto_completo:
+                    texto_completo = result_data.get('texto_extraido', '')
+                
                 processed_files.append({
                     'filename': json_file.name,
-                    'image_name': image_name,
-                    'image_path': image_path,
+                    'image_name': image_name or 'Sin_nombre',
+                    'image_path': image_path or '',
                     'json_path': str(json_file.relative_to(Path.cwd())),
                     'result_data': result_data,
                     'processed_date': datetime.fromtimestamp(json_file.stat().st_mtime).isoformat(),
                     'file_size': json_file.stat().st_size,
-                    'has_coordinates': 'coordenadas' in result_data.get('datos_extraidos', {}),
-                    'extraction_quality': result_data.get('calidad_extraccion', {}).get('categoria', 'N/A')
+                    'has_coordinates': 'coordenadas' in datos_extraidos,
+                    'extraction_quality': calidad_extraccion.get('categoria', 'N/A'),
+                    
+                    # FIX: Campos específicos para frontend
+                    'tiempo_procesamiento': tiempo_procesamiento_formatted,
+                    'palabras_detectadas': palabras_detectadas,
+                    'confianza_promedio': confianza_formatted,
+                    'texto_completo': texto_completo[:200] + '...' if len(texto_completo) > 200 else texto_completo,
+                    
+                    # FIX: Campos de estado para interface
+                    'estado': 'completado',
+                    'disponible': True,
+                    'error': None,
+                    
+                    # FIX: Metadata para visualización
+                    'metadata': {
+                        'original_filename': result_data.get('archivo_info', {}).get('original_filename', image_name or 'Sin_nombre'),
+                        'formato': result_data.get('archivo_info', {}).get('formato', 'N/A'),
+                        'tamaño_imagen': result_data.get('archivo_info', {}).get('tamaño', 'N/A'),
+                        'fecha_creacion': result_data.get('archivo_info', {}).get('fecha_creacion', 'N/A')
+                    }
                 })
                 
             except Exception as e:
@@ -754,6 +835,176 @@ def api_processed_files():
             'estado': 'error',
             'mensaje': f'Error al obtener archivos procesados: {str(e)}',
             'message': f'Error getting processed files: {str(e)}'
+        }), 500
+
+@app.route('/api/ocr/result_data/<filename>')
+def get_result_data(filename):
+    """
+    FIX: Endpoint específico para datos de resultados del visualizador
+    REASON: Frontend necesita datos estructurados para el visualizador de resultados
+    IMPACT: Elimina valores "undefined" en el visualizador y proporciona datos completos
+    TEST: Verifica estructura de datos específica para visualizador
+    MONITOR: Logging de requests de visualizador para debugging
+    INTERFACE: Datos estructurados específicos para componentes de visualización
+    VISUAL_CHANGE: Visualizador muestra datos reales en lugar de "undefined"
+    REFERENCE_INTEGRITY: Validación de existencia de archivos antes de respuesta
+    """
+    try:
+        from config import get_async_directories
+        directories = get_async_directories()
+        
+        # FIX: Búsqueda inteligente de archivos JSON con múltiples estrategias
+        # REASON: Los nombres de archivos pueden tener diferentes formatos (.png.json vs .json)
+        # IMPACT: Encuentra archivos JSON correctamente independiente del formato de nombre
+        # TEST: Busca con múltiples patrones de nombres posibles
+        # MONITOR: Logging de estrategias de búsqueda para debugging
+        # INTERFACE: Compatibilidad con diferentes formatos de nombres desde frontend
+        # VISUAL_CHANGE: Visualizador encuentra datos correctamente
+        # REFERENCE_INTEGRITY: Validación exhaustiva de existencia de archivos
+        
+        results_dir = Path(directories['results'])
+        json_path = None
+        searched_files = []
+        
+        # Estrategia 1: Nombre directo si ya termina en .json
+        if filename.endswith('.json'):
+            direct_path = results_dir / filename
+            searched_files.append(filename)
+            if direct_path.exists():
+                json_path = direct_path
+        
+        # Estrategia 2: Agregar .json si no lo tiene
+        if not json_path:
+            json_filename = filename if filename.endswith('.json') else f"{filename}.json"
+            candidate_path = results_dir / json_filename
+            searched_files.append(json_filename)
+            if candidate_path.exists():
+                json_path = candidate_path
+        
+        # Estrategia 3: Reemplazar extensión con .json
+        if not json_path:
+            base_name = filename.rsplit('.', 1)[0] if '.' in filename else filename
+            json_filename = f"{base_name}.json"
+            candidate_path = results_dir / json_filename
+            searched_files.append(json_filename)
+            if candidate_path.exists():
+                json_path = candidate_path
+        
+        # Estrategia 4: Buscar por patrón fuzzy
+        if not json_path:
+            import re
+            # Extraer parte base del nombre sin extensiones
+            base_pattern = filename.replace('.png', '').replace('.jpg', '').replace('.jpeg', '').replace('.json', '')
+            
+            for json_file in results_dir.glob('*.json'):
+                if base_pattern in json_file.name:
+                    json_path = json_file
+                    searched_files.append(json_file.name)
+                    break
+        
+        # Si no se encuentra, buscar en directorio de procesados
+        if not json_path:
+            processed_dir = Path(directories['processed'])
+            for strategy_name in searched_files:
+                candidate_path = processed_dir / strategy_name
+                if candidate_path.exists():
+                    json_path = candidate_path
+                    break
+        
+        if not json_path:
+            return jsonify({
+                'status': 'error',
+                'message': 'Archivo de resultados no encontrado',
+                'filename': filename,
+                'searched_files': searched_files,
+                'searched_directories': [str(results_dir), str(Path(directories['processed']))]
+            }), 404
+        
+        # Leer datos del archivo JSON
+        with open(json_path, 'r', encoding='utf-8') as f:
+            result_data = json.load(f)
+        
+        # FIX: Estructura específica para visualizador
+        # REASON: Visualizador requiere campos específicos para mostrar datos
+        # IMPACT: Datos consistentes y completos en visualizador
+        # TEST: Todos los campos del visualizador tienen valores válidos
+        # MONITOR: Logging de datos enviados al visualizador
+        # INTERFACE: Estructura optimizada para componentes de visualización
+        # VISUAL_CHANGE: Visualizador muestra información real y detallada
+        # REFERENCE_INTEGRITY: Validación de estructura de datos antes de envío
+        
+        calidad_extraccion = result_data.get('calidad_extraccion', {})
+        estadisticas = result_data.get('estadisticas', {})
+        datos_extraidos = result_data.get('datos_extraidos', {})
+        archivo_info = result_data.get('archivo_info', {})
+        
+        # Extraer texto completo
+        texto_completo = datos_extraidos.get('texto_completo', '')
+        if not texto_completo:
+            texto_completo = result_data.get('texto_extraido', '')
+        
+        # Extraer coordenadas
+        coordenadas = datos_extraidos.get('coordenadas', [])
+        palabras_individuales = datos_extraidos.get('palabras_individuales', [])
+        
+        # Extraer datos financieros
+        datos_financieros = datos_extraidos.get('datos_financieros', {})
+        
+        # Preparar respuesta estructurada
+        viewer_data = {
+            'status': 'success',
+            'filename': filename,
+            'archivo_info': {
+                'nombre_original': archivo_info.get('original_filename', filename),
+                'formato': archivo_info.get('formato', 'N/A'),
+                'tamaño': archivo_info.get('tamaño', 'N/A'),
+                'fecha_procesamiento': result_data.get('fecha_procesamiento', 'N/A')
+            },
+            'estadisticas': {
+                'tiempo_procesamiento': f"{result_data.get('tiempo_procesamiento', 0):.2f}s",
+                'total_palabras': estadisticas.get('total_palabras', len(palabras_individuales)),
+                'confianza_promedio': f"{calidad_extraccion.get('confianza_promedio', 0):.1f}%",
+                'calidad_categoria': calidad_extraccion.get('categoria', 'N/A'),
+                'palabras_alta_confianza': estadisticas.get('palabras_alta_confianza', 0),
+                'palabras_baja_confianza': estadisticas.get('palabras_baja_confianza', 0)
+            },
+            'texto_extraido': {
+                'texto_completo': texto_completo,
+                'longitud_texto': len(texto_completo),
+                'lineas_texto': len(texto_completo.split('\n')) if texto_completo else 0
+            },
+            'coordenadas': {
+                'disponibles': len(coordenadas) > 0,
+                'total_elementos': len(coordenadas),
+                'elementos': coordenadas[:50]  # Limitar para performance
+            },
+            'palabras_individuales': {
+                'total': len(palabras_individuales),
+                'con_coordenadas': len([p for p in palabras_individuales if p.get('coordenadas')]),
+                'elementos': palabras_individuales[:50]  # Limitar para performance
+            },
+            'datos_financieros': {
+                'disponibles': len(datos_financieros) > 0,
+                'campos_detectados': list(datos_financieros.keys()) if datos_financieros else [],
+                'datos': datos_financieros
+            },
+            'calidad_extraccion': {
+                'score': calidad_extraccion.get('score', 0),
+                'categoria': calidad_extraccion.get('categoria', 'N/A'),
+                'confianza_promedio': calidad_extraccion.get('confianza_promedio', 0),
+                'distribucion_confianza': calidad_extraccion.get('distribucion_confianza', {}),
+                'recomendaciones': calidad_extraccion.get('recomendaciones', [])
+            }
+        }
+        
+        return jsonify(viewer_data)
+        
+    except Exception as e:
+        logger.error(f"Error obteniendo datos para visualizador {filename}: {e}")
+        return jsonify({
+            'status': 'error',
+            'message': f'Error obteniendo datos del visualizador: {str(e)}',
+            'filename': filename
         }), 500
 
 @app.route('/api/ocr/download_json/<filename>')

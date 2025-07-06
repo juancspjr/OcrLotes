@@ -759,6 +759,118 @@ class OrquestadorOCR:
         except Exception as e:
             logger.warning(f"Error limpiando archivos temporales: {str(e)}")
     
+    def procesar_imagen(self, image_path, profile='ultra_rapido', extract_financial=True):
+        """
+        FIX: Método de procesamiento individual simplificado para lotes
+        REASON: Error 'OrquestadorOCR' object has no attribute 'procesar_imagen'
+        IMPACT: Permite procesamiento individual desde process_queue_batch
+        TEST: Procesamiento completo de imagen con validación, mejora y OCR
+        MONITOR: Logging detallado de cada etapa del procesamiento
+        INTERFACE: Método unificado para procesamiento individual desde API
+        VISUAL_CHANGE: Archivos procesados aparecen en resultados y visualizador
+        REFERENCE_INTEGRITY: Usa métodos existentes de la clase para compatibilidad
+        """
+        try:
+            import os
+            import time
+            from pathlib import Path
+            from config import get_async_directories
+            
+            start_time = time.time()
+            directories = get_async_directories()
+            
+            # Generar paths de destino
+            filename = os.path.basename(image_path)
+            processed_dir = Path(directories['processed'])
+            results_dir = Path(directories['results'])
+            
+            # Crear directorios si no existen
+            processed_dir.mkdir(parents=True, exist_ok=True)
+            results_dir.mkdir(parents=True, exist_ok=True)
+            
+            # Generar nombre único para el lote
+            import uuid
+            from datetime import datetime
+            batch_id = f"BATCH_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{str(uuid.uuid4())[:3]}_{filename}"
+            
+            # 1. VALIDACIÓN
+            validation_result = self.validador.analizar_imagen(image_path)
+            if validation_result.get('error'):
+                logger.warning(f"Validación fallida para {filename}: {validation_result['error']}")
+                return {'status': 'error', 'error': validation_result['error']}
+            
+            # 2. MEJORA
+            mejora_result = self.mejorador.procesar_imagen(
+                image_path, validation_result, profile, save_steps=False
+            )
+            
+            if mejora_result.get('error'):
+                logger.warning(f"Mejora fallida para {filename}: {mejora_result['error']}")
+                return {'status': 'error', 'error': mejora_result['error']}
+            
+            # 3. OCR
+            imagen_mejorada = mejora_result.get('imagen_mejorada_path', image_path)
+            deteccion_inteligente = validation_result.get('deteccion_inteligente', {})
+            
+            ocr_result = self.aplicador.extraer_texto(
+                imagen_mejorada, 'spa', profile, extract_financial, deteccion_inteligente
+            )
+            
+            if ocr_result.get('error'):
+                logger.warning(f"OCR fallido para {filename}: {ocr_result['error']}")
+                return {'status': 'error', 'error': ocr_result['error']}
+            
+            # 4. PREPARAR RESULTADO FINAL
+            processing_time = time.time() - start_time
+            
+            resultado_final = {
+                'status': 'exitoso',
+                'request_id': batch_id,
+                'filename': filename,
+                'tiempo_procesamiento': processing_time,
+                'fecha_procesamiento': datetime.now().isoformat(),
+                'archivo_info': {
+                    'original_filename': filename,
+                    'tamaño': os.path.getsize(image_path) if os.path.exists(image_path) else 0,
+                    'formato': os.path.splitext(filename)[1].lower()
+                },
+                'validacion': validation_result,
+                'mejora': mejora_result,
+                'datos_extraidos': ocr_result.get('datos_extraidos', {}),
+                'estadisticas': ocr_result.get('estadisticas', {}),
+                'calidad_extraccion': ocr_result.get('calidad_extraccion', {}),
+                'texto_extraido': ocr_result.get('datos_extraidos', {}).get('texto_completo', '')
+            }
+            
+            # 5. GUARDAR RESULTADO JSON
+            json_filename = f"{batch_id}.json"
+            json_path = results_dir / json_filename
+            
+            # Convertir tipos NumPy antes de guardar
+            resultado_convertido = self.aplicador._convert_numpy_types(resultado_final)
+            
+            with open(json_path, 'w', encoding='utf-8') as f:
+                import json
+                json.dump(resultado_convertido, f, indent=2, ensure_ascii=False)
+            
+            # 6. MOVER IMAGEN A PROCESADOS
+            processed_path = processed_dir / filename
+            if os.path.exists(image_path):
+                import shutil
+                shutil.move(image_path, str(processed_path))
+            
+            logger.info(f"✅ Imagen procesada exitosamente: {filename} → {json_filename}")
+            
+            return resultado_final
+            
+        except Exception as e:
+            logger.error(f"Error procesando imagen {image_path}: {e}")
+            return {
+                'status': 'error',
+                'error': str(e),
+                'filename': os.path.basename(image_path) if image_path else 'unknown'
+            }
+
     def process_queue_batch(self, max_files=5, profile='ultra_rapido'):
         """
         FIX: Método para procesamiento por lotes desde API
