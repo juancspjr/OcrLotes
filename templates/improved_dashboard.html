@@ -287,7 +287,31 @@
                             </div>
                             <div class="d-flex justify-content-between mt-2">
                                 <span>Procesador:</span>
-                                <span class="status-badge status-info" id="workerStatus">Esperando</span>
+                                <span class="status-badge status-info" id="workerStatus">Manual</span>
+                            </div>
+                        </div>
+
+                        <!-- Botones de Control Manual -->
+                        <div class="manual-controls mt-4">
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-success" onclick="processQueueManually()" id="processBtn">
+                                    <i class="fas fa-cogs me-1"></i>
+                                    Procesar Cola Manualmente
+                                </button>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <button class="btn btn-warning w-100" onclick="processAll()" id="processAllBtn">
+                                            <i class="fas fa-forward me-1"></i>
+                                            Procesar Todas
+                                        </button>
+                                    </div>
+                                    <div class="col-6">
+                                        <button class="btn btn-danger w-100" onclick="clearQueue()" id="clearBtn">
+                                            <i class="fas fa-trash me-1"></i>
+                                            Limpiar Cola
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -572,6 +596,132 @@
         
         function downloadResult(requestId) {
             window.open(`/api/ocr/download/${requestId}`, '_blank');
+        }
+        
+        // FIX: Funciones de procesamiento manual para control total del usuario
+        // REASON: Usuario reporta procesamiento automático no deseado tras 1 minuto
+        // IMPACT: Control manual explícito para procesar lotes cuando usuario decida
+        
+        function processQueueManually() {
+            const btn = document.getElementById('processBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Procesando...';
+            
+            fetch('/api/ocr/process_batch', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    batch_size: 5,
+                    profile: 'ultra_rapido'
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    showNotification('success', `Lote procesado: ${data.batch_info.processed_count} imágenes`);
+                    refreshQueue();
+                    refreshProcessed();
+                } else {
+                    showNotification('error', data.message || 'Error al procesar lote');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('error', 'Error de conexión al procesar lote');
+            })
+            .finally(() => {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-cogs me-1"></i>Procesar Cola Manualmente';
+            });
+        }
+        
+        function processAll() {
+            const btn = document.getElementById('processAllBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Procesando Todas...';
+            
+            fetch('/api/ocr/process_batch', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    process_all: true,
+                    profile: 'ultra_rapido'
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    showNotification('success', `Todas procesadas: ${data.batch_info.processed_count} imágenes`);
+                    refreshQueue();
+                    refreshProcessed();
+                } else {
+                    showNotification('error', data.message || 'Error al procesar todas las imágenes');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('error', 'Error de conexión al procesar todas');
+            })
+            .finally(() => {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-forward me-1"></i>Procesar Todas';
+            });
+        }
+        
+        function clearQueue() {
+            if (!confirm('¿Estás seguro de que quieres limpiar toda la cola? Esta acción no se puede deshacer.')) {
+                return;
+            }
+            
+            const btn = document.getElementById('clearBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Limpiando...';
+            
+            fetch('/api/ocr/queue/clear', {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    showNotification('success', 'Cola limpiada exitosamente');
+                    refreshQueue();
+                    refreshProcessed();
+                } else {
+                    showNotification('error', data.message || 'Error al limpiar cola');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('error', 'Error de conexión al limpiar cola');
+            })
+            .finally(() => {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-trash me-1"></i>Limpiar Cola';
+            });
+        }
+        
+        function showNotification(type, message) {
+            // Crear notificación temporal
+            const notification = document.createElement('div');
+            notification.className = `alert alert-${type === 'success' ? 'success' : 'danger'} position-fixed`;
+            notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+            notification.innerHTML = `
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'} me-2"></i>
+                    ${message}
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Remover después de 3 segundos
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
         }
 
         function updateQueueDisplay(data) {

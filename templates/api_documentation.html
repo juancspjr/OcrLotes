@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentación API - Sistema OCR Asíncrono</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <style>
+        .endpoint-card {
+            border-left: 4px solid #007bff;
+            margin-bottom: 2rem;
+        }
+        .method-badge {
+            font-weight: bold;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+        }
+        .method-post { background-color: #28a745; color: white; }
+        .method-get { background-color: #007bff; color: white; }
+        .method-delete { background-color: #dc3545; color: white; }
+        .response-example {
+            background-color: #f8f9fa;
+            border-radius: 0.375rem;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+        .sidebar {
+            position: sticky;
+            top: 1rem;
+            height: calc(100vh - 2rem);
+            overflow-y: auto;
+        }
+        .nav-link {
+            color: #6c757d;
+            padding: 0.5rem 1rem;
+        }
+        .nav-link.active {
+            color: #007bff;
+            background-color: #e3f2fd;
+            border-radius: 0.375rem;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-file-text me-2"></i>
+                API OCR Asíncrono
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/">
+                    <i class="fas fa-home me-1"></i>Dashboard
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid mt-4">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-3">
+                <div class="sidebar">
+                    <nav class="nav flex-column">
+                        <h6 class="nav-header text-muted text-uppercase fw-bold mb-3">Endpoints API</h6>
+                        <a class="nav-link active" href="#overview">Descripción General</a>
+                        <a class="nav-link" href="#process-image">POST /api/ocr/process_image</a>
+                        <a class="nav-link" href="#process-batch">POST /api/ocr/process_batch</a>
+                        <a class="nav-link" href="#queue-status">GET /api/ocr/queue/status</a>
+                        <a class="nav-link" href="#queue-files">GET /api/ocr/queue/files</a>
+                        <a class="nav-link" href="#queue-clear">POST /api/ocr/queue/clear</a>
+                        <a class="nav-link" href="#get-result">GET /api/ocr/result/{id}</a>
+                        <a class="nav-link" href="#download-result">GET /api/ocr/download/{id}</a>
+                        
+                        <h6 class="nav-header text-muted text-uppercase fw-bold mb-3 mt-4">Flujo de Trabajo</h6>
+                        <a class="nav-link" href="#workflow">Flujo Completo</a>
+                        <a class="nav-link" href="#integration">Integración n8n</a>
+                        <a class="nav-link" href="#errors">Códigos de Error</a>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-lg-9">
+                <!-- Overview -->
+                <section id="overview" class="mb-5">
+                    <h1 class="mb-4">Sistema OCR Asíncrono de Alto Volumen</h1>
+                    <p class="lead">API REST para procesamiento de imágenes con OCR, diseñada para integración con sistemas externos como n8n, WhatsApp Business, y workflows de automatización.</p>
+                    
+                    <div class="alert alert-info">
+                        <h5><i class="fas fa-info-circle me-2"></i>Características Principales</h5>
+                        <ul class="mb-0">
+                            <li><strong>Procesamiento Asíncrono:</strong> Acumulación y procesamiento separados para control total</li>
+                            <li><strong>Alto Volumen:</strong> Capacidad de procesar 10+ imágenes simultáneamente</li>
+                            <li><strong>Extracción Posicional:</strong> Mapeo inteligente de campos basado en coordenadas</li>
+                            <li><strong>Metadatos WhatsApp:</strong> Extracción automática de datos de mensajes móviles</li>
+                            <li><strong>Control Manual:</strong> Sin procesamiento automático, requiere activación explícita</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- Process Image -->
+                <section id="process-image" class="mb-5">
+                    <div class="endpoint-card card">
+                        <div class="card-header">
+                            <h3><span class="method-badge method-post">POST</span> /api/ocr/process_image</h3>
+                            <p class="mb-0 text-muted">Acumula una imagen individual en la cola para procesamiento posterior</p>
+                        </div>
+                        <div class="card-body">
+                            <h5>Descripción</h5>
+                            <p>Este endpoint permite acumular imágenes en la cola sin activar el procesamiento automáticamente. Es el primer paso del flujo de trabajo asíncrono.</p>
+                            
+                            <h5>Parámetros (multipart/form-data)</h5>
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Campo</th>
+                                            <th>Tipo</th>
+                                            <th>Requerido</th>
+                                            <th>Descripción</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><code>image</code></td>
+                                            <td>File</td>
+                                            <td><span class="badge bg-danger">Sí</span></td>
+                                            <td>Archivo de imagen (PNG, JPG, JPEG)</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>caption</code></td>
+                                            <td>String</td>
+                                            <td><span class="badge bg-secondary">No</span></td>
+                                            <td>Texto del caption de WhatsApp</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>sender_id</code></td>
+                                            <td>String</td>
+                                            <td><span class="badge bg-secondary">No</span></td>
+                                            <td>ID del remitente (ej: 123456789@s.whatsapp.net)</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>sender_name</code></td>
+                                            <td>String</td>
+                                            <td><span class="badge bg-secondary">No</span></td>
+                                            <td>Nombre del remitente</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>sorteo_fecha</code></td>
+                                            <td>String</td>
+                                            <td><span class="badge bg-secondary">No</span></td>
+                                            <td>Fecha del sorteo (YYYYMMDD)</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>posicion_sorteo</code></td>
+                                            <td>String</td>
+                                            <td><span class="badge bg-secondary">No</span></td>
+                                            <td>Posición en el sorteo (A, B, C, D, E, etc.)</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>hora_min</code></td>
+                                            <td>String</td>
+                                            <td><span class="badge bg-secondary">No</span></td>
+                                            <td>Hora y minutos (HH-MM)</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <h5>Ejemplo de Uso</h5>
+                            <pre><code class="language-bash">curl -X POST http://localhost:5000/api/ocr/process_image \
+  -F "image=@recibo_pago.jpg" \
+  -F "caption=Pago móvil Banesco" \
+  -F "sender_id=987654321@s.whatsapp.net" \
+  -F "sender_name=Juan Perez" \
+  -F "sorteo_fecha=20250706" \
+  -F "posicion_sorteo=A" \
+  -F "hora_min=15-30"</code></pre>
+
+                            <h5>Respuesta (202 Accepted)</h5>
+                            <div class="response-example">
+                                <pre><code class="language-json">{
+  "status": "accepted",
+  "message": "Image queued for processing",
+  "request_id": "987654321@s.whatsapp.net_Juan_Perez_20250706_A_15-30_20250706_153045_123",
+  "queue_position": "pending",
+  "check_result_endpoint": "/api/ocr/result/987654321@s.whatsapp.net_Juan_Perez_20250706_A_15-30_20250706_153045_123",
+  "batch_process_endpoint": "/api/ocr/process_batch"
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Process Batch -->
+                <section id="process-batch" class="mb-5">
+                    <div class="endpoint-card card">
+                        <div class="card-header">
+                            <h3><span class="method-badge method-post">POST</span> /api/ocr/process_batch</h3>
+                            <p class="mb-0 text-muted">Procesa las imágenes acumuladas en la cola bajo demanda</p>
+                        </div>
+                        <div class="card-body">
+                            <h5>Descripción</h5>
+                            <p>Activa el procesamiento manual de las imágenes en cola. Este endpoint requiere activación explícita y no se ejecuta automáticamente.</p>
+                            
+                            <h5>Parámetros (JSON)</h5>
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Campo</th>
+                                            <th>Tipo</th>
+                                            <th>Requerido</th>
+                                            <th>Descripción</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><code>batch_size</code></td>
+                                            <td>Integer</td>
+                                            <td><span class="badge bg-secondary">No</span></td>
+                                            <td>Tamaño del lote (default: 5, max: 20)</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>profile</code></td>
+                                            <td>String</td>
+                                            <td><span class="badge bg-secondary">No</span></td>
+                                            <td>Perfil de procesamiento: ultra_rapido, rapido, normal, high_confidence</td>
+                                        </tr>
+                                        <tr>
+                                            <td><code>process_all</code></td>
+                                            <td>Boolean</td>
+                                            <td><span class="badge bg-secondary">No</span></td>
+                                            <td>Procesar todas las imágenes en cola</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <h5>Ejemplo de Uso</h5>
+                            <pre><code class="language-bash">curl -X POST http://localhost:5000/api/ocr/process_batch \
+  -H "Content-Type: application/json" \
+  -d '{
+    "batch_size": 10,
+    "profile": "ultra_rapido",
+    "process_all": false
+  }'</code></pre>
+
+                            <h5>Respuesta (200 OK)</h5>
+                            <div class="response-example">
+                                <pre><code class="language-json">{
+  "status": "success",
+  "message": "Batch processed successfully",
+  "batch_info": {
+    "batch_id": "batch_20250706_153045",
+    "processed_count": 5,
+    "successful_count": 4,
+    "failed_count": 1,
+    "processing_time_seconds": 12.45,
+    "profile_used": "ultra_rapido",
+    "remaining_in_queue": 3
+  },
+  "processing_summary": {
+    "average_time_per_image": 2.49,
+    "images_per_second": 0.40,
+    "queue_status": "3 images remaining"
+  }
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Queue Status -->
+                <section id="queue-status" class="mb-5">
+                    <div class="endpoint-card card">
+                        <div class="card-header">
+                            <h3><span class="method-badge method-get">GET</span> /api/ocr/queue/status</h3>
+                            <p class="mb-0 text-muted">Obtiene el estado actual de la cola y sistema</p>
+                        </div>
+                        <div class="card-body">
+                            <h5>Descripción</h5>
+                            <p>Proporciona información detallada sobre el estado de la cola, recursos del sistema y estadísticas de procesamiento.</p>
+                            
+                            <h5>Ejemplo de Uso</h5>
+                            <pre><code class="language-bash">curl -X GET http://localhost:5000/api/ocr/queue/status</code></pre>
+
+                            <h5>Respuesta (200 OK)</h5>
+                            <div class="response-example">
+                                <pre><code class="language-json">{
+  "status": "active",
+  "queue_status": {
+    "inbox_count": 8,
+    "processing_count": 0,
+    "processed_count": 42,
+    "error_count": 2
+  },
+  "system_status": {
+    "ocr_engine": "active",
+    "worker_status": "manual",
+    "memory_usage_percent": 34.5,
+    "cpu_usage_percent": 12.3,
+    "disk_usage_percent": 67.8
+  },
+  "capacity_estimation": {
+    "estimated_processing_time": "16.0 segundos",
+    "max_batch_size": 20,
+    "recommended_batch_size": 8
+  }
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Workflow -->
+                <section id="workflow" class="mb-5">
+                    <h2>Flujo de Trabajo Completo</h2>
+                    <div class="alert alert-light">
+                        <h5><i class="fas fa-route me-2"></i>Proceso Típico de Integración</h5>
+                        <ol>
+                            <li><strong>Acumular Imágenes:</strong> Usar <code>POST /api/ocr/process_image</code> para cada imagen</li>
+                            <li><strong>Monitorear Cola:</strong> Usar <code>GET /api/ocr/queue/status</code> para verificar estado</li>
+                            <li><strong>Procesar Lote:</strong> Usar <code>POST /api/ocr/process_batch</code> cuando sea apropiado</li>
+                            <li><strong>Obtener Resultados:</strong> Usar <code>GET /api/ocr/result/{id}</code> para cada imagen procesada</li>
+                            <li><strong>Descargar JSONs:</strong> Usar <code>GET /api/ocr/download/{id}</code> para resultados completos</li>
+                        </ol>
+                    </div>
+                    
+                    <h5>Diagrama de Flujo</h5>
+                    <div class="bg-light p-4 rounded">
+                        <pre><code>📤 n8n/Sistema Externo
+    ↓ POST /api/ocr/process_image (x N imágenes)
+📥 data/inbox/ (Acumulación)
+    ↓ POST /api/ocr/process_batch (Manual)
+⚙️ data/processing/ (Procesamiento)
+    ↓ Éxito/Error
+📂 data/processed/ | data/errors/
+    ↓ GET /api/ocr/result/{id}
+📊 Resultados JSON Estructurados</code></pre>
+                    </div>
+                </section>
+
+                <!-- Integration -->
+                <section id="integration" class="mb-5">
+                    <h2>Integración con n8n</h2>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>Configuración n8n</h5>
+                            <pre><code class="language-json">{
+  "method": "POST",
+  "url": "http://tu-servidor:5000/api/ocr/process_image",
+  "headers": {
+    "Accept": "application/json"
+  },
+  "formData": {
+    "image": "{{ $binary.data }}",
+    "caption": "{{ $json.caption }}",
+    "sender_id": "{{ $json.sender_id }}",
+    "sender_name": "{{ $json.sender_name }}"
+  }
+}</code></pre>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Procesamiento Programado</h5>
+                            <pre><code class="language-json">{
+  "method": "POST",
+  "url": "http://tu-servidor:5000/api/ocr/process_batch",
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "body": {
+    "batch_size": 10,
+    "profile": "ultra_rapido"
+  }
+}</code></pre>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Error Codes -->
+                <section id="errors" class="mb-5">
+                    <h2>Códigos de Error</h2>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Código</th>
+                                    <th>Descripción</th>
+                                    <th>Solución</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>400</code></td>
+                                    <td>Parámetros inválidos o archivo faltante</td>
+                                    <td>Verificar que el campo 'image' esté presente y sea válido</td>
+                                </tr>
+                                <tr>
+                                    <td><code>404</code></td>
+                                    <td>Recurso no encontrado</td>
+                                    <td>Verificar el request_id y que el resultado exista</td>
+                                </tr>
+                                <tr>
+                                    <td><code>500</code></td>
+                                    <td>Error interno del servidor</td>
+                                    <td>Revisar logs del sistema y recursos disponibles</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script>
+        // Smooth scrolling para enlaces del sidebar
+        document.querySelectorAll('.nav-link[href^="#"]').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                    
+                    // Update active link
+                    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                }
+            });
+        });
+
+        // Highlight current section on scroll
+        window.addEventListener('scroll', function() {
+            const sections = document.querySelectorAll('section[id]');
+            const navLinks = document.querySelectorAll('.nav-link[href^="#"]');
+            
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= sectionTop - 200) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,7 +1,7 @@
 {
   "request_id": "20250101-A_unknown_Unknown_00-00.png",
-  "processing_status": "warning",
-  "error_reason": "No fields extracted but processing completed",
+  "processing_status": "success",
+  "error_reason": null,
   "metadata": {
     "fecha_procesamiento": null,
     "perfil_ocr_usado": "unknown",
@@ -13,15 +13,24 @@
       "hora_envio_whatsapp": "00:00",
       "sorteo_fecha": "20250101",
       "sorteo_conteo": "A",
-      "caption_whatsapp": ""
+      "caption_whatsapp": "20250706"
     }
   },
   "full_raw_ocr_text": "",
-  "extracted_fields": [],
+  "extracted_fields": [
+    {
+      "field_name": "descripcion_motivo",
+      "value": "20250706",
+      "confidence": 1.0,
+      "coordinates": null,
+      "relative_position": null,
+      "raw_text_segment": null
+    }
+  ],
   "unmapped_text_segments": [],
   "batch_metadata": {
     "batch_size": 1,
-    "batch_processing_time_seconds": 0.29,
-    "batch_timestamp": "2025-07-06T04:08:35.802806"
+    "batch_processing_time_seconds": 0.1,
+    "batch_timestamp": "2025-07-06T04:24:08.980865"
   }
 }

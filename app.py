@@ -86,19 +86,15 @@ def batch_processing_worker():
                            os.path.join(directories['inbox'], "*.jpeg")]:
                 image_files.extend(glob.glob(pattern))
             
-            if image_files:
-                # Ordenar por timestamp (FIFO)
-                image_files.sort(key=os.path.getmtime)
-                
-                # Seleccionar lote
-                batch_size = batch_config['batch_size']
-                current_batch = image_files[:batch_size]
-                
-                if current_batch:
-                    logger.info(f"Procesando lote de {len(current_batch)} imágenes")
-                    process_batch(current_batch, directories)
+            # FIX: DESHABILITADO procesamiento automático de imágenes en cola
+            # REASON: Usuario reporta procesamiento no deseado tras 1 minuto de espera
+            # IMPACT: Sistema requiere activación manual explícita vía botón o API
             
-            # Esperar antes del siguiente ciclo
+            # Solo monitorear estado, NO procesar automáticamente
+            # if image_files:
+            #     logger.info(f"Imágenes en cola: {len(image_files)} - esperando activación manual")
+            
+            # Esperar antes del siguiente ciclo de monitoreo
             time.sleep(batch_config['polling_interval_seconds'])
             
         except Exception as e:

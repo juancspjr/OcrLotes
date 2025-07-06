@@ -1,8 +1,0 @@
-PagomovilBDVPersonas
-o
-Fecha: 20062025
-Operacin: 003039387344T
-Identificacin: 27061025
-Origen: 01022679
-Destino: 04125318244
-Banco: 0105-BANCOMERCANTIL

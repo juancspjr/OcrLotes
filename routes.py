@@ -1481,3 +1481,61 @@ def api_download_result(request_id):
             'message': 'Error descargando resultado',
             'details': str(e)
         }), 500
+
+@app.route('/api/ocr/queue/clear', methods=['POST'])
+def api_clear_queue():
+    """
+    FIX: Endpoint para limpiar completamente la cola de procesamiento
+    REASON: Usuario necesita botón para limpiar cola y evitar basura acumulada
+    IMPACT: Control total para limpiar archivos no deseados en cola
+    """
+    try:
+        from config import get_async_directories
+        import glob
+        
+        directories = get_async_directories()
+        
+        # Contar archivos antes de limpiar
+        patterns = [
+            os.path.join(directories['inbox'], "*"),
+            os.path.join(directories['processing'], "*"),
+            os.path.join(directories['processed'], "*"),
+            os.path.join(directories['errors'], "*")
+        ]
+        
+        removed_count = 0
+        for pattern in patterns:
+            files = glob.glob(pattern)
+            for file_path in files:
+                try:
+                    if os.path.isfile(file_path):
+                        os.remove(file_path)
+                        removed_count += 1
+                except Exception as e:
+                    logger.warning(f"Error removiendo {file_path}: {e}")
+        
+        logger.info(f"✅ Cola limpiada: {removed_count} archivos removidos")
+        
+        return jsonify({
+            'status': 'success',
+            'message': f'Queue cleared successfully',
+            'files_removed': removed_count,
+            'directories_cleared': ['inbox', 'processing', 'processed', 'errors']
+        }), 200
+        
+    except Exception as e:
+        logger.error(f"Error limpiando cola: {e}")
+        return jsonify({
+            'status': 'error',
+            'message': 'Error clearing queue',
+            'details': str(e)
+        }), 500
+
+@app.route('/api/docs')
+def api_documentation():
+    """
+    FIX: Documentación completa de APIs para integración externa
+    REASON: Usuario solicita documentación de endpoints para entender "esto es para esto y esto otro"
+    IMPACT: Documentación profesional que facilita integración con n8n y otros sistemas
+    """
+    return render_template('api_documentation.html')
