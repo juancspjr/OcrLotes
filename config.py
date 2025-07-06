@@ -530,23 +530,53 @@ ASYNC_DIRECTORIES = {
 }
 
 # Configuración de validación de campos obligatorios para recibos
+# FIX: Configuración de validación más flexible para reducir errores de rechazo
+# REASON: La validación estricta estaba rechazando imágenes válidas que solo necesitan procesamiento OCR
+# IMPACT: Permitir procesamiento exitoso de más imágenes con validación flexible
+
 RECEIPT_VALIDATION_CONFIG = {
-    'mandatory_fields': {
-        'basic': ['numero_referencia', 'monto', 'banco_origen'],
-        'beneficiary_flexible': {
-            'option1': ['cedula_beneficiario'],
-            'option2': ['telefono_beneficiario', 'banco_beneficiario']
+    'validation_modes': {
+        'strict': {
+            'mandatory_fields': {
+                'basic': ['numero_referencia', 'monto', 'banco_origen'],
+                'beneficiary_flexible': {
+                    'option1': ['cedula_beneficiario'],
+                    'option2': ['telefono_beneficiario', 'banco_beneficiario']
+                }
+            }
+        },
+        'normal': {
+            'mandatory_fields': {
+                'basic': ['monto'],  # Solo requerir monto
+                'beneficiary_flexible': {
+                    'option1': ['cedula_beneficiario'],
+                    'option2': ['telefono_beneficiario', 'banco_beneficiario'],
+                    'option3': ['nombre_beneficiario']  # Permitir solo nombre
+                }
+            }
+        },
+        'flexible': {
+            'mandatory_fields': {
+                'basic': [],  # No requerir campos específicos
+                'beneficiary_flexible': {
+                    'option1': ['cedula_beneficiario'],
+                    'option2': ['telefono_beneficiario'],
+                    'option3': ['nombre_beneficiario'],
+                    'option4': []  # Permitir procesamiento sin beneficiario específico
+                }
+            }
         }
     },
-    'optional_fields': ['fecha_transaccion', 'nombre_beneficiario', 'tipo_transaccion'],
+    'default_mode': 'flexible',  # Usar modo flexible por defecto
+    'optional_fields': ['fecha_transaccion', 'nombre_beneficiario', 'tipo_transaccion', 'numero_referencia', 'banco_origen'],
     'confidence_thresholds': {
-        'minimum_field_confidence': 0.6,
-        'minimum_overall_confidence': 0.7
+        'minimum_field_confidence': 0.5,  # Reducido de 0.6
+        'minimum_overall_confidence': 0.6  # Reducido de 0.7
     },
     'validation_rules': {
-        'numero_referencia': r'^[A-Z0-9\-]{6,20}$',
-        'monto': r'^\d+(?:\.\d{2})?$',
-        'cedula_beneficiario': r'^[VE]\-?\d{7,8}$',
+        'numero_referencia': r'^[A-Z0-9\-\s]{4,25}$',  # Más permisivo
+        'monto': r'^\d+(?:[,\.]\d{1,3})*(?:[,\.]\d{2})?$',  # Permitir comas y puntos
+        'cedula_beneficiario': r'^[VE]?\-?\d{6,9}$',  # Más permisivo
         'telefono_beneficiario': r'^\+?58\d{10}$'
     }
 }

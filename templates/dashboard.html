@@ -886,11 +886,15 @@ GET /api/ocr/result/request_id
                         </div>
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center mb-3">
-                                <span>Estado OCR:</span>
+                                <span data-bs-toggle="tooltip" title="Motor que convierte imágenes a texto">
+                                    <i class="fas fa-eye me-2 text-primary"></i>Lector de Texto:
+                                </span>
                                 <span class="status-badge status-info" id="ocrStatus">Verificando...</span>
                             </div>
                             <div class="d-flex justify-content-between align-items-center mb-3">
-                                <span>Worker:</span>
+                                <span data-bs-toggle="tooltip" title="Sistema que procesa automáticamente las imágenes que subes">
+                                    <i class="fas fa-cogs me-2 text-success"></i>Procesador Automático:
+                                </span>
                                 <span class="status-badge status-info" id="workerStatus">Verificando...</span>
                             </div>
                             <div class="d-flex justify-content-between align-items-center">
@@ -1009,12 +1013,25 @@ GET /api/ocr/result/request_id
         }
 
         function updateSystemStatus(data) {
-            // Update status badges
-            document.getElementById('ocrStatus').textContent = data.system_status.ocr_loaded ? 'Activo' : 'Inactivo';
-            document.getElementById('ocrStatus').className = 'status-badge ' + (data.system_status.ocr_loaded ? 'status-success' : 'status-danger');
+            // FIX: Mejora de explicaciones para usuarios no técnicos
+            // REASON: Usuario solicita mejor explicación de cada componente del sistema
+            // IMPACT: Interfaz más clara y fácil de entender para usuarios sin experiencia técnica
             
-            document.getElementById('workerStatus').textContent = data.system_status.worker_running ? 'Activo' : 'Inactivo';
-            document.getElementById('workerStatus').className = 'status-badge ' + (data.system_status.worker_running ? 'status-success' : 'status-danger');
+            // Update OCR status with explanation
+            const ocrActive = data.system_status.ocr_loaded;
+            document.getElementById('ocrStatus').textContent = ocrActive ? 'Funcionando' : 'Detenido';
+            document.getElementById('ocrStatus').className = 'status-badge ' + (ocrActive ? 'status-success' : 'status-danger');
+            document.getElementById('ocrStatus').title = ocrActive ? 
+                'El sistema de lectura de texto está funcionando correctamente' : 
+                'El sistema de lectura de texto no está funcionando';
+            
+            // Update worker status with explanation
+            const workerActive = data.system_status.worker_running;
+            document.getElementById('workerStatus').textContent = workerActive ? 'Procesando' : 'Pausado';
+            document.getElementById('workerStatus').className = 'status-badge ' + (workerActive ? 'status-success' : 'status-danger');
+            document.getElementById('workerStatus').title = workerActive ? 
+                'El sistema está listo para procesar imágenes automáticamente' : 
+                'El sistema no está procesando imágenes en este momento';
             
             document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString();
 
