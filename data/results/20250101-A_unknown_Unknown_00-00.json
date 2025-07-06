@@ -13,14 +13,14 @@
       "hora_envio_whatsapp": "00:00",
       "sorteo_fecha": "20250101",
       "sorteo_conteo": "A",
-      "caption_whatsapp": "Prueba de sistema mejorado"
+      "caption_whatsapp": "Prueba de visibilidad del texto"
     }
   },
   "full_raw_ocr_text": "",
   "extracted_fields": [
     {
       "field_name": "descripcion_motivo",
-      "value": "Prueba de sistema mejorado",
+      "value": "Prueba de visibilidad del texto",
       "confidence": 1.0,
       "coordinates": null,
       "relative_position": null,
@@ -30,7 +30,7 @@
   "unmapped_text_segments": [],
   "batch_metadata": {
     "batch_size": 1,
-    "batch_processing_time_seconds": 0.03,
-    "batch_timestamp": "2025-07-06T03:09:06.950510"
+    "batch_processing_time_seconds": 0.04,
+    "batch_timestamp": "2025-07-06T03:15:10.134982"
   }
 }

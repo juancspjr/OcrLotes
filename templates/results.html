@@ -424,8 +424,8 @@
                             <!-- FIX: Texto extraído en NEGRO para mejor visibilidad -->
                             <!-- REASON: Usuario solicita que el texto se vea en negro -->
                             <!-- IMPACT: Mejor legibilidad del texto extraído -->
-                            <div class="text-content bg-light p-3 rounded">
-                                <pre class="mb-0" style="white-space: pre-wrap; font-family: monospace; color: #000000 !important; background-color: #ffffff !important; border: 1px solid #dee2e6;">{{ etapas['3_ocr'].texto_completo }}</pre>
+                            <div class="text-content p-3 rounded" style="background-color: #ffffff !important; border: 2px solid #007bff;">
+                                <pre class="mb-0" style="white-space: pre-wrap; font-family: 'Courier New', monospace; color: #000000 !important; background-color: #ffffff !important; font-size: 14px; line-height: 1.5; font-weight: 500;">{{ etapas['3_ocr'].texto_completo }}</pre>
                             </div>
                             <div class="mt-2 text-end">
                                 <small class="text-muted">{{ etapas['3_ocr'].texto_completo|length }} caracteres extraídos</small>
