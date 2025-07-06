@@ -1,0 +1,711 @@
+{
+  "status": "exitoso",
+  "request_id": "BATCH_20250706_202103_b19_test_file_1.png",
+  "filename": "test_file_1.png",
+  "tiempo_procesamiento": 1.1992073059082031,
+  "fecha_procesamiento": "2025-07-06T20:21:05.135242",
+  "archivo_info": {
+    "original_filename": "test_file_1.png",
+    "tamaño": 184048,
+    "formato": ".png"
+  },
+  "validacion": {
+    "imagen_info": {
+      "ancho": 1440,
+      "alto": 900,
+      "resolucion_total": 1296000,
+      "canales": 4,
+      "modo": "RGBA",
+      "formato": "PNG",
+      "brillo_promedio": 124.18553240740741,
+      "desviacion_brillo": 99.07874569922016,
+      "rango_dinamico": 255.0,
+      "histogram": [
+        377.0,
+        12.0,
+        1.0,
+        20.0,
+        12.0,
+        11.0,
+        14.0,
+        4.0,
+        1.0,
+        1.0,
+        5.0,
+        34.0,
+        6.0,
+        10.0,
+        14.0,
+        18.0,
+        48094.0,
+        59.0,
+        45.0,
+        35.0,
+        23.0,
+        113211.0,
+        35.0,
+        18.0,
+        68.0,
+        31.0,
+        56.0,
+        20.0,
+        31.0,
+        36956.0,
+        77.0,
+        32.0,
+        44.0,
+        114.0,
+        220.0,
+        90357.0,
+        3401.0,
+        2697.0,
+        1579.0,
+        246.0,
+        74461.0,
+        59.0,
+        40.0,
+        748.0,
+        63.0,
+        59.0,
+        57.0,
+        116.0,
+        60.0,
+        282.0,
+        154700.0,
+        1483.0,
+        138933.0,
+        27543.0,
+        134.0,
+        157.0,
+        121.0,
+        96.0,
+        525.0,
+        1084.0,
+        61.0,
+        317.0,
+        1216.0,
+        146.0,
+        193.0,
+        63.0,
+        916.0,
+        209.0,
+        5605.0,
+        107.0,
+        113.0,
+        77.0,
+        416.0,
+        126.0,
+        894.0,
+        56.0,
+        55.0,
+        103.0,
+        141.0,
+        77.0,
+        153.0,
+        1894.0,
+        46.0,
+        235.0,
+        905.0,
+        72.0,
+        116.0,
+        153.0,
+        71.0,
+        167.0,
+        84.0,
+        69.0,
+        312.0,
+        43.0,
+        54.0,
+        10508.0,
+        32920.0,
+        6835.0,
+        248.0,
+        572.0,
+        175.0,
+        102.0,
+        110.0,
+        98.0,
+        73.0,
+        313.0,
+        222.0,
+        169.0,
+        443.0,
+        686.0,
+        144.0,
+        161.0,
+        178.0,
+        115.0,
+        1963.0,
+        196.0,
+        157.0,
+        114.0,
+        223.0,
+        83.0,
+        258.0,
+        83.0,
+        174.0,
+        67.0,
+        326.0,
+        112.0,
+        541.0,
+        114.0,
+        935.0,
+        162.0,
+        405.0,
+        607.0,
+        1071.0,
+        557.0,
+        258.0,
+        457.0,
+        1226.0,
+        118.0,
+        66.0,
+        111.0,
+        102.0,
+        148.0,
+        135.0,
+        198.0,
+        104.0,
+        119.0,
+        74.0,
+        183.0,
+        67.0,
+        116.0,
+        120.0,
+        190.0,
+        122.0,
+        682.0,
+        427.0,
+        336.0,
+        155.0,
+        93.0,
+        295.0,
+        149.0,
+        266.0,
+        106.0,
+        272.0,
+        170.0,
+        917.0,
+        118.0,
+        149.0,
+        71.0,
+        100.0,
+        498.0,
+        135.0,
+        1083.0,
+        1082.0,
+        132.0,
+        108.0,
+        534.0,
+        66.0,
+        77.0,
+        73.0,
+        248.0,
+        117.0,
+        98.0,
+        493.0,
+        232.0,
+        136.0,
+        88.0,
+        117.0,
+        167.0,
+        156.0,
+        74.0,
+        437.0,
+        135.0,
+        338.0,
+        763.0,
+        126.0,
+        356.0,
+        144.0,
+        463.0,
+        530.0,
+        361.0,
+        566.0,
+        44.0,
+        80.0,
+        110.0,
+        2103.0,
+        1965.0,
+        532.0,
+        153.0,
+        66.0,
+        113.0,
+        337.0,
+        108.0,
+        86.0,
+        144.0,
+        215.0,
+        379.0,
+        1268.0,
+        377.0,
+        1244.0,
+        118.0,
+        199.0,
+        178.0,
+        113.0,
+        583.0,
+        225.0,
+        883.0,
+        345.0,
+        549.0,
+        150.0,
+        273.0,
+        1388.0,
+        6229.0,
+        670.0,
+        519.0,
+        56603.0,
+        6028.0,
+        28475.0,
+        155.0,
+        490.0,
+        669.0,
+        10347.0,
+        1045.0,
+        2193.0,
+        255.0,
+        29138.0,
+        4790.0,
+        52876.0,
+        8525.0,
+        5675.0,
+        42955.0,
+        142524.0,
+        61.0,
+        73.0,
+        420.0,
+        380.0,
+        86229.0
+      ],
+      "histogram_analysis": {
+        "picos_principales": [
+          [
+            50,
+            154700
+          ],
+          [
+            250,
+            142524
+          ],
+          [
+            52,
+            138933
+          ]
+        ],
+        "rango_fondo_sugerido": 250,
+        "rango_texto_sugerido": 50,
+        "distribucion": {
+          "oscuras": 0.5500262379646301,
+          "medias": 0.055720679461956024,
+          "claras": 0.39425307512283325
+        },
+        "requiere_inversion": true,
+        "bimodal": true
+      },
+      "variaciones_fondo": {
+        "total_regiones_analizadas": 1904,
+        "fondos_unicos_detectados": 22,
+        "variacion_fondos": 99.31929773003384,
+        "fondos_heterogeneos": true,
+        "rango_fondos": [
+          16,
+          255
+        ],
+        "requiere_unificacion_avanzada": true,
+        "regiones_variacion": [
+          {
+            "posicion": [
+              0,
+              0
+            ],
+            "media_local": 229.4608,
+            "std_local": 26.169655392457884,
+            "pico_fondo": 234
+          },
+          {
+            "posicion": [
+              25,
+              0
+            ],
+            "media_local": 232.5512,
+            "std_local": 18.11066477410479,
+            "pico_fondo": 234
+          },
+          {
+            "posicion": [
+              50,
+              0
+            ],
+            "media_local": 231.5432,
+            "std_local": 20.478596967565917,
+            "pico_fondo": 234
+          },
+          {
+            "posicion": [
+              75,
+              0
+            ],
+            "media_local": 224.972,
+            "std_local": 34.4917615670757,
+            "pico_fondo": 234
+          },
+          {
+            "posicion": [
+              100,
+              0
+            ],
+            "media_local": 224.052,
+            "std_local": 39.69911454931961,
+            "pico_fondo": 234
+          },
+          {
+            "posicion": [
+              125,
+              0
+            ],
+            "media_local": 229.6624,
+            "std_local": 30.223401963379306,
+            "pico_fondo": 234
+          },
+          {
+            "posicion": [
+              150,
+              0
+            ],
+            "media_local": 225.8612,
+            "std_local": 34.31872279907864,
+            "pico_fondo": 234
+          },
+          {
+            "posicion": [
+              175,
+              0
+            ],
+            "media_local": 223.8268,
+            "std_local": 40.25330796046457,
+            "pico_fondo": 234
+          },
+          {
+            "posicion": [
+              200,
+              0
+            ],
+            "media_local": 230.3516,
+            "std_local": 29.10149098310944,
+            "pico_fondo": 234
+          },
+          {
+            "posicion": [
+              225,
+              0
+            ],
+            "media_local": 226.0172,
+            "std_local": 34.02493356584257,
+            "pico_fondo": 234
+          }
+        ]
+      }
+    },
+    "calidad_imagen": {
+      "contraste": 99.07874569922016,
+      "blur_variance": 4074.6751712962964,
+      "entropy": 4.512774467468262,
+      "gradiente_promedio": 50.82749600043,
+      "brillo_promedio": 124.18553240740741,
+      "uniformidad_brillo": 99.07874569922016,
+      "calificacion_calidad": 95
+    },
+    "deteccion_texto": {
+      "regiones_detectadas": 93,
+      "area_total_texto": 52961,
+      "densidad_texto": 0.04086496913580247,
+      "regiones": [
+        {
+          "x": 1320,
+          "y": 881,
+          "width": 63,
+          "height": 15,
+          "area": 945,
+          "aspect_ratio": 4.2
+        },
+        {
+          "x": 1213,
+          "y": 874,
+          "width": 16,
+          "height": 11,
+          "area": 176,
+          "aspect_ratio": 1.4545454545454546
+        },
+        {
+          "x": 1287,
+          "y": 872,
+          "width": 23,
+          "height": 15,
+          "area": 345,
+          "aspect_ratio": 1.5333333333333334
+        },
+        {
+          "x": 1258,
+          "y": 871,
+          "width": 22,
+          "height": 18,
+          "area": 396,
+          "aspect_ratio": 1.2222222222222223
+        },
+        {
+          "x": 1234,
+          "y": 871,
+          "width": 22,
+          "height": 19,
+          "area": 418,
+          "aspect_ratio": 1.1578947368421053
+        },
+        {
+          "x": 13,
+          "y": 870,
+          "width": 21,
+          "height": 20,
+          "area": 420,
+          "aspect_ratio": 1.05
+        },
+        {
+          "x": 1396,
+          "y": 869,
+          "width": 30,
+          "height": 30,
+          "area": 900,
+          "aspect_ratio": 1.0
+        },
+        {
+          "x": 307,
+          "y": 868,
+          "width": 26,
+          "height": 23,
+          "area": 598,
+          "aspect_ratio": 1.1304347826086956
+        },
+        {
+          "x": 407,
+          "y": 867,
+          "width": 21,
+          "height": 26,
+          "area": 546,
+          "aspect_ratio": 0.8076923076923077
+        },
+        {
+          "x": 60,
+          "y": 867,
+          "width": 30,
+          "height": 26,
+          "area": 780,
+          "aspect_ratio": 1.1538461538461537
+        },
+        {
+          "x": 649,
+          "y": 866,
+          "width": 28,
+          "height": 28,
+          "area": 784,
+          "aspect_ratio": 1.0
+        },
+        {
+          "x": 591,
+          "y": 866,
+          "width": 45,
+          "height": 34,
+          "area": 1530,
+          "aspect_ratio": 1.3235294117647058
+        },
+        {
+          "x": 551,
+          "y": 866,
+          "width": 28,
+          "height": 28,
+          "area": 784,
+          "aspect_ratio": 1.0
+        },
+        {
+          "x": 493,
+          "y": 866,
+          "width": 45,
+          "height": 34,
+          "area": 1530,
+          "aspect_ratio": 1.3235294117647058
+        },
+        {
+          "x": 453,
+          "y": 866,
+          "width": 27,
+          "height": 27,
+          "area": 729,
+          "aspect_ratio": 1.0
+        },
+        {
+          "x": 357,
+          "y": 866,
+          "width": 24,
+          "height": 28,
+          "area": 672,
+          "aspect_ratio": 0.8571428571428571
+        },
+        {
+          "x": 199,
+          "y": 866,
+          "width": 47,
+          "height": 34,
+          "area": 1598,
+          "aspect_ratio": 1.3823529411764706
+        },
+        {
+          "x": 256,
+          "y": 865,
+          "width": 29,
+          "height": 30,
+          "area": 870,
+          "aspect_ratio": 0.9666666666666667
+        },
+        {
+          "x": 1337,
+          "y": 863,
+          "width": 30,
+          "height": 15,
+          "area": 450,
+          "aspect_ratio": 2.0
+        },
+        {
+          "x": 97,
+          "y": 857,
+          "width": 98,
+          "height": 43,
+          "area": 4214,
+          "aspect_ratio": 2.2790697674418605
+        }
+      ],
+      "cobertura_texto_porcentaje": 4.0864969135802465
+    },
+    "ruido_artefactos": {
+      "nivel_ruido": 5.424371913580247,
+      "desviacion_ruido": 16.634277124488243,
+      "porcentaje_pixeles_ruidosos": 5.623611111111111,
+      "uniformidad": 5.144556327160494,
+      "calificacion_ruido": "Moderado"
+    },
+    "geometria_orientacion": {
+      "sesgo_estimado": 2.5,
+      "lineas_detectadas": 50,
+      "simetria_horizontal": 0.3418559432029724,
+      "relacion_aspecto": 1.6,
+      "requiere_deskew": true,
+      "orientacion_correcta": true
+    },
+    "deteccion_inteligente": {
+      "tipo_imagen": "documento_escaneado",
+      "esquema_color": "texto_oscuro_fondo_claro",
+      "inversion_requerida": false,
+      "ui_elements_detectados": false,
+      "aspect_ratio": 1.6,
+      "calidad_digital": false,
+      "dark_percentage": 59.60323715209961,
+      "light_percentage": 40.396759033203125,
+      "edge_density": 0.05563194444444444,
+      "noise_estimate": 60.645368356926014,
+      "confianza_deteccion": 0.0
+    },
+    "recomendaciones": {
+      "perfil_recomendado": "rapido",
+      "aplicar_deskew": true,
+      "nivel_denoise": "moderado",
+      "ajuste_contraste": false,
+      "filtro_bilateral": true,
+      "prioridades": [
+        "Corrección de sesgo necesaria"
+      ]
+    },
+    "puntuacion_general": {
+      "total": 66.1,
+      "calidad": 95,
+      "texto": 20.4,
+      "ruido": 60,
+      "geometria": 100,
+      "categoria": "Buena"
+    }
+  },
+  "mejora": {
+    "perfil_usado": "ultra_rapido",
+    "pasos_aplicados": [
+      "00_analisis_sin_unificacion",
+      "00_maxima_claridad_letras",
+      "01_no_inversion_necesaria",
+      "02_sin_procesamiento"
+    ],
+    "metricas_antes": {
+      "brillo_promedio": 124.18553240740741,
+      "contraste": 99.07874569922016,
+      "nitidez": 4074.6751712962964,
+      "rango_dinamico": 255.0
+    },
+    "parametros_aplicados": {
+      "analisis_fondos": {
+        "intensidad_media_original": 124.19,
+        "porcentaje_fondo_oscuro": 0.5479999780654907,
+        "unificacion_aplicada": false,
+        "razon_no_unificacion": "preservacion_calidad_usuario"
+      },
+      "no_inversion": {
+        "razon": "imagen_suficientemente_clara",
+        "intensidad_media": 124.19
+      },
+      "documento_processing_eliminado": {
+        "razon": "eliminado_por_solicitud_usuario",
+        "bilateral_filter": false,
+        "contraste_adaptativo": false,
+        "binarizacion": false,
+        "impacto": "preserva_imagen_original_completamente"
+      }
+    },
+    "tiempo_procesamiento": 0.023,
+    "estrategia_aplicada": "Documento Escaneado - SIN PROCESAMIENTO",
+    "metricas_despues": {
+      "brillo_promedio": 123.32030709876543,
+      "contraste": 101.22669444001107,
+      "nitidez": 8917.715369564005,
+      "rango_dinamico": 255.0
+    },
+    "imagen_mejorada": "imagen_mejorada.png",
+    "mejora_calidad": {
+      "contraste": {
+        "antes": 99.08,
+        "despues": 101.23,
+        "cambio": 2.15,
+        "porcentaje": 2.2
+      },
+      "nitidez": {
+        "antes": 4074.68,
+        "despues": 8917.72,
+        "cambio": 4843.04,
+        "porcentaje": 118.9
+      },
+      "rango_dinamico": {
+        "antes": 255.0,
+        "despues": 255.0,
+        "cambio": 0.0,
+        "porcentaje": 0.0
+      }
+    }
+  },
+  "datos_extraidos": {},
+  "estadisticas": {},
+  "calidad_extraccion": {
+    "score_calidad": 79.9,
+    "categoria": "buena",
+    "confianza_promedio": 0.9,
+    "palabras_alta_confianza": 198,
+    "total_palabras": 249,
+    "longitud_texto": 1570,
+    "recomendaciones": [
+      "Calidad de extracción satisfactoria"
+    ]
+  },
+  "texto_extraido": ""
+}

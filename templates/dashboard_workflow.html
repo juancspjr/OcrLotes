@@ -317,47 +317,81 @@
 
         async function extraerResultados() {
             /**
-             * FIX: Función corregida para descargar ZIP de resultados del endpoint correcto
-             * REASON: Estaba llamando a /api/ocr/processed_files en lugar de /api/extract_results
-             * IMPACT: Funcionalidad "Extraer Resultados JSON" ahora descarga ZIP correctamente
-             * TEST: Descarga ZIP con todos los archivos JSON de results/
-             * MONITOR: Logging de descarga de resultados
-             * INTERFACE: Botón funcional con descarga automática de ZIP
-             * VISUAL_CHANGE: Usuario recibe archivo ZIP en descargas
-             * REFERENCE_INTEGRITY: Endpoint /api/extract_results existe y es accesible
+             * FIX: Función robusta para descargar ZIP con verificación previa y manejo de errores
+             * REASON: Verificar disponibilidad de resultados antes de intentar descarga
+             * IMPACT: Experiencia de usuario mejorada con mensajes claros y manejo de casos edge
+             * TEST: Verificación previa de disponibilidad y descarga condicional
+             * MONITOR: Logging detallado de estado de descarga
+             * INTERFACE: Botón funcional con validación previa
+             * VISUAL_CHANGE: Mensajes informativos claros para el usuario
+             * REFERENCE_INTEGRITY: Endpoint /api/extract_results validado antes de uso
              */
             const button = event.target;
             const originalText = button.innerHTML;
             button.disabled = true;
-            button.innerHTML = '<div class="spinner-border spinner-border-sm me-2"></div>Extrayendo...';
+            button.innerHTML = '<div class="spinner-border spinner-border-sm me-2"></div>Verificando...';
 
             try {
-                // Crear enlace de descarga temporal
+                // Primero verificar si hay archivos de resultados disponibles
+                const checkResponse = await fetch('/api/extract_results', {
+                    method: 'HEAD'
+                });
+                
+                if (checkResponse.status === 404) {
+                    alert('⚠️ No hay archivos de resultados disponibles para extraer.\nProcesa primero algunos archivos usando "Procesar Todo el Lote".');
+                    return;
+                }
+                
+                if (!checkResponse.ok) {
+                    throw new Error(`Error del servidor: ${checkResponse.status} ${checkResponse.statusText}`);
+                }
+                
+                // Si hay archivos disponibles, proceder con descarga
+                button.innerHTML = '<div class="spinner-border spinner-border-sm me-2"></div>Descargando...';
+                
+                // Usar fetch para manejar mejor los errores
+                const downloadResponse = await fetch('/api/extract_results');
+                
+                if (!downloadResponse.ok) {
+                    throw new Error(`Error en descarga: ${downloadResponse.status} ${downloadResponse.statusText}`);
+                }
+                
+                // Convertir respuesta a blob para descarga
+                const blob = await downloadResponse.blob();
+                
+                // Crear enlace de descarga
                 const link = document.createElement('a');
-                link.href = '/api/extract_results';
+                link.href = URL.createObjectURL(blob);
                 link.download = 'resultados_ocr.zip';
                 link.style.display = 'none';
                 
-                // Agregar al DOM, hacer clic y remover
+                // Descargar archivo
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
                 
-                // Actualizar lista de resultados para mostrar archivos disponibles
-                const response = await fetch('/api/ocr/processed_files');
-                const data = await response.json();
+                // Limpiar URL object
+                URL.revokeObjectURL(link.href);
                 
-                if (data.files && data.files.length > 0) {
-                    resultadosJSONData = data.files.filter(file => file.has_ocr_data);
+                // Actualizar lista de resultados para mostrar archivos disponibles
+                const listResponse = await fetch('/api/ocr/processed_files');
+                const listData = await listResponse.json();
+                
+                if (listData.files && listData.files.length > 0) {
+                    resultadosJSONData = listData.files.filter(file => file.has_ocr_data);
                     renderizarResultadosJSON();
-                    alert(`✅ Descarga iniciada: ${resultadosJSONData.length} archivos JSON en el ZIP`);
+                    alert(`✅ Descarga completada exitosamente.\nArchivos incluidos: ${resultadosJSONData.length} resultados JSON`);
                 } else {
-                    alert('⚠️ No se encontraron archivos con resultados JSON para descargar');
+                    alert('✅ Descarga completada exitosamente.');
                 }
                 
             } catch (error) {
-                console.error('Error:', error);
-                alert('❌ Error al extraer resultados: No se pudieron extraer los resultados');
+                console.error('Error detallado:', error);
+                if (error.name === 'TypeError' && error.message.includes('fetch')) {
+                    alert('❌ Error de conexión: No se pudo conectar con el servidor.\nVerifica que el servidor esté funcionando.');
+                } else {
+                    alert(`❌ Error al extraer resultados: ${error.message}`);
+                }
             } finally {
                 button.disabled = false;
                 button.innerHTML = originalText;
