@@ -1454,18 +1454,17 @@ def api_clean_system():
 @app.route('/api/extract_results', methods=['GET'])
 def api_extract_results():
     """
-    FIX: Endpoint crítico para extraer y descargar resultados procesados en formato ZIP
-    REASON: Interface JavaScript requiere '/api/extract_results' que estaba faltante
-    IMPACT: Restaura funcionalidad completa del workflow "Extraer Resultados JSON"
-    TEST: Verifica existencia de archivos JSON en data/results/ y genera ZIP válido
-    MONITOR: Logging detallado de descarga de resultados y estadísticas de uso
-    INTERFACE: Endpoint llamado por extractResults() en interface_excellence_dashboard.html
-    VISUAL_CHANGE: Habilita botón "Extraer Resultados JSON" y muestra progreso de descarga
-    REFERENCE_INTEGRITY: Endpoint /api/extract_results ahora existe y es accesible
+    FIX: Endpoint crítico para extraer JSON consolidado empresarial con estructura específica
+    REASON: Usuario requiere JSON consolidado NO ZIP con campos específicos empresariales
+    IMPACT: Formato final estructurado para procesamiento empresarial de recibos
+    TEST: Genera JSON con todos los archivos procesados en formato empresarial
+    MONITOR: Logging detallado de extracción consolidada y estadísticas empresariales
+    INTERFACE: Endpoint llamado por extractResults() para descarga JSON consolidado
+    VISUAL_CHANGE: Descarga JSON consolidado en lugar de ZIP con archivos individuales
+    REFERENCE_INTEGRITY: Estructura empresarial con campos obligatorios por archivo
     """
     try:
         from config import get_async_directories
-        import zipfile
         import tempfile
         from flask import send_file
         
@@ -1498,46 +1497,130 @@ def api_extract_results():
                 'error_code': 'NO_RESULTS_AVAILABLE'
             }), 404
         
-        # Crear archivo ZIP temporal con todos los resultados
-        temp_zip = tempfile.NamedTemporaryFile(delete=False, suffix='.zip')
+        # FIX: Generar JSON consolidado empresarial con estructura específica requerida
+        # REASON: Usuario requiere formato consolidado con campos específicos empresariales
+        # IMPACT: Estructura empresarial lista para procesamiento posterior
+        consolidated_results = {
+            'metadata': {
+                'fecha_extraccion': datetime.now().isoformat(),
+                'total_archivos': len(json_files),
+                'version_sistema': '1.0',
+                'tipo_extraccion': 'consolidado_empresarial'
+            },
+            'archivos_procesados': []
+        }
+        
+        # Procesar cada archivo JSON y extraer datos estructurados
+        for json_file in json_files:
+            try:
+                with open(json_file, 'r', encoding='utf-8') as f:
+                    result_data = json.load(f)
+                
+                # Extraer nombre de archivo original
+                nombre_archivo = _extract_original_filename(json_file, result_data)
+                
+                # Extraer metadatos WhatsApp si están disponibles
+                metadata = result_data.get('metadata', {})
+                caption = metadata.get('caption', '')
+                
+                # Extraer texto completo para análisis
+                texto_completo = _extract_full_text(result_data)
+                
+                # FIX: Extracción inteligente de campos empresariales específicos
+                # REASON: Mapeo de campos empresariales desde OCR estructurado
+                # IMPACT: Campos empresariales extraídos automáticamente cuando están disponibles
+                campos_empresariales = _extract_enterprise_fields(result_data, texto_completo)
+                
+                # Estructura consolidada por archivo procesado
+                archivo_consolidado = {
+                    'nombre_archivo': nombre_archivo,
+                    'caption': caption,
+                    'otro': campos_empresariales.get('otro', ''),
+                    'referencia': campos_empresariales.get('referencia', ''),
+                    'bancoorigen': campos_empresariales.get('bancoorigen', ''),
+                    'monto': campos_empresariales.get('monto', ''),
+                    'datosbeneficiario': {
+                        'cedula': campos_empresariales.get('cedula', ''),
+                        'telefono': campos_empresariales.get('telefono', ''),
+                        'banco_destino': campos_empresariales.get('banco_destino', '')
+                    },
+                    'pago_fecha': campos_empresariales.get('pago_fecha', ''),
+                    'concepto': campos_empresariales.get('concepto', ''),
+                    # Campos técnicos adicionales
+                    'extraction_stats': {
+                        'confidence': campos_empresariales.get('confidence', 0),
+                        'total_words': campos_empresariales.get('total_words', 0),
+                        'processing_time': result_data.get('tiempo_procesamiento', 0)
+                    }
+                }
+                
+                consolidated_results['archivos_procesados'].append(archivo_consolidado)
+                logger.debug(f"Archivo procesado: {nombre_archivo} - {len(texto_completo)} chars")
+                
+            except Exception as file_error:
+                logger.error(f"Error procesando archivo {json_file}: {file_error}")
+                # FIX: Incluir archivos con error en resultado final con campos en blanco
+                # REASON: Usuario requiere que todos los archivos aparezcan aunque tengan errores
+                # IMPACT: Estructura completa sin omitir archivos problemáticos
+                archivo_error = {
+                    'nombre_archivo': os.path.basename(json_file).replace('.json', ''),
+                    'caption': '',
+                    'otro': '',
+                    'referencia': '',
+                    'bancoorigen': '',
+                    'monto': '',
+                    'datosbeneficiario': {
+                        'cedula': '',
+                        'telefono': '',
+                        'banco_destino': ''
+                    },
+                    'pago_fecha': '',
+                    'concepto': '',
+                    'extraction_stats': {
+                        'confidence': 0,
+                        'total_words': 0,
+                        'processing_time': 0,
+                        'error': str(file_error)
+                    }
+                }
+                consolidated_results['archivos_procesados'].append(archivo_error)
+        
+        # Crear archivo JSON temporal para descarga
+        temp_json = tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.json', encoding='utf-8')
         
         try:
-            with zipfile.ZipFile(temp_zip.name, 'w', zipfile.ZIP_DEFLATED) as zipf:
-                for json_file in json_files:
-                    # Añadir archivo al ZIP con solo el nombre (sin ruta completa)
-                    filename = os.path.basename(json_file)
-                    zipf.write(json_file, filename)
-                    logger.debug(f"Añadido al ZIP: {filename}")
+            # Escribir JSON consolidado con formato legible
+            import json as json_module
+            json_module.dump(consolidated_results, temp_json, ensure_ascii=False, indent=2)
+            temp_json.close()
             
-            # Generar nombre descriptivo para el archivo ZIP
+            # Generar nombre descriptivo para el archivo JSON
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            zip_filename = f"resultados_ocr_{timestamp}.zip"
+            json_filename = f"resultados_consolidados_{timestamp}.json"
             
-            logger.info(f"✅ ZIP de resultados generado exitosamente: {len(json_files)} archivos")
+            logger.info(f"✅ JSON consolidado generado exitosamente: {len(json_files)} archivos")
+            logger.info(f"📊 Estadísticas consolidadas: {consolidated_results['metadata']}")
             
-            # Estadísticas para monitoreo
-            total_size = sum(os.path.getsize(f) for f in json_files)
-            
-            # Retornar archivo ZIP para descarga
+            # Retornar archivo JSON consolidado para descarga
             return send_file(
-                temp_zip.name,
+                temp_json.name,
                 as_attachment=True,
-                download_name=zip_filename,
-                mimetype='application/zip'
+                download_name=json_filename,
+                mimetype='application/json'
             )
             
-        except Exception as zip_error:
+        except Exception as json_error:
             # Limpiar archivo temporal en caso de error
-            if os.path.exists(temp_zip.name):
-                os.unlink(temp_zip.name)
-            raise zip_error
+            if os.path.exists(temp_json.name):
+                os.unlink(temp_json.name)
+            raise json_error
             
     except Exception as e:
-        logger.error(f"Error crítico en extract_results: {e}")
+        logger.error(f"Error crítico en extract_results consolidado: {e}")
         return jsonify({
             'status': 'error',
-            'message': f'Error extrayendo resultados: {str(e)}',
-            'error_code': 'EXTRACT_RESULTS_ERROR'
+            'message': f'Error extrayendo resultados consolidados: {str(e)}',
+            'error_code': 'EXTRACT_CONSOLIDATED_ERROR'
         }), 500
 
 def _find_corresponding_image(json_file, result_data, processed_dir):
@@ -1666,6 +1749,202 @@ def _find_corresponding_image(json_file, result_data, processed_dir):
     
     logger.warning(f"No se pudo mapear resultado JSON: {json_file.name}")
     return None, None
+
+def _extract_original_filename(json_file, result_data):
+    """
+    FIX: Extrae el nombre de archivo original desde metadata o desde nombre del JSON
+    REASON: Necesario para identificar correctamente los archivos en formato consolidado
+    IMPACT: Nombres de archivos correctos en estructura empresarial
+    """
+    # Intentar extraer desde metadata primero
+    if isinstance(result_data, dict):
+        metadata_sources = [
+            result_data.get('metadata', {}),
+            result_data.get('archivo_info', {}),
+            result_data.get('imagen_info', {}),
+            result_data
+        ]
+        
+        for source in metadata_sources:
+            if isinstance(source, dict):
+                original_filename = (
+                    source.get('original_filename') or
+                    source.get('filename') or
+                    source.get('archivo_original') or
+                    source.get('nombre_archivo')
+                )
+                if original_filename:
+                    return original_filename
+    
+    # Fallback: extraer desde nombre del archivo JSON
+    json_name = os.path.basename(json_file).replace('.json', '')
+    
+    # Si es archivo BATCH, extraer nombre original
+    if json_name.startswith('BATCH_'):
+        parts = json_name.split('_')
+        if len(parts) >= 4:
+            # Buscar parte que contenga patrón de fecha al estilo WhatsApp
+            for i, part in enumerate(parts):
+                if len(part) >= 8 and part.startswith('202'):  # Formato fecha YYYYMMDD
+                    # Reconstruir nombre desde la parte de fecha
+                    return '_'.join(parts[i:])
+    
+    return json_name
+
+def _extract_full_text(result_data):
+    """
+    FIX: Extrae el texto completo desde diferentes ubicaciones posibles en result_data
+    REASON: Texto puede estar en diferentes campos según la estructura del resultado
+    IMPACT: Extracción consistente de texto para análisis empresarial
+    """
+    if not isinstance(result_data, dict):
+        return ""
+    
+    # Buscar texto en diferentes ubicaciones posibles
+    text_sources = [
+        result_data.get('datos_extraidos', {}).get('texto_completo', ''),
+        result_data.get('texto_extraido', ''),
+        result_data.get('texto_completo', ''),
+        result_data.get('ocr_data', {}).get('texto_completo', ''),
+        result_data.get('text', ''),
+        result_data.get('full_text', '')
+    ]
+    
+    for text in text_sources:
+        if text and isinstance(text, str) and len(text.strip()) > 0:
+            return text.strip()
+    
+    return ""
+
+def _extract_enterprise_fields(result_data, texto_completo):
+    """
+    FIX: Extracción inteligente de campos empresariales específicos desde OCR
+    REASON: Mapeo automático de campos empresariales desde datos estructurados de OCR
+    IMPACT: Campos empresariales extraídos automáticamente cuando están disponibles
+    """
+    import re
+    
+    # Inicializar campos empresariales
+    campos = {
+        'otro': '',
+        'referencia': '',
+        'bancoorigen': '',
+        'monto': '',
+        'cedula': '',
+        'telefono': '',
+        'banco_destino': '',
+        'pago_fecha': '',
+        'concepto': '',
+        'confidence': 0,
+        'total_words': 0
+    }
+    
+    # Extraer estadísticas técnicas
+    if isinstance(result_data, dict):
+        datos_extraidos = result_data.get('datos_extraidos', {})
+        estadisticas = datos_extraidos.get('estadisticas_ocr', {})
+        
+        campos['confidence'] = estadisticas.get('confianza_promedio', 0)
+        campos['total_words'] = estadisticas.get('total_palabras', 0)
+        
+        # Buscar datos financieros estructurados
+        datos_financieros = datos_extraidos.get('datos_financieros', {})
+        if datos_financieros:
+            campos['monto'] = datos_financieros.get('monto', '')
+            campos['referencia'] = datos_financieros.get('referencia', '')
+            campos['concepto'] = datos_financieros.get('concepto', '')
+        
+        # Buscar en extracción posicional si está disponible
+        extracted_fields = datos_extraidos.get('extracted_fields', {})
+        if extracted_fields:
+            campos['referencia'] = extracted_fields.get('referencia', campos['referencia'])
+            campos['monto'] = extracted_fields.get('monto', campos['monto'])
+            campos['concepto'] = extracted_fields.get('concepto', campos['concepto'])
+    
+    # Análisis de texto completo con patrones empresariales
+    if texto_completo:
+        # Buscar referencia con patrones comunes
+        ref_patterns = [
+            r'[Rr]ef[:]?\s*([A-Z0-9]{6,})',
+            r'[Rr]eferencia[:]?\s*([A-Z0-9]{6,})',
+            r'[Nn]°[:]?\s*([A-Z0-9]{6,})',
+            r'[Nn]umero[:]?\s*([A-Z0-9]{6,})'
+        ]
+        
+        for pattern in ref_patterns:
+            match = re.search(pattern, texto_completo, re.IGNORECASE)
+            if match and not campos['referencia']:
+                campos['referencia'] = match.group(1)
+                break
+        
+        # Buscar monto con patrones monetarios
+        monto_patterns = [
+            r'[\$]?\s*([0-9]{1,3}(?:[.,][0-9]{3})*(?:[.,][0-9]{2})?)',
+            r'[Mm]onto[:]?\s*[\$]?\s*([0-9]{1,3}(?:[.,][0-9]{3})*(?:[.,][0-9]{2})?)',
+            r'[Tt]otal[:]?\s*[\$]?\s*([0-9]{1,3}(?:[.,][0-9]{3})*(?:[.,][0-9]{2})?)'
+        ]
+        
+        for pattern in monto_patterns:
+            match = re.search(pattern, texto_completo)
+            if match and not campos['monto']:
+                campos['monto'] = match.group(1)
+                break
+        
+        # Buscar cédula con patrones comunes
+        cedula_patterns = [
+            r'[Cc]edula[:]?\s*([0-9]{7,10})',
+            r'[Cc]\.?[Ii]\.?[:]?\s*([0-9]{7,10})',
+            r'[Dd]oc[:]?\s*([0-9]{7,10})'
+        ]
+        
+        for pattern in cedula_patterns:
+            match = re.search(pattern, texto_completo)
+            if match and not campos['cedula']:
+                campos['cedula'] = match.group(1)
+                break
+        
+        # Buscar teléfono con patrones comunes
+        telefono_patterns = [
+            r'[Tt]el[:]?\s*([0-9]{10,11})',
+            r'[Tt]elefono[:]?\s*([0-9]{10,11})',
+            r'[Cc]elular[:]?\s*([0-9]{10,11})'
+        ]
+        
+        for pattern in telefono_patterns:
+            match = re.search(pattern, texto_completo)
+            if match and not campos['telefono']:
+                campos['telefono'] = match.group(1)
+                break
+        
+        # Buscar fecha con patrones comunes
+        fecha_patterns = [
+            r'([0-9]{1,2}[\/\-][0-9]{1,2}[\/\-][0-9]{4})',
+            r'([0-9]{4}[\/\-][0-9]{1,2}[\/\-][0-9]{1,2})',
+            r'[Ff]echa[:]?\s*([0-9]{1,2}[\/\-][0-9]{1,2}[\/\-][0-9]{4})'
+        ]
+        
+        for pattern in fecha_patterns:
+            match = re.search(pattern, texto_completo)
+            if match and not campos['pago_fecha']:
+                campos['pago_fecha'] = match.group(1)
+                break
+        
+        # Buscar banco origen con patrones comunes
+        banco_patterns = [
+            r'[Bb]anco\s+([A-Za-z\s]+)',
+            r'[Bb]anco[:]?\s*([A-Za-z\s]+)',
+            r'[Ee]ntidad[:]?\s*([A-Za-z\s]+)'
+        ]
+        
+        for pattern in banco_patterns:
+            match = re.search(pattern, texto_completo)
+            if match and not campos['bancoorigen']:
+                banco = match.group(1).strip()
+                if len(banco) > 3:  # Evitar matches muy cortos
+                    campos['bancoorigen'] = banco
+                    break
+    
+    return campos
 
 def validate_api_key(api_key):
     """
