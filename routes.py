@@ -240,6 +240,37 @@ def api_process_image():
                 from app import extract_metadata_from_filename
                 whatsapp_metadata = extract_metadata_from_filename(final_filename)
                 
+                # FIX: Priorizar metadatos del formulario sobre los extraídos del nombre
+                # REASON: Usuario requiere control manual de metadatos WhatsApp
+                # IMPACT: Sistema utiliza datos editados por usuario en lugar de automáticos
+                # INTERFACE: Validación de datos del formulario con fallback a automáticos
+                form_numerosorteo = request.form.get('numerosorteo', '').strip()
+                form_fechasorteo = request.form.get('fechasorteo', '').strip()
+                form_idWhatsapp = request.form.get('idWhatsapp', '').strip()
+                form_nombre = request.form.get('nombre', '').strip()
+                form_horamin = request.form.get('horamin', '').strip()
+                form_caption = request.form.get('caption', '').strip()
+                
+                # Usar datos del formulario si existen, sino usar automáticos
+                final_numerosorteo = form_numerosorteo or whatsapp_metadata.get('numerosorteo', 'A')
+                final_fechasorteo = form_fechasorteo or current_time.strftime('%Y%m%d')
+                final_idWhatsapp = form_idWhatsapp or whatsapp_metadata.get('idWhatsapp', 'unknown@lid')
+                final_nombre = form_nombre or whatsapp_metadata.get('nombre', 'Unknown')
+                final_horamin = form_horamin or whatsapp_metadata.get('horamin', '00-00')
+                final_caption = form_caption or whatsapp_metadata.get('texto_mensaje_whatsapp', '')
+                
+                # Si hay metadatos del formulario, regenerar nombre de archivo
+                if any([form_numerosorteo, form_fechasorteo, form_idWhatsapp, form_nombre, form_horamin]):
+                    # Regenerar nombre con metadatos del formulario
+                    custom_filename = f"{final_fechasorteo}-{final_numerosorteo}--{final_idWhatsapp}_{final_nombre}_{final_horamin}_{timestamp_id}.{file_ext}"
+                    custom_file_path = os.path.join(directories['inbox'], custom_filename)
+                    
+                    # Mover archivo al nombre personalizado
+                    if os.path.exists(file_path) and file_path != custom_file_path:
+                        shutil.move(file_path, custom_file_path)
+                        file_path = custom_file_path
+                        final_filename = custom_filename
+                
                 # Metadatos completos con datos de WhatsApp empresariales
                 metadata = {
                     'filename_original': file.filename,
@@ -247,14 +278,16 @@ def api_process_image():
                     'request_id': final_filename.replace(f'_{timestamp_id}', ''),
                     'upload_timestamp': current_time.isoformat(),
                     'file_size': os.path.getsize(file_path),
-                    # Campos críticos de WhatsApp para simulación óptima
-                    'numerosorteo': whatsapp_metadata.get('numerosorteo', 'A'),
-                    'idWhatsapp': whatsapp_metadata.get('idWhatsapp', 'unknown@lid'),
-                    'nombre': whatsapp_metadata.get('nombre', 'Unknown'),
-                    'horamin': whatsapp_metadata.get('horamin', '00-00'),
-                    'texto_mensaje_whatsapp': whatsapp_metadata.get('texto_mensaje_whatsapp', ''),
-                    'caption': request.form.get('caption', ''),
-                    'otro_valor': request.form.get('otro_valor', 'subir'),
+                    # Campos críticos de WhatsApp con prioridad del formulario
+                    'numerosorteo': final_numerosorteo,
+                    'idWhatsapp': final_idWhatsapp,
+                    'nombre': final_nombre,
+                    'horamin': final_horamin,
+                    'fechasorteo': final_fechasorteo,
+                    'texto_mensaje_whatsapp': final_caption,
+                    'caption': final_caption,
+                    'otro_valor': request.form.get('otro_valor', 'subir_con_metadata'),
+                    'form_data_used': bool(any([form_numerosorteo, form_fechasorteo, form_idWhatsapp, form_nombre, form_horamin])),
                     # Metadatos completos de WhatsApp
                     'whatsapp_metadata': whatsapp_metadata
                 }
