@@ -461,8 +461,25 @@ def get_batch_config():
 
 @lru_cache(maxsize=8)
 def get_async_directories():
-    """Cache para configuración de directorios asíncronos"""
-    return ASYNC_DIRECTORIES
+    """
+    FIX: Función para obtener directorios asíncronos de forma consistente
+    REASON: Endpoints requieren acceso consistente a la estructura de directorios
+    IMPACT: Eliminación de errores ModuleNotFoundError en endpoints API
+    """
+    # Definir directorios asíncronos
+    directories = {
+        'inbox': str(BASE_DIR / "data" / "inbox"),
+        'processing': str(BASE_DIR / "data" / "processing"), 
+        'processed': str(BASE_DIR / "data" / "processed"),
+        'results': str(BASE_DIR / "data" / "results"),
+        'errors': str(BASE_DIR / "data" / "errors")
+    }
+    
+    # Crear directorios si no existen
+    for dir_path in directories.values():
+        Path(dir_path).mkdir(parents=True, exist_ok=True)
+    
+    return directories
 
 @lru_cache(maxsize=8)
 def get_validation_config():

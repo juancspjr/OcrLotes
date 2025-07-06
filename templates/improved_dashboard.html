@@ -185,11 +185,37 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <label class="form-label">Sender ID</label>
-                                <input type="text" class="form-control" id="senderId" placeholder="user123">
+                                <input type="text" class="form-control" id="senderId" placeholder="154684@gml1">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Sender Name</label>
                                 <input type="text" class="form-control" id="senderName" placeholder="Juan Pérez">
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-md-4">
+                                <label class="form-label">Fecha Sorteo</label>
+                                <input type="date" class="form-control" id="sorteoFecha">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Posición Sorteo</label>
+                                <select class="form-control" id="posicionSorteo">
+                                    <option value="">Seleccionar...</option>
+                                    <option value="A">A</option>
+                                    <option value="B">B</option>
+                                    <option value="C">C</option>
+                                    <option value="D">D</option>
+                                    <option value="E">E</option>
+                                    <option value="F">F</option>
+                                    <option value="G">G</option>
+                                    <option value="H">H</option>
+                                    <option value="I">I</option>
+                                    <option value="J">J</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Hora (HH:MM)</label>
+                                <input type="time" class="form-control" id="horaMin">
                             </div>
                         </div>
                     </div>
@@ -284,9 +310,32 @@
             </div>
         </div>
 
-        <!-- Resultados de Procesamiento -->
+        <!-- Imágenes Procesadas -->
         <div class="row">
-            <div class="col-12">
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <h5 class="section-title mb-0">
+                            <i class="fas fa-check-circle me-2"></i>
+                            Imágenes Procesadas (<span id="processedCount">0</span>)
+                        </h5>
+                        <button class="btn btn-sm btn-outline-success" onclick="refreshProcessed()">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="image-list" id="processedImages">
+                            <div class="text-center text-muted p-3">
+                                <i class="fas fa-check-circle fa-2x mb-2"></i>
+                                <p>No hay imágenes procesadas</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Resultados de Procesamiento -->
+            <div class="col-lg-6">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
                         <h5 class="section-title mb-0">
@@ -332,7 +381,11 @@
         document.addEventListener('DOMContentLoaded', function() {
             initializeChart();
             refreshQueue();
-            setInterval(refreshQueue, 5000); // Actualizar cada 5 segundos
+            refreshProcessed();
+            setInterval(() => {
+                refreshQueue();
+                refreshProcessed();
+            }, 5000); // Actualizar cada 5 segundos
         });
 
         function initializeChart() {
@@ -391,6 +444,9 @@
                 formData.append('caption', document.getElementById('imageCaption').value);
                 formData.append('sender_id', document.getElementById('senderId').value);
                 formData.append('sender_name', document.getElementById('senderName').value);
+                formData.append('sorteo_fecha', document.getElementById('sorteoFecha').value);
+                formData.append('posicion_sorteo', document.getElementById('posicionSorteo').value);
+                formData.append('hora_min', document.getElementById('horaMin').value);
 
                 fetch('/api/ocr/process_image', {
                     method: 'POST',
@@ -454,36 +510,116 @@
                     console.error('Error al actualizar cola:', error);
                 });
         }
+        
+        function refreshProcessed() {
+            fetch('/api/ocr/queue/files')
+                .then(response => response.json())
+                .then(data => {
+                    updateProcessedDisplay(data);
+                })
+                .catch(error => {
+                    console.error('Error al actualizar procesadas:', error);
+                });
+        }
+        
+        function updateProcessedDisplay(data) {
+            const processedContainer = document.getElementById('processedImages');
+            const processedCount = document.getElementById('processedCount');
+            
+            if (data.processed_files && data.processed_files.length > 0) {
+                processedCount.textContent = data.processed_files.length;
+                let processedHTML = '';
+                
+                data.processed_files.forEach(file => {
+                    const confidence = file.confidence ? Math.round(file.confidence) : 0;
+                    const statusClass = file.result_available ? 'status-success' : 'status-warning';
+                    const statusText = file.result_available ? 'Completo' : 'Sin resultado';
+                    
+                    processedHTML += `
+                        <div class="image-item">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                <div class="flex-grow-1">
+                                    <div class="fw-bold">${file.filename}</div>
+                                    <small class="text-muted">Confianza: ${confidence}% - ${file.timestamp || ''}</small>
+                                </div>
+                            </div>
+                            <div>
+                                <button class="btn btn-sm btn-outline-primary me-1" onclick="previewImage('${file.request_id}')">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                                ${file.result_available ? `
+                                    <button class="btn btn-sm btn-outline-success me-1" onclick="downloadResult('${file.request_id}')">
+                                        <i class="fas fa-download"></i>
+                                    </button>
+                                ` : ''}
+                                <span class="status-badge ${statusClass}">${statusText}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                processedContainer.innerHTML = processedHTML;
+            } else {
+                processedCount.textContent = '0';
+                processedContainer.innerHTML = `
+                    <div class="text-center text-muted p-3">
+                        <i class="fas fa-check-circle fa-2x mb-2"></i>
+                        <p>No hay imágenes procesadas</p>
+                    </div>
+                `;
+            }
+        }
+        
+        function downloadResult(requestId) {
+            window.open(`/api/ocr/download/${requestId}`, '_blank');
+        }
 
         function updateQueueDisplay(data) {
             const queueContainer = document.getElementById('imageQueue');
             const queueCount = document.getElementById('queueCount');
             
-            if (data.queue_status && data.queue_status.inbox > 0) {
-                queueCount.textContent = data.queue_status.inbox;
-                // Simular lista de archivos en cola
-                let queueHTML = '';
-                for (let i = 1; i <= data.queue_status.inbox; i++) {
-                    queueHTML += `
-                        <div class="image-item">
-                            <div>
-                                <i class="fas fa-image text-primary me-2"></i>
-                                <span>imagen_${i}.jpg</span>
+            // Obtener lista real de archivos en cola
+            fetch('/api/ocr/queue/files')
+                .then(response => response.json())
+                .then(filesData => {
+                    if (filesData.inbox_files && filesData.inbox_files.length > 0) {
+                        queueCount.textContent = filesData.inbox_files.length;
+                        let queueHTML = '';
+                        
+                        filesData.inbox_files.forEach(file => {
+                            queueHTML += `
+                                <div class="image-item">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-image text-primary me-2"></i>
+                                        <div class="flex-grow-1">
+                                            <div class="fw-bold">${file.original_filename || file.filename}</div>
+                                            <small class="text-muted">${file.sender_name || 'Sin sender'} - ${file.timestamp || ''}</small>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <button class="btn btn-sm btn-outline-primary me-1" onclick="previewImage('${file.request_id}')">
+                                            <i class="fas fa-search"></i>
+                                        </button>
+                                        <span class="status-badge status-warning">En cola</span>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                        queueContainer.innerHTML = queueHTML;
+                    } else {
+                        queueCount.textContent = '0';
+                        queueContainer.innerHTML = `
+                            <div class="text-center text-muted p-3">
+                                <i class="fas fa-inbox fa-2x mb-2"></i>
+                                <p>No hay imágenes en cola</p>
                             </div>
-                            <span class="status-badge status-warning">En cola</span>
-                        </div>
-                    `;
-                }
-                queueContainer.innerHTML = queueHTML;
-            } else {
-                queueCount.textContent = '0';
-                queueContainer.innerHTML = `
-                    <div class="text-center text-muted p-3">
-                        <i class="fas fa-inbox fa-2x mb-2"></i>
-                        <p>No hay imágenes en cola</p>
-                    </div>
-                `;
-            }
+                        `;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading queue files:', error);
+                    queueCount.textContent = data.queue_status?.inbox || '0';
+                });
         }
 
         function updateSystemStatus(data) {
@@ -611,6 +747,38 @@
         function showResults() {
             // Scroll to results section
             document.getElementById('batchResults').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function previewImage(requestId) {
+            // Crear modal para vista previa
+            const modal = document.createElement('div');
+            modal.className = 'modal fade';
+            modal.innerHTML = `
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Vista Previa - ${requestId}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body text-center">
+                            <img src="/api/ocr/preview/${requestId}" class="img-fluid" alt="Vista previa" 
+                                 style="max-height: 500px;" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkltYWdlbiBubyBkaXNwb25pYmxlPC90ZXh0Pjwvc3ZnPg==';">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            
+            const bootstrapModal = new bootstrap.Modal(modal);
+            bootstrapModal.show();
+            
+            // Limpiar modal cuando se cierre
+            modal.addEventListener('hidden.bs.modal', () => {
+                modal.remove();
+            });
         }
 
         function showNotification(type, message) {

@@ -358,12 +358,15 @@ def api_process_image():
                 'supported_types': api_config['allowed_image_types']
             }), 400
         
-        # Extraer metadatos del request
+        # FIX: Metadatos WhatsApp completos incluyendo posicion_sorteo faltante
+        # REASON: Usuario reporta campos faltantes (posición sorteo A/B/C/D/E) en los metadatos
+        # IMPACT: Captura completa de todos los metadatos necesarios para el procesamiento
         caption = request.form.get('caption', '')
         sender_id = request.form.get('sender_id', '')
         sender_name = request.form.get('sender_name', '')
         sorteo_fecha = request.form.get('sorteo_fecha', '')
-        sorteo_conteo = request.form.get('sorteo_conteo', '')
+        posicion_sorteo = request.form.get('posicion_sorteo', '')  # NUEVO: A, B, C, D, E, etc.
+        sorteo_conteo = request.form.get('sorteo_conteo', '')  # Mantener compatibilidad
         hora_min = request.form.get('hora_min', '')
         additional_data = request.form.get('additional_data', '')
         
@@ -418,6 +421,7 @@ def api_process_image():
             'sender_id': sender_id,
             'sender_name': sender_name,
             'sorteo_fecha': sorteo_fecha,
+            'posicion_sorteo': posicion_sorteo,
             'sorteo_conteo': sorteo_conteo,
             'hora_min': hora_min,
             'caption': caption,
@@ -1296,5 +1300,184 @@ def api_clean_system():
         return jsonify({
             'status': 'error',
             'message': 'Error al limpiar el sistema',
+            'details': str(e)
+        }), 500
+
+@app.route('/api/ocr/queue/files', methods=['GET'])
+def api_queue_files():
+    """
+    FIX: Endpoint para obtener lista detallada de archivos en cola
+    REASON: Usuario necesita ver archivos reales con vista previa y metadatos completos
+    IMPACT: Interfaz funcional que muestra archivos reales en lugar de datos simulados
+    """
+    try:
+        from config import get_async_directories
+        import glob
+        import json
+        from pathlib import Path
+        
+        directories = get_async_directories()
+        
+        # Obtener archivos de imágenes y metadatos en inbox
+        inbox_files = []
+        image_extensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp']
+        
+        for ext in image_extensions:
+            pattern = os.path.join(directories['inbox'], f"*{ext}")
+            for image_file in glob.glob(pattern):
+                # Buscar archivo de metadatos correspondiente
+                base_name = os.path.splitext(os.path.basename(image_file))[0]
+                metadata_file = os.path.join(directories['inbox'], f"{base_name}.metadata.json")
+                
+                file_info = {
+                    'filename': os.path.basename(image_file),
+                    'filepath': image_file,
+                    'request_id': base_name,
+                    'size': os.path.getsize(image_file),
+                    'modified': os.path.getmtime(image_file)
+                }
+                
+                # Cargar metadatos si existen
+                if os.path.exists(metadata_file):
+                    try:
+                        with open(metadata_file, 'r', encoding='utf-8') as f:
+                            metadata = json.load(f)
+                            file_info.update({
+                                'original_filename': metadata.get('original_filename', ''),
+                                'sender_id': metadata.get('sender_id', ''),
+                                'sender_name': metadata.get('sender_name', ''),
+                                'caption': metadata.get('caption', ''),
+                                'sorteo_fecha': metadata.get('sorteo_fecha', ''),
+                                'posicion_sorteo': metadata.get('posicion_sorteo', ''),
+                                'hora_min': metadata.get('hora_min', ''),
+                                'timestamp': metadata.get('timestamp', ''),
+                                'status': metadata.get('status', 'queued')
+                            })
+                    except Exception as e:
+                        logger.warning(f"Error cargando metadatos {metadata_file}: {e}")
+                
+                inbox_files.append(file_info)
+        
+        # Obtener archivos procesados
+        processed_files = []
+        for ext in image_extensions:
+            pattern = os.path.join(directories['processed'], f"*{ext}")
+            for image_file in glob.glob(pattern):
+                base_name = os.path.splitext(os.path.basename(image_file))[0]
+                
+                file_info = {
+                    'filename': os.path.basename(image_file),
+                    'filepath': image_file,
+                    'request_id': base_name,
+                    'size': os.path.getsize(image_file),
+                    'modified': os.path.getmtime(image_file),
+                    'status': 'processed'
+                }
+                
+                # Buscar resultado JSON correspondiente
+                result_file = os.path.join(directories['results'], f"{base_name}.json")
+                if os.path.exists(result_file):
+                    file_info['result_available'] = True
+                    try:
+                        with open(result_file, 'r', encoding='utf-8') as f:
+                            result_data = json.load(f)
+                            file_info['text_extracted'] = len(result_data.get('text_extraction', {}).get('texto_completo', '')) > 0
+                            file_info['confidence'] = result_data.get('text_extraction', {}).get('confidence', 0)
+                    except Exception as e:
+                        logger.warning(f"Error cargando resultado {result_file}: {e}")
+                
+                processed_files.append(file_info)
+        
+        return jsonify({
+            'status': 'success',
+            'inbox_files': inbox_files,
+            'processed_files': processed_files,
+            'counts': {
+                'inbox': len(inbox_files),
+                'processed': len(processed_files)
+            },
+            'timestamp': datetime.now().isoformat()
+        }), 200
+        
+    except Exception as e:
+        logger.error(f"Error obteniendo archivos de cola: {e}")
+        return jsonify({
+            'status': 'error',
+            'message': 'Error obteniendo lista de archivos',
+            'details': str(e)
+        }), 500
+
+@app.route('/api/ocr/preview/<request_id>', methods=['GET'])
+def api_preview_image(request_id):
+    """
+    FIX: Endpoint para vista previa de imágenes en cola y procesadas
+    REASON: Usuario solicita función de lupa para ver imágenes antes y después del procesamiento
+    IMPACT: Funcionalidad completa de vista previa con imágenes reales
+    """
+    try:
+        from config import get_async_directories
+        
+        directories = get_async_directories()
+        
+        # Buscar imagen en inbox primero
+        image_extensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp']
+        found_file = None
+        
+        for directory in [directories['inbox'], directories['processed'], directories['processing']]:
+            for ext in image_extensions:
+                potential_file = os.path.join(directory, f"{request_id}{ext}")
+                if os.path.exists(potential_file):
+                    found_file = potential_file
+                    break
+            if found_file:
+                break
+        
+        if not found_file:
+            return jsonify({
+                'status': 'error',
+                'message': 'Imagen no encontrada'
+            }), 404
+        
+        return send_file(found_file, as_attachment=False)
+        
+    except Exception as e:
+        logger.error(f"Error obteniendo vista previa {request_id}: {e}")
+        return jsonify({
+            'status': 'error',
+            'message': 'Error obteniendo vista previa',
+            'details': str(e)
+        }), 500
+
+@app.route('/api/ocr/download/<request_id>', methods=['GET'])
+def api_download_result(request_id):
+    """
+    FIX: Endpoint para descargar resultados individuales
+    REASON: Usuario solicita función de descarga de archivos de resultados individuales
+    IMPACT: Funcionalidad completa de descarga de resultados JSON
+    """
+    try:
+        from config import get_async_directories
+        
+        directories = get_async_directories()
+        result_file = os.path.join(directories['results'], f"{request_id}.json")
+        
+        if not os.path.exists(result_file):
+            return jsonify({
+                'status': 'error',
+                'message': 'Resultado no encontrado'
+            }), 404
+        
+        return send_file(
+            result_file,
+            as_attachment=True,
+            download_name=f"resultado_{request_id}.json",
+            mimetype='application/json'
+        )
+        
+    except Exception as e:
+        logger.error(f"Error descargando resultado {request_id}: {e}")
+        return jsonify({
+            'status': 'error',
+            'message': 'Error descargando resultado',
             'details': str(e)
         }), 500
