@@ -876,6 +876,13 @@
                 // INTERFACE: Initialize all components
                 this.validateAllComponents();
                 this.updateSystemStatus();
+                
+                // FIX: Cargar archivos procesados automáticamente al inicializar
+                // REASON: Usuario necesita ver archivos procesados inmediatamente
+                // IMPACT: Interfaz muestra datos inmediatamente sin requerir acción del usuario
+                this.loadQueueFiles();
+                this.loadProcessedFiles();
+                this.updateCounts();
             }
 
             setupEventListeners() {
@@ -1255,17 +1262,22 @@
                     if (data.files && data.files.length > 0) {
                         processedList.innerHTML = '';
                         data.files.forEach((file, index) => {
+                            // FIX: Extraer nombre original del archivo JSON
+                            // REASON: Backend devuelve archivos .json, necesitamos mostrar nombre original
+                            // IMPACT: Archivos procesados visibles correctamente en interfaz
+                            const originalName = file.filename.replace(/^BATCH_.*?_[0-9a-f]{3}_/, '').replace('.json', '');
+                            
                             const fileItem = document.createElement('div');
                             fileItem.className = 'enhanced-file-item';
                             fileItem.style.cursor = 'pointer';
-                            fileItem.onclick = () => this.loadFileResult(file.original_filename, fileItem);
+                            fileItem.onclick = () => this.loadFileResult(originalName, fileItem);
                             
                             fileItem.innerHTML = `
                                 <div class="d-flex justify-content-between align-items-start">
                                     <div class="flex-grow-1">
                                         <div class="filename-display">
                                             <div class="filename-label">Archivo Procesado ${index + 1}</div>
-                                            ${file.original_filename}
+                                            <span id="processed-file-${index}">${originalName}</span>
                                             <button class="copy-btn" onclick="copyToClipboard('processed-file-${index}')">
                                                 <i class="fas fa-copy"></i>
                                             </button>
@@ -1277,21 +1289,23 @@
                                 </div>
                                 <div class="file-metadata">
                                     <div class="metadata-item">
-                                        <div class="metadata-label">Tiempo de Procesamiento</div>
-                                        <div class="metadata-value">${file.processing_time || 'N/A'}</div>
+                                        <div class="metadata-label">Archivo JSON</div>
+                                        <div class="metadata-value">${file.size_readable}</div>
                                     </div>
                                     <div class="metadata-item">
-                                        <div class="metadata-label">Palabras Detectadas</div>
-                                        <div class="metadata-value">${file.words_detected || 'N/A'}</div>
+                                        <div class="metadata-label">Procesado</div>
+                                        <div class="metadata-value">${file.modified_readable}</div>
                                     </div>
                                     <div class="metadata-item">
-                                        <div class="metadata-label">Confianza</div>
-                                        <div class="metadata-value">${file.confidence || 'N/A'}%</div>
+                                        <div class="metadata-label">Coordenadas</div>
+                                        <div class="metadata-value">${file.has_coordinates ? '✅ Sí' : '❌ No'}</div>
                                     </div>
                                 </div>
                             `;
                             processedList.appendChild(fileItem);
                         });
+                        
+                        this.logActivity(`✅ ${data.files.length} archivos procesados cargados`);
                     } else {
                         processedList.innerHTML = `
                             <div class="text-center text-muted py-5">
@@ -1300,9 +1314,11 @@
                                 <p>Los resultados aparecerán aquí después del procesamiento</p>
                             </div>
                         `;
+                        this.logActivity(`ℹ️ No hay archivos procesados disponibles`);
                     }
                 } catch (error) {
                     this.logActivity(`❌ Error al cargar archivos procesados: ${error.message}`);
+                    console.error('Error loadProcessedFiles:', error);
                 }
             }
 
@@ -1315,25 +1331,29 @@
                     });
                     fileElement.classList.add('selected');
 
-                    const response = await fetch(`/api/ocr/result/${encodeURIComponent(filename)}`);
+                    // FIX: Usar endpoint correcto para datos de archivos procesados
+                    // REASON: El endpoint anterior no funciona para archivos procesados
+                    // IMPACT: Visualizador de resultados funcional mostrando datos reales
+                    const response = await fetch(`/api/ocr/result_data/${encodeURIComponent(filename)}`);
                     const result = await response.json();
                     
                     const resultViewer = document.getElementById('resultViewer');
                     
-                    if (result.ocr_result) {
-                        const jsonData = typeof result.ocr_result === 'string' 
-                            ? JSON.parse(result.ocr_result) 
-                            : result.ocr_result;
-                        
-                        resultViewer.innerHTML = this.formatJsonWithSyntaxHighlighting(jsonData);
-                        this.logActivity(`📄 Cargando resultados para: ${filename}`);
+                    if (result.status === 'exitoso' && result.ocr_data) {
+                        resultViewer.innerHTML = this.formatJsonWithSyntaxHighlighting(result.ocr_data);
+                        this.logActivity(`📄 Resultados cargados para: ${filename}`);
+                    } else if (result.status === 'exitoso' && result.json_content) {
+                        resultViewer.innerHTML = this.formatJsonWithSyntaxHighlighting(result.json_content);
+                        this.logActivity(`📄 Contenido JSON cargado para: ${filename}`);
                     } else {
                         resultViewer.innerHTML = `
                             <div class="text-center text-warning py-4">
                                 <i class="fas fa-exclamation-triangle fa-2x mb-3"></i>
                                 <p>No hay resultados disponibles para este archivo</p>
+                                <small class="text-muted">Archivo: ${filename}</small>
                             </div>
                         `;
+                        this.logActivity(`⚠️ Sin resultados para: ${filename}`);
                     }
                 } catch (error) {
                     this.logActivity(`❌ Error al cargar resultado: ${error.message}`);
