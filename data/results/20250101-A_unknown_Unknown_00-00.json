@@ -1,0 +1,27 @@
+{
+  "request_id": "20250101-A_unknown_Unknown_00-00.png",
+  "processing_status": "error",
+  "error_reason": "Missing basic fields: numero_referencia, monto, banco_origen; Missing beneficiary identification (need cedula OR phone+bank)",
+  "metadata": {
+    "fecha_procesamiento": null,
+    "perfil_ocr_usado": "unknown",
+    "tiempo_procesamiento_ms": 0,
+    "fuente_whatsapp": {
+      "sender_id": "unknown",
+      "sender_name_registered": "Unknown",
+      "fecha_envio_whatsapp": "20250101",
+      "hora_envio_whatsapp": "00:00",
+      "sorteo_fecha": "20250101",
+      "sorteo_conteo": "A",
+      "caption_whatsapp": ""
+    }
+  },
+  "full_raw_ocr_text": "",
+  "extracted_fields": [],
+  "unmapped_text_segments": [],
+  "batch_metadata": {
+    "batch_size": 1,
+    "batch_processing_time_seconds": 0.07,
+    "batch_timestamp": "2025-07-06T02:47:30.886262"
+  }
+}
