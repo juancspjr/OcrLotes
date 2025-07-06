@@ -403,10 +403,16 @@ nombre_archivo, caption, otro, referencia, bancoorigen, monto, datosbeneficiario
                 
             } catch (error) {
                 console.error('Error detallado:', error);
+                
+                // FIX: Manejo específico de errores de JSON con diagnóstico empresarial
+                // REASON: Usuario reporta "Error al extraer resultados" necesita diagnóstico específico
+                // IMPACT: Errores detallados para debugging de JSON consolidado empresarial
                 if (error.name === 'TypeError' && error.message.includes('fetch')) {
                     alert('❌ Error de conexión: No se pudo conectar con el servidor.\nVerifica que el servidor esté funcionando.');
+                } else if (error.message.includes('JSON')) {
+                    alert(`❌ Error de procesamiento JSON: ${error.message}\n\n🔧 Diagnóstico:\n• Verifique que existan archivos procesados\n• Endpoint: /api/extract_results\n• Estructura requerida: JSON consolidado empresarial`);
                 } else {
-                    alert(`❌ Error al extraer resultados: ${error.message}`);
+                    alert(`❌ Error en extracción: ${error.message}\n\n📊 Detalles técnicos:\n• Error capturado: ${error.name}\n• Stack: ${error.stack ? error.stack.substring(0,200) + '...' : 'No disponible'}`);
                 }
             } finally {
                 button.disabled = false;

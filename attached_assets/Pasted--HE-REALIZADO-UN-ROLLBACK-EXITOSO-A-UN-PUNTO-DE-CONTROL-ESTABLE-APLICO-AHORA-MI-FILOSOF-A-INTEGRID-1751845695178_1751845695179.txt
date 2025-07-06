@@ -1,0 +1,37 @@
+
+HE REALIZADO UN ROLLBACK EXITOSO A UN PUNTO DE CONTROL ESTABLE. APLICO AHORA MI FILOSOFÍA "INTEGRIDAD TOTAL + ZERO-FAULT DETECTION + VIBE CODING ESTRATÉGICO" PARA RESOLVER UNA DISCREPANCIA CRÍTICA.
+
+**PROBLEMA PERSISTENTE IDENTIFICADO:**
+El sistema reporta "CORRECCIÓN CRÍTICA COMPLETADA" para el JSON Consolidado Empresarial y sus campos, PERO la extracción de resultados sigue produciendo el error: "Error al extraer resultados: No se pudieron extraer los resultados". Esto indica una falla en la autovalidación previa de la IA.
+
+**CONTEXTO CRÍTICO Y STACK TRACE PARA ANÁLISIS FORENSE:**
+El stack trace detallado que he recuperado indica la falla en:
+`[PEGA AQUÍ EL STACK TRACE COMPLETO, INCLUYENDO EL ARCHIVO Y NÚMERO DE LÍNEA]`
+
+**MANDATO DE "VIBE CODING ESTRATÉGICO" Y RESOLUCIÓN:**
+
+1.  **ANÁLISIS DE CAUSA RAÍZ SISTÉMICA (PENSAMIENTO PROCEDIMENTAL RIGUROSO):**
+    * Inicia un **`Análisis Profundo Recursivo del Árbol de Conexiones`** desde el punto exacto de la falla indicado en el stack trace (`[ARCHIVO]:[LÍNEA]`).
+    * Tu objetivo es identificar la **CAUSA RAÍZ SISTÉMICA Y ÚNICA** que impide la correcta consolidación y/o serialización final del JSON empresarial. No queremos un parche, sino una solución robusta y persistente que aborde el problema fundamental.
+
+2.  **SOLUCIÓN REQUERIDA (APROVECHAMIENTO ESTRATÉGICO DE FRAMEWORKS):**
+    * La solución debe garantizar que el sistema **extraiga el JSON consolidado empresarial con ABSOLUTAMENTE todos los campos requeridos**.
+    * Asegura que los archivos con error *sigan apareciendo con campos en blanco* como solicitamos previamente.
+    * El **`Workflow empresarial debe ser validado`** asegurando **independencia total** entre archivos procesados y nuevos lotes.
+    * Si la falla está relacionada con la serialización JSON, asegúrate de utilizar las mejores prácticas y librerías estándar (ej., `json` en Python) para una estructura JSON válida y robusta.
+
+3.  **ADHERENCIA OBLIGATORIA A PUNTOS DE CONTROL (CONSTRUCCIÓN CON CHECKPOINTS Y DEBUGGING METÓDICO):**
+    * Una vez propuesta la solución, debes **DEMOSTRAR Y CONFIRMAR** que has superado **OBLIGATORIAMENTE** los siguientes Puntos de Control:
+        * **`Punto de Control #1: Pre-Commit/Merge Validation`**: Confirma que se ha realizado el `Static Reference Scanning` y la `Auto-Inspección de Conexiones Lógicas`, y que no se introduce **NINGUNA** referencia a elementos inexistentes en el código.
+        * **`Punto de Control #2: Testing Completo Post-Implementación`**:
+            * Debes generar y ejecutar **`Pruebas de Regresión Automatizadas`** específicas para la funcionalidad de extracción de JSON, incluyendo **nuevos "edge cases"** que validen la serialización y deserialización correcta de estructuras JSON complejas o con datos "vacíos".
+            * Ejecuta y reporta los resultados de una **`simulación de carga`** (`Stress Test` a 500% de carga normal) específicamente en el endpoint de extracción de resultados para validar la resiliencia bajo presión.
+
+**FORMATO DE CONFIRMACIÓN AL FINALIZAR:**
+
+NO me digas solo que está "corregido". Al finalizar tu trabajo, debes proporcionarme un informe conciso que incluya:
+
+* **Confirmación Explícita:** "La corrección del JSON Consolidado Empresarial ha sido validada y ha superado los Puntos de Control."
+* **Detalles del Punto de Control #1:** "El `Static Reference Scanning` y la `Auto-Inspección de Conexiones Lógicas` confirman que no se han introducido referencias inexistentes."
+* **Detalles del Punto de Control #2:** "Se ejecutaron las siguientes pruebas específicas: [LISTA BREVEMENTE LAS PRUEBAS EJECUTADAS, EJ. 'pruebas de serialización JSON', 'pruebas de edge cases para campos vacíos', 'stress test en /api/ocr/result/']. Los resultados de todas las pruebas son `PASSED`."
+* **Breve Descripción de la Causa Raíz y Solución:** Explica sucintamente (2-3 frases) la causa raíz sistémica que identificaste y cómo tu solución la abordó de forma persistente.
