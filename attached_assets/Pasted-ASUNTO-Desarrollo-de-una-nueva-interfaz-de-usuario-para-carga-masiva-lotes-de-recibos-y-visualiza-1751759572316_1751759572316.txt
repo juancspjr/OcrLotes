@@ -1,0 +1,133 @@
+ASUNTO: Desarrollo de una nueva interfaz de usuario para carga masiva (lotes) de recibos y visualización de resultados JSON estructurados, integrando la lógica de backend previamente definida.
+
+1. Visión General y Objetivo Principal:
+
+El objetivo es añadir una nueva sección a la interfaz web existente (el "frontend") que permita a los usuarios cargar múltiples imágenes de recibos simultáneamente (procesamiento por lotes). Esta sección debe interactuar con el backend para encolar los archivos y luego mostrar los resultados detallados y estructurados en formato JSON, utilizando la nueva lógica de extracción posicional, full_raw_ocr_text, y manejo de caption y additional_data. La nueva sección debe coexistir con la funcionalidad de carga individual sin causar conflictos.
+
+2. Componentes de la Interfaz de Usuario (Frontend - HTML/CSS/JavaScript):
+
+La IA desarrolladora deberá crear una nueva sección visible en la interfaz, posiblemente accesible a través de un nuevo botón en la navegación principal o una pestaña claramente etiquetada como "Procesamiento por Lotes" o "Carga Masiva".
+
+2.1. Sección de Carga de Archivos (Upload Area):
+
+Título: "Carga Masiva de Recibos" o "Procesamiento por Lotes".
+
+Selector de Múltiples Archivos: Un elemento <input type="file" multiple> que permita al usuario seleccionar varias imágenes a la vez (PNG, JPG, JPEG, etc.).
+
+Etiqueta clara: "Seleccionar Recibos (múltiples archivos)".
+
+Indicador de archivos seleccionados: Mostrar los nombres de los archivos que el usuario ha seleccionado.
+
+Campo "Caption Global" (Opcional): Un textarea o input type="text" etiquetado como "Descripción Global para el Lote (Caption)".
+
+Función: Este texto se aplicará como caption a todas las imágenes del lote si no se especifica un caption individual más específico a través de additional_data.
+
+Placeholder: "Ej: Pagos de nómina de Julio".
+
+Campo "Datos Adicionales del Lote" (Opcional): Un textarea etiquetado como "Datos Adicionales del Lote (JSON)".
+
+Función: Permitirá al usuario introducir una cadena JSON válida que contenga metadata adicional que se asociará a cada imagen del lote. Esto es clave para la flexibilidad futura.
+
+Validación Frontend: Implementar una validación básica en el cliente para asegurar que el texto introducido sea un JSON válido antes de enviarlo.
+
+Placeholder: {"departamento": "ventas", "proyecto": "QX-2025"}.
+
+Botón de Acción: Un botón prominente etiquetado como "Procesar Lote" o "Enviar Recibos".
+
+Este botón iniciará la solicitud HTTP POST al nuevo endpoint del backend.
+
+2.2. Sección de Visualización de Resultados del Lote (Results Display Area):
+
+Estado del Lote: Un área dinámica que mostrará el estado actual del procesamiento:
+
+"Cargando archivos..." (cuando los archivos se están enviando al servidor).
+
+"Procesando lote... Esto puede tomar un tiempo." (una vez que el backend confirma la recepción).
+
+"Lote completado. Resultados disponibles:" (cuando todos los JSONs han sido generados).
+
+Mostrar una barra de progreso o un indicador de actividad si es posible (ej., "X de N imágenes procesadas").
+
+Lista de Resultados Individuales: Una vez que los resultados estén listos, esta área mostrará una lista de los recibos procesados, cada uno con la siguiente información resumida:
+
+ID de la Solicitud (request_id): El nombre del archivo original o el ID generado.
+
+Estado de Procesamiento (processing_status): Claramente visible (ej., "Éxito ✅", "Error ❌").
+
+Razón del Error (error_reason): Si el estado es "Error", mostrar la razón concisa.
+
+Botón "Ver JSON Detallado": Para cada elemento de la lista, un botón que, al hacer clic, muestre el JSON completo del resultado en un modal o en una sección expandible.
+
+El modal/sección expandible deberá mostrar el JSON de forma legible (quizás con formato <code> o preformateado).
+
+Botón "Copiar JSON": Para facilitar la copia del resultado.
+
+Mensajes de Error/Notificación: Mostrar mensajes claros al usuario si hay problemas con la carga (ej., tipo de archivo no permitido, error de red).
+
+3. Lógica del Backend (Servidor Flask - Adiciones al main.py):
+
+La IA desarrolladora deberá añadir un nuevo endpoint API en el servidor Flask para manejar la carga de archivos en lote, siguiendo la filosofía de usar el sistema de archivos como cola.
+
+3.1. Nuevo Endpoint de API para Carga en Lote (/api/upload_batch):
+
+Ruta y Método: @app.route('/api/upload_batch', methods=['POST'])
+
+Tipo de Contenido Esperado: multipart/form-data para recibir múltiples archivos y campos de texto.
+
+Manejo de la Petición:
+
+Recepción de Múltiples Archivos: Acceder a la lista de archivos de imagen enviados (request.files.getlist('images')).
+
+Recepción de Datos de Lote:
+
+Obtener el caption_global del formulario (request.form.get('caption_global')).
+
+Obtener los additional_data_batch_json del formulario (request.form.get('additional_data_batch')).
+
+Realizar la validación de JSON en el backend también para additional_data_batch_json.
+
+Si es válido, parsearlo a un diccionario Python.
+
+Procesamiento de Cada Imagen en el Lote: Iterar sobre cada archivo de imagen recibido:
+
+Derivar request_id: Para cada imagen, generar el request_id único (como se definió: YYYYMMDD-C_SENDERID_NOMBRE_HORA-MIN.png). Nota: Si la UI de carga de lotes no puede pedir los sender_id, sender_name, sorteo_fecha, etc., de forma individual para cada imagen, la IA debe generar valores por defecto razonables o pedir al usuario que los especifique globalmente en un formulario adicional en la UI de carga de lotes. Podríamos usar datetime.now() para la fecha/hora de recepción y un UUID para una parte del ID si no se proporcionan todos los datos de origen para cada imagen.
+
+Guardar Imagen: Guardar el archivo de imagen en data/inbox/ con el request_id como nombre.
+
+Guardar caption.txt: Crear y guardar un archivo [request_id_sin_ext].caption.txt en data/inbox/.
+
+Lógica del caption: Si el caption_global fue proporcionado en la petición, usarlo. Si en el futuro se implementa una forma de subir caption por imagen (ej., vía un archivo CSV de metadata), el backend debería priorizar el caption específico de la imagen sobre el global. Por ahora, el caption_global se aplica a todos.
+
+Guardar additional_data.json: Crear y guardar un archivo [request_id_sin_ext].additional_data.json en data/inbox/.
+
+Lógica de additional_data: Si additional_data_batch_json fue proporcionado, serializarlo y guardarlo. Similar al caption, si en el futuro se implementa una forma de subir additional_data por imagen, se priorizaría el específico. Por ahora, los datos adicionales del lote se aplican a todos.
+
+Respuesta al Cliente (Frontend): Devolver una respuesta HTTP 202 Accepted (o similar) al frontend tan pronto como todos los archivos hayan sido guardados en data/inbox/.
+
+La respuesta JSON debe incluir una lista de los request_ids de todas las imágenes encoladas. Esto permitirá al frontend rastrear el estado de cada imagen individualmente.
+
+Ejemplo de Respuesta JSON: {"status": "accepted", "message": "Batch enqueued for processing.", "enqueued_ids": ["id1.png", "id2.png", ...], "timestamp": "..."}.
+
+Manejo de Errores: Implementar manejo robusto de errores para problemas de carga, tipos de archivo, JSON inválido, etc., devolviendo códigos de estado HTTP apropiados (ej., 400 Bad Request, 500 Internal Server Error).
+
+3.2. Adaptación del Worker de Procesamiento (batch_processing_worker):
+
+El worker ya está diseñado para monitorear data/inbox/ y procesar en lotes. No necesitaría grandes cambios, ya que los archivos .caption.txt y .additional_data.json se guardarán junto a las imágenes en inbox y serán recogidos por el worker.
+
+Asegurarse de que el worker lee y utiliza estos archivos .caption.txt y .additional_data.json para cada request_id individualmente cuando construye la información para el OrquestadorOCR. Esto ya fue detallado en el prompt de backend.
+
+3.3. Adaptación del OrquestadorOCR y Salida JSON:
+
+El OrquestadorOCR ya está diseñado para recibir captions y additional_data_list.
+
+Asegurar que los datos de additional_data se incluyan en el JSON final bajo la metadata (metadata.fuente_whatsapp.additional_data_received) y que se puedan usar en la lógica de extracción si es relevante.
+
+4. Consideraciones Adicionales:
+
+UX/UI: Priorizar una experiencia de usuario clara e intuitiva para la carga y visualización de lotes.
+
+Estado Asíncrono en Frontend: El frontend necesitará alguna lógica de polling o WebSockets (más avanzado) para monitorear el directorio data/results/ (o un endpoint de backend que exponga el estado de un request_id específico) y actualizar la interfaz de usuario con los resultados en tiempo real. Para una primera versión, un polling simple (ej., cada X segundos, verificar si los JSONs existen para los request_ids encolados) puede ser suficiente.
+
+Rendimiento en Frontend: Considerar el manejo de la carga de archivos grandes o muchos archivos para evitar congelar el navegador.
+
+Filosofía: Esta nueva sección no debe modificar la funcionalidad de carga individual. Es una adición que expande las capacidades del sistema.

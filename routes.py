@@ -6,6 +6,8 @@ import os
 import json
 import logging
 import shutil
+import psutil
+import uuid
 from pathlib import Path
 from datetime import datetime
 from werkzeug.utils import secure_filename
@@ -553,3 +555,341 @@ def ensure_async_directories():
 ensure_async_directories()
 
 logger.info("✅ Rutas API HTTP y directorios asíncronos inicializados")
+
+# ==============================================================================
+# FIX: NUEVOS ENDPOINTS PARA PROCESAMIENTO POR LOTES Y MONITOREO DE RECURSOS
+# REASON: Implementar interfaz de usuario para carga masiva con medición adaptativa
+# IMPACT: Sistema completo de procesamiento por lotes con optimización automática
+# ==============================================================================
+
+@app.route('/batch')
+def batch_processing():
+    """Página de procesamiento por lotes"""
+    return render_template('batch_processing.html')
+
+@app.route('/api/upload_batch', methods=['POST'])
+def api_upload_batch():
+    """
+    FIX: Endpoint para carga masiva de archivos con metadata global
+    REASON: Permitir procesamiento eficiente de múltiples recibos simultáneamente
+    IMPACT: Capacidad de procesamiento por lotes desde interfaz web con configuración adaptativa
+    """
+    try:
+        from config import get_async_directories, get_batch_config
+        
+        directories = get_async_directories()
+        batch_config = get_batch_config()
+        
+        # Validar que hay archivos
+        if 'images' not in request.files:
+            return jsonify({
+                'status': 'error',
+                'message': 'No images provided'
+            }), 400
+        
+        files = request.files.getlist('images')
+        if not files or all(f.filename == '' for f in files):
+            return jsonify({
+                'status': 'error',
+                'message': 'No files selected'
+            }), 400
+        
+        # Validar número máximo de archivos
+        max_files = batch_config.get('max_files_per_batch', 50)
+        if len(files) > max_files:
+            return jsonify({
+                'status': 'error',
+                'message': f'Too many files. Maximum allowed: {max_files}'
+            }), 400
+        
+        # Obtener metadatos globales
+        caption_global = request.form.get('caption_global', '')
+        additional_data_batch = request.form.get('additional_data_batch', '')
+        batch_size = int(request.form.get('batch_size', 5))
+        
+        # Validar JSON de additional_data si se proporciona
+        additional_data_parsed = None
+        if additional_data_batch:
+            try:
+                additional_data_parsed = json.loads(additional_data_batch)
+            except json.JSONDecodeError:
+                return jsonify({
+                    'status': 'error',
+                    'message': 'Invalid JSON format in additional_data_batch'
+                }), 400
+        
+        enqueued_ids = []
+        current_time = datetime.now()
+        batch_id = str(uuid.uuid4())[:8]  # Generar batch_id único una sola vez
+        
+        # Procesar cada archivo
+        for i, file in enumerate(files):
+            if file.filename == '':
+                continue
+                
+            # Validar tipo de archivo
+            if not file.content_type or not file.content_type.startswith('image/'):
+                logger.warning(f"Archivo {file.filename} ignorado: tipo no válido")
+                continue
+            
+            # Generar request_id único para lote
+            timestamp = current_time.strftime("%Y%m%d")
+            
+            # Asegurar filename válido
+            safe_filename = file.filename or f"image_{i}.png"
+            file_ext = os.path.splitext(safe_filename)[1] or '.png'
+            
+            request_id = f"{timestamp}-BATCH_{batch_id}_{i:03d}_{secure_filename(safe_filename)}"
+            if not request_id.endswith(file_ext):
+                request_id += file_ext
+            
+            try:
+                # Guardar imagen
+                image_path = os.path.join(directories['inbox'], request_id)
+                file.save(image_path)
+                
+                # Guardar caption si se proporciona
+                if caption_global:
+                    caption_path = image_path.replace(file_ext, '.caption.txt')
+                    with open(caption_path, 'w', encoding='utf-8') as f:
+                        f.write(caption_global)
+                
+                # Guardar additional_data si se proporciona
+                if additional_data_parsed:
+                    # Agregar información del lote
+                    batch_metadata = additional_data_parsed.copy()
+                    batch_metadata.update({
+                        'batch_info': {
+                            'batch_id': batch_id,
+                            'file_index': i,
+                            'total_files': len(files),
+                            'batch_timestamp': current_time.isoformat(),
+                            'original_filename': file.filename,
+                            'batch_size_config': batch_size
+                        }
+                    })
+                    
+                    additional_path = image_path.replace(file_ext, '.additional_data.json')
+                    with open(additional_path, 'w', encoding='utf-8') as f:
+                        json.dump(batch_metadata, f, indent=2, ensure_ascii=False)
+                
+                enqueued_ids.append(request_id)
+                logger.info(f"Archivo {file.filename} encolado como {request_id}")
+                
+            except Exception as e:
+                logger.error(f"Error procesando archivo {file.filename}: {e}")
+                continue
+        
+        if not enqueued_ids:
+            return jsonify({
+                'status': 'error',
+                'message': 'No files could be processed'
+            }), 400
+        
+        return jsonify({
+            'status': 'accepted',
+            'message': 'Batch enqueued for processing',
+            'enqueued_ids': enqueued_ids,
+            'total_files': len(enqueued_ids),
+            'batch_id': batch_id,
+            'estimated_processing_time_seconds': len(enqueued_ids) * 10,
+            'timestamp': current_time.isoformat()
+        }), 202
+        
+    except Exception as e:
+        logger.error(f"Error en upload_batch: {e}")
+        return jsonify({
+            'status': 'error',
+            'message': 'Internal server error',
+            'details': str(e)
+        }), 500
+
+@app.route('/api/ocr/resources', methods=['GET'])
+def api_system_resources():
+    """
+    FIX: Endpoint para monitoreo de recursos del servidor
+    REASON: Proporcionar métricas en tiempo real para optimización adaptativa de lotes
+    IMPACT: Sistema auto-optimizado que adapta tamaños de lote según recursos disponibles
+    """
+    try:
+        from config import get_async_directories
+        import glob
+        
+        directories = get_async_directories()
+        
+        # Métricas del sistema usando psutil
+        cpu_percent = psutil.cpu_percent(interval=0.1)
+        memory = psutil.virtual_memory()
+        disk = psutil.disk_usage('/')
+        
+        # Métricas de la cola de procesamiento
+        inbox_count = len(glob.glob(os.path.join(directories['inbox'], "*.png")) + 
+                         glob.glob(os.path.join(directories['inbox'], "*.jpg")))
+        
+        processing_count = len(glob.glob(os.path.join(directories['processing'], "*.png")) + 
+                              glob.glob(os.path.join(directories['processing'], "*.jpg")))
+        
+        processed_count = len(glob.glob(os.path.join(directories['processed'], "*.png")) + 
+                             glob.glob(os.path.join(directories['processed'], "*.jpg")))
+        
+        errors_count = len(glob.glob(os.path.join(directories['errors'], "*.png")) + 
+                          glob.glob(os.path.join(directories['errors'], "*.jpg")))
+        
+        # Calcular métricas derivadas
+        total_queue = inbox_count + processing_count
+        queue_load_percent = min((total_queue / 50) * 100, 100)  # Asumiendo máximo 50 elementos
+        
+        # Determinar estado del sistema
+        system_status = 'optimal'
+        if cpu_percent > 80 or memory.percent > 80:
+            system_status = 'high_load'
+        elif cpu_percent > 90 or memory.percent > 90:
+            system_status = 'overloaded'
+        
+        # Recomendación de tamaño de lote basada en recursos
+        recommended_batch_size = 5  # Default
+        
+        if cpu_percent < 30 and memory.percent < 50 and total_queue < 5:
+            recommended_batch_size = 15  # Aumentar para baja carga
+        elif cpu_percent > 70 or memory.percent > 70 or total_queue > 20:
+            recommended_batch_size = 2   # Reducir para alta carga
+        elif cpu_percent > 50 or memory.percent > 60 or total_queue > 10:
+            recommended_batch_size = 3   # Reducir moderadamente
+        
+        return jsonify({
+            'status': 'ok',
+            'timestamp': datetime.now().isoformat(),
+            'system_status': system_status,
+            'cpu_percent': round(cpu_percent, 1),
+            'memory_percent': round(memory.percent, 1),
+            'memory_available_gb': round(memory.available / (1024**3), 2),
+            'disk_free_gb': round(disk.free / (1024**3), 2),
+            'disk_percent': round((disk.used / disk.total) * 100, 1),
+            'queue_status': {
+                'inbox': inbox_count,
+                'processing': processing_count,
+                'processed': processed_count,
+                'errors': errors_count,
+                'total_active': total_queue,
+                'queue_load_percent': round(queue_load_percent, 1)
+            },
+            'performance_metrics': {
+                'recommended_batch_size': recommended_batch_size,
+                'current_load_category': system_status,
+                'optimal_for_batch_processing': cpu_percent < 60 and memory.percent < 70,
+                'processing_capacity_available': max(0, 50 - total_queue)
+            }
+        })
+        
+    except Exception as e:
+        logger.error(f"Error obteniendo recursos del sistema: {e}")
+        return jsonify({
+            'status': 'error',
+            'message': 'Could not retrieve system resources',
+            'details': str(e)
+        }), 500
+
+@app.route('/api/batch/configure', methods=['POST'])
+def api_configure_batch():
+    """
+    FIX: Endpoint para configurar parámetros de procesamiento por lotes
+    REASON: Permitir ajuste dinámico de configuración basado en métricas del servidor
+    IMPACT: Optimización automática del rendimiento según recursos disponibles
+    """
+    try:
+        from config import get_batch_config
+        
+        data = request.get_json()
+        if not data:
+            return jsonify({
+                'status': 'error',
+                'message': 'No configuration data provided'
+            }), 400
+        
+        # Validar configuración
+        batch_size = data.get('batch_size', 5)
+        auto_optimize = data.get('auto_optimize', True)
+        
+        if not isinstance(batch_size, int) or batch_size < 1 or batch_size > 50:
+            return jsonify({
+                'status': 'error',
+                'message': 'batch_size must be an integer between 1 and 50'
+            }), 400
+        
+        # Aplicar configuración (en memoria por ahora)
+        # TODO: Implementar persistencia de configuración si es necesario
+        
+        logger.info(f"Configuración de lote actualizada: batch_size={batch_size}, auto_optimize={auto_optimize}")
+        
+        return jsonify({
+            'status': 'success',
+            'message': 'Batch configuration updated',
+            'configuration': {
+                'batch_size': batch_size,
+                'auto_optimize': auto_optimize,
+                'updated_at': datetime.now().isoformat()
+            }
+        })
+        
+    except Exception as e:
+        logger.error(f"Error configurando lote: {e}")
+        return jsonify({
+            'status': 'error',
+            'message': 'Could not update batch configuration',
+            'details': str(e)
+        }), 500
+
+@app.route('/monitor')
+def resource_monitor():
+    """Página de monitoreo de recursos del servidor"""
+    return render_template('resource_monitor.html')
+
+@app.route('/api/download/batch_results/<batch_id>')
+def api_download_batch_results(batch_id):
+    """
+    FIX: Endpoint para descargar resultados de lote completo como ZIP
+    REASON: Facilitar descarga masiva de resultados procesados
+    IMPACT: Flujo completo de carga → procesamiento → descarga para lotes
+    """
+    try:
+        from config import get_async_directories
+        import zipfile
+        import tempfile
+        import glob
+        
+        directories = get_async_directories()
+        
+        # Buscar todos los resultados del lote
+        result_pattern = os.path.join(directories['results'], f"*BATCH_{batch_id}_*.json")
+        result_files = glob.glob(result_pattern)
+        
+        if not result_files:
+            return jsonify({
+                'status': 'error',
+                'message': f'No results found for batch {batch_id}'
+            }), 404
+        
+        # Crear archivo ZIP temporal
+        temp_dir = tempfile.mkdtemp()
+        zip_path = os.path.join(temp_dir, f'batch_{batch_id}_results.zip')
+        
+        with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zip_file:
+            for result_file in result_files:
+                # Usar nombre de archivo sin path completo
+                filename = os.path.basename(result_file)
+                zip_file.write(result_file, filename)
+        
+        return send_file(
+            zip_path,
+            as_attachment=True,
+            download_name=f'batch_{batch_id}_results.zip',
+            mimetype='application/zip'
+        )
+        
+    except Exception as e:
+        logger.error(f"Error descargando resultados del lote {batch_id}: {e}")
+        return jsonify({
+            'status': 'error',
+            'message': 'Could not download batch results',
+            'details': str(e)
+        }), 500

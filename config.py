@@ -460,7 +460,10 @@ def get_financial_patterns():
 
 # Configuración del sistema de procesamiento por lotes
 BATCH_PROCESSING_CONFIG = {
-    'batch_size': 10,  # Número ideal de imágenes por lote
+    'batch_size': 5,  # Número ideal de imágenes por lote
+    'max_batch_size': 20,  # Tamaño máximo de lote
+    'min_batch_size': 1,  # Tamaño mínimo de lote
+    'max_files_per_batch': 50,  # Máximo archivos por carga masiva
     'batch_timeout_seconds': 60,  # Tiempo máximo para formar un lote
     'polling_interval_seconds': 5,  # Frecuencia de monitoreo del inbox
     'max_concurrent_batches': 2,  # Máximo de lotes simultáneos
@@ -468,6 +471,27 @@ BATCH_PROCESSING_CONFIG = {
     'processing_order': 'fifo',  # Orden de procesamiento (FIFO)
     'retry_failed_images': True,  # Reintentar imágenes fallidas
     'max_retries': 3,  # Máximo intentos por imagen
+    'auto_optimization': {
+        'enabled': True,
+        'cpu_threshold_high': 80,  # CPU% para reducir lote
+        'cpu_threshold_low': 30,   # CPU% para aumentar lote
+        'memory_threshold_high': 80,  # RAM% para reducir lote
+        'memory_threshold_low': 50,   # RAM% para aumentar lote
+        'queue_threshold_high': 20,  # Cola para reducir lote
+        'queue_threshold_low': 5,    # Cola para aumentar lote
+        'adjustment_factor_reduce': 0.7,  # Factor de reducción
+        'adjustment_factor_increase': 1.2  # Factor de aumento
+    },
+    'resource_monitoring': {
+        'update_interval_seconds': 2,  # Frecuencia de monitoreo
+        'history_length': 100,  # Registros históricos
+        'alert_thresholds': {
+            'cpu_critical': 90,
+            'memory_critical': 90,
+            'disk_critical': 95,
+            'queue_critical': 40
+        }
+    }
 }
 
 # Estructura de directorios para sistema asíncrono
