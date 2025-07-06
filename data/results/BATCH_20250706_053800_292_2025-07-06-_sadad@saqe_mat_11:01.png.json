@@ -1,0 +1,392 @@
+{
+  "request_id": "2025-07-06-_sadad@saqe_mat_11:01.png",
+  "processing_status": "success",
+  "error_reason": null,
+  "metadata": {
+    "fecha_procesamiento": "2025-07-06T05:38:01.396965",
+    "perfil_ocr_usado": "unknown",
+    "tiempo_procesamiento_ms": 586.81,
+    "fuente_whatsapp": {
+      "sender_id": "sadad@saqe",
+      "sender_name_registered": "mat",
+      "fecha_envio_whatsapp": "2025-07-06",
+      "hora_envio_whatsapp": "11:01",
+      "sorteo_fecha": "2025-07-06",
+      "sorteo_conteo": "",
+      "caption_whatsapp": "21 33"
+    }
+  },
+  "full_raw_ocr_text": "- -  PagomovilBDV Personas 200,00 Bs Fecha: 01/04/2025 Operacion: 002501174438 1 Identificacion: 26714848 Origen: 0102****0938 Destino: 04247504716 Banco: 0102 = BANCO DE VENEZUELA Concepto: pago",
+  "extracted_fields": [
+    {
+      "field_name": "banco_origen",
+      "value": "-",
+      "confidence": 0.759,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "relative_position": "middle-center",
+      "raw_text_segment": "BANCO -"
+    },
+    {
+      "field_name": "cedula_beneficiario",
+      "value": "-",
+      "confidence": 0.631,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "relative_position": "middle-center",
+      "raw_text_segment": "Operacion: -"
+    },
+    {
+      "field_name": "telefono_beneficiario",
+      "value": "-",
+      "confidence": 0.718,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "relative_position": "middle-center",
+      "raw_text_segment": "PagomovilBDV -"
+    },
+    {
+      "field_name": "fecha_transaccion",
+      "value": "-",
+      "confidence": 0.799,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "relative_position": "middle-center",
+      "raw_text_segment": "Fecha: -"
+    },
+    {
+      "field_name": "tipo_transaccion",
+      "value": "-",
+      "confidence": 0.775,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "relative_position": "middle-center",
+      "raw_text_segment": "pago -"
+    },
+    {
+      "field_name": "descripcion_motivo",
+      "value": "21 33",
+      "confidence": 1.0,
+      "coordinates": null,
+      "relative_position": null,
+      "raw_text_segment": null
+    }
+  ],
+  "unmapped_text_segments": [
+    {
+      "text": "-",
+      "confidence": 0.5989275574684143,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "relative_position": "middle-center"
+    },
+    {
+      "text": "-",
+      "confidence": 0.2362050861120224,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "relative_position": "middle-center"
+    },
+    {
+      "text": "",
+      "confidence": 0.27585384249687195,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "relative_position": "middle-center"
+    },
+    {
+      "text": "PagomovilBDV",
+      "confidence": 0.8377845883369446,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "relative_position": "middle-center"
+    },
+    {
+      "text": "Personas",
+      "confidence": 0.9922658801078796,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "relative_position": "middle-center"
+    },
+    {
+      "text": "200,00",
+      "confidence": 0.9892812967300415,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "relative_position": "middle-center"
+    },
+    {
+      "text": "Bs",
+      "confidence": 0.9975887537002563,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "relative_position": "middle-center"
+    },
+    {
+      "text": "Fecha:",
+      "confidence": 0.9986347556114197,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "relative_position": "middle-center"
+    },
+    {
+      "text": "01/04/2025",
+      "confidence": 0.9991390705108643,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "relative_position": "middle-center"
+    },
+    {
+      "text": "Operacion:",
+      "confidence": 0.6623085737228394,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "relative_position": "middle-center"
+    },
+    {
+      "text": "002501174438",
+      "confidence": 0.988211452960968,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "relative_position": "middle-center"
+    },
+    {
+      "text": "1",
+      "confidence": 0.6779965758323669,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "relative_position": "middle-center"
+    },
+    {
+      "text": "Identificacion:",
+      "confidence": 0.5886964797973633,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "relative_position": "middle-center"
+    },
+    {
+      "text": "26714848",
+      "confidence": 0.9994850158691406,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "relative_position": "middle-center"
+    },
+    {
+      "text": "Origen:",
+      "confidence": 0.9112686514854431,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "relative_position": "middle-center"
+    },
+    {
+      "text": "0102****0938",
+      "confidence": 0.6715519428253174,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "relative_position": "middle-center"
+    },
+    {
+      "text": "Destino:",
+      "confidence": 0.986467182636261,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "relative_position": "middle-center"
+    },
+    {
+      "text": "04247504716",
+      "confidence": 0.8560893535614014,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "relative_position": "middle-center"
+    },
+    {
+      "text": "Banco:",
+      "confidence": 0.50550776720047,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "relative_position": "middle-center"
+    },
+    {
+      "text": "0102",
+      "confidence": 0.9999850988388062,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "relative_position": "middle-center"
+    },
+    {
+      "text": "=",
+      "confidence": 0.6374116539955139,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "relative_position": "middle-center"
+    },
+    {
+      "text": "BANCO",
+      "confidence": 0.9182335734367371,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "relative_position": "middle-center"
+    },
+    {
+      "text": "DE",
+      "confidence": 0.9593595266342163,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "relative_position": "middle-center"
+    },
+    {
+      "text": "VENEZUELA",
+      "confidence": 0.9988723397254944,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "relative_position": "middle-center"
+    },
+    {
+      "text": "Concepto:",
+      "confidence": 0.9983843564987183,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "relative_position": "middle-center"
+    },
+    {
+      "text": "pago",
+      "confidence": 0.9515377283096313,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "relative_position": "middle-center"
+    }
+  ],
+  "batch_metadata": {
+    "batch_size": 3,
+    "batch_processing_time_seconds": 1.98,
+    "batch_timestamp": "2025-07-06T05:38:02.275349"
+  },
+  "batch_id": "BATCH_20250706_053800_292",
+  "batch_processing_time": 1.98,
+  "batch_position": 1,
+  "batch_size": 3
+}
