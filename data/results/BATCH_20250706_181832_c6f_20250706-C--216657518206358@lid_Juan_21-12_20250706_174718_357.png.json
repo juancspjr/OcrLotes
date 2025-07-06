@@ -1,11 +1,11 @@
 {
   "status": "exitoso",
-  "request_id": "BATCH_20250706_175728_c2c_04_procesamiento_final1_20250706_161801_102.png",
-  "filename": "04_procesamiento_final1_20250706_161801_102.png",
-  "tiempo_procesamiento": 0.586632490158081,
-  "fecha_procesamiento": "2025-07-06T17:57:29.337542",
+  "request_id": "BATCH_20250706_181832_c6f_20250706-C--216657518206358@lid_Juan_21-12_20250706_174718_357.png",
+  "filename": "20250706-C--216657518206358@lid_Juan_21-12_20250706_174718_357.png",
+  "tiempo_procesamiento": 0.15916967391967773,
+  "fecha_procesamiento": "2025-07-06T18:18:32.843280",
   "archivo_info": {
-    "original_filename": "04_procesamiento_final1_20250706_161801_102.png",
+    "original_filename": "20250706-C--216657518206358@lid_Juan_21-12_20250706_174718_357.png",
     "tamaño": 82758,
     "formato": ".png"
   },
@@ -660,7 +660,7 @@
         "impacto": "preserva_imagen_original_completamente"
       }
     },
-    "tiempo_procesamiento": 0.009,
+    "tiempo_procesamiento": 0.01,
     "estrategia_aplicada": "Documento Escaneado - SIN PROCESAMIENTO",
     "metricas_despues": {
       "brillo_promedio": 205.52835608646188,

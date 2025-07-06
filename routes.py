@@ -1196,6 +1196,108 @@ def api_revoke_key(key_id):
             'message': f'Error revocando API key: {str(e)}'
         }), 500
 
+@app.route('/api/clean', methods=['POST'])
+def api_clean_system():
+    """
+    FIX: Endpoint crítico para limpiar el sistema después de procesar lotes
+    REASON: Interface llama a /api/clean que estaba faltante en routes.py principal
+    IMPACT: Botones de limpieza completamente funcionales siguiendo workflow empresarial
+    TEST: Limpia directorios processed, results, errors y temporales correctamente
+    MONITOR: Logging detallado de archivos eliminados y contadores por directorio
+    INTERFACE: Endpoint llamado por botones de limpieza en interface_excellence_dashboard.html
+    VISUAL_CHANGE: Habilita funcionalidad completa de limpieza en workflow empresarial
+    REFERENCE_INTEGRITY: Endpoint /api/clean ahora existe y es accesible desde frontend
+    """
+    try:
+        from config import get_async_directories
+        import glob
+        import shutil
+        
+        directories = get_async_directories()
+        cleaned_counts = {}
+        
+        # FIX: Limpiar directorio processed con manejo robusto de errores
+        # REASON: Eliminar archivos procesados para evitar acumulación de basura
+        # IMPACT: Sistema más limpio y organizado después de cada procesamiento
+        processed_files = glob.glob(os.path.join(directories['processed'], "*.*"))
+        processed_cleaned = 0
+        for file_path in processed_files:
+            try:
+                os.remove(file_path)
+                processed_cleaned += 1
+            except Exception as e:
+                logger.warning(f"No se pudo eliminar archivo procesado {file_path}: {e}")
+        cleaned_counts['processed'] = processed_cleaned
+        
+        # FIX: Limpiar directorio results (archivos JSON de resultados)
+        # REASON: Limpiar resultados previos después de extraer ZIP
+        # IMPACT: Evita acumulación de archivos JSON antiguos
+        result_files = glob.glob(os.path.join(directories['results'], "*.json"))
+        results_cleaned = 0
+        for file_path in result_files:
+            try:
+                os.remove(file_path)
+                results_cleaned += 1
+            except Exception as e:
+                logger.warning(f"No se pudo eliminar resultado {file_path}: {e}")
+        cleaned_counts['results'] = results_cleaned
+        
+        # FIX: Limpiar directorio errors (opcional para archivos con errores)
+        # REASON: Limpiar archivos que fallaron en procesamiento anterior
+        # IMPACT: Sistema libre de archivos problemáticos acumulados
+        try:
+            error_files = glob.glob(os.path.join(directories.get('errors', 'data/errors'), "*.*"))
+            errors_cleaned = 0
+            for file_path in error_files:
+                try:
+                    os.remove(file_path)
+                    errors_cleaned += 1
+                except Exception as e:
+                    logger.warning(f"No se pudo eliminar error {file_path}: {e}")
+            cleaned_counts['errors'] = errors_cleaned
+        except Exception as e:
+            logger.warning(f"Error accediendo directorio de errores: {e}")
+            cleaned_counts['errors'] = 0
+        
+        # FIX: Limpiar directorios temporales web
+        # REASON: Eliminar directorios temporales creados durante procesamiento web
+        # IMPACT: Libera espacio y evita acumulación de archivos temporales
+        temp_dirs = glob.glob(os.path.join('temp', 'web_*'))
+        temp_cleaned = 0
+        for temp_dir in temp_dirs:
+            try:
+                shutil.rmtree(temp_dir)
+                temp_cleaned += 1
+            except Exception as e:
+                logger.warning(f"No se pudo eliminar directorio temporal {temp_dir}: {e}")
+        cleaned_counts['temp_dirs'] = temp_cleaned
+        
+        total_cleaned = sum(cleaned_counts.values())
+        logger.info(f"✅ Sistema limpiado exitosamente: {cleaned_counts} - Total: {total_cleaned} elementos")
+        
+        return jsonify({
+            'status': 'exitoso',
+            'estado': 'exitoso',
+            'message': 'Sistema limpiado exitosamente',
+            'mensaje': 'Sistema limpiado exitosamente',
+            'cleaned_counts': cleaned_counts,
+            'total_cleaned': total_cleaned,
+            'timestamp': datetime.now().isoformat(),
+            'success': True
+        }), 200
+        
+    except Exception as e:
+        logger.error(f"Error crítico limpiando sistema: {e}")
+        return jsonify({
+            'status': 'error',
+            'estado': 'error',
+            'message': f'Error al limpiar sistema: {str(e)}',
+            'mensaje': f'Error al limpiar sistema: {str(e)}',
+            'error_code': 'CLEAN_SYSTEM_ERROR',
+            'timestamp': datetime.now().isoformat(),
+            'success': False
+        }), 500
+
 @app.route('/api/extract_results', methods=['GET'])
 def api_extract_results():
     """
