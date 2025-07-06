@@ -27,6 +27,8 @@ Sistema OCR asíncrono de alto rendimiento para procesamiento de recibos de pago
 - ✅ Ejemplos de uso con cURL, JavaScript y Python
 - ✅ Autenticación Bearer Token para APIs externas
 - ✅ Formulario de subida de archivos visible y funcional
+- ✅ Metadatos de WhatsApp restaurados (numerosorteo, idWhatsapp, nombre, horamin)
+- ✅ Funcionalidad crítica para simulación óptima con otros entornos
 
 ## Preferencias del Usuario
 - Interfaz completamente en español

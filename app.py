@@ -162,12 +162,13 @@ def process_batch(image_paths, directories):
                         result_converted = result
                     
                     # Añadir información adicional para debug en español
-                    result_converted['info_guardado'] = {
-                        'archivo_guardado': result_filename,
-                        'timestamp_guardado': json.dumps(datetime.now().isoformat()),
-                        'coordenadas_incluidas': 'coordenadas_disponibles' in result_converted,
-                        'palabras_con_coordenadas': result_converted.get('coordenadas_disponibles', 0)
-                    }
+                    if isinstance(result_converted, dict):
+                        result_converted['info_guardado'] = {
+                            'archivo_guardado': result_filename,
+                            'timestamp_guardado': datetime.now().isoformat(),
+                            'coordenadas_incluidas': 'coordenadas_disponibles' in result_converted,
+                            'palabras_con_coordenadas': result_converted.get('coordenadas_disponibles', 0) if isinstance(result_converted.get('coordenadas_disponibles'), int) else 0
+                        }
                     
                     with open(result_path, 'w', encoding='utf-8') as f:
                         json.dump(result_converted, f, ensure_ascii=False, indent=2)
@@ -197,28 +198,59 @@ def process_batch(image_paths, directories):
         logger.error(f"Error procesando lote: {e}")
 
 def extract_metadata_from_filename(filename):
-    """Extrae metadata del nombre de archivo formato WhatsApp"""
+    """
+    FIX: Extrae metadata completa del nombre de archivo formato WhatsApp empresarial
+    REASON: Usuario requiere campos específicos (numerosorteo, idWhatsapp, nombre, horamin) para simulación óptima
+    IMPACT: Restaura funcionalidad crítica de metadatos sin afectar la interfaz existente
+    """
     import re
     
-    # Patrón: 20250620-A_214056942235719@lid_Juanc_17-31.png
-    pattern = r'(\d{8})-([A-Z])_([^_]+)_([^_]+)_(\d{2}-\d{2})'
-    match = re.match(pattern, filename)
+    # Patrón mejorado para formato: A--214056942235719@lid_Juanc_17-30.png
+    # Captura: numerosorteo, idWhatsapp, nombre, horamin
+    patterns = [
+        # Formato: A--214056942235719@lid_Juanc_17-30.png
+        r'^([A-Z]+)--(\d+@\w+)_([^_]+)_(\d{2}-\d{2})\.(.+)$',
+        # Formato alternativo: 20250620-A_214056942235719@lid_Juanc_17-31.png  
+        r'^(\d{8})-([A-Z])_([^@]+@[^_]+)_([^_]+)_(\d{2}-\d{2})\.(.+)$',
+        # Formato genérico para WhatsApp
+        r'^([^_]+)_([^_]+)_([^_]+)_([^.]+)\.(.+)$'
+    ]
     
-    if match:
-        return {
-            'sorteo_fecha': match.group(1),
-            'sorteo_conteo': match.group(2),
-            'sender_id': match.group(3),
-            'sender_name': match.group(4),
-            'hora_min': match.group(5)
-        }
+    for pattern in patterns:
+        match = re.match(pattern, filename)
+        if match:
+            groups = match.groups()
+            
+            if len(groups) >= 4:
+                return {
+                    'numerosorteo': groups[0],  # A o número de sorteo
+                    'idWhatsapp': groups[1] if '@' in groups[1] else groups[2],  # ID con @lid
+                    'nombre': groups[2] if '@' in groups[1] else groups[3],  # Nombre del usuario
+                    'horamin': groups[3] if '@' in groups[1] else groups[4] if len(groups) > 4 else '00-00',  # Hora en formato HH-MM
+                    'extension': groups[-1],  # Extensión del archivo
+                    # Campos adicionales para compatibilidad
+                    'sorteo_fecha': groups[0] if groups[0].isdigit() else '20250101',
+                    'sorteo_conteo': groups[1] if len(groups[1]) == 1 else groups[0],
+                    'sender_id': groups[1] if '@' in groups[1] else groups[2],
+                    'sender_name': groups[2] if '@' in groups[1] else groups[3],
+                    'hora_min': groups[3] if '@' in groups[1] else groups[4] if len(groups) > 4 else '00-00',
+                    'texto_mensaje_whatsapp': f"Archivo recibido de {groups[2] if '@' in groups[1] else groups[3]} a las {groups[3] if '@' in groups[1] else groups[4] if len(groups) > 4 else '00:00'}"
+                }
     
+    # Fallback para archivos que no coinciden con ningún patrón
     return {
+        'numerosorteo': 'A',
+        'idWhatsapp': 'unknown@lid',
+        'nombre': 'Unknown',
+        'horamin': '00-00',
+        'extension': filename.split('.')[-1] if '.' in filename else 'png',
+        # Campos para compatibilidad
         'sorteo_fecha': '20250101',
         'sorteo_conteo': 'A',
-        'sender_id': 'unknown',
+        'sender_id': 'unknown@lid',
         'sender_name': 'Unknown',
-        'hora_min': '00-00'
+        'hora_min': '00-00',
+        'texto_mensaje_whatsapp': f"Archivo sin metadatos: {filename}"
     }
 
 def start_batch_worker():

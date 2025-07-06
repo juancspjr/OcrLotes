@@ -225,7 +225,13 @@ def api_process_image():
         file_path = os.path.join(directories['inbox'], final_filename)
         file.save(file_path)
         
-        # Metadatos completos
+        # FIX: Extraer metadatos de WhatsApp del nombre de archivo
+        # REASON: Usuario requiere campos específicos (numerosorteo, idWhatsapp, nombre, horamin) para simulación óptima
+        # IMPACT: Restaura funcionalidad crítica de metadatos empresariales sin afectar interfaz
+        from app import extract_metadata_from_filename
+        whatsapp_metadata = extract_metadata_from_filename(final_filename)
+        
+        # Metadatos completos con datos de WhatsApp empresariales
         metadata = {
             'filename_original': file.filename,
             'filename_custom': custom_filename or final_filename,
@@ -233,6 +239,14 @@ def api_process_image():
             'request_id': request_id,
             'upload_timestamp': current_time.isoformat(),
             'file_size': os.path.getsize(file_path),
+            # Campos críticos de WhatsApp para simulación óptima
+            'numerosorteo': whatsapp_metadata.get('numerosorteo', 'A'),
+            'idWhatsapp': whatsapp_metadata.get('idWhatsapp', 'unknown@lid'),
+            'nombre': whatsapp_metadata.get('nombre', 'Unknown'),
+            'horamin': whatsapp_metadata.get('horamin', '00-00'),
+            'texto_mensaje_whatsapp': whatsapp_metadata.get('texto_mensaje_whatsapp', ''),
+            # Metadatos completos de WhatsApp
+            'whatsapp_metadata': whatsapp_metadata,
             'renaming_info': {
                 'posicion_sorteo': posicion_sorteo,
                 'fecha_sorteo': fecha_sorteo,
