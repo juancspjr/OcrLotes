@@ -1,0 +1,398 @@
+{
+  "texto_completo": "Bancamiga Banco Universal NUMERO DE REFERENCIA : 190018901378 MONTO DE LA OPERACION : Bs . 313,62 CI / RIF BENEFICIARIO : V - 27061025 TELF BENEFICIARIO : 04125318244 BANCO : MERCANTIL FECHA : 20/06/25 07:00 pm CONCEPTO : pago de Adriana",
+  "total_caracteres": 237,
+  "tiempo_procesamiento": 0.612,
+  "metodo_extraccion": "ONNXTR_SINGLE_PASS",
+  "configuracion_onnxtr": "ultra_rapido",
+  "total_palabras_detectadas": 29,
+  "palabras_detectadas": [
+    {
+      "texto": "Bancamiga",
+      "confianza": 0.5862873196601868,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 0,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Banco",
+      "confianza": 0.9939460158348083,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 1,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Universal",
+      "confianza": 0.9940071105957031,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 1,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "NUMERO",
+      "confianza": 0.7276663780212402,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 2,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "DE",
+      "confianza": 0.9989965558052063,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 2,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "REFERENCIA:",
+      "confianza": 0.7838635742664337,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 2,
+        "palabra": 2
+      }
+    },
+    {
+      "texto": "190018901378",
+      "confianza": 0.7699981033802032,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 3,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "MONTO",
+      "confianza": 0.8107538819313049,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 4,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "DE",
+      "confianza": 0.9980505704879761,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 4,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "LA",
+      "confianza": 0.998611569404602,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 4,
+        "palabra": 2
+      }
+    },
+    {
+      "texto": "OPERACION:",
+      "confianza": 0.8010163307189941,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 4,
+        "palabra": 3
+      }
+    },
+    {
+      "texto": "Bs.",
+      "confianza": 0.9884639382362366,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 5,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "313,62",
+      "confianza": 0.9217360019683838,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 5,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "CI/RIF",
+      "confianza": 0.9197441935539246,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 6,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "BENEFICIARIO:",
+      "confianza": 0.7703550855318705,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 6,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "V-27061025",
+      "confianza": 0.864231288433075,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 7,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "TELF",
+      "confianza": 0.9979730248451233,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 8,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "BENEFICIARIO:",
+      "confianza": 0.6569307247797648,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 8,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "04125318244",
+      "confianza": 0.9150535762310028,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 9,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "BANCO:",
+      "confianza": 0.9869458079338074,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 10,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "MERCANTIL",
+      "confianza": 0.7023361921310425,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 11,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "FECHA:",
+      "confianza": 0.9685009717941284,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 12,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "20/06/25",
+      "confianza": 0.9997938275337219,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 13,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "07:00",
+      "confianza": 0.9999752044677734,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 13,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "pm",
+      "confianza": 0.5638701915740967,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 13,
+        "palabra": 2
+      }
+    },
+    {
+      "texto": "CONCEPTO:",
+      "confianza": 0.9879565834999084,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 14,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "pago",
+      "confianza": 0.8466113805770874,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 15,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "de",
+      "confianza": 0.9998084902763367,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 15,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "Adriana",
+      "confianza": 0.9970607161521912,
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 15,
+        "palabra": 2
+      }
+    }
+  ],
+  "confianza_promedio": 0.881,
+  "estadisticas_onnxtr": {
+    "paginas_procesadas": 1,
+    "palabras_alta_confianza": 21,
+    "palabras_media_confianza": 6,
+    "palabras_baja_confianza": 2,
+    "min_confianza_aplicada": 0.5
+  },
+  "calidad_extraccion": {
+    "score_calidad": 77.0,
+    "categoria": "buena",
+    "confianza_promedio": 0.881,
+    "palabras_alta_confianza": 21,
+    "total_palabras": 29,
+    "longitud_texto": 237,
+    "recomendaciones": [
+      "Calidad de extracción satisfactoria"
+    ]
+  },
+  "deteccion_inteligente": {
+    "tipo_imagen": "screenshot_movil",
+    "esquema_color": "texto_oscuro_fondo_claro",
+    "inversion_requerida": false,
+    "ui_elements_detectados": true,
+    "aspect_ratio": 0.7415185783521809,
+    "calidad_digital": false,
+    "dark_percentage": 3.0692028999328613,
+    "light_percentage": 96.93079376220703,
+    "edge_density": 0.022118217238430105,
+    "noise_estimate": 68.51417769289004,
+    "confianza_deteccion": 0.6000000000000001
+  },
+  "datos_financieros": {
+    "amount": [
+      {
+        "valor": "190",
+        "posicion_texto": 49
+      },
+      {
+        "valor": "018",
+        "posicion_texto": 52
+      },
+      {
+        "valor": "901",
+        "posicion_texto": 55
+      },
+      {
+        "valor": "378",
+        "posicion_texto": 58
+      },
+      {
+        "valor": "313,62",
+        "posicion_texto": 91
+      }
+    ],
+    "date": [
+      {
+        "valor": "20/06/25",
+        "posicion_texto": 193
+      }
+    ],
+    "time": [
+      {
+        "valor": "07:00 pm",
+        "posicion_texto": 202
+      }
+    ],
+    "reference": [
+      {
+        "valor": "ERENCIA",
+        "posicion_texto": 39
+      }
+    ],
+    "phone": [
+      {
+        "valor": "19001890137",
+        "posicion_texto": 49
+      },
+      {
+        "valor": "04125318244",
+        "posicion_texto": 155
+      }
+    ],
+    "analisis_documento": {
+      "tipo": "desconocido",
+      "confianza": 0,
+      "keywords_encontradas": []
+    },
+    "resumen_extraido": {
+      "montos_encontrados": 5,
+      "fechas_encontradas": 1,
+      "referencias_encontradas": 1,
+      "cuentas_encontradas": 0,
+      "telefonos_encontrados": 2,
+      "total_elementos": 9,
+      "completitud_porcentaje": 100
+    }
+  }
+}
