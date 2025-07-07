@@ -1974,17 +1974,19 @@ def _extract_enterprise_fields(result_data, texto_completo):
         # NUEVO CAMPO: texto_total_ocr con texto completo original
         campos['texto_total_ocr'] = texto_completo_local
         
-        # REDEFINIR: concepto como motivo conciso de transacción
+        # MANDATO CRÍTICO #2: RE-DEFINICIÓN ULTRA-ESTRICTA DE CONCEPTO (NÚCLEO SEMÁNTICO)
+        # REASON: Extraer SOLO el núcleo semántico más relevante según mandato específico
+        # IMPACT: Concepto conciso y significativo, NO truncamiento de texto_total_ocr
         if texto_completo_local and not campos['concepto']:
-            # EXTRACCIÓN INTELIGENTE DE CONCEPTO (motivo conciso)
+            # PRIORIDAD MÁXIMA: Códigos y números de proyecto/referencia específicos
             concepto_patterns = [
-                r'(?:Concepto|CONCEPTO)[:=]?\s*([^.]{10,80})',        # Concepto: texto
-                r'(?:Motivo|MOTIVO)[:=]?\s*([^.]{10,80})',            # Motivo: texto
-                r'(?:Descripcion|DESCRIPCIÓN)[:=]?\s*([^.]{10,80})',  # Descripción: texto
-                r'(?:Detalle|DETALLE)[:=]?\s*([^.]{10,80})',          # Detalle: texto
-                r'(Pago\s+[A-Za-z\s]{5,40})',                        # Pago Móvil, Pago de...
-                r'(Transferencia\s+[A-Za-z\s]{5,40})',                # Transferencia bancaria
-                r'(Envio\s+de\s+[A-Za-z\s]{5,40})',                  # Envío de dinero
+                r'(?:Concepto|CONCEPTO)[:=]?\s*([A-Z0-9\s]{3,25})',   # Códigos como "4 15 D 107"
+                r'(?:Por|Para)[:=]?\s*([A-Za-z0-9\s]{5,30})',         # "Por: Pago Servicios"
+                r'(?:Motivo|MOTIVO)[:=]?\s*([A-Za-z\s]{5,30})',       # Motivo conciso
+                r'(Pago\s+(?:Móvil|Movil|de\s+\w+))',                # "Pago Móvil", "Pago de Servicios"
+                r'(Transferencia\s+(?:a\s+\w+|Bancaria))',            # "Transferencia Bancaria"
+                r'(Envío?\s+de\s+\w+)',                              # "Envío de Dinero"
+                r'([A-Z0-9]{2,}\s+[A-Z0-9]{2,}\s+[A-Z0-9]{1,})',     # Códigos alfanuméricos separados
             ]
             
             concepto_extraido = ""
@@ -1992,7 +1994,20 @@ def _extract_enterprise_fields(result_data, texto_completo):
                 match = re.search(pattern, texto_completo_local, re.IGNORECASE)
                 if match:
                     concepto_extraido = match.group(1).strip()
-                    break
+                    # VALIDAR QUE NO SEA RUIDO (como "Crear Acceso directo")
+                    ruido_keywords = ['crear', 'acceso', 'directo', 'webpage', 'url', 'http', 'x', '-']
+                    texto_limpio = concepto_extraido.lower().replace(' ', '')
+                    if not any(ruido in texto_limpio for ruido in ruido_keywords):
+                        break
+                    else:
+                        concepto_extraido = ""  # Resetear si es ruido
+            
+            # FALLBACK ULTRA-ESPECÍFICO: Solo para casos extremos
+            if not concepto_extraido:
+                # Buscar códigos o números significativos aislados
+                codigo_match = re.search(r'([A-Z0-9]{2,}\s+[A-Z0-9]{2,}(?:\s+[A-Z0-9]{1,})?)', texto_completo_local)
+                if codigo_match:
+                    concepto_extraido = codigo_match.group(1).strip()
             
             # FALLBACK INTELIGENTE: Si no hay concepto específico, extraer frase relevante
             if not concepto_extraido:
@@ -2035,6 +2050,29 @@ def _extract_enterprise_fields(result_data, texto_completo):
                     campos[campo] = valor
                 elif valor and campo in ['caption', 'otro']:  # Sobrescribir caption y otro siempre
                     campos[campo] = valor
+        
+        # MANDATO CRÍTICO #3: DETECCIÓN DIRECTA DE BANCO DESTINO CON CÓDIGOS BANCARIOS  
+        # REASON: "Bancoc 0105 - BANCO MERCANIIL" debe extraer "BANCO MERCANTIL" como banco_destino
+        # IMPACT: Implementación directa de códigos bancarios en función de extracción empresarial
+        if not campos.get('banco_destino') and texto_completo_local:
+            # TABLA DE CÓDIGOS BANCARIOS VENEZOLANOS (FUENTE DE ALTA FIABILIDAD)
+            codigos_bancarios = {
+                '0102': 'BANCO DE VENEZUELA',
+                '0105': 'BANCO MERCANTIL', 
+                '0108': 'BBVA PROVINCIAL',
+                '0115': 'BANCO EXTERIOR',
+                '0134': 'BANESCO',
+                '0172': 'BANCAMIGA',
+                '0191': 'BANCO NACIONAL DE CREDITO'
+            }
+            
+            bancoorigen_actual = campos.get('bancoorigen', '')
+            
+            # BÚSQUEDA POR CÓDIGO BANCARIO CON MÁXIMA PRIORIDAD
+            for codigo, nombre_banco in codigos_bancarios.items():
+                if codigo in texto_completo_local and nombre_banco != bancoorigen_actual:
+                    campos['banco_destino'] = nombre_banco
+                    break
         
         # Buscar también en extracted_fields_positional como fallback
         extracted_fields = datos_extraidos.get('extracted_fields_positional', {})
@@ -2660,41 +2698,78 @@ def _extract_onnxtr_enterprise_fields(palabras_detectadas, texto_completo):
             # REASON: Priorizar detección EXPLÍCITA de banco destino sobre inferencia intrabancaria
             # IMPACT: Capturar bancos destino mencionados directamente en transacciones interbancarias
             
-            # PRIORIDAD MÁXIMA: DETECCIÓN EXPLÍCITA DE BANCO DESTINO
-            banco_destino_patterns = [
-                r'Banco\s*[:=]?\s*(BANCO\s+[A-Z\s]+)',                    # Banco: BANCO MERCANTIL
-                r'destino\s*[:=]?\s*(BANCO\s+[A-Z\s]+)',                  # destino: BANCO MERCANTIL  
-                r'([A-Z\s]*BANCO\s+[A-Z]+)',                              # BANCO MERCANTIL directo
-                r'Banco\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)',              # Banco Mercantil
-                r'(MERCANTIL|VENEZUELA|BANESCO|PROVINCIAL|EXTERIOR|BICENTENARIO|BBVA|BNC|BANCAMIGA)'  # Nombres directos
-            ]
+            # MANDATO CRÍTICO #3: DETECCIÓN EXPLÍCITA CON CÓDIGOS BANCARIOS Y FUZZY MATCHING
+            # REASON: Detectar "Bancoc 0105 - BANCO MERCANIIL" como "BANCO MERCANTIL"
+            # IMPACT: Prioridad máxima para códigos bancarios sobre inferencia intrabancaria
+            
+            # TABLA DE CÓDIGOS BANCARIOS VENEZOLANOS (FUENTE DE ALTA FIABILIDAD)
+            codigos_bancarios = {
+                '0102': 'BANCO DE VENEZUELA',
+                '0105': 'BANCO MERCANTIL', 
+                '0108': 'BBVA PROVINCIAL',
+                '0115': 'BANCO EXTERIOR',
+                '0134': 'BANESCO',
+                '0172': 'BANCAMIGA',
+                '0191': 'BANCO NACIONAL DE CREDITO'
+            }
             
             banco_destino_encontrado = False
-            for pattern in banco_destino_patterns:
-                matches = re.finditer(pattern, texto_completo, re.IGNORECASE)
-                for match in matches:
-                    banco_candidato = match.group(1).strip().upper()
-                    
-                    # NORMALIZAR NOMBRE DE BANCO
-                    if 'MERCANTIL' in banco_candidato:
-                        campos_extraidos['banco_destino'] = 'BANCO MERCANTIL'
-                    elif 'VENEZUELA' in banco_candidato:
-                        campos_extraidos['banco_destino'] = 'BANCO DE VENEZUELA'
-                    elif 'PROVINCIAL' in banco_candidato or 'BBVA' in banco_candidato:
-                        campos_extraidos['banco_destino'] = 'BBVA PROVINCIAL'
-                    elif 'BANESCO' in banco_candidato:
-                        campos_extraidos['banco_destino'] = 'BANESCO'
-                    elif any(nombre in banco_candidato for nombre in ['EXTERIOR', 'BICENTENARIO', 'BNC', 'BANCAMIGA']):
-                        campos_extraidos['banco_destino'] = banco_candidato
-                    else:
-                        campos_extraidos['banco_destino'] = banco_candidato
-                    
-                    logger.info(f"🏦 BANCO DESTINO EXPLÍCITO detectado: {campos_extraidos['banco_destino']}")
+            
+            # PRIORIDAD MÁXIMA: BÚSQUEDA POR CÓDIGO BANCARIO
+            for codigo, nombre_banco in codigos_bancarios.items():
+                if codigo in texto_completo and nombre_banco != banco_origen:
+                    campos_extraidos['banco_destino'] = nombre_banco
+                    logger.info(f"🏦 BANCO DESTINO EXPLÍCITO detectado por código {codigo}: {nombre_banco}")
                     banco_destino_encontrado = True
                     break
+            
+            # PRIORIDAD ALTA: DETECCIÓN POR PATRONES CON FUZZY MATCHING
+            if not banco_destino_encontrado:
+                banco_destino_patterns = [
+                    r'Bancoc?\s+\d{4}\s*[-=]\s*([A-Z\s]+)',               # Bancoc 0105 - BANCO MERCANIIL
+                    r'Banco\s*[:=]?\s*(BANCO\s+[A-Z\s]+)',                # Banco: BANCO MERCANTIL
+                    r'destino\s*[:=]?\s*(BANCO\s+[A-Z\s]+)',              # destino: BANCO MERCANTIL  
+                    r'([A-Z\s]*BANCO\s+[A-Z\s]+)',                       # BANCO MERCANTIL directo
+                    r'(MERCANTIL|VENEZUELA|BANESCO|PROVINCIAL|EXTERIOR|BICENTENARIO|BBVA|BNC|BANCAMIGA)'  # Nombres directos
+                ]
                 
-                if banco_destino_encontrado:
-                    break
+                for pattern in banco_destino_patterns:
+                    matches = re.finditer(pattern, texto_completo, re.IGNORECASE)
+                    for match in matches:
+                        banco_candidato = match.group(1).strip().upper()
+                        
+                        # FUZZY MATCHING CON BANCOS CONOCIDOS
+                        mejor_match = None
+                        mejor_score = 0
+                        
+                        for banco_oficial in codigos_bancarios.values():
+                            # Algoritmo de similitud simple
+                            palabras_candidato = set(banco_candidato.split())
+                            palabras_oficial = set(banco_oficial.split())
+                            
+                            if palabras_candidato and palabras_oficial:
+                                interseccion = len(palabras_candidato & palabras_oficial)
+                                union = len(palabras_candidato | palabras_oficial)
+                                score = interseccion / union if union > 0 else 0
+                                
+                                # Bonus por coincidencias exactas
+                                if 'MERCANTIL' in banco_candidato and 'MERCANTIL' in banco_oficial:
+                                    score += 0.3
+                                elif 'VENEZUELA' in banco_candidato and 'VENEZUELA' in banco_oficial:
+                                    score += 0.3
+                                    
+                                if score > mejor_score and score >= 0.4:  # Umbral reducido
+                                    mejor_score = score
+                                    mejor_match = banco_oficial
+                        
+                        if mejor_match and mejor_match != banco_origen:
+                            campos_extraidos['banco_destino'] = mejor_match
+                            logger.info(f"🏦 BANCO DESTINO EXPLÍCITO detectado (fuzzy): {banco_candidato} → {mejor_match} (score: {mejor_score:.3f})")
+                            banco_destino_encontrado = True
+                            break
+                    
+                    if banco_destino_encontrado:
+                        break
             
             # PRIORIDAD SECUNDARIA: Si no hay otros bancos mencionados, es intrabancario
             if not banco_destino_encontrado and not otros_bancos_mencionados:

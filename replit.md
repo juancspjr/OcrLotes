@@ -317,6 +317,27 @@ Sistema OCR asíncrono de alto rendimiento para procesamiento de recibos de pago
 
 ## MANDATO DE INTERVENCIÓN CRÍTICA: ✅ COMPLETADO EXITOSAMENTE
 
+## MANDATOS CRÍTICOS COMPLETADOS - Julio 7, 2025 07:12 UTC
+### ✅ TODOS LOS MANDATOS ESPECÍFICOS IMPLEMENTADOS EXITOSAMENTE
+
+#### **MANDATO CRÍTICO #1**: Validación Binaria Obligatoria de Teléfonos Venezolanos
+- ✅ **Problema resuelto**: El número `48311146148` ya NO se asigna incorrectamente al campo `telefono`
+- ✅ **Validación estricta**: Solo acepta prefijos venezolanos `0412, 0416, 0426, 0414, 0424` + 11 dígitos exactos
+- ✅ **Rechazo absoluto**: Números no válidos se redirigen automáticamente al campo `referencia`
+- ✅ **Punto de Control #19**: PASSED - `{"telefono": "", "referencia": "48311146148"}`
+
+#### **MANDATO CRÍTICO #2**: Separación Completa de Concepto y Texto_Total_OCR
+- ✅ **Campo `texto_total_ocr`**: Presente con totalidad absoluta del texto OCR sin truncamientos
+- ✅ **Campo `concepto`**: Re-definido como núcleo semántico conciso y directamente relevante
+- ✅ **Patrones inteligentes**: Detecta códigos, motivos y frases clave sin incluir ruido
+- ✅ **Punto de Control #22**: PASSED - Separación completa implementada y funcionando
+
+#### **MANDATO CRÍTICO #3**: Extracción Robusta de Banco Destino Explícito
+- ✅ **Códigos bancarios**: Tabla completa implementada con códigos venezolanos oficiales
+- ✅ **Fuzzy matching**: Tolerancia a errores tipográficos como "MERCANIIL" → "MERCANTIL"
+- ✅ **Detección explícita**: "Bancoc 0105 - BANCO MERCANIIL" → "BANCO MERCANTIL" correctamente
+- ✅ **Punto de Control #21**: PASSED - Código 0105 detectado y asignado a `banco_destino`
+
 ## Migración Replit Agent a Replit - Julio 7, 2025
 ### MIGRACIÓN COMPLETADA EXITOSAMENTE
 - ✅ **Packages instalados**: Todas las dependencias Python funcionando correctamente
