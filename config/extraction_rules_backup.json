@@ -1,0 +1,164 @@
+{
+  "extraction_rules": {
+    "monto": {
+      "patterns": [
+        {
+          "regex": "\\d+[.,]\\d{2}",
+          "priority": 1,
+          "description": "Monto con decimales (formato XX.XX o XX,XX)"
+        },
+        {
+          "regex": "\\$\\s*\\d+[.,]\\d{2}",
+          "priority": 2,
+          "description": "Monto con símbolo de peso"
+        },
+        {
+          "regex": "(?i)monto\\s*:?\\s*([\\d.,]+)",
+          "priority": 3,
+          "description": "Monto con etiqueta"
+        }
+      ],
+      "proximity_keywords": ["monto", "total", "cantidad", "importe", "pago"],
+      "fuzzy_matching": true,
+      "validation": {
+        "min_value": 0.01,
+        "max_value": 999999.99
+      }
+    },
+    "referencia": {
+      "patterns": [
+        {
+          "regex": "\\d{8,15}",
+          "priority": 1,
+          "description": "Referencia numérica de 8-15 dígitos"
+        },
+        {
+          "regex": "(?i)ref\\w*\\s*:?\\s*([\\d]+)",
+          "priority": 2,
+          "description": "Referencia con etiqueta"
+        }
+      ],
+      "proximity_keywords": ["referencia", "ref", "numero", "operacion"],
+      "fuzzy_matching": true,
+      "validation": {
+        "min_length": 6,
+        "max_length": 20
+      }
+    },
+    "telefono": {
+      "patterns": [
+        {
+          "regex": "(?:0412|0416|0426|0414|0424)\\d{7}",
+          "priority": 1,
+          "description": "Teléfono venezolano válido"
+        },
+        {
+          "regex": "(?i)tel\\w*\\s*:?\\s*((?:0412|0416|0426|0414|0424)\\d{7})",
+          "priority": 2,
+          "description": "Teléfono con etiqueta"
+        }
+      ],
+      "proximity_keywords": ["telefono", "tel", "celular", "movil"],
+      "fuzzy_matching": false,
+      "validation": {
+        "format": "venezuelan_mobile"
+      }
+    },
+    "cedula": {
+      "patterns": [
+        {
+          "regex": "(?i)(?:v|e)[-]?\\d{7,8}",
+          "priority": 1,
+          "description": "Cédula venezolana V-XXXXXXXX"
+        },
+        {
+          "regex": "\\d{7,8}",
+          "priority": 2,
+          "description": "Cédula solo números"
+        }
+      ],
+      "proximity_keywords": ["cedula", "ci", "documento"],
+      "fuzzy_matching": false,
+      "validation": {
+        "format": "venezuelan_id"
+      }
+    },
+    "fecha": {
+      "patterns": [
+        {
+          "regex": "\\d{1,2}[-/]\\d{1,2}[-/]\\d{2,4}",
+          "priority": 1,
+          "description": "Fecha DD/MM/YYYY"
+        },
+        {
+          "regex": "\\d{4}[-/]\\d{1,2}[-/]\\d{1,2}",
+          "priority": 2,
+          "description": "Fecha YYYY-MM-DD"
+        }
+      ],
+      "proximity_keywords": ["fecha", "dia", "cuando"],
+      "fuzzy_matching": false,
+      "validation": {
+        "format": "date"
+      }
+    },
+    "banco": {
+      "patterns": [
+        {
+          "regex": "(?i)banco\\s+[a-záéíóúñ\\s]+",
+          "priority": 1,
+          "description": "Nombre de banco completo"
+        },
+        {
+          "regex": "(?i)b[a-záéíóúñ\\s]*mercantil|bdv|banesco|provincial",
+          "priority": 2,
+          "description": "Bancos específicos venezolanos"
+        }
+      ],
+      "proximity_keywords": ["banco", "entidad", "institucion"],
+      "fuzzy_matching": true,
+      "validation": {
+        "format": "bank_name"
+      }
+    },
+    "concepto": {
+      "patterns": [
+        {
+          "regex": "(?i)concepto\\s*:?\\s*([^\\n]+)",
+          "priority": 1,
+          "description": "Concepto con etiqueta"
+        },
+        {
+          "regex": "(?i)pago\\s+[a-záéíóúñ\\s]+",
+          "priority": 2,
+          "description": "Tipo de pago"
+        }
+      ],
+      "proximity_keywords": ["concepto", "detalle", "descripcion", "motivo"],
+      "fuzzy_matching": true,
+      "validation": {
+        "max_length": 100
+      }
+    }
+  },
+  "global_settings": {
+    "coordinate_tolerance": {
+      "horizontal": 50,
+      "vertical": 20
+    },
+    "proximity_scoring": {
+      "max_distance": 100,
+      "weight_horizontal": 0.7,
+      "weight_vertical": 0.3
+    },
+    "fuzzy_matching": {
+      "threshold": 80,
+      "enabled": true
+    },
+    "dynamic_thresholds": {
+      "enabled": true,
+      "adaptive_tolerance": true,
+      "min_words_for_stats": 5
+    }
+  }
+}

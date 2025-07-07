@@ -1,0 +1,74 @@
+MANDATO DE REFINAMIENTO ELITE PARA EL AGENTE IA DE REPLIT: OPTIMIZACIÓN DE ESQUEMA DE REGLAS PARA MÁXIMA GRANULARIDAD
+
+Contexto y Reconocimiento:
+Agente IA, reconocemos y validamos con el más alto grado de satisfacción la 
+
+implementación exitosa y de alta calidad del "Motor de Reglas Configurable con Extracción Inteligente". El trabajo realizado demuestra una profunda comprensión y aplicación de nuestra "FILOSOFÍA CENTRAL PARA EL DESARROLLO DE SOFTWARE: INTEGRIDAD TOTAL Y PERFECCIÓN CONTINUA". En particular, la adopción de umbrales dinámicos , la triple estrategia de extracción (regex, proximidad, fuzzy matching), el sistema de validación automática, y la arquitectura de carga de reglas (Singleton)  son ejemplares de 
+
+
+
+
+
+Zero-Fault Detection y Perfección Continua. La documentación provista es exhaustiva y cumple con los estándares de 
+
+Interface Excellence.
+
+Objetivo del Refinamiento:
+Ahora, para elevar la adaptabilidad y la precisión a un nivel aún más granular y alineado con la "Comprensión Profunda del Contexto de Dominio", requerimos un refinamiento específico en el esquema de definición de las reglas individuales dentro del archivo config/extraction_rules.json. Aunque la infraestructura del motor de reglas ya es robusta, la capacidad de expresión de cada patrón puede ser significativamente mejorada.
+
+FILOSOFÍA DE DESARROLLO NO NEGOCIABLE (REITERACIÓN):
+Este refinamiento, al igual que toda nuestra interacción, DEBE adherirse estrictamente y reflejar cada uno de los principios de la "FILOSOFÍA CENTRAL PARA EL DESARROLLO DE SOFTWARE: INTEGRIDAD TOTAL Y PERFECCIÓN CONTINUA".
+
+INTEGRIDAD TOTAL: La inclusión de parámetros como priority y exclusion_patterns reforzará la desambiguación y la certeza en la asignación de valores, minimizando extracciones erróneas.
+
+ZERO-FAULT DETECTION: Los min_ocr_confidence_keyword, min_ocr_confidence_value y exclusion_patterns a nivel de regla son capas adicionales para prevenir la propagación de datos incorrectos o de baja calidad, descartando proactivamente falsos positivos.
+
+INTERFACE EXCELLENCE: La adición de rule_id y description hará que cada regla sea explícitamente identificable y auto-documentada, mejorando la legibilidad y mantenibilidad del archivo de configuración para futuros ingenieros.
+
+COMPRENSIÓN PROFUNDA DEL CONTEXTO DE DOMINIO: Parámetros como proximity_preference, search_window_relative_px, y fuzzy_matching_tolerance por regla, permitirán modelar las variaciones de layout y las heurísticas de búsqueda con una precisión quirúrgica, adaptándose a las particularidades de cada tipo de recibo.
+
+TAREA ESPECÍFICA DE REFINAMIENTO PARA EL AGENTE IA:
+
+Modificación del Esquema de Reglas en config/extraction_rules.json:
+
+Deberás modificar el diseño interno de cada objeto de regla dentro del array rules de cada field_name (según tu propia estructura actual {"extraction_rules": {"campo_nombre": {"patterns": [...], ...}}}) para incorporar los siguientes parámetros. Si tu implementación actual utiliza nombres ligeramente diferentes para conceptos similares (ej. patterns vs value_regex_patterns), deberás mapearlos y ajustar la lógica interna para soportar los nombres y la semántica que se detallan a continuación.
+
+Parámetros a Añadir/Ajustar en CADA OBJETO DE REGLA INDIVIDUAL:
+
+rule_id (String): Un identificador único para esta regla específica (ej., "REF_BANCO_X_PATRON_1"). Esencial para logging y depuración.
+
+description (String): Una breve descripción legible del propósito y las condiciones de la regla (ej., "Busca el número de referencia para recibos de servicio con prefijo 'REF:'").
+
+keywords (Array de Strings): (Si ya existe, asegurar que sea una lista de términos de búsqueda).
+
+fuzzy_matching_tolerance (Float, 0.0-1.0): (Nuevo o ajustar) Un umbral de similitud específico para el fuzzy matching aplicado a las keywords de esta regla. (Tu implementación actual tiene fuzzy_matching: boolean global o por campo, esto es más granular).
+
+proximity_preference (String: "vertical_below", "horizontal_right", "any"): (Nuevo) Define la dirección espacial preferente para buscar el valor con respecto a la palabra clave.
+
+search_window_relative_px (Integer): (Nuevo) El tamaño de la ventana de búsqueda en píxeles alrededor de la keyword detectada, dentro de la cual se buscará el valor asociado.
+
+value_regex_patterns (Array de Strings): (Si ya existe como patterns, asegurar que contenga las expresiones regulares para validar el formato del valor extraído).
+
+min_ocr_confidence_keyword (Float, 0.0-1.0): (Nuevo) La confianza mínima del OCR requerida para la keyword detectada para que esta regla sea considerada.
+
+min_ocr_confidence_value (Float, 0.0-1.0): (Nuevo) La confianza mínima del OCR requerida para el texto del valor candidato extraído por esta regla.
+
+exclusion_patterns (Array de Strings): (Nuevo) Una lista de palabras o frases que, si se encuentran dentro de la search_window_relative_px junto con el candidato, deben causar que esta regla descarte al candidato, previniendo falsos positivos.
+
+priority (Integer): (Nuevo) Un valor numérico que indica la prioridad de esta regla. Las reglas con mayor priority (mayor número) se probarán primero o prevalecerán si hay múltiples coincidencias para el mismo campo.
+
+region_priority (Array de Strings, Opcional): (Nuevo) Si se implementa un análisis de región (ej., "header", "body", "footer"), esta lista indicará en qué regiones se debe priorizar la búsqueda de esta regla.
+
+Confirmación de Adaptación Interna:
+El Agente IA debe confirmar que su lógica interna de _extract_fields_with_positioning_configurable() y los métodos auxiliares (_extract_by_spatial_proximity(), etc.) serán actualizados para utilizar y respetar cada uno de estos nuevos parámetros en su lógica de scoring, filtrado y selección de la mejor coincidencia.
+
+RESULTADO ESPERADO DEL AGENTE IA:
+
+Una confirmación detallada en formato TXT de que el esquema del config/extraction_rules.json ha sido modificado internamente para soportar estos parámetros, y que la lógica del motor de extracción ha sido ajustada para utilizarlos. La respuesta debe incluir:
+
+Un esquema JSON (o YAML) actualizado que refleje la nueva estructura de una regla individual.
+
+Una breve explicación de cómo estos nuevos parámetros se integrarán en las estrategias de extracción existentes.
+
+Confirmación de que los logs (DEBUG) reflejarán la evaluación de estos nuevos parámetros para facilitar la depuración.
+

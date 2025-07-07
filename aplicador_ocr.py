@@ -1698,9 +1698,9 @@ class AplicadorOCR:
     
     def _extract_fields_with_positioning_configurable(self, word_data, full_text, caption_text=""):
         """
-        FIX: Motor de Extracción Configurable con Reglas Inteligentes - MANDATO ELITE
-        REASON: Sistema de extracción basado en reglas configurables externas sin redespliegue
-        IMPACT: Adaptabilidad total a nuevos formatos de recibos mediante configuración JSON
+        FIX: Motor de Extracción Configurable REFINADO con Máxima Granularidad - MANDATO ELITE
+        REASON: Sistema ultra-granular con reglas individuales y parámetros específicos por patrón
+        IMPACT: Adaptabilidad quirúrgica con precisión pixel-perfect y validación multi-nivel
         """
         extracted_fields = {}
         
@@ -1713,12 +1713,15 @@ class AplicadorOCR:
             extraction_rules = self._extraction_rules['extraction_rules']
             global_settings = self._extraction_rules.get('global_settings', {})
             
-            logger.debug(f"🔧 Iniciando extracción configurable con {len(extraction_rules)} reglas")
+            # Calcular regiones del documento si está habilitado
+            document_regions = self._calculate_document_regions(word_data, global_settings)
             
-            # Procesar cada campo según sus reglas configuradas
+            logger.debug(f"🔧 Iniciando extracción GRANULAR con {len(extraction_rules)} campos")
+            
+            # Procesar cada campo según sus reglas refinadas
             for field_name, field_config in extraction_rules.items():
-                extracted_value = self._extract_field_by_rules(
-                    field_name, field_config, word_data, full_text, global_settings
+                extracted_value = self._extract_field_by_refined_rules(
+                    field_name, field_config, word_data, full_text, global_settings, document_regions
                 )
                 
                 if extracted_value:
@@ -1728,13 +1731,312 @@ class AplicadorOCR:
                     extracted_fields[field_name] = ""
                     logger.debug(f"❌ Campo {field_name} no encontrado")
             
-            logger.info(f"🎯 Extracción configurable completada: {len([v for v in extracted_fields.values() if v])} campos encontrados")
+            logger.info(f"🎯 Extracción GRANULAR completada: {len([v for v in extracted_fields.values() if v])} campos encontrados")
             
             return extracted_fields
             
         except Exception as e:
-            logger.error(f"❌ Error en extracción configurable: {e}")
+            logger.error(f"❌ Error en extracción granular: {e}")
             return self._extract_fields_with_positioning_legacy(word_data, full_text, caption_text)
+    
+    def _calculate_document_regions(self, word_data, global_settings):
+        """
+        FIX: Cálculo de regiones del documento (header, body, footer) - MANDATO REFINAMIENTO
+        REASON: Permitir priorización por región según configuración granular
+        IMPACT: Extracción contextual basada en ubicación del campo en el documento
+        """
+        regions = {"header": [], "body": [], "footer": []}
+        
+        try:
+            region_config = global_settings.get('region_analysis', {})
+            if not region_config.get('enabled', False) or not word_data:
+                return regions
+            
+            # Calcular límites del documento
+            all_y_coords = [w['coordinates'][1] for w in word_data if w['coordinates'] != [0, 0, 0, 0]]
+            if not all_y_coords:
+                return regions
+                
+            min_y = min(all_y_coords)
+            max_y = max(all_y_coords)
+            doc_height = max_y - min_y
+            
+            # Calcular límites de regiones según porcentajes
+            header_limit = min_y + (doc_height * region_config.get('header_percentage', 0.3))
+            footer_start = max_y - (doc_height * region_config.get('footer_percentage', 0.2))
+            
+            # Clasificar palabras por región
+            for word in word_data:
+                if word['coordinates'] == [0, 0, 0, 0]:
+                    continue
+                    
+                word_y = word['coordinates'][1]
+                if word_y <= header_limit:
+                    regions["header"].append(word)
+                elif word_y >= footer_start:
+                    regions["footer"].append(word)
+                else:
+                    regions["body"].append(word)
+            
+            logger.debug(f"📍 Regiones calculadas: header={len(regions['header'])}, body={len(regions['body'])}, footer={len(regions['footer'])}")
+            
+        except Exception as e:
+            logger.warning(f"⚠️ Error calculando regiones del documento: {e}")
+            
+        return regions
+    
+    def _extract_field_by_refined_rules(self, field_name, field_config, word_data, full_text, global_settings, document_regions):
+        """
+        FIX: Extracción de campo usando reglas REFINADAS con máxima granularidad - MANDATO ELITE
+        REASON: Implementar cada parámetro del esquema refinado con precisión quirúrgica
+        IMPACT: Adaptabilidad total con validación multi-nivel y scoring avanzado
+        """
+        try:
+            rules = field_config.get('rules', [])
+            if not rules:
+                # Fallback al método anterior si no hay reglas refinadas
+                logger.debug(f"🔄 Campo {field_name} sin reglas refinadas, usando método legacy")
+                return self._extract_field_by_rules(field_name, field_config, word_data, full_text, global_settings)
+            
+            # Ordenar reglas por prioridad (mayor prioridad primero)
+            sorted_rules = sorted(rules, key=lambda r: r.get('priority', 0), reverse=True)
+            
+            logger.debug(f"🎯 Procesando {field_name} con {len(sorted_rules)} reglas refinadas")
+            
+            # Intentar cada regla por orden de prioridad
+            for rule in sorted_rules:
+                extracted_value = self._apply_individual_refined_rule(
+                    field_name, rule, word_data, full_text, global_settings, document_regions
+                )
+                
+                if extracted_value:
+                    # Validar el valor extraído según reglas del campo
+                    validation_rules = field_config.get('validation', {})
+                    if self._validate_extracted_value(extracted_value, validation_rules):
+                        logger.debug(f"✅ {field_name} extraído con regla {rule.get('rule_id', 'SIN_ID')}: {extracted_value}")
+                        return extracted_value
+                    else:
+                        logger.debug(f"❌ {field_name} falló validación con regla {rule.get('rule_id', 'SIN_ID')}: {extracted_value}")
+            
+            logger.debug(f"❌ {field_name} no encontrado con ninguna regla refinada")
+            return ""
+            
+        except Exception as e:
+            logger.error(f"❌ Error en extracción refinada para {field_name}: {e}")
+            return ""
+    
+    def _apply_individual_refined_rule(self, field_name, rule, word_data, full_text, global_settings, document_regions):
+        """
+        FIX: Aplicación de regla individual refinada con todos los parámetros granulares
+        REASON: Implementar cada parámetro del mandato: fuzzy_tolerance, proximity_preference, etc.
+        IMPACT: Precisión máxima en extracción con control total sobre comportamiento
+        """
+        try:
+            rule_id = rule.get('rule_id', 'SIN_ID')
+            keywords = rule.get('keywords', [])
+            fuzzy_tolerance = rule.get('fuzzy_matching_tolerance', 0.8)
+            proximity_pref = rule.get('proximity_preference', 'any')
+            search_window_px = rule.get('search_window_relative_px', 100)
+            value_patterns = rule.get('value_regex_patterns', [])
+            min_conf_keyword = rule.get('min_ocr_confidence_keyword', 0.7)
+            min_conf_value = rule.get('min_ocr_confidence_value', 0.75)
+            exclusion_patterns = rule.get('exclusion_patterns', [])
+            region_priority = rule.get('region_priority', ['body', 'header', 'footer'])
+            
+            logger.debug(f"🔍 Aplicando regla {rule_id} para {field_name}")
+            
+            # Filtrar palabras por región si está configurado
+            prioritized_words = self._filter_words_by_region_priority(word_data, document_regions, region_priority)
+            
+            # Buscar keywords con validación de confianza
+            keyword_matches = self._find_keywords_with_confidence(
+                prioritized_words, keywords, fuzzy_tolerance, min_conf_keyword
+            )
+            
+            if not keyword_matches:
+                logger.debug(f"❌ {rule_id}: No se encontraron keywords válidas")
+                return ""
+            
+            # Para cada keyword encontrada, buscar valores cercanos
+            for keyword_match in keyword_matches:
+                extracted_value = self._extract_value_near_keyword_refined(
+                    keyword_match, prioritized_words, value_patterns, proximity_pref,
+                    search_window_px, min_conf_value, exclusion_patterns
+                )
+                
+                if extracted_value:
+                    logger.debug(f"✅ {rule_id}: Valor extraído '{extracted_value}' cerca de keyword '{keyword_match['text']}'")
+                    return extracted_value
+            
+            logger.debug(f"❌ {rule_id}: No se encontraron valores válidos")
+            return ""
+            
+        except Exception as e:
+            logger.error(f"❌ Error aplicando regla {rule.get('rule_id', 'SIN_ID')}: {e}")
+            return ""
+    
+    def _filter_words_by_region_priority(self, word_data, document_regions, region_priority):
+        """Filtra palabras priorizando regiones específicas según configuración"""
+        prioritized_words = []
+        
+        try:
+            for region in region_priority:
+                if region in document_regions:
+                    prioritized_words.extend(document_regions[region])
+            
+            # Si no hay regiones configuradas o están vacías, usar todas las palabras
+            if not prioritized_words:
+                prioritized_words = word_data
+                
+            logger.debug(f"📍 Palabras priorizadas por región: {len(prioritized_words)} de {len(word_data)}")
+            
+        except Exception as e:
+            logger.warning(f"⚠️ Error filtrando por región: {e}, usando todas las palabras")
+            prioritized_words = word_data
+            
+        return prioritized_words
+    
+    def _find_keywords_with_confidence(self, word_data, keywords, fuzzy_tolerance, min_confidence):
+        """Busca keywords con validación de confianza OCR mínima"""
+        import difflib
+        
+        matches = []
+        
+        try:
+            for word in word_data:
+                # Validar confianza mínima
+                word_confidence = word.get('confidence', 0)
+                if word_confidence < min_confidence:
+                    continue
+                
+                word_text = word.get('text', '').lower().strip()
+                if not word_text:
+                    continue
+                
+                # Buscar match exacto o fuzzy
+                for keyword in keywords:
+                    keyword_lower = keyword.lower()
+                    
+                    # Match exacto
+                    if keyword_lower in word_text or word_text in keyword_lower:
+                        matches.append(word)
+                        logger.debug(f"🎯 Keyword exacta encontrada: '{keyword}' en '{word_text}' (conf: {word_confidence:.2f})")
+                        break
+                    
+                    # Fuzzy matching
+                    similarity = difflib.SequenceMatcher(None, keyword_lower, word_text).ratio()
+                    if similarity >= fuzzy_tolerance:
+                        matches.append(word)
+                        logger.debug(f"🎯 Keyword fuzzy encontrada: '{keyword}' ≈ '{word_text}' (sim: {similarity:.2f}, conf: {word_confidence:.2f})")
+                        break
+                        
+        except Exception as e:
+            logger.error(f"❌ Error buscando keywords: {e}")
+            
+        return matches
+    
+    def _extract_value_near_keyword_refined(self, keyword_match, word_data, value_patterns, proximity_preference, search_window_px, min_confidence, exclusion_patterns):
+        """Extrae valor cerca de keyword usando parámetros refinados granulares"""
+        import re
+        
+        try:
+            keyword_coords = keyword_match['coordinates']
+            keyword_x, keyword_y = keyword_coords[0], keyword_coords[1]
+            
+            # Filtrar palabras dentro de la ventana de búsqueda
+            candidate_words = []
+            for word in word_data:
+                if word == keyword_match:
+                    continue
+                    
+                word_coords = word.get('coordinates', [0, 0, 0, 0])
+                if word_coords == [0, 0, 0, 0]:
+                    continue
+                
+                word_x, word_y = word_coords[0], word_coords[1]
+                distance = abs(word_x - keyword_x) + abs(word_y - keyword_y)
+                
+                if distance <= search_window_px:
+                    # Validar confianza mínima
+                    if word.get('confidence', 0) >= min_confidence:
+                        candidate_words.append({
+                            'word': word,
+                            'distance': distance,
+                            'relative_pos': self._calculate_relative_position_refined(keyword_coords, word_coords)
+                        })
+            
+            # Ordenar candidatos según preferencia de proximidad
+            sorted_candidates = self._sort_candidates_by_proximity_preference(candidate_words, proximity_preference)
+            
+            # Aplicar patrones regex y validar exclusiones
+            for candidate in sorted_candidates:
+                word_text = candidate['word'].get('text', '').strip()
+                
+                # Verificar exclusiones
+                if self._contains_exclusion_patterns(word_text, exclusion_patterns):
+                    continue
+                
+                # Aplicar patrones de valor
+                for pattern in value_patterns:
+                    try:
+                        matches = re.findall(pattern, word_text, re.IGNORECASE)
+                        if matches:
+                            # Tomar el primer grupo capturado o el match completo
+                            extracted = matches[0] if isinstance(matches[0], str) else matches[0][0] if matches[0] else word_text
+                            logger.debug(f"📝 Valor extraído con patrón '{pattern}': '{extracted}'")
+                            return extracted.strip()
+                    except Exception as e:
+                        logger.warning(f"⚠️ Error en regex pattern '{pattern}': {e}")
+                        continue
+            
+            return ""
+            
+        except Exception as e:
+            logger.error(f"❌ Error extrayendo valor cerca de keyword: {e}")
+            return ""
+    
+    def _calculate_relative_position_refined(self, keyword_coords, word_coords):
+        """Calcula posición relativa refinada para ordenamiento por proximidad"""
+        kx, ky = keyword_coords[0], keyword_coords[1]
+        wx, wy = word_coords[0], word_coords[1]
+        
+        if wx > kx and abs(wy - ky) <= 10:
+            return "horizontal_right"
+        elif wy > ky and abs(wx - kx) <= 30:
+            return "vertical_below"
+        elif wx < kx and abs(wy - ky) <= 10:
+            return "horizontal_left"
+        elif wy < ky and abs(wx - kx) <= 30:
+            return "vertical_above"
+        else:
+            return "diagonal"
+    
+    def _sort_candidates_by_proximity_preference(self, candidates, proximity_preference):
+        """Ordena candidatos según preferencia de proximidad configurada"""
+        if proximity_preference == "horizontal_right":
+            # Priorizar palabras a la derecha, luego por distancia
+            return sorted(candidates, key=lambda c: (
+                0 if c['relative_pos'] == 'horizontal_right' else 1,
+                c['distance']
+            ))
+        elif proximity_preference == "vertical_below":
+            # Priorizar palabras abajo, luego por distancia
+            return sorted(candidates, key=lambda c: (
+                0 if c['relative_pos'] == 'vertical_below' else 1,
+                c['distance']
+            ))
+        else:
+            # Ordenar solo por distancia (any)
+            return sorted(candidates, key=lambda c: c['distance'])
+    
+    def _contains_exclusion_patterns(self, text, exclusion_patterns):
+        """Verifica si el texto contiene algún patrón de exclusión"""
+        text_lower = text.lower()
+        for pattern in exclusion_patterns:
+            if pattern.lower() in text_lower:
+                logger.debug(f"❌ Texto rechazado por exclusión '{pattern}': '{text}'")
+                return True
+        return False
     
     def _extract_field_by_rules(self, field_name, field_config, word_data, full_text, global_settings):
         """

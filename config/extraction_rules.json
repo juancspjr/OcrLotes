@@ -1,148 +1,270 @@
 {
   "extraction_rules": {
     "monto": {
-      "patterns": [
+      "rules": [
         {
-          "regex": "\\d+[.,]\\d{2}",
-          "priority": 1,
-          "description": "Monto con decimales (formato XX.XX o XX,XX)"
+          "rule_id": "MONTO_DECIMAL_PATRON_1",
+          "description": "Busca montos con formato decimal estándar (123.45 o 123,45)",
+          "keywords": ["monto", "total", "cantidad", "importe"],
+          "fuzzy_matching_tolerance": 0.85,
+          "proximity_preference": "horizontal_right",
+          "search_window_relative_px": 80,
+          "value_regex_patterns": ["\\d+[.,]\\d{2}"],
+          "min_ocr_confidence_keyword": 0.7,
+          "min_ocr_confidence_value": 0.8,
+          "exclusion_patterns": ["fecha", "telefono", "cedula", "codigo"],
+          "priority": 10,
+          "region_priority": ["body", "header"]
         },
         {
-          "regex": "\\$\\s*\\d+[.,]\\d{2}",
-          "priority": 2,
-          "description": "Monto con símbolo de peso"
-        },
-        {
-          "regex": "(?i)monto\\s*:?\\s*([\\d.,]+)",
-          "priority": 3,
-          "description": "Monto con etiqueta"
+          "rule_id": "MONTO_BOLIVARES_PATRON_2",
+          "description": "Busca montos con símbolo Bs o $ explícito",
+          "keywords": ["pago", "transferencia", "enviado"],
+          "fuzzy_matching_tolerance": 0.8,
+          "proximity_preference": "vertical_below",
+          "search_window_relative_px": 100,
+          "value_regex_patterns": ["\\$\\s*\\d+[.,]\\d{2}", "Bs\\s*\\d+[.,]\\d{2}", "\\d+\\.\\d{2}\\s*Bs"],
+          "min_ocr_confidence_keyword": 0.6,
+          "min_ocr_confidence_value": 0.8,
+          "exclusion_patterns": ["referencia", "numero", "codigo"],
+          "priority": 8,
+          "region_priority": ["body"]
         }
       ],
-      "proximity_keywords": ["monto", "total", "cantidad", "importe", "pago"],
-      "fuzzy_matching": true,
       "validation": {
         "min_value": 0.01,
         "max_value": 999999.99
       }
     },
     "referencia": {
-      "patterns": [
+      "rules": [
         {
-          "regex": "\\d{8,15}",
-          "priority": 1,
-          "description": "Referencia numérica de 8-15 dígitos"
+          "rule_id": "REF_NUMERO_LARGO_PATRON_1",
+          "description": "Busca referencias numéricas largas (8-15 dígitos)",
+          "keywords": ["referencia", "ref", "numero"],
+          "fuzzy_matching_tolerance": 0.9,
+          "proximity_preference": "horizontal_right",
+          "search_window_relative_px": 120,
+          "value_regex_patterns": ["\\d{8,15}"],
+          "min_ocr_confidence_keyword": 0.8,
+          "min_ocr_confidence_value": 0.75,
+          "exclusion_patterns": ["telefono", "cedula", "monto"],
+          "priority": 10,
+          "region_priority": ["header", "body"]
         },
         {
-          "regex": "(?i)ref\\w*\\s*:?\\s*([\\d]+)",
-          "priority": 2,
-          "description": "Referencia con etiqueta"
+          "rule_id": "REF_OPERACION_PATRON_2",
+          "description": "Busca referencias con prefijo explícito (REF:, #)",
+          "keywords": ["operacion", "transaccion", "comprobante"],
+          "fuzzy_matching_tolerance": 0.85,
+          "proximity_preference": "vertical_below",
+          "search_window_relative_px": 90,
+          "value_regex_patterns": ["ref\\w*\\s*:?\\s*([\\d]+)", "numero\\s*:?\\s*([\\d]+)", "#\\s*([\\d]+)"],
+          "min_ocr_confidence_keyword": 0.7,
+          "min_ocr_confidence_value": 0.8,
+          "exclusion_patterns": ["fecha", "hora"],
+          "priority": 9,
+          "region_priority": ["header", "body"]
         }
       ],
-      "proximity_keywords": ["referencia", "ref", "numero", "operacion"],
-      "fuzzy_matching": true,
       "validation": {
         "min_length": 6,
         "max_length": 20
       }
     },
     "telefono": {
-      "patterns": [
+      "rules": [
         {
-          "regex": "(?:0412|0416|0426|0414|0424)\\d{7}",
-          "priority": 1,
-          "description": "Teléfono venezolano válido"
+          "rule_id": "TEL_VENEZOLANO_PATRON_1",
+          "description": "Busca teléfonos venezolanos con prefijos válidos (0412, 0416, etc.)",
+          "keywords": ["telefono", "tel", "celular", "movil"],
+          "fuzzy_matching_tolerance": 0.9,
+          "proximity_preference": "horizontal_right",
+          "search_window_relative_px": 100,
+          "value_regex_patterns": ["(?:0412|0416|0426|0414|0424)\\d{7}"],
+          "min_ocr_confidence_keyword": 0.8,
+          "min_ocr_confidence_value": 0.85,
+          "exclusion_patterns": ["referencia", "codigo", "numero"],
+          "priority": 10,
+          "region_priority": ["body", "footer"]
         },
         {
-          "regex": "(?i)tel\\w*\\s*:?\\s*((?:0412|0416|0426|0414|0424)\\d{7})",
-          "priority": 2,
-          "description": "Teléfono con etiqueta"
+          "rule_id": "TEL_INTERNACIONAL_PATRON_2",
+          "description": "Busca teléfonos con formato internacional +58",
+          "keywords": ["contacto", "telefono", "movil"],
+          "fuzzy_matching_tolerance": 0.85,
+          "proximity_preference": "vertical_below",
+          "search_window_relative_px": 80,
+          "value_regex_patterns": ["\\+58\\s*(?:412|416|426|414|424)\\d{7}"],
+          "min_ocr_confidence_keyword": 0.7,
+          "min_ocr_confidence_value": 0.8,
+          "exclusion_patterns": ["fecha", "hora"],
+          "priority": 8,
+          "region_priority": ["body"]
         }
       ],
-      "proximity_keywords": ["telefono", "tel", "celular", "movil"],
-      "fuzzy_matching": false,
       "validation": {
         "format": "venezuelan_mobile"
       }
     },
     "cedula": {
-      "patterns": [
+      "rules": [
         {
-          "regex": "(?i)(?:v|e)[-]?\\d{7,8}",
-          "priority": 1,
-          "description": "Cédula venezolana V-XXXXXXXX"
+          "rule_id": "CEDULA_VENEZOLANA_PATRON_1",
+          "description": "Busca cédulas venezolanas con prefijo V o E",
+          "keywords": ["cedula", "ci", "documento"],
+          "fuzzy_matching_tolerance": 0.9,
+          "proximity_preference": "horizontal_right",
+          "search_window_relative_px": 100,
+          "value_regex_patterns": ["(?:v|e)[-]?\\d{7,8}"],
+          "min_ocr_confidence_keyword": 0.8,
+          "min_ocr_confidence_value": 0.85,
+          "exclusion_patterns": ["telefono", "referencia", "fecha"],
+          "priority": 10,
+          "region_priority": ["body", "header"]
         },
         {
-          "regex": "\\d{7,8}",
-          "priority": 2,
-          "description": "Cédula solo números"
+          "rule_id": "CEDULA_NUMERICA_PATRON_2",
+          "description": "Busca cédulas en formato numérico puro (7-8 dígitos)",
+          "keywords": ["identificacion", "documento", "titular"],
+          "fuzzy_matching_tolerance": 0.8,
+          "proximity_preference": "vertical_below",
+          "search_window_relative_px": 80,
+          "value_regex_patterns": ["\\d{7,8}"],
+          "min_ocr_confidence_keyword": 0.7,
+          "min_ocr_confidence_value": 0.8,
+          "exclusion_patterns": ["telefono", "referencia", "monto"],
+          "priority": 7,
+          "region_priority": ["body"]
         }
       ],
-      "proximity_keywords": ["cedula", "ci", "documento"],
-      "fuzzy_matching": false,
       "validation": {
         "format": "venezuelan_id"
       }
     },
     "fecha": {
-      "patterns": [
+      "rules": [
         {
-          "regex": "\\d{1,2}[-/]\\d{1,2}[-/]\\d{2,4}",
-          "priority": 1,
-          "description": "Fecha DD/MM/YYYY"
+          "rule_id": "FECHA_NUMERICA_PATRON_1",
+          "description": "Busca fechas en formato DD/MM/YYYY o DD-MM-YYYY",
+          "keywords": ["fecha", "dia", "cuando", "realizada"],
+          "fuzzy_matching_tolerance": 0.85,
+          "proximity_preference": "horizontal_right",
+          "search_window_relative_px": 120,
+          "value_regex_patterns": ["\\d{1,2}[-/]\\d{1,2}[-/]\\d{2,4}"],
+          "min_ocr_confidence_keyword": 0.7,
+          "min_ocr_confidence_value": 0.8,
+          "exclusion_patterns": ["telefono", "cedula", "referencia"],
+          "priority": 10,
+          "region_priority": ["header", "body"]
         },
         {
-          "regex": "\\d{4}[-/]\\d{1,2}[-/]\\d{1,2}",
-          "priority": 2,
-          "description": "Fecha YYYY-MM-DD"
+          "rule_id": "FECHA_FORMATO_LARGO_PATRON_2",
+          "description": "Busca fechas en formato textual (15 de julio de 2025)",
+          "keywords": ["procesada", "ejecutada", "completada"],
+          "fuzzy_matching_tolerance": 0.8,
+          "proximity_preference": "vertical_below",
+          "search_window_relative_px": 150,
+          "value_regex_patterns": ["\\d{1,2}\\s+de\\s+\\w+\\s+de\\s+\\d{4}"],
+          "min_ocr_confidence_keyword": 0.6,
+          "min_ocr_confidence_value": 0.7,
+          "exclusion_patterns": ["monto", "referencia"],
+          "priority": 8,
+          "region_priority": ["header", "footer"]
         }
       ],
-      "proximity_keywords": ["fecha", "dia", "cuando"],
-      "fuzzy_matching": false,
       "validation": {
         "format": "date"
       }
     },
     "banco": {
-      "patterns": [
+      "rules": [
         {
-          "regex": "(?i)banco\\s+[a-záéíóúñ\\s]+",
-          "priority": 1,
-          "description": "Nombre de banco completo"
+          "rule_id": "BANCO_NOMBRE_COMPLETO_PATRON_1",
+          "description": "Busca nombres completos de bancos venezolanos",
+          "keywords": ["banco", "entidad", "institucion"],
+          "fuzzy_matching_tolerance": 0.75,
+          "proximity_preference": "horizontal_right",
+          "search_window_relative_px": 150,
+          "value_regex_patterns": ["banco\\s+[a-záéíóúñ\\s]+"],
+          "min_ocr_confidence_keyword": 0.7,
+          "min_ocr_confidence_value": 0.7,
+          "exclusion_patterns": ["fecha", "hora", "codigo"],
+          "priority": 10,
+          "region_priority": ["body", "header"]
         },
         {
-          "regex": "(?i)b[a-záéíóúñ\\s]*mercantil|bdv|banesco|provincial",
-          "priority": 2,
-          "description": "Bancos específicos venezolanos"
+          "rule_id": "BANCO_CODIGO_PATRON_2",
+          "description": "Busca códigos bancarios venezolanos (0102, 0105, etc.)",
+          "keywords": ["bancario", "codigo", "entidad"],
+          "fuzzy_matching_tolerance": 0.85,
+          "proximity_preference": "vertical_below",
+          "search_window_relative_px": 80,
+          "value_regex_patterns": ["\\b(?:0102|0105|0134|0108|0156|0175|0191|0163)\\b"],
+          "min_ocr_confidence_keyword": 0.6,
+          "min_ocr_confidence_value": 0.8,
+          "exclusion_patterns": ["telefono", "cedula", "fecha"],
+          "priority": 9,
+          "region_priority": ["body"]
+        },
+        {
+          "rule_id": "BANCO_ABREVIATURA_PATRON_3",
+          "description": "Busca abreviaturas comunes de bancos (BDV, MERCANTIL, etc.)",
+          "keywords": ["origen", "destino", "entidad"],
+          "fuzzy_matching_tolerance": 0.8,
+          "proximity_preference": "any",
+          "search_window_relative_px": 100,
+          "value_regex_patterns": ["mercantil|bdv|banesco|provincial|venezuela|bbva"],
+          "min_ocr_confidence_keyword": 0.5,
+          "min_ocr_confidence_value": 0.75,
+          "exclusion_patterns": ["fecha", "hora"],
+          "priority": 8,
+          "region_priority": ["body", "header"]
         }
       ],
-      "proximity_keywords": ["banco", "entidad", "institucion"],
-      "fuzzy_matching": true,
       "validation": {
-        "format": "bank_name"
+        "min_length": 3,
+        "max_length": 50
       }
     },
     "concepto": {
-      "patterns": [
+      "rules": [
         {
-          "regex": "(?i)concepto\\s*:?\\s*([^\\n]+)",
-          "priority": 1,
-          "description": "Concepto con etiqueta"
+          "rule_id": "CONCEPTO_EXPLICITÓ_PATRON_1",
+          "description": "Busca concepto con etiqueta explícita (Concepto:, Detalle:)",
+          "keywords": ["concepto", "detalle", "descripcion"],
+          "fuzzy_matching_tolerance": 0.9,
+          "proximity_preference": "horizontal_right",
+          "search_window_relative_px": 200,
+          "value_regex_patterns": ["concepto\\s*:?\\s*([^\\n]+)", "detalle\\s*:?\\s*([^\\n]+)"],
+          "min_ocr_confidence_keyword": 0.8,
+          "min_ocr_confidence_value": 0.6,
+          "exclusion_patterns": ["fecha", "monto", "referencia"],
+          "priority": 10,
+          "region_priority": ["body", "header"]
         },
         {
-          "regex": "(?i)pago\\s+[a-záéíóúñ\\s]+",
-          "priority": 2,
-          "description": "Tipo de pago"
+          "rule_id": "CONCEPTO_INFERIDO_PATRON_2",
+          "description": "Infiere concepto de palabras clave de transacciones",
+          "keywords": ["motivo", "para", "por"],
+          "fuzzy_matching_tolerance": 0.8,
+          "proximity_preference": "vertical_below",
+          "search_window_relative_px": 150,
+          "value_regex_patterns": ["pago\\s+[a-z\\s]+", "transferencia\\s+[a-z\\s]+", "envio\\s+[a-z\\s]+"],
+          "min_ocr_confidence_keyword": 0.6,
+          "min_ocr_confidence_value": 0.5,
+          "exclusion_patterns": ["numero", "codigo", "fecha"],
+          "priority": 7,
+          "region_priority": ["body"]
         }
       ],
-      "proximity_keywords": ["concepto", "detalle", "descripcion", "motivo"],
-      "fuzzy_matching": true,
       "validation": {
         "max_length": 100
       }
     }
   },
   "global_settings": {
-    "coordinate_tolerance": {
+    "tolerances": {
       "horizontal": 50,
       "vertical": 20
     },
@@ -152,13 +274,24 @@
       "weight_vertical": 0.3
     },
     "fuzzy_matching": {
-      "threshold": 80,
+      "threshold": 0.8,
       "enabled": true
     },
     "dynamic_thresholds": {
       "enabled": true,
       "adaptive_tolerance": true,
       "min_words_for_stats": 5
+    },
+    "confidence_thresholds": {
+      "default_keyword_confidence": 0.7,
+      "default_value_confidence": 0.75,
+      "minimum_acceptable_confidence": 0.5
+    },
+    "region_analysis": {
+      "enabled": true,
+      "header_percentage": 0.3,
+      "body_percentage": 0.5,
+      "footer_percentage": 0.2
     }
   }
 }
