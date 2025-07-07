@@ -1,0 +1,40 @@
+HE REALIZADO EL ROLLBACK Y EL SISTEMA SIGUE CON EL ERROR DE EXTRACCIÓN DE JSON, PERO AHORA EL STACK TRACE REVELA UN PROBLEMA CRÍTICO DE **`404 Not Found`**. Esto anula el diagnóstico anterior de que el backend funcionaba perfectamente.
+
+**PROBLEMA FUNDAMENTAL IDENTIFICADO:**
+Al hacer clic en "Extraer Resultados JSON", la consola muestra: `ERROR:app:Error 404 - Not Found: 404 Not Found: The requested URL was not found on the server.`
+
+**MANDATO DE "VIBE CODING ESTRATÉGICO" PARA CORRECCIÓN DE REFERENCIA CRÍTICA:**
+
+1.  **ANÁLISIS FORENSE DE RUTA Y MÉTODO (DEBUGGING METÓDICO INTENSIVO):**
+    * Tu prioridad es identificar **POR QUÉ** el frontend está generando un `404 Not Found` al intentar contactar al backend. Esto significa que la URL solicitada por el frontend no coincide con ningún endpoint existente o que el método HTTP es incorrecto para esa ruta.
+    * **Paso 1.1: Inspección del Frontend (templates/dashboard_workflow.html):**
+        * Revisa el código JavaScript en `templates/dashboard_workflow.html` que maneja el evento de clic del botón "Extraer Resultados JSON" y la llamada a `fetch()`.
+        * **Identifica la URL exacta y el método HTTP (`GET` o `POST`)** que el JavaScript está intentando utilizar para la solicitud.
+        * **Muestra el fragmento de código relevante** donde se define esta URL y método.
+    * **Paso 1.2: Inspección del Backend (routes.py):**
+        * Revisa el archivo `routes.py` para el endpoint responsable de `extract_results`.
+        * **Confirma la URL exacta definida para este endpoint (`@app.route(...)`) y los métodos HTTP que acepta (`methods=['GET', 'POST']`).**
+        * **Muestra el fragmento de código relevante** de la definición de la ruta.
+
+2.  **IDENTIFICACIÓN Y CORRECCIÓN DE LA DISCREPANCIA (MAESTRÍA DEL CONTEXTO):**
+    * Una vez que tengas ambas piezas de información (URL/Método del frontend y URL/Método del backend), **IDENTIFICA LA DISCREPANCIA EXACTA**.
+    * **Propón la corrección SISTÉMICA necesaria:**
+        * Si es un error en la URL (ortografía, path), corrige la URL en el frontend.
+        * Si el método HTTP que usa el frontend (`POST`) no es el que acepta el backend (`GET`), ajusta el método en el frontend para que coincida. O, si la lógica lo requiere, modifica el backend para que acepte el método correcto.
+
+3.  **VALIDACIÓN OBLIGATORIA DE PUNTOS DE CONTROL (PERSISTENCIA DE CORRECCIONES):**
+    * Después de implementar la corrección, debes **demostrar y confirmar** que has superado **OBLIGATORIAMENTE** los siguientes Puntos de Control:
+        * **`Punto de Control #1: Pre-Commit/Merge Validation`**: Confirma que se ha realizado el `Static Reference Scanning` y que la URL corregida ahora apunta a un endpoint existente y válido en el backend.
+        * **`Punto de Control #2: Testing Completo Post-Implementación`**:
+            * Ejecuta una prueba explícita para verificar que la llamada `fetch()` del frontend ahora resulta en una respuesta `200 OK` del backend, y no un `404`.
+            * Luego, procede con las pruebas de serialización JSON y de carga que mencionamos antes para asegurar la funcionalidad completa.
+
+**FORMATO DE CONFIRMACIÓN AL FINALIZAR:**
+
+NO me digas solo que está "corregido". Al finalizar tu trabajo, debes proporcionarme un informe conciso que incluya:
+
+* **Confirmación Explícita:** "La corrección de la URL/Método del endpoint ha sido validada y ha superado los Puntos de Control, resolviendo el `404 Not Found`."
+* **Detalles del Diagnóstico:** "La discrepancia identificada fue: [EXPLICA CLARAMENTE SI FUE ERROR EN URL O MÉTODO, Y EN QUÉ ARCHIVO (frontend o backend) SE CORRIGIÓ]."
+* **Detalles del Punto de Control #1:** "El `Static Reference Scanning` y la `Auto-Inspección de Conexiones Lógicas` confirman que la referencia al endpoint ahora es válida."
+* **Detalles del Punto de Control #2:** "Se ejecutaron las siguientes pruebas específicas: [LISTA BREVEMENTE LAS PRUEBAS EJECUTADAS, EJ. 'prueba de conexión frontend-backend (200 OK)', 'pruebas de serialización JSON', 'pruebas de edge cases para campos vacíos', 'stress test en /api/ocr/result/']. Los resultados de todas las pruebas son `PASSED`."
+* **Breve Descripción de la Causa Raíz y Solución:** Explica sucintamente (2-3 frases) la causa raíz sistémica que identificaste (el 404) y cómo tu solución la abordó de forma persistente.
