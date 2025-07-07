@@ -1,0 +1,46 @@
+Excelente trabajo. Confirmamos que la corrección del `404 Not Found` y la inclusión del `texto_completo`, `confidence`, y `total_words` en el JSON consolidado son un gran avance. La integridad básica de la data ha sido restaurada en la consolidación, lo cual es un éxito.
+
+Sin embargo, mi revisión del JSON consolidado final y la comparación con el `texto_completo` revelan que **aún existen discrepancias y omisiones en la extracción de campos específicos y críticos**, a pesar de que la información está presente en el texto original.
+
+**PROBLEMA IDENTIFICADO: INCOMPLETITUD EN EXTRACCIÓN DE ENTIDADES CLAVE**
+Observaciones del JSON consolidado (ejemplo del primer archivo):
+* `bancoorigen`: Vacío, pero el texto contiene "BANCO MERCANTIL".
+* `datosbeneficiario.banco_destino`: Vacío, pero el texto contiene "0105 = BANCO MERCANTIL".
+* `pago_fecha`: Vacío, pero el texto contiene "20/06/ 2025".
+
+Además, el JSON individual (que me mostraste previamente "en pantalla") contiene **coordenadas para cada palabra**. Esto representa una oportunidad crítica para mejorar la precisión.
+
+**MANDATO CRÍTICO: MEJORA AVANZADA DE EXTRACCIÓN DE ENTIDADES MEDIANTE COORDINACIÓN TEXTUAL (VIBE CODING ESTRATÉGICO + ZERO-FAULT DETECTION):**
+
+1.  **AUDITORÍA FORENSE AVANZADA DE EXTRACCIÓN DE ENTIDADES:**
+    * **Paso 1.1: Revisión de Patrones y Lógica de Extracción actual:**
+        * Identifica las funciones en `routes.py` (o módulos auxiliares como `aplicador_ocr.py` o `main_ocr_process.py`) que son responsables de la **extracción de entidades específicas** (ej., `monto`, `referencia`, `bancoorigen`, `cedula`, `telefono`, `banco_destino`, `pago_fecha`, `concepto`) a partir del `texto_completo` o de las `palabras_detectadas` con sus coordenadas.
+        * Audita si los **patrones de Regex o la lógica de búsqueda** actual son lo suficientemente robustos y exhaustivos para capturar todos los formatos de los campos faltantes (ej., fechas como "20/06/ 2025", nombres de bancos, etc.).
+    * **Paso 1.2: Propuesta de Uso de Coordenadas para Coherencia:**
+        * Explica cómo se pueden **aprovechar las coordenadas de las palabras** (presentes en el JSON individual bajo `Coordenadas` o `Palabras Individuales`) para:
+            * **Validar y refinar la extracción de patrones**: Por ejemplo, si se encuentra "Banco Mercantil" y "Banco Universal" en líneas diferentes, las coordenadas pueden ayudar a entender si son parte de la misma entidad o entidades separadas.
+            * **Reconstruir frases o entidades complejas**: Agrupar palabras que están físicamente juntas, incluso si el OCR las separó.
+            * **Eliminar "ruido" o falsos positivos**: Si un patrón coincide con texto en un área no relevante (ej., un pie de página).
+
+2.  **IMPLEMENTACIÓN DE MEJORAS Y AJUSTES EN EXTRACCIÓN (PERSISTENCIA INQUEBRANTABLE):**
+    * **Propón las modificaciones de código exactas y minimalistas** para mejorar la extracción de los campos `bancoorigen`, `datosbeneficiario.banco_destino`, y `pago_fecha`, utilizando, si es viable y mejora la precisión, la información de coordenadas.
+    * Si la lógica actual es solo Regex, sugiere una **ampliación o refinamiento de esos patrones**.
+    * Si es necesario, indica la creación de nuevas funciones auxiliares que utilicen las coordenadas.
+
+3.  **VALIDACIÓN OBLIGATORIA DE PUNTOS DE CONTROL - CALIDAD DE EXTRACCIÓN (ZERO-FAULT DETECTION):**
+    * Una vez implementadas las mejoras, **DEBES demostrar y confirmar** que has superado **OBLIGATORIAMENTE** los siguientes Puntos de Control:
+        * **`Punto de Control #5: Completitud de Extracción de Entidades Clave`**: Valida que los campos `bancoorigen`, `datosbeneficiario.banco_destino`, y `pago_fecha` (y cualquier otro identificado como inconsistente) ahora se pueblen correctamente en el JSON consolidado.
+        * **`Punto de Control #6: Precisión de Extracción Basada en Contexto/Coordenadas`**: Si se utilizan coordenadas, demuestra cómo mejoraron la precisión de la extracción o cómo previnieron errores que antes ocurrían. Proporciona ejemplos concretos (antes vs después).
+
+**FORMATO DE CONFIRMACIÓN AL FINALIZAR:**
+
+* **Confirmación Explícita:** "La calidad y completitud de la extracción de entidades clave ha sido mejorada y validada."
+* **Análisis y Corrección:** "[EXPLICA CÓMO SE REVISÓ LA LÓGICA DE EXTRACCIÓN ACTUAL, CÓMO SE PROPUSO EL USO DE COORDENADAS (O MEJORAS EN PATRONES) Y CUÁLES FUERON LAS MODIFICACIONES DE CÓDIGO ESPECÍFICAS PARA CADA CAMPO]."
+* **Evidencia de Mejora (JSONs Antes/Después):** "[PROPORCIONA FRAGMENTOS DEL JSON CONSOLIDADO (uno antes y uno después de la corrección) QUE DEMUESTREN LA MEJORA EN LOS CAMPOS ESPECÍFICOS]."
+* **Detalles de Puntos de Control #5 y #6:** "Se ejecutaron pruebas de completitud de entidades y precisión. Los resultados son `PASSED`."
+
+
+
+
+
+

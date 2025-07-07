@@ -1914,18 +1914,24 @@ def _extract_enterprise_fields(result_data, texto_completo):
         if texto_completo_local and not campos['concepto']:
             campos['concepto'] = texto_completo_local[:200]  # Primeros 200 caracteres
         
-        # FIX: Buscar datos financieros en estructura real de extracción posicional
-        # REASON: Los datos están en extracted_fields_positional, no en datos_financieros
-        # IMPACT: Extracción correcta de montos, referencias y datos empresariales
+        # FIX: EXTRACCIÓN AVANZADA CON COORDENADAS Y PROXIMIDAD INTELIGENTE
+        # REASON: Usar coordenadas geométricas para mapeo preciso de campos empresariales
+        # IMPACT: Extracción robusta que maneja diferentes layouts y reduce falsos positivos
+        palabras_detectadas = datos_extraidos.get('palabras_detectadas', [])
+        if palabras_detectadas:
+            # Aplicar extracción inteligente basada en coordenadas
+            campos_coordenadas = _extract_with_coordinate_proximity(palabras_detectadas, texto_completo_local)
+            for campo, valor in campos_coordenadas.items():
+                if valor and not campos.get(campo):
+                    campos[campo] = valor
+        
+        # Buscar también en extracted_fields_positional como fallback
         extracted_fields = datos_extraidos.get('extracted_fields_positional', {})
         if extracted_fields:
-            campos['referencia'] = extracted_fields.get('referencia', '')
-            campos['monto'] = extracted_fields.get('monto', '')
-            campos['bancoorigen'] = extracted_fields.get('bancoorigen', '')
-            campos['cedula'] = extracted_fields.get('cedula', '')
-            campos['telefono'] = extracted_fields.get('telefono', '')
-            campos['banco_destino'] = extracted_fields.get('banco_destino', '')
-            campos['pago_fecha'] = extracted_fields.get('pago_fecha', '')
+            for campo in ['referencia', 'monto', 'bancoorigen', 'cedula', 'telefono', 'banco_destino', 'pago_fecha']:
+                valor = extracted_fields.get(campo, '')
+                if valor and not campos.get(campo):
+                    campos[campo] = valor
             
         # FIX: Buscar también en datos_financieros como fallback
         datos_financieros = datos_extraidos.get('datos_financieros', {})
@@ -2014,6 +2020,142 @@ def _extract_enterprise_fields(result_data, texto_completo):
                     break
     
     return campos
+
+def _extract_with_coordinate_proximity(palabras_detectadas, texto_completo):
+    """
+    FIX: Extracción inteligente usando coordenadas y proximidad espacial
+    REASON: Mejorar precisión de extracción aprovechando información posicional
+    IMPACT: Reduce falsos positivos y mejora mapeo de campos en diferentes layouts
+    """
+    import re
+    
+    campos_extraidos = {
+        'referencia': '',
+        'monto': '',
+        'bancoorigen': '',
+        'cedula': '',
+        'telefono': '',
+        'banco_destino': '',
+        'pago_fecha': ''
+    }
+    
+    if not palabras_detectadas:
+        return campos_extraidos
+    
+    # Convertir palabras a estructura con coordenadas válidas
+    words_with_coords = []
+    for palabra in palabras_detectadas:
+        if isinstance(palabra, dict):
+            coords = palabra.get('coordinates', [0, 0, 0, 0])
+            if len(coords) == 4 and sum(coords) > 0:  # Coordenadas válidas
+                words_with_coords.append({
+                    'text': palabra.get('texto', ''),
+                    'confidence': palabra.get('confianza', 0),
+                    'coords': coords
+                })
+    
+    if not words_with_coords:
+        return campos_extraidos
+    
+    # FIX: PATRONES DE EXTRACCIÓN CON VALIDACIÓN ESPACIAL
+    # REASON: Combinar regex con proximidad espacial para máxima precisión
+    # IMPACT: Extracción robusta que maneja variaciones de layout
+    
+    # 1. EXTRACCIÓN DE REFERENCIA/OPERACIÓN (ajustado para 12 dígitos como 003039387344)
+    ref_keywords = ['operacion', 'referencia', 'ref', 'op', 'numero']
+    referencia = _find_field_by_spatial_proximity(words_with_coords, ref_keywords, r'\d{12}')
+    if referencia:
+        campos_extraidos['referencia'] = referencia
+    
+    # 2. EXTRACCIÓN DE MONTO VENEZOLANO
+    monto_keywords = ['monto', 'total', 'bs', 'bolivares']
+    monto = _find_field_by_spatial_proximity(words_with_coords, monto_keywords, r'\d{1,3}(?:[,\.]\d{2,3})*(?:[,\.]\d{2})?')
+    if monto:
+        campos_extraidos['monto'] = monto
+    
+    # 3. EXTRACCIÓN DE BANCO
+    banco_keywords = ['banco', 'bco', 'entidad']
+    banco = _find_field_by_spatial_proximity(words_with_coords, banco_keywords, r'[A-Z][A-Z\s]+')
+    if banco:
+        campos_extraidos['bancoorigen'] = banco
+        campos_extraidos['banco_destino'] = banco  # Misma entidad en muchos casos
+    
+    # 4. EXTRACCIÓN DE CÉDULA (7-8 dígitos)
+    cedula_keywords = ['identificacion', 'ci', 'cedula', 'v-']
+    cedula = _find_field_by_spatial_proximity(words_with_coords, cedula_keywords, r'^[VE]?\d{7,8}$')
+    if cedula:
+        campos_extraidos['cedula'] = cedula
+    
+    # 5. EXTRACCIÓN DE TELÉFONO (11 dígitos específicamente)
+    telefono_keywords = ['destino', 'telefono', 'tel', 'movil']
+    telefono = _find_field_by_spatial_proximity(words_with_coords, telefono_keywords, r'^0\d{10}$')
+    if telefono:
+        campos_extraidos['telefono'] = telefono
+    
+    # 6. EXTRACCIÓN DE FECHA
+    fecha_keywords = ['fecha', 'date', 'dia']
+    fecha = _find_field_by_spatial_proximity(words_with_coords, fecha_keywords, r'\d{1,2}/\d{1,2}/\d{4}')
+    if fecha:
+        campos_extraidos['pago_fecha'] = fecha
+    
+    return campos_extraidos
+
+def _find_field_by_spatial_proximity(words_with_coords, keywords, value_pattern):
+    """
+    FIX: Busca un campo específico usando proximidad espacial entre keyword y valor
+    REASON: Mapeo inteligente que considera posición física de elementos en documento
+    IMPACT: Extracción precisa que maneja diferentes layouts de documentos financieros
+    """
+    import re
+    
+    # Buscar keywords en las palabras
+    keyword_positions = []
+    for i, word in enumerate(words_with_coords):
+        word_text = word['text'].lower()
+        for keyword in keywords:
+            if keyword.lower() in word_text:
+                keyword_positions.append({
+                    'index': i,
+                    'coords': word['coords'],
+                    'keyword': keyword,
+                    'confidence': word['confidence']
+                })
+    
+    if not keyword_positions:
+        return None
+    
+    # Para cada keyword encontrado, buscar valores cercanos
+    best_match = None
+    best_score = 0
+    
+    for kw_pos in keyword_positions:
+        kw_coords = kw_pos['coords']
+        kw_center_x = (kw_coords[0] + kw_coords[2]) / 2
+        kw_center_y = (kw_coords[1] + kw_coords[3]) / 2
+        
+        # Buscar palabras cercanas que coincidan con el patrón
+        for i, word in enumerate(words_with_coords):
+            if abs(i - kw_pos['index']) > 5:  # Límite de proximidad por índice
+                continue
+                
+            if re.search(value_pattern, word['text']):
+                word_coords = word['coords']
+                word_center_x = (word_coords[0] + word_coords[2]) / 2
+                word_center_y = (word_coords[1] + word_coords[3]) / 2
+                
+                # Calcular distancia espacial
+                distance = ((kw_center_x - word_center_x) ** 2 + (kw_center_y - word_center_y) ** 2) ** 0.5
+                
+                # Score basado en proximidad y confianza
+                proximity_score = max(0, 100 - distance)  # Máximo 100 si están en mismo lugar
+                confidence_score = (kw_pos['confidence'] + word['confidence']) / 2
+                total_score = proximity_score * confidence_score
+                
+                if total_score > best_score:
+                    best_score = total_score
+                    best_match = word['text']
+    
+    return best_match
 
 def validate_api_key(api_key):
     """

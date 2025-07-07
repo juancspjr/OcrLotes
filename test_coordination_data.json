@@ -1,0 +1,30 @@
+{
+  "datos_extraidos": {
+    "texto_completo": "A PagomovilBDV Personas 104,54 Bs Fecha : 20/06/2025 Operacion : 003039387344 Identificacion : 27061025 Origen : 0102 ****2679 Destino : 04125318244 Banco : 0105 = BANCO MERCANTIL",
+    "palabras_detectadas": [
+      {"texto": "A", "confianza": 0.9998, "coordinates": [10, 20, 25, 35]},
+      {"texto": "PagomovilBDV", "confianza": 0.8303, "coordinates": [30, 20, 120, 35]},
+      {"texto": "Personas", "confianza": 0.9456, "coordinates": [125, 20, 200, 35]},
+      {"texto": "104,54", "confianza": 0.9823, "coordinates": [210, 20, 260, 35]},
+      {"texto": "Bs", "confianza": 0.9901, "coordinates": [265, 20, 285, 35]},
+      {"texto": "Fecha", "confianza": 0.9654, "coordinates": [10, 50, 50, 65]},
+      {"texto": ":", "confianza": 0.8901, "coordinates": [55, 50, 60, 65]},
+      {"texto": "20/06/2025", "confianza": 0.9234, "coordinates": [65, 50, 140, 65]},
+      {"texto": "Operacion", "confianza": 0.9567, "coordinates": [10, 80, 80, 95]},
+      {"texto": ":", "confianza": 0.8901, "coordinates": [85, 80, 90, 95]},
+      {"texto": "003039387344", "confianza": 0.9678, "coordinates": [95, 80, 200, 95]},
+      {"texto": "Identificacion", "confianza": 0.9234, "coordinates": [10, 110, 100, 125]},
+      {"texto": ":", "confianza": 0.8901, "coordinates": [105, 110, 110, 125]},
+      {"texto": "27061025", "confianza": 0.9567, "coordinates": [115, 110, 185, 125]},
+      {"texto": "Destino", "confianza": 0.9345, "coordinates": [10, 140, 60, 155]},
+      {"texto": ":", "confianza": 0.8901, "coordinates": [65, 140, 70, 155]},
+      {"texto": "04125318244", "confianza": 0.9456, "coordinates": [75, 140, 165, 155]},
+      {"texto": "Banco", "confianza": 0.9123, "coordinates": [10, 170, 50, 185]},
+      {"texto": ":", "confianza": 0.8901, "coordinates": [55, 170, 60, 185]},
+      {"texto": "0105", "confianza": 0.9234, "coordinates": [65, 170, 95, 185]},
+      {"texto": "=", "confianza": 0.8567, "coordinates": [100, 170, 110, 185]},
+      {"texto": "BANCO", "confianza": 0.9345, "coordinates": [115, 170, 160, 185]},
+      {"texto": "MERCANTIL", "confianza": 0.9234, "coordinates": [165, 170, 240, 185]}
+    ]
+  }
+}

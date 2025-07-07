@@ -621,6 +621,25 @@ class AplicadorOCR:
                             word_text = word.value
                             word_confidence = float(word.confidence)
                             
+                            # FIX: EXTRACCIÓN CRÍTICA DE COORDENADAS GEOMÉTRICAS REALES
+                            # REASON: Coordenadas necesarias para análisis posicional avanzado de campos
+                            # IMPACT: Permite extracción inteligente basada en proximidad y contexto espacial
+                            word_coords = [0, 0, 0, 0]  # Default bbox
+                            if hasattr(word, 'geometry') and hasattr(word.geometry, 'polygon'):
+                                try:
+                                    # Extraer coordenadas del polígono de OnnxTR
+                                    polygon = word.geometry.polygon
+                                    if len(polygon) >= 4:
+                                        x_coords = [point[0] for point in polygon]
+                                        y_coords = [point[1] for point in polygon]
+                                        # Crear bounding box [x_min, y_min, x_max, y_max]
+                                        word_coords = [
+                                            min(x_coords), min(y_coords), 
+                                            max(x_coords), max(y_coords)
+                                        ]
+                                except Exception:
+                                    word_coords = [0, 0, 0, 0]
+                            
                             # Aplicar filtro de confianza basado en configuración
                             min_confidence = profile_config.get('confidence_threshold', 0.6)
                             if word_confidence >= min_confidence:
@@ -628,6 +647,7 @@ class AplicadorOCR:
                                 palabras_detectadas.append({
                                     'texto': word_text,
                                     'confianza': word_confidence,
+                                    'coordinates': word_coords,  # COORDENADAS GEOMÉTRICAS REALES
                                     'posicion': {
                                         'pagina': page_idx,
                                         'bloque': block_idx,
