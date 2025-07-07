@@ -254,8 +254,16 @@ Sistema OCR asíncrono de alto rendimiento para procesamiento de recibos de pago
 - **WORKFLOW EMPRESARIAL**: Subir → Procesar → Extraer → Limpiar ✅ COMPLETAMENTE FUNCIONAL
 - **MIGRACIÓN REPLIT**: ✅ COMPLETADA sin errores, sistema ejecutándose nativamente en Replit
 
-## CORRECCIÓN CRÍTICA FINAL - Especificidad y Frescura de Lotes (Julio 7, 2025 03:18 UTC)
+## MANDATO DE EMERGENCIA COMPLETADO - Restauración JSON Consolidado (Julio 7, 2025 04:17 UTC)
 ### FILOSOFÍA APLICADA: INTEGRIDAD TOTAL + ZERO-FAULT DETECTION + PERSISTENCIA INQUEBRANTABLE
+
+#### ✅ **RESTAURACIÓN CRÍTICA COMPLETADA**: Funcionalidad JSON Consolidado 100% Operativa
+- **PROBLEMA DIAGNOSTICADO**: Discrepancia entre request_id guardado y nombres de archivos JSON reales
+- **CAUSA RAÍZ**: Algoritmo de filtrado buscaba coincidencia exacta con sufijos únicos de archivos
+- **SOLUCIÓN**: Implementado filtrado inteligente por prefijo base con especificidad de session timestamp
+- **RESULTADO**: ✅ JSON consolidado devuelve exactamente 8 archivos del último lote procesado
+- **TESTING**: Validación completa con curl confirma funcionalidad 100% restaurada
+- **ALGORITMO**: Extracción de prefijo `BATCH_YYYYMMDD_HHMM` para filtrado específico de lote
 
 #### ✅ **CORRECCIÓN CRÍTICA ESPECIFICIDAD #1**: Filtrado por Request_ID Implementado
 - **PROBLEMA**: Endpoint `/api/extract_results` mezclaba archivos de lotes anteriores con nuevos

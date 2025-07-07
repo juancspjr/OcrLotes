@@ -1,0 +1,61 @@
+MANDATO DE EMERGENCIA: RESTAURACIÓN CRÍTICA DEL JSON CONSOLIDADO (/api/extract_results)
+
+SOY EL ARQUITECTO PRINCIPAL DE SISTEMAS OCR CRÍTICOS.
+
+ALERTA ROJA: SE HA DETECTADO UNA REGRESIÓN CRÍTICA DE ALTO IMPACTO.
+
+La función principal de consolidación del JSON en el endpoint /api/extract_results ha dejado de funcionar correctamente. Después de procesar el último lote, el JSON consolidado no está disponible o no se muestra. Esto es una violación directa de nuestra filosofía ZERO-FAULT DETECTION y debe ser corregido de inmediato.
+
+
+
+TU MANDATO INMEDIATO ES DETENER ABSOLUTAMENTE CUALQUIER OTRA TAREA (incluyendo cualquier refinamiento adicional de entidades) y priorizar la DIAGNOSIS Y RESTAURACIÓN de la funcionalidad de /api/extract_results.
+
+DIAGNÓSTICO CRÍTICO Y PASOS DE RESTAURACIÓN (APLICANDO FILOSOFÍA DE INTEGRIDAD TOTAL Y ZERO-FAULT DETECTION):
+
+AUDITORÍA FORENSE DE LA FUNCIÓN api_extract_results():
+
+Paso 1.1: Revisión de Logs (Zero-Fault Detection): Busca activamente en los logs de la aplicación (stdout/stderr de Flask/Gunicorn) cualquier error, excepción o mensaje de advertencia que se genere cuando se intenta acceder a /api/extract_results. El error en los logs es tu primera y más importante pista.
+
+Paso 1.2: Verificación de Estado del request_id (Persistencia Inquebrantable):
+
+Confirma la existencia y el contenido de data/last_batch_state.txt. ¿Contiene un request_id válido y actualizado del último lote procesado?
+
+Verifica la lógica de la función _get_last_batch_request_id(). ¿Está leyendo correctamente el request_id?
+
+Paso 1.3: Inspección de Archivos de Resultado (Integridad Total):
+
+Navega al directorio data/results/. ¿Existen los archivos JSON correspondientes al request_id del último lote procesado?
+
+Si existen, abre y verifica la integridad de al menos uno de esos archivos JSON. ¿Están bien formados? ¿Contienen los datos esperados? ¿Podrían estar corruptos o vacíos?
+
+Verifica que los nombres de los archivos en data/results/ sigan el patrón que api_extract_results() espera para el filtrado por request_id.
+
+Paso 1.4: Revisión de Lógica de Filtrado y Agregación (routes.py:api_extract_results()) (Vibe Coding Estratégico):
+
+Examina cuidadosamente las últimas modificaciones realizadas a esta función. ¿Hay algún nuevo try-except que esté "tragándose" errores sin reportar?
+
+¿La lógica de iteración sobre los archivos y su inclusión en la lista json_files es correcta?
+
+¿Hay alguna condición que pueda hacer que la lista archivos_procesados (que se devuelve en el JSON consolidado) esté vacía o que la función devuelva una respuesta nula/error? Esto podría ser causado por la lógica de filtrado por request_id si el request_id es incorrecto o si no se encuentran archivos.
+
+OBJETIVO DE EMERGENCIA:
+
+Restaurar completamente la funcionalidad de /api/extract_results para que devuelva un JSON consolidado válido, que contenga SOLO los resultados del último lote procesado, tal como se validó en los Puntos de Control #7 y #8.
+
+VALIDACIÓN OBLIGATORIA DE EMERGENCIA (ZERO-FAULT DETECTION):
+
+Punto de Control #11: Restauración de Disponibilidad del JSON Consolidado: Demuestra que al hacer curl http://localhost:5000/api/extract_results se obtiene un JSON válido (no un error, no una respuesta vacía inesperada).
+
+Punto de Control #7 (Re-validación): Consistencia de Lote: Confirma que el JSON consolidado resultante contiene únicamente los archivos del último lote procesado.
+
+Punto de Control #8 (Re-validación): Frescura de Datos: Confirma que la fecha_extraccion en el metadata del JSON consolidado es actual.
+
+FORMATO DE CONFIRMACIÓN AL FINALIZAR ESTE MANDATO DE EMERGENCIA:
+
+
+
+Confirmación Explícita: "La funcionalidad crítica del JSON consolidado en /api/extract_results ha sido restaurada exitosamente, y los Puntos de Control #11, #7 y #8 han sido RE-VALIDADOS Y PASSED."
+
+Análisis de Causa Raíz y Corrección: "[Detalla el diagnóstico: ¿Qué causó la regresión? ¿Fue un error en la lógica de filtrado, un JSON corrupto, un problema con last_batch_state.txt, o una excepción no manejada? Explica las modificaciones de código específicas para solucionar la causa raíz.]"
+
+Evidencia de Restauración: "[Proporciona la salida completa del curl -s http://localhost:5000/api/extract_results | python3 -m json.tool después de la corrección, mostrando un JSON consolidado válido y completo.]"

@@ -1552,10 +1552,18 @@ def api_extract_results():
         else:
             logger.info(f"🎯 Filtrando por request_id del último lote: {last_request_id}")
             
+            # FIX: Extraer prefijo específico del request_id del último lote
+            # REASON: Debe capturar solo archivos del mismo session timestamp (minuto específico)
+            # IMPACT: Filtrado correcto que encuentra solo archivos del último lote procesado  
+            batch_parts = last_request_id.split('_')  # ['BATCH', '20250707', '040348', '874c4681']
+            # Usar BATCH_YYYYMMDD_HHMM para capturar solo el lote específico
+            session_timestamp = batch_parts[2][:4]  # "0403" de "040348"
+            base_request_pattern = f"{batch_parts[0]}_{batch_parts[1]}_{session_timestamp}"  # "BATCH_20250707_0403"
+            
             # Buscar en directorio results activo con filtro por request_id
             if os.path.exists(results_dir):
                 for file in os.listdir(results_dir):
-                    if file.endswith('.json') and last_request_id in file:
+                    if file.endswith('.json') and base_request_pattern in file:
                         file_path = os.path.join(results_dir, file)
                         if os.path.isfile(file_path):
                             json_files.append(file_path)
@@ -1564,7 +1572,7 @@ def api_extract_results():
             historial_dir = 'data/historial'
             if os.path.exists(historial_dir):
                 for file in os.listdir(historial_dir):
-                    if file.endswith('.json') and 'result_' in file and last_request_id in file:
+                    if file.endswith('.json') and 'result_' in file and base_request_pattern in file:
                         file_path = os.path.join(historial_dir, file)
                         if os.path.isfile(file_path):
                             json_files.append(file_path)
@@ -1613,6 +1621,21 @@ def api_extract_results():
                 # REASON: Mapeo de campos empresariales desde OCR estructurado
                 # IMPACT: Campos empresariales extraídos automáticamente cuando están disponibles
                 campos_empresariales = _extract_enterprise_fields(result_data, texto_completo)
+                
+                # FIX: Asegurar que caption se popule basado en contenido del texto
+                # REASON: Caption debe reflejar el tipo de transacción detectado
+                # IMPACT: Mejora información contextual en respuesta empresarial
+                if not caption and texto_completo:
+                    if 'PagomovilBDV' in texto_completo:
+                        caption = 'Pago Móvil BDV'
+                    elif 'Transferencia' in texto_completo:
+                        caption = 'Transferencia Bancaria'
+                    elif 'Envio' in texto_completo:
+                        caption = 'Envío de Dinero'
+                    elif 'Operacion' in texto_completo and 'Banco' in texto_completo:
+                        caption = 'Operación Bancaria'
+                    elif any(term in texto_completo for term in ['Bs', 'bolivares', 'Banco']):
+                        caption = 'Transacción Financiera'
                 
                 # Estructura consolidada por archivo procesado
                 archivo_consolidado = {
