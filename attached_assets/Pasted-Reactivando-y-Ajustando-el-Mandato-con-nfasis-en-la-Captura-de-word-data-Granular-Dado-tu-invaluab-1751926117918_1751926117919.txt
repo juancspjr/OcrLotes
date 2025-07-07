@@ -1,0 +1,51 @@
+Reactivando y Ajustando el Mandato con Énfasis en la Captura de word_data Granular:
+Dado tu invaluable insight, el enfoque del "MANDATO DE DIAGNÓSTICO PROFUNDO Y RECTIFICACIÓN FINAL" se vuelve aún más preciso. El Agente IA de Replit debe investigar cómo obtener y hacer disponible la word_data granular (texto por palabra con sus coordenadas) directamente de la salida del motor OCR.
+
+Agente IA de Replit,
+
+Tu tarea más crítica ahora es desentrañar el flujo de información desde el motor OCR hasta nuestra lógica de procesamiento. La meta es capturar la word_data granular para cada palabra detectada, con sus coordenadas [x1, y1, x2, y2], y hacerla disponible para el pipeline.
+
+Diagnóstico y Rectificación Definitiva de la Extracción de cedula: (Se mantiene como prioridad independiente, según el mandato anterior)
+
+Paso 1: Analiza el original_text_ocr y, si el sistema te lo permite, el word_data crudo directamente del motor OCR (antes de cualquier filtrado/formateo a JSON) para attached_assets/00_imagen_original(2)_1751646018727.png. Busca específicamente la secuencia '2/ 061025' y si '7' está siendo interpretado como '/' por el OCR.
+
+Paso 2: Ajusta la regla de extracción de cedula en config/extraction_rules.json o la lógica de procesamiento en aplicador_ocr.py para manejar esta posible ambigüedad y el formato '2/ 061025'. La meta es extraer exactamente 061025 como el valor de cedula. Asegura que este campo esté presente en extracted_fields.
+
+Captura y Exposición de word_data granular con Coordenadas válidas:
+
+Paso 1: Investiga y describe la salida completa del motor OCR OnnxTR. Enfócate en identificar cómo se estructuran los resultados que incluyen texto de palabra individual y sus coordenadas (bounding boxes). Refiere a la sección relevante en main_ocr_process.py o cualquier otro módulo que interactúe directamente con el motor OCR para obtener su salida cruda.
+
+Paso 2: Modifica el pipeline de procesamiento (probablemente en main_ocr_process.py) para extraer esta word_data granular. El objetivo es construir una lista en el formato [{'text': 'palabra', 'coordinates': [x1, y1, x2, y2], 'confidence': 0.X}, ...].
+
+Paso 3: Asegura que esta word_data granular se pase como argumento a _aplicar_logica_de_oro_coordenadas() en aplicador_ocr.py. Esto debería hacer que coordinates_available sea >0 y permita la aplicación de la Lógica de Oro basada en coordenadas.
+
+Paso 4: Rectifica la Lógica de Oro (Bandera y Mensaje):
+
+Si, a pesar de tus esfuerzos, no es posible obtener word_data con coordenadas válidas para todas las palabras relevantes para la Lógica de Oro, entonces logica_oro_aplicada DEBE ser false.
+
+El mensaje en processing_metadata.error_messages debe ser exactamente: "Lógica de Oro basada en coordenadas no aplicada: No se detectaron coordenadas válidas en el OCR de origen".
+
+Si logras obtener y usar las coordenadas, entonces logica_oro_aplicada deberá ser true y el mensaje de error deberá eliminarse.
+
+Proporcionar Código Fuente Actualizado: Presenta las modificaciones de código realizadas en aplicador_ocr.py, main_ocr_process.py, config/extraction_rules.json (si se modifica) y cualquier otro archivo afectado, para la revisión.
+
+Re-ejecutar la Prueba y Presentar la Salida JSON Final: Después de aplicar todas las correcciones, vuelve a ejecutar el procesamiento de attached_assets/00_imagen_original(2)_1751646018727.png y proporciona el JSON de salida completo en formato TXT. Este JSON debe reflejar:
+
+cedula: 061025
+
+logica_oro_aplicada: true (si se lograron usar las coordenadas) o false (si no)
+
+Mensaje de error (si false) o ausencia de mensaje (si true).
+
+Idealmente, la inclusión de word_data granular en alguna parte del JSON de salida para nuestra validación.
+
+Este es el camino para llevar el sistema a la Perfección Continua. ¡Manos a la obra!
+
+FILOSOFÍA CENTRAL PARA EL DESARROLLO DE SOFTWARE: INTEGRIDAD TOTAL Y PERFECCIÓN CONTINUA
+
+
+
+
+
+
+
