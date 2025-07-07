@@ -561,7 +561,7 @@ def api_process_batch():
         # REASON: Usuario requiere JSON consolidado específico del último lote únicamente
         # IMPACT: Permite filtrado preciso de archivos por lote para evitar mezcla de resultados
         if processed_count > 0:
-            _store_last_batch_request_id(request_id)
+            _save_last_batch_request_id(request_id)
             logger.info(f"💾 Almacenado request_id del último lote exitoso: {request_id}")
         
         logger.info(f"✅ Lote procesado exitosamente: {processed_count} archivos. Request ID: {request_id}")
@@ -2358,22 +2358,72 @@ def _extract_onnxtr_enterprise_fields(palabras_detectadas, texto_completo):
         'BBVA': 'BBVA PROVINCIAL'
     }
     
-    # FIX: Priorizar PagomovilBDV como indicador de Banco de Venezuela
-    # REASON: test2.png requiere BDV no MERCANTIL cuando aparece PagomovilBDV
-    # IMPACT: Corrección crítica según mandato de refinamiento
-    if 'PagomovilBDV' in texto_completo:
-        campos_extraidos['bancoorigen'] = 'BANCO DE VENEZUELA'
-        campos_extraidos['caption'] = 'Pago Móvil BDV'
-        # Buscar banco destino como el segundo banco mencionado
+    # FIX: DETECCIÓN CRÍTICA DE ACRÓNIMOS INCRUSTADOS - MANDATO REFINAMIENTO CRÍTICO
+    # REASON: PagomovilBDV debe extraer "BANCO DE VENEZUELA" no "BANCO MERCANTIL"
+    # IMPACT: Corrección fundamental del algoritmo de extracción bancaria posicional
+    # PRIORIDAD: Primera detección de banco en documento define bancoorigen
+    
+    # 1. REGLA: PRIMER BANCO DETECTADO + ACRÓNIMOS INCRUSTADOS
+    bancoorigen_detectado = False
+    
+    # Detectar acrónimos incrustados con máxima prioridad
+    acronimos_incrustados = {
+        'PAGOMOVILBDV': 'BANCO DE VENEZUELA',
+        'PAGOMOVIL BDV': 'BANCO DE VENEZUELA', 
+        'PAGO MOVIL BDV': 'BANCO DE VENEZUELA',
+        'PAGOMOVILMERCANTIL': 'BANCO MERCANTIL',
+        'PAGOMOVILBANESCO': 'BANESCO',
+        'PAGOMOVILPROVINCIAL': 'BBVA PROVINCIAL'
+    }
+    
+    # Buscar acrónimos incrustados PRIMERO (máxima prioridad)
+    texto_upper = texto_completo.upper()
+    for acronimo, banco_oficial in acronimos_incrustados.items():
+        if acronimo in texto_upper:
+            campos_extraidos['bancoorigen'] = banco_oficial
+            campos_extraidos['caption'] = f'Pago Móvil {banco_oficial.split()[-1]}'  # BDV, Mercantil, etc.
+            bancoorigen_detectado = True
+            logger.info(f"🏦 ACRÓNIMO INCRUSTADO detectado: {acronimo} → {banco_oficial}")
+            break
+    
+    # 2. REGLA: PRIMER BANCO DETECTADO ESPACIALMENTE (si no hay acrónimos)
+    if not bancoorigen_detectado:
+        # Buscar primera mención de banco en el texto usando diccionario completo
+        primeras_menciones = []
+        for codigo_banco, nombre_banco in bank_mapping.items():
+            # Buscar tanto el código como el nombre en el texto
+            for busqueda in [codigo_banco, nombre_banco]:
+                pos = texto_upper.find(busqueda.upper())
+                if pos != -1:
+                    primeras_menciones.append((pos, nombre_banco, busqueda))
+        
+        # Ordenar por posición y tomar la primera
+        if primeras_menciones:
+            primeras_menciones.sort(key=lambda x: x[0])  # Ordenar por posición
+            primer_banco = primeras_menciones[0][1]  # Nombre oficial del banco
+            campos_extraidos['bancoorigen'] = primer_banco
+            bancoorigen_detectado = True
+            logger.info(f"🏦 PRIMER BANCO DETECTADO: {primer_banco}")
+    
+    # 3. EXTRACCIÓN DE BANCO DESTINO (segundo banco mencionado)
+    if bancoorigen_detectado:
         banco_destino_patterns = [
             r'Banco\s*[:=]?\s*\d{4}\s*=\s*([A-Z\s]+[A-Z])',  # Banco : 0105 = BANCO MERCANTIL
             r'BANCO\s+([A-Z\s]+[A-Z])',                       # BANCO MERCANTIL
+            r'(\d{4})\s*=\s*([A-Z\s]+BANCO[A-Z\s]*)',        # 0105 = BANCO MERCANTIL
         ]
         for pattern in banco_destino_patterns:
-            match = re.search(pattern, texto_completo)
+            match = re.search(pattern, texto_completo, re.IGNORECASE)
             if match:
-                banco_nombre = match.group(1).strip()
-                if len(banco_nombre) >= 8:  # Nombres de bancos válidos
+                if len(match.groups()) == 2:
+                    banco_nombre = match.group(2).strip()
+                else:
+                    banco_nombre = match.group(1).strip()
+                
+                # Verificar que es diferente al banco origen y es válido
+                if (len(banco_nombre) >= 8 and 
+                    banco_nombre != campos_extraidos['bancoorigen'] and
+                    'BANCO' in banco_nombre.upper()):
                     campos_extraidos['banco_destino'] = banco_nombre
                     break
     
