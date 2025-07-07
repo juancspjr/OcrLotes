@@ -2471,28 +2471,51 @@ def _extract_onnxtr_enterprise_fields(palabras_detectadas, texto_completo):
             if campos_extraidos.get('cedula'):
                 break
     
-    # FIX: EXTRACCIÓN CRÍTICA DE TELÉFONO - MANDATO REFINAMIENTO
-    # REASON: Mejorar patrones para detectar teléfonos venezolanos formato 04XXXXXXXX
-    # IMPACT: Corrección de teléfonos vacíos → extracción correcta formato venezolano  
+    # FIX: EXTRACCIÓN CRÍTICA DE TELÉFONO VENEZOLANO - MANDATO OPTIMIZACIÓN CONTINUA
+    # REASON: Implementar validación estricta para prefijos operadores venezolanos según mandato #19
+    # IMPACT: Solo acepta números 0412, 0416, 0426, 0414, 0424 + 7 dígitos (11 total)
+    # PROBLEMA RESUELTO: Evita extracción incorrecta de números como 48311146148 como teléfono
     if not campos_extraidos['telefono']:
+        # VALIDACIÓN ESTRICTA: Solo prefijos de operadores celulares venezolanos
+        prefijos_validos = ['0412', '0416', '0426', '0414', '0424']
+        
         telefono_patterns = [
-            r'(?:Destino|telefono|celular|movil|telf|TELF|BENEFICIARIO)\s*[:=]?\s*(\d{11})',  # TELF BENEFICIARIO : 04125318244
-            r'(\d{11})',                                                                       # 04125318244 directo
-            r'(\+58\d{10})',                                                                   # +584125318244
-            r'(04\d{9})',                                                                      # Formato específico venezolano
+            # PRIORIDAD MÁXIMA: Keywords explícitas de teléfono
+            r'(?:Teléfono|TELF|Celular|Telf\.\s*Celular|telefono|celular|movil)\s*[:=]?\s*(\d{11})',
+            # PRIORIDAD MEDIA: Contexto de destino
+            r'(?:Destino|BENEFICIARIO)\s*[:=]?\s*(\d{11})',
+            # PRIORIDAD BAJA: Números de 11 dígitos que empiecen con 04
+            r'(04\d{9})',
+            # FORMATO INTERNACIONAL: +58 seguido de 10 dígitos
+            r'(\+58\d{10})',
         ]
+        
         for pattern in telefono_patterns:
             matches = re.finditer(pattern, texto_completo, re.IGNORECASE)
             for match in matches:
                 telefono_str = match.group(1)
-                # Validar formato de teléfono venezolano y que no sea la referencia ya extraída
-                if telefono_str.startswith('04') and len(telefono_str) == 11 and telefono_str != campos_extraidos.get('referencia', ''):
-                    campos_extraidos['telefono'] = telefono_str
-                    break
-                elif telefono_str.startswith('+58') and len(telefono_str) == 13:
+                
+                # VALIDACIÓN ESTRICTA DE FORMATO VENEZOLANO
+                if telefono_str.startswith('+58') and len(telefono_str) == 13:
                     # Convertir formato internacional a nacional
-                    campos_extraidos['telefono'] = '0' + telefono_str[3:]
-                    break
+                    telefono_nacional = '0' + telefono_str[3:]
+                    # Verificar que el prefijo nacional es válido
+                    if any(telefono_nacional.startswith(prefijo) for prefijo in prefijos_validos):
+                        campos_extraidos['telefono'] = telefono_nacional
+                        logger.info(f"📱 TELÉFONO VENEZOLANO detectado (internacional): {telefono_str} → {telefono_nacional}")
+                        break
+                elif len(telefono_str) == 11:
+                    # Verificar que empiece con prefijo venezolano válido
+                    if any(telefono_str.startswith(prefijo) for prefijo in prefijos_validos):
+                        # Verificar que NO es la referencia ya extraída
+                        if telefono_str != campos_extraidos.get('referencia', ''):
+                            campos_extraidos['telefono'] = telefono_str
+                            logger.info(f"📱 TELÉFONO VENEZOLANO detectado: {telefono_str}")
+                            break
+                    else:
+                        # MANDATO CRÍTICO: No extraer números que no cumplan formato venezolano
+                        logger.debug(f"📱 NÚMERO RECHAZADO (no es teléfono venezolano): {telefono_str}")
+                        
             if campos_extraidos.get('telefono'):
                 break
     
@@ -2512,6 +2535,44 @@ def _extract_onnxtr_enterprise_fields(palabras_detectadas, texto_completo):
                 fecha_str = match.group(1).replace(' ', '')  # Eliminar espacios adicionales
                 campos_extraidos['pago_fecha'] = fecha_str
                 break
+    
+    # FIX: INFERENCIA AVANZADA DE BANCO DESTINO INTRABANCARIO - MANDATO OPTIMIZACIÓN CONTINUA  
+    # REASON: Implementar lógica de inferencia contextual según mandato #20
+    # IMPACT: Completa banco_destino cuando es transacción intrabancaria
+    # PROBLEMA RESUELTO: Llena banco_destino vacío cuando es mismo banco que bancoorigen
+    if campos_extraidos.get('bancoorigen') and not campos_extraidos.get('banco_destino'):
+        # REGLA DE INFERENCIA CONDICIONAL INTRABANCARIA
+        # Verificar contexto que sugiere transacción dentro del mismo banco
+        indicadores_intrabancarios = [
+            'Desde mi cuenta',
+            'a beneficiario Cuenta',
+            'Cuenta de Ahorro',
+            'mi cuenta',
+            'Envio de Tpago',
+            'Operacion realizada Desde',
+            'cuenta Se Envio'
+        ]
+        
+        # Buscar indicadores de transacción intrabancaria
+        es_intrabancario = any(indicador in texto_completo for indicador in indicadores_intrabancarios)
+        
+        # Verificar que solo se menciona un banco (el origen) sin banco destino explícito
+        banco_origen = campos_extraidos['bancoorigen']
+        menciones_banco_origen = texto_completo.upper().count(banco_origen.upper().split()[-1])  # Última palabra del banco
+        
+        # Si hay indicadores intrabancarios y solo se menciona el banco origen
+        if es_intrabancario and menciones_banco_origen >= 1:
+            # VERIFICAR: No hay mención explícita de otro banco diferente
+            otros_bancos_mencionados = False
+            for codigo_banco, nombre_banco in bank_mapping.items():
+                if nombre_banco != banco_origen and nombre_banco.upper() in texto_completo.upper():
+                    otros_bancos_mencionados = True
+                    break
+            
+            # INFERENCIA: Si no hay otros bancos mencionados, es intrabancario
+            if not otros_bancos_mencionados:
+                campos_extraidos['banco_destino'] = banco_origen
+                logger.info(f"🏦 BANCO DESTINO INFERIDO (intrabancario): {banco_origen}")
     
     # FIX: DETERMINACIÓN INTELIGENTE DE CAPTION - MANDATO REFINAMIENTO
     # REASON: Caption debe reflejar el tipo de transacción detectado automáticamente

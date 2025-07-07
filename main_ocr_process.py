@@ -1193,19 +1193,42 @@ class OrquestadorOCR:
                     extraccion_empresa['campos_detectados'] += 1
                     break
             
-            # Teléfono
+            # FIX: TELÉFONO VENEZOLANO CON VALIDACIÓN ESTRICTA - MANDATO OPTIMIZACIÓN CONTINUA
+            # REASON: Implementar misma validación estricta que en routes.py (mandato #19)
+            # IMPACT: Solo acepta números 0412, 0416, 0426, 0414, 0424 + 7 dígitos (11 total)
+            prefijos_validos = ['0412', '0416', '0426', '0414', '0424']
+            
             telefono_patterns = [
-                r'(?:telefono|tel|phone|movil)[:\s]*([0-9-+\s]{10,})',
-                r'([0-9]{4}-[0-9]{3}-[0-9]{4})',
-                r'([0-9]{11})',  # Números de teléfono venezolanos
-                r'(\+58[0-9]{10})'
+                r'(?:telefono|tel|phone|movil|celular|TELF)[:\s]*([0-9-+\s]{10,})',
+                r'([0-9]{4}-[0-9]{3}-[0-9]{4})',  # xxx-xxx-xxxx
+                r'(04\d{9})',  # Solo números que empiecen con 04
+                r'(\+58\d{10})'  # Formato internacional
             ]
             
             for pattern in telefono_patterns:
                 matches = re.findall(pattern, texto_completo, re.IGNORECASE)
-                if matches:
-                    extraccion_empresa['datosbeneficiario']['telefono'] = matches[0]
-                    extraccion_empresa['campos_detectados'] += 1
+                for match in matches:
+                    telefono_str = match.strip()
+                    
+                    # VALIDACIÓN ESTRICTA DE FORMATO VENEZOLANO
+                    if telefono_str.startswith('+58') and len(telefono_str) == 13:
+                        # Convertir formato internacional a nacional
+                        telefono_nacional = '0' + telefono_str[3:]
+                        if any(telefono_nacional.startswith(prefijo) for prefijo in prefijos_validos):
+                            extraccion_empresa['datosbeneficiario']['telefono'] = telefono_nacional
+                            extraccion_empresa['campos_detectados'] += 1
+                            break
+                    elif len(telefono_str) == 11:
+                        # Verificar que empiece con prefijo venezolano válido
+                        if any(telefono_str.startswith(prefijo) for prefijo in prefijos_validos):
+                            # Verificar que NO es la referencia ya extraída
+                            if telefono_str != extraccion_empresa.get('referencia', ''):
+                                extraccion_empresa['datosbeneficiario']['telefono'] = telefono_str
+                                extraccion_empresa['campos_detectados'] += 1
+                                break
+                    # MANDATO CRÍTICO: Rechazar números que no cumplan formato venezolano (como 48311146148)
+                    
+                if extraccion_empresa['datosbeneficiario'].get('telefono'):
                     break
             
             # EXTRACCIÓN DE FECHA DE PAGO

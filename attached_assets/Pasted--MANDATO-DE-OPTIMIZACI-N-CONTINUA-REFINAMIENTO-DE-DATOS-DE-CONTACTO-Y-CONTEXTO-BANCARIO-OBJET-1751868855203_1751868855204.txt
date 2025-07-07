@@ -1,0 +1,55 @@
+# MANDATO DE OPTIMIZACIÓN CONTINUA: REFINAMIENTO DE DATOS DE CONTACTO Y CONTEXTO BANCARIO
+
+**OBJETIVO PRINCIPAL:** **Implementar lógica estricta para la validación y extracción de números de teléfono venezolanos, y mejorar la inferencia del banco destino en transacciones intrabancarias, aplicando la filosofía de Integridad Total y Zero-Fault Detection.**
+
+## 1. REFINAMIENTO DE EXTRACCIÓN DE NÚMEROS DE TELÉFONO (CRÍTICO - INTEGRIDAD TOTAL)
+
+* **Problema Identificado:** Números que no corresponden a formatos de teléfono venezolanos están siendo extraídos y categorizados incorrectamente como `datosbeneficiario.telefono`. El ejemplo es `48311146148`, que es una referencia, no un teléfono.
+* **Causa Raíz Presunta:** La expresión regular o la lógica de detección de teléfonos es demasiado permisiva o no valida el formato inicial de los números celulares venezolanos.
+* **Impacto:** Datos incorrectos en campos críticos, afectando la calidad de la información del beneficiario.
+
+* **Acción Requerida (Lógica Estricta de Teléfonos Venezolanos):**
+    1.  **Implementar Validación Estricta de Formato:** Modificar la lógica de extracción para `datosbeneficiario.telefono` para que **solo** acepte números que se ajusten a los prefijos de operadores celulares venezolanos.
+        * **Patrón Obligatorio:** El número de teléfono extraído **DEBE** comenzar con uno de los siguientes prefijos: `0412`, `0416`, `0426`, `0414`, `0424`.
+        * **Longitud:** Tras el prefijo, deben seguir 7 dígitos. El número completo debe ser de 11 dígitos.
+        * **Prioridad de Keywords:** La detección de teléfonos debe dar máxima prioridad a la presencia de palabras clave explícitas como "Teléfono:", "TELF:", "Celular:", "Telf. Celular:", o símbolos de teléfono.
+    2.  **Manejo de Números No Válidos:** Si un grupo de dígitos es detectado en una posición donde podría ser un teléfono, pero **NO CUMPLE** con la validación de prefijo/longitud venezolana:
+        * **NO** debe ser asignado a `datosbeneficiario.telefono`.
+        * Debe ser reevaluado para otros campos, como `referencia` (si el contexto lo sugiere) o `otro` si no encaja en ningún campo definido.
+        * **Ejemplo Específico:** Para el caso `48311146148`, este número **NO DEBE** ser `telefono` y si se encuentra en la posición de `referencia`, debe asignarse a `referencia`.
+    3.  **Depuración de Datos de Origen:** Asegurarse de que el texto fuente (`concepto` u otros) no contenga caracteres que impidan la correcta interpretación del formato del número.
+
+## 2. INFERENCIA AVANZADA DE BANCO DESTINO INTRABANCARIO (MEJORA CONTEXTUAL)
+
+* **Problema Identificado:** En transacciones donde el `bancoorigen` es claro y la operación es "Envío de Tpago" o similar, si no se especifica explícitamente un `banco_destino` diferente, el campo `datosbeneficiario.banco_destino` queda vacío, cuando lógicamente debería ser el mismo que el `bancoorigen`.
+* **Causa Raíz Presunta:** Falta de una regla de inferencia contextual que asuma un destino intrabancario cuando no hay un banco destino explícito o diferente.
+* **Impacto:** Incompletitud de datos y menor utilidad para la conciliación.
+
+* **Acción Requerida (Inferencia de Banco Destino por Contexto Intrabancario):**
+    1.  **Regla de Inferencia Condicional:** Implementar una regla que establezca:
+        * **SI** `bancoorigen` ha sido detectado exitosamente,
+        * **Y SI** `datosbeneficiario.banco_destino` está vacío (o no se ha detectado explícitamente),
+        * **Y SI** el `concepto` o texto circundante sugiere una transacción dentro del mismo banco (ej., "Desde mi cuenta", "a beneficiario Cuenta de Ahorro", "Banco [Nombre del Banco Origen]" aparece como el único banco o el último banco mencionado en un contexto de destino sin un banco destino explícito),
+        * **ENTONCES** `datosbeneficiario.banco_destino` DEBE ser rellenado con el valor de `bancoorigen`.
+    2.  **Prioridad:** Esta regla de inferencia debe tener una prioridad menor que la detección explícita de un `banco_destino` diferente. Si se detecta *cualquier* mención explícita de un banco diferente como destino, esa tiene prioridad.
+    3.  **Ejemplo Específico:** Para el `concepto`: "20/06/ 2025 - 06:50:24 pm Mercantil Envio de Tpago Operacion realizada Desde mi cuenta Se Envio (Bs .) AI beneficiario Cuental de Ahorro 3976 210,00 0412 244 Banco Mercantil, C . A . S . A . C . A, Ba", si `bancoorigen` es "BANCO MERCANTIL", y no hay otro banco destino explícito, `banco_destino` DEBE ser inferido como "BANCO MERCANTIL".
+
+## VALIDACIÓN OBLIGATORIA AL FINALIZAR ESTE MANDATO:
+
+Para asegurar la **Integridad Total** y la **Zero-Fault Detection**, debes demostrar y confirmar los siguientes Puntos de Control:
+
+* **`Punto de Control #19 (NUEVO - CRÍTICO): Precisión de Teléfono Venezolano`**:
+    * **Evidencia de No-Extracción Incorrecta:** Proporcionar un ejemplo JSON donde un número como `48311146148` (o similar que no cumpla el formato `04xx-xxxxxxx`) **NO** sea extraído como `telefono`. Si es una `referencia`, debe estar en `referencia`.
+    * **Evidencia de Extracción Correcta:** Proporcionar un ejemplo JSON donde un teléfono real venezolano (ej., `04121234567`) sea extraído correctamente como `telefono`.
+* **`Punto de Control #20 (NUEVO - CRÍTICO): Inferencia de Banco Destino Intrabancario`**:
+    * Proporcionar el JSON completo de un documento de prueba (idealmente el del ejemplo dado) donde `bancoorigen` y `banco_destino` sean el mismo banco debido a la nueva lógica de inferencia, y donde `banco_destino` antes estaba vacío.
+* **`Punto de Control #13 (Re-validación): Exactitud de Referencia y Monto`**:
+    * Re-confirmar que la lógica de `referencia` y `monto` no ha sido afectada negativamente por los cambios, especialmente para números que podrían confundirse con teléfonos.
+
+**FORMATO DE CONFIRMACIÓN AL FINALIZAR ESTE MANDATO:**
+
+* **Confirmación Explícita:** "La lógica de extracción de teléfonos venezolanos y la inferencia de banco destino intrabancario han sido implementadas. Todos los Puntos de Control (#19, #20, #13) han sido **PASSED**."
+* **Análisis y Corrección:** "[Detalla el diagnóstico, los cambios específicos en el código para la validación de teléfonos (ej., regex aplicada) y la lógica de inferencia de banco destino (condiciones y prioridades).]"
+* **Evidencia de Solución de Teléfono:** "[Proporciona el fragmento JSON del caso `48311146148` (o similar), mostrando que `datosbeneficiario.telefono` está vacío o correcto y `referencia` es correcta. Incluye un JSON de un caso positivo de teléfono.]"
+* **Evidencia de Mejora de Banco Destino:** "[Proporciona el fragmento JSON del caso donde `banco_destino` ahora se infiere correctamente como el `bancoorigen`.]"
+* **REPORTE DE OPTIMIZACIÓN (ARCHIVO TXT):** **Adjunta un archivo TXT** completo y bien estructurado con el reporte de esta intervención, siguiendo el formato empresarial.
