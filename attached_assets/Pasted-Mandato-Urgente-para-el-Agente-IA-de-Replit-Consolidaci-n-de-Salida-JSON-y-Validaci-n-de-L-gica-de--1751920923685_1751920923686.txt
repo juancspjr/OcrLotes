@@ -1,0 +1,39 @@
+Mandato Urgente para el Agente IA de Replit: Consolidación de Salida JSON y Validación de Lógica de Oro
+
+"Agente IA de Replit,
+
+Hemos identificado un problema crítico en la última salida JSON que viola nuestra 'Filosofía Central para el Desarrollo de Software: Integridad Total y Perfección Continua', específicamente los principios de 'Interface Excellence' y 'Zero-Fault Detection'.
+
+El problema central es que los campos extraídos no están siendo consolidados bajo el objeto extracted_fields en la respuesta JSON principal, y la logica_oro_aplicada sigue siendo false con structured_text_ocr idéntico a original_text_ocr.
+
+Tu tarea urgente es la siguiente:
+
+Rectificar la Consolidación de Campos: Modifica el código en aplicador_ocr.py (o main_ocr_process.py, según donde se construya el JSON final) para asegurar que:
+
+Todos los campos detectados por el motor de reglas (anteriormente mostrados en "extraccion_posicional") se muevan y consoliden dentro del objeto extracted_fields del JSON principal. El objeto "extraccion_posicional" debe ser eliminado de la salida final para evitar redundancia y mantener una interfaz limpia.
+
+Si un campo es extraído, debe aparecer en extracted_fields. Si no se extrae, simplemente no debe estar presente o su valor debe ser nulo.
+
+Asegúrate de que texto_total_ocr solo aparezca una vez en la respuesta JSON principal (original_text_ocr).
+
+Investigar y Corregir la Aplicación de la Lógica de Oro:
+
+Investiga por qué logica_oro_aplicada es false y structured_text_ocr es idéntico a original_text_ocr para la imagen 00_imagen_original(2)_1751646018727.png.
+
+Esto puede deberse a:
+
+Falta de coordenadas válidas del OCR (puedes verificar coordinates_available en processing_metadata).
+
+Un problema en la invocación o implementación de _aplicar_logica_de_oro_coordenadas().
+
+Umbrales o filtros dentro de _aplicar_logica_de_oro_coordenadas() que están descartando todas las palabras.
+
+Si es posible y viable sin degradar la precisión, haz los ajustes necesarios para que la 'Lógica de Oro' intente reordenar el texto. Si la imagen no proporciona coordenadas adecuadas para el reordenamiento (ej., es un texto muy simple y lineal), asegúrate de que el structured_text_ocr se reporte como el original_text_ocr pero con un logica_oro_aplicada: false justificado por la ausencia de coordenadas utilizables, y que esto esté claramente documentado en los error_messages o processing_metadata si aplica.
+
+Proporcionar el Código Fuente Actualizado: Presenta las modificaciones de código realizadas en aplicador_ocr.py y main_ocr_process.py (o cualquier otro archivo afectado) para la revisión.
+
+Re-ejecutar la Prueba y Presentar la Salida JSON Final: Después de realizar las correcciones, vuelve a ejecutar el procesamiento de attached_assets/00_imagen_original(2)_1751646018727.png (copiándola nuevamente a data/inbox/test_imagen_mandato.png si es necesario) y proporciona el JSON de salida completo en formato TXT. Este JSON debe reflejar las correcciones: extracted_fields populado y el estado correcto de la lógica de oro.
+
+Esto es fundamental para garantizar la coherencia y la utilidad de la salida para el frontend.
+
+FILOSOFÍA CENTRAL PARA EL DESARROLLO DE SOFTWARE: INTEGRIDAD TOTAL Y PERFECCIÓN CONTINUA

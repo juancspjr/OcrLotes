@@ -930,7 +930,28 @@ class OrquestadorOCR:
             # Extraer campos específicos del mandato desde ocr_result
             original_text_ocr = ocr_result.get('original_text_ocr', '') or texto_extraido
             structured_text_ocr = ocr_result.get('structured_text_ocr', '') or texto_extraido
+            
+            # FIX: CONSOLIDACIÓN DE EXTRACTED_FIELDS - MANDATO URGENTE
+            # REASON: Eliminar duplicación entre extracted_fields y extraccion_posicional
+            # IMPACT: Interface limpia con campos empresariales consolidados
             extracted_fields = ocr_result.get('extracted_fields', {})
+            
+            # Consolidar datos de extraccion_posicional en extracted_fields si están disponibles
+            extraccion_posicional = self._extraer_campos_posicionales(palabras_detectadas, texto_extraido)
+            if extraccion_posicional and not extracted_fields:
+                # Mapear campos posicionales a estructura extracted_fields
+                extracted_fields = {
+                    'referencia': extraccion_posicional.get('referencia', ''),
+                    'bancoorigen': extraccion_posicional.get('bancoorigen', ''),
+                    'monto': extraccion_posicional.get('monto', ''),
+                    'telefono': extraccion_posicional.get('datosbeneficiario', {}).get('telefono', ''),
+                    'cedula': extraccion_posicional.get('datosbeneficiario', {}).get('cedula', ''),
+                    'banco_destino': extraccion_posicional.get('datosbeneficiario', {}).get('banco_destino', ''),
+                    'pago_fecha': extraccion_posicional.get('pago_fecha', ''),
+                    'concepto': extraccion_posicional.get('concepto', ''),
+                    'texto_total_ocr': extraccion_posicional.get('texto_total_ocr', texto_extraido)
+                }
+            
             processing_metadata = ocr_result.get('processing_metadata', {})
             
             # Asegurar que processing_metadata tenga la estructura requerida
@@ -975,11 +996,8 @@ class OrquestadorOCR:
                     'metodo_extraccion': ocr_result.get('datos_extraidos', {}).get('metodo_extraccion', 'ONNX_TR'),
                     'tiempo_procesamiento': processing_time,
                     'total_palabras_detectadas': total_palabras,
-                    'confianza_promedio': confianza_promedio,
-                    # FIX: EXTRACCIÓN POSICIONAL EMPRESARIAL - Estructura específica para recibos
-                    # REASON: Usuario requiere campos específicos extraídos con posicionamiento
-                    # IMPACT: Extracción estructurada de datos empresariales con validación
-                    'extraccion_posicional': self._extraer_campos_posicionales(palabras_detectadas, texto_extraido)
+                    'confianza_promedio': confianza_promedio
+                    # FIX: ELIMINADO extraccion_posicional - CONSOLIDADO EN extracted_fields SEGÚN MANDATO
                 },
                 'estadisticas': estadisticas_calculadas,  # Mantener compatibilidad con sistema anterior
                 'calidad_extraccion': ocr_result.get('calidad_extraccion', {}),

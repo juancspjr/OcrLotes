@@ -1,14 +1,38 @@
 {
+  "original_text_ocr": "A Personas 104,54 Bs Fecha : 20/06/ 2025 Operacion; 003039387344 I - Identificacion : 2/ 061025 Origen : 0102 **** 2679 Destino : 04125318244 Banco : 0105 - BANCO MERCANTIL",
+  "structured_text_ocr": "A Personas 104,54 Bs Fecha: 20/06/2025 Operacion; 003039387344 I - Identificacion: 2/061025 Origen: 0102**** 2679 Destino: 04125318244 Banco: 0105 - BANCO MERCANTIL",
+  "extracted_fields": {},
+  "processing_metadata": {
+    "logica_oro_aplicada": false,
+    "ocr_confidence_avg": 0.923,
+    "error_messages": [
+      "Error en extracción de campos: 'text'"
+    ],
+    "processing_time_ms": 555.32,
+    "total_words_detected": 22,
+    "coordinates_available": 0,
+    "ocr_method": "ONNXTR_SINGLE_PASS_COORDENADAS",
+    "timestamp": "2025-07-07T20:46:45.146930"
+  },
   "texto_completo": "A Personas 104,54 Bs Fecha : 20/06/ 2025 Operacion; 003039387344 I - Identificacion : 2/ 061025 Origen : 0102 **** 2679 Destino : 04125318244 Banco : 0105 - BANCO MERCANTIL",
+  "texto_total_ocr": "A Personas 104,54 Bs Fecha: 20/06/2025 Operacion; 003039387344 I - Identificacion: 2/061025 Origen: 0102**** 2679 Destino: 04125318244 Banco: 0105 - BANCO MERCANTIL",
+  "concepto_empresarial": "Operación registrada",
   "total_caracteres": 172,
-  "tiempo_procesamiento": 0.394,
-  "metodo_extraccion": "ONNXTR_SINGLE_PASS",
+  "total_caracteres_ordenados": 164,
+  "tiempo_procesamiento": 0.555,
+  "metodo_extraccion": "ONNXTR_SINGLE_PASS_COORDENADAS",
   "configuracion_onnxtr": "ultra_rapido",
   "total_palabras_detectadas": 22,
   "palabras_detectadas": [
     {
       "texto": "A",
       "confianza": 0.9667848944664001,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
       "posicion": {
         "pagina": 0,
         "bloque": 0,
@@ -19,6 +43,12 @@
     {
       "texto": "Personas",
       "confianza": 0.9927195310592651,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
       "posicion": {
         "pagina": 0,
         "bloque": 0,
@@ -29,6 +59,12 @@
     {
       "texto": "104,54",
       "confianza": 0.9967294931411743,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
       "posicion": {
         "pagina": 0,
         "bloque": 0,
@@ -39,6 +75,12 @@
     {
       "texto": "Bs",
       "confianza": 0.9987064599990845,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
       "posicion": {
         "pagina": 0,
         "bloque": 0,
@@ -49,6 +91,12 @@
     {
       "texto": "Fecha:",
       "confianza": 0.9500440955162048,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
       "posicion": {
         "pagina": 0,
         "bloque": 0,
@@ -59,6 +107,12 @@
     {
       "texto": "20/06/2025",
       "confianza": 0.9990684390068054,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
       "posicion": {
         "pagina": 0,
         "bloque": 0,
@@ -69,6 +123,12 @@
     {
       "texto": "Operacion;",
       "confianza": 0.6175447702407837,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
       "posicion": {
         "pagina": 0,
         "bloque": 0,
@@ -79,6 +139,12 @@
     {
       "texto": "003039387344",
       "confianza": 0.9877862930297852,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
       "posicion": {
         "pagina": 0,
         "bloque": 0,
@@ -89,6 +155,12 @@
     {
       "texto": "I",
       "confianza": 0.9475021362304688,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
       "posicion": {
         "pagina": 0,
         "bloque": 0,
@@ -99,6 +171,12 @@
     {
       "texto": "-",
       "confianza": 0.9415252804756165,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
       "posicion": {
         "pagina": 0,
         "bloque": 0,
@@ -109,6 +187,12 @@
     {
       "texto": "Identificacion:",
       "confianza": 0.9462568759918213,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
       "posicion": {
         "pagina": 0,
         "bloque": 0,
@@ -119,6 +203,12 @@
     {
       "texto": "2/061025",
       "confianza": 0.8452515602111816,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
       "posicion": {
         "pagina": 0,
         "bloque": 0,
@@ -129,6 +219,12 @@
     {
       "texto": "Origen:",
       "confianza": 0.9992734789848328,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
       "posicion": {
         "pagina": 0,
         "bloque": 0,
@@ -139,6 +235,12 @@
     {
       "texto": "0102****",
       "confianza": 0.9686998128890991,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
       "posicion": {
         "pagina": 0,
         "bloque": 0,
@@ -149,6 +251,12 @@
     {
       "texto": "2679",
       "confianza": 0.5096032619476318,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
       "posicion": {
         "pagina": 0,
         "bloque": 0,
@@ -159,6 +267,12 @@
     {
       "texto": "Destino:",
       "confianza": 0.9970941543579102,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
       "posicion": {
         "pagina": 0,
         "bloque": 0,
@@ -169,6 +283,12 @@
     {
       "texto": "04125318244",
       "confianza": 0.9969721734523773,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
       "posicion": {
         "pagina": 0,
         "bloque": 0,
@@ -179,6 +299,12 @@
     {
       "texto": "Banco:",
       "confianza": 0.9863489866256714,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
       "posicion": {
         "pagina": 0,
         "bloque": 0,
@@ -189,6 +315,12 @@
     {
       "texto": "0105",
       "confianza": 0.999997615814209,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
       "posicion": {
         "pagina": 0,
         "bloque": 0,
@@ -199,6 +331,12 @@
     {
       "texto": "-",
       "confianza": 0.9812107086181641,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
       "posicion": {
         "pagina": 0,
         "bloque": 0,
@@ -209,6 +347,12 @@
     {
       "texto": "BANCO",
       "confianza": 0.719585120677948,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
       "posicion": {
         "pagina": 0,
         "bloque": 0,
@@ -219,6 +363,12 @@
     {
       "texto": "MERCANTIL",
       "confianza": 0.9471012949943542,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
       "posicion": {
         "pagina": 0,
         "bloque": 0,
@@ -259,6 +409,7 @@
     "noise_estimate": 64.5722161257968,
     "confianza_deteccion": 0.7
   },
+  "logica_oro_aplicada": false,
   "datos_financieros": {
     "amount": [
       {
