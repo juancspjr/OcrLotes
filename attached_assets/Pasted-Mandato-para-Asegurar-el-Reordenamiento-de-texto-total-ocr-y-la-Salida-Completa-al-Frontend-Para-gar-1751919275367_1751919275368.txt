@@ -1,0 +1,43 @@
+Mandato para Asegurar el Reordenamiento de texto_total_ocr y la Salida Completa al Frontend
+Para garantizar la "Integridad Total" de los datos y la "Interface Excellence" en la comunicación con el frontend, necesitamos que el backend (específicamente la lógica en aplicador_ocr.py y la respuesta de app.py) se adhiera a este flujo explícito:
+
+"Agente IA de Replit,
+
+De acuerdo con la 'Filosofía Central para el Desarrollo de Software: Integridad Total y Perfección Continua', debemos asegurar que la información completa y reordenada por la 'Lógica de Oro' sea accesible en la salida JSON final que se envía al frontend. Tu tarea es:
+
+Modificar la función de procesamiento principal en aplicador_ocr.py (o donde se gestione la orquestación del OCR y la extracción) para garantizar que:
+
+Después de obtener word_data del OCR, se llame explícitamente a _aplicar_logica_de_oro_coordenadas(word_data) para generar un texto_estructurado reordenado.
+
+La extracción de campos mediante las reglas de config/extraction_rules.json (extract_fields_from_ocr_data()) se realice prioritariamente sobre este texto_estructurado reordenado. Si por alguna razón (ej. fallo de la lógica de oro o ausencia de coordenadas válidas), el texto_estructurado no es utilizable, debe haber un fallback elegante al texto_total_ocr original para la extracción de campos, pero esto debe ser una excepción, no la norma.
+
+La salida final JSON del backend (en app.py) para cada imagen debe incluir explícitamente los siguientes campos, incluso si algunos están vacíos o nulos si la extracción falló para ellos:
+
+"original_text_ocr": Contendrá el texto_total_ocr (la concatenación lineal y cruda del OCR).
+
+"structured_text_ocr": Contendrá el texto_estructurado (el resultado del reordenamiento de la "Lógica de Oro" de _aplicar_logica_de_oro_coordenadas()).
+
+"extracted_fields": Contendrá el diccionario de campos_extraidos resultante de la aplicación de las reglas.
+
+"processing_metadata": Un objeto con información relevante de depuración y calidad:
+
+"logica_oro_aplicada": true o false (si _aplicar_logica_de_oro_coordenadas se ejecutó y produjo un resultado válido).
+
+"ocr_confidence_avg": Confianza promedio del OCR.
+
+"error_messages": Lista de errores o advertencias durante el procesamiento.
+
+Proporcionar el código fuente actualizado de las funciones o clases modificadas en aplicador_ocr.py y app.py que reflejen estos cambios.
+
+Ejecutar el proceso completo con todas las imágenes de recibos que hemos analizado previamente para validar la nueva salida JSON. Para cada imagen, proporcionar el JSON completo resultante en formato TXT, confirmando la presencia y el formato correcto de original_text_ocr, structured_text_ocr, extracted_fields, y processing_metadata.
+
+Esto asegura una "Coherencia de Referencias Críticas" en la información que se transmite al frontend y permite una "Comprensión Profunda del Contexto de Dominio" al visualizar tanto el texto crudo, el reordenado y los campos extraídos.
+
+FILOSOFÍA CENTRAL PARA EL DESARROLLO DE SOFTWARE: INTEGRIDAD TOTAL Y PERFECCIÓN CONTINUA
+
+
+
+
+
+
+

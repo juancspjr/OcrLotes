@@ -1,0 +1,62 @@
+Contexto Técnico del Flujo de Procesamiento y la Lógica de Reordenamiento
+Basándonos en la documentación que ya hemos revisado (DOCUMENTACION_TECNICA_EXHAUSTIVA_SISTEMA_OCR.txt y ANALISIS_CRITICO_LOGICA_DE_ORO_COORDENADAS.txt), el flujo ideal y los elementos clave son los siguientes:
+
+I. Identificación de Archivos Clave y su Propósito:
+
+app.py:
+
+Propósito: Punto de entrada de la aplicación Flask. Maneja las solicitudes HTTP, coordina el flujo principal.
+
+Rol en este contexto: Recibe la imagen, la pasa al AplicadorOCR para su procesamiento, y devuelve la respuesta final al frontend.
+
+aplicador_ocr.py:
+
+Propósito: Contiene la lógica central de OCR, el Motor de Reglas y la "Lógica de Oro" para el reordenamiento del texto.
+
+Archivos relevantes:
+
+_load_extraction_rules(): Carga el config/extraction_rules.json.
+
+_aplicar_logica_de_oro_coordenadas(self, word_data): Esta es la función clave para el reordenamiento. Recibe word_data (lista de palabras con texto, coordenadas, confianza) del OCR, y su objetivo es devolver un texto_estructurado reordenado, eliminando la dispersión del OCR.
+
+extract_fields_from_ocr_data(): Es el método que utiliza las reglas de config/extraction_rules.json sobre el texto_estructurado (idealmente) o el texto_total_ocr (si no hay reordenamiento o es un fallback) para extraer los campos_extraidos.
+
+Variables cruciales:
+
+word_data: Lista de diccionarios {'text': str, 'coordinates': list, 'confidence': float}. Es la salida cruda del OCR.
+
+texto_total_ocr: La concatenación simple del text de word_data, tal cual lo dio el OCR (desordenado).
+
+texto_estructurado: ¡Esta es la variable que debería contener el texto reordenado por _aplicar_logica_de_oro_coordenadas()!
+
+campos_extraidos: El diccionario resultante de la aplicación de las reglas del config/extraction_rules.json.
+
+config/extraction_rules.json:
+
+Propósito: Define las reglas de extracción de campos específicos (monto, fecha, etc.) de un texto dado.
+
+Rol en este contexto: Opera sobre el texto que se le proporciona para encontrar y extraer campos, pero no realiza el reordenamiento del texto base.
+
+Frontend (ej. JavaScript/React/etc.):
+
+Propósito: Consumir la API del backend, presentar los datos al usuario y, si es necesario, consolidar la información de múltiples resultados.
+
+Rol en este contexto: Recibirá el JSON final del backend. Es vital que este JSON contenga tanto el texto_total_ocr original, el texto_estructurado (reordenado) y los campos_extraidos para que pueda decidir qué presentar.
+
+II. Análisis Detallado de la Lógica y Conexiones:
+
+El flujo actual (basado en lo conversado y la documentación):
+
+La imagen se sube a app.py.
+
+app.py envía la imagen al AplicadorOCR.
+
+El AplicadorOCR realiza el OCR, obteniendo word_data.
+
+El AplicadorOCR (idealmente) debería llamar a _aplicar_logica_de_oro_coordenadas(word_data) para generar texto_estructurado.
+
+El AplicadorOCR luego usa extract_fields_from_ocr_data() (que consume config/extraction_rules.json) para extraer los campos_extraidos a partir de texto_estructurado (o texto_total_ocr si no hay reordenamiento).
+
+app.py construye la respuesta JSON para el frontend.
+
+Problema identificado: Si el texto_total_ocr original (desordenado) es lo que se está devolviendo o si el texto_estructurado no se está utilizando como base para la extracción de campos y no se está incluyendo en la salida, el frontend no tiene la visibilidad completa.

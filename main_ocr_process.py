@@ -923,12 +923,43 @@ class OrquestadorOCR:
                 'tamaño': os.path.getsize(image_path) if os.path.exists(image_path) else 0
             }
             
+            # MANDATO CRÍTICO: EXTRAER CAMPOS ESPECÍFICOS DEL MANDATO DESDE OCR_RESULT
+            # REASON: Asegurar que original_text_ocr, structured_text_ocr, extracted_fields y processing_metadata estén disponibles
+            # IMPACT: Interface Excellence con datos completos para frontend según mandato específico
+            
+            # Extraer campos específicos del mandato desde ocr_result
+            original_text_ocr = ocr_result.get('original_text_ocr', '') or texto_extraido
+            structured_text_ocr = ocr_result.get('structured_text_ocr', '') or texto_extraido
+            extracted_fields = ocr_result.get('extracted_fields', {})
+            processing_metadata = ocr_result.get('processing_metadata', {})
+            
+            # Asegurar que processing_metadata tenga la estructura requerida
+            if not processing_metadata:
+                processing_metadata = {
+                    'logica_oro_aplicada': False,
+                    'ocr_confidence_avg': confianza_promedio,
+                    'error_messages': [],
+                    'processing_time_ms': round(processing_time * 1000, 2),
+                    'total_words_detected': total_palabras,
+                    'coordinates_available': len([p for p in palabras_detectadas if p.get('coordinates', [0,0,0,0]) != [0,0,0,0]]),
+                    'ocr_method': ocr_result.get('metodo_extraccion', 'ONNX_TR'),
+                    'timestamp': datetime.now().isoformat()
+                }
+            
             resultado_final = {
                 'status': 'exitoso',
                 'request_id': batch_id,
                 'filename': filename,
                 'tiempo_procesamiento': processing_time,
                 'fecha_procesamiento': datetime.now().isoformat(),
+                
+                # MANDATO: Campos EXACTOS requeridos para frontend
+                'original_text_ocr': original_text_ocr,           # Texto crudo del OCR
+                'structured_text_ocr': structured_text_ocr,       # Resultado de Lógica de Oro
+                'extracted_fields': extracted_fields,             # Campos extraídos con reglas
+                'processing_metadata': processing_metadata,       # Metadatos de procesamiento
+                
+                # Campos adicionales para compatibilidad retroactiva
                 'Información del Archivo': archivo_info_completa,  # Estructura compatible con archivo adjunto
                 'Estadísticas': estadisticas_calculadas,  # Estructura corregida con datos reales
                 'Texto Extraído': {
@@ -948,11 +979,6 @@ class OrquestadorOCR:
                     # FIX: EXTRACCIÓN POSICIONAL EMPRESARIAL - Estructura específica para recibos
                     # REASON: Usuario requiere campos específicos extraídos con posicionamiento
                     # IMPACT: Extracción estructurada de datos empresariales con validación
-                    # TEST: Funciona con datos posicionales desde palabras detectadas
-                    # MONITOR: Logging de extracción de campos específicos
-                    # INTERFACE: Datos estructurados disponibles para visualización
-                    # VISUAL_CHANGE: Campos específicos visibles en lugar de datos genéricos
-                    # REFERENCE_INTEGRITY: Validación de campos requeridos siempre presente
                     'extraccion_posicional': self._extraer_campos_posicionales(palabras_detectadas, texto_extraido)
                 },
                 'estadisticas': estadisticas_calculadas,  # Mantener compatibilidad con sistema anterior

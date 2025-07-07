@@ -767,13 +767,65 @@ class AplicadorOCR:
             logger.info(f"Texto extraído: {len(texto_completo)} caracteres, {total_palabras} palabras")
             logger.info(f"Confianza promedio: {confianza_promedio:.3f}")
             
-            # FIX: Procesar resultados OnnxTR con estructura optimizada + MANDATOS CRÍTICOS
-            # REASON: Adaptar estructura con texto_total_ocr ordenado y concepto refinado empresarial
-            # IMPACT: Cumplimiento de MANDATO #2 con lógica de oro basada en coordenadas
+            # MANDATO CRÍTICO: ESTRUCTURA COMPLETA PARA FRONTEND - INTEGRIDAD TOTAL
+            # REASON: Asegurar que toda la información esté disponible en JSON final para frontend
+            # IMPACT: Interface Excellence con original_text_ocr, structured_text_ocr, extracted_fields, processing_metadata
+            
+            # Aplicar extracción de campos usando reglas configurables sobre texto estructurado
+            campos_extraidos = {}
+            error_messages = []
+            logica_oro_exitosa = False
+            
+            try:
+                # Prioritario: usar texto_total_ocr_ordenado para extracción de campos
+                if texto_total_ocr_ordenado and len(texto_total_ocr_ordenado.strip()) > 10:
+                    campos_extraidos = self._extract_fields_with_positioning_configurable(
+                        palabras_detectadas, texto_total_ocr_ordenado
+                    )
+                    logica_oro_exitosa = True
+                    logger.info("🏆 Extracción de campos basada en texto estructurado (Lógica de Oro)")
+                else:
+                    # Fallback elegante: usar texto_completo tradicional
+                    campos_extraidos = self._extract_fields_with_positioning_configurable(
+                        palabras_detectadas, texto_completo
+                    )
+                    logica_oro_exitosa = False
+                    error_messages.append("Fallback a texto tradicional - lógica de oro no aplicable")
+                    logger.warning("⚠️ Fallback: Extracción de campos basada en texto tradicional")
+                    
+            except Exception as e:
+                error_messages.append(f"Error en extracción de campos: {str(e)}")
+                logger.error(f"Error en extracción de campos: {e}")
+            
+            # FIX: ESTRUCTURA COMPLETA SEGÚN MANDATO - INTEGRIDAD TOTAL Y PERFECCIÓN CONTINUA
+            # REASON: Cumplir mandato exacto con todos los campos requeridos para frontend
+            # IMPACT: Frontend recibe información completa y estructurada
             resultado_ocr = {
-                'texto_completo': texto_completo,  # Texto tradicional para compatibilidad
-                'texto_total_ocr': texto_total_ocr_ordenado,  # MANDATO #2: Texto ordenado por coordenadas
-                'concepto_empresarial': concepto_refinado,  # MANDATO #2: Concepto refinado sin ruido
+                # MANDATO: Campo "original_text_ocr" - Texto crudo del OCR
+                'original_text_ocr': texto_completo,
+                
+                # MANDATO: Campo "structured_text_ocr" - Resultado de Lógica de Oro
+                'structured_text_ocr': texto_total_ocr_ordenado,
+                
+                # MANDATO: Campo "extracted_fields" - Campos extraídos con reglas
+                'extracted_fields': campos_extraidos,
+                
+                # MANDATO: Campo "processing_metadata" - Metadatos de procesamiento
+                'processing_metadata': {
+                    'logica_oro_aplicada': logica_oro_exitosa,
+                    'ocr_confidence_avg': round(confianza_promedio, 3),
+                    'error_messages': error_messages,
+                    'processing_time_ms': round(ocr_time * 1000, 2),
+                    'total_words_detected': total_palabras,
+                    'coordinates_available': len([w for w in palabras_detectadas if w['coordinates'] != [0, 0, 0, 0]]),
+                    'ocr_method': 'ONNXTR_SINGLE_PASS_COORDENADAS',
+                    'timestamp': datetime.now().isoformat()
+                },
+                
+                # Campos adicionales para compatibilidad
+                'texto_completo': texto_completo,  # Compatibilidad retroactiva
+                'texto_total_ocr': texto_total_ocr_ordenado,  # Compatibilidad
+                'concepto_empresarial': concepto_refinado,  # Campo específico empresarial
                 'total_caracteres': len(texto_completo),
                 'total_caracteres_ordenados': len(texto_total_ocr_ordenado),
                 'tiempo_procesamiento': round(ocr_time, 3),
@@ -791,7 +843,7 @@ class AplicadorOCR:
                 },
                 'calidad_extraccion': self._evaluar_calidad_onnxtr(confidencias_totales, texto_completo),
                 'deteccion_inteligente': deteccion_inteligente,
-                'logica_oro_aplicada': True  # Indicador de que se aplicó lógica de oro
+                'logica_oro_aplicada': logica_oro_exitosa  # Para compatibilidad retroactiva
             }
             
             # Extraer datos financieros si se solicita
