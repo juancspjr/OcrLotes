@@ -1,0 +1,407 @@
+ANÁLISIS TÉCNICO EXHAUSTIVO: _aplicar_logica_de_oro_coordenadas()
+================================================================================
+
+FECHA: 7 de Julio 2025
+OBJETIVO: Análisis detallado del reordenamiento de texto por coordenadas
+FILOSOFÍA: Integridad Total + Zero-Fault Detection + Máxima Comprensión
+
+================================================================================
+I. FUNCIÓN _aplicar_logica_de_oro_coordenadas() - ANÁLISIS GRANULAR
+================================================================================
+
+UBICACIÓN EXACTA:
+Archivo: aplicador_ocr.py
+Líneas: 795-840
+Clase: AplicadorOCR
+Método: _aplicar_logica_de_oro_coordenadas(self, word_data)
+
+ENTRADA REQUERIDA:
+Variable: word_data (list)
+Formato: Lista de diccionarios con estructura exacta:
+[
+    {
+        'text': str,           # Texto de la palabra extraída
+        'coordinates': list,   # [x1, y1, x2, y2] - bounding box
+        'confidence': float    # Nivel de confianza 0.0-1.0
+    },
+    ...
+]
+
+VALIDACIÓN CRÍTICA DE ENTRADA:
+Línea 814: valid_words = [w for w in word_data if w.get('coordinates') and w['coordinates'] != [0, 0, 0, 0]]
+PROPÓSITO: Filtrar palabras sin coordenadas válidas
+PROBLEMA IDENTIFICADO: Si NO hay coordenadas reales, la función hace fallback a texto lineal
+IMPLICACIÓN: La "lógica de oro" NO se ejecuta si las coordenadas están en [0,0,0,0]
+
+FLUJO ALGORÍTMICO DETALLADO:
+
+PASO 1 - AGRUPACIÓN POR LÍNEAS (Línea 819):
+Función: self._agrupar_por_lineas(valid_words)
+Variables internas:
+- lines (list): Lista de líneas agrupadas
+- tolerancia_y = 10 (píxeles): Margen vertical para considerar misma línea
+- y_center (float): Centro vertical de cada palabra
+- y_line_avg (float): Promedio Y de palabras en línea existente
+
+ALGORITMO ESPECÍFICO (líneas 841-862):
+Para cada palabra en words_ordenadas:
+    y_center = (word['coordinates'][1] + word['coordinates'][3]) / 2
+    Para cada línea existente:
+        y_line_avg = sum((w['coordinates'][1] + w['coordinates'][3]) / 2 for w in line) / len(line)
+        Si abs(y_center - y_line_avg) <= tolerancia_y:
+            line.append(word)  # Agregar a línea existente
+            break
+    Si no encontró línea compatible:
+        lines.append([word])  # Crear nueva línea
+
+PASO 2 - ORDENAMIENTO VERTICAL (Línea 822):
+Fórmula: sorted(lines, key=lambda line: min(w['coordinates'][1] for w in line))
+CRITERIO: Coordenada Y mínima de cada línea (arriba → abajo)
+VARIABLE: lines_ordenadas (list)
+
+PASO 3 - ORDENAMIENTO HORIZONTAL (Líneas 825-826):
+Para cada línea:
+    line.sort(key=lambda w: w['coordinates'][0])
+CRITERIO: Coordenada X (izquierda → derecha)
+VARIABLE MODIFICADA: lines_ordenadas (in-place sorting)
+
+PASO 4 - IDENTIFICACIÓN DE BLOQUES (Línea 829):
+Función: self._identificar_bloques_relacionados(lines_ordenadas)
+UMBRAL CRÍTICO: distancia <= 30 píxeles (línea 882)
+Variables internas:
+- bloques (list): Lista de bloques agrupados
+- bloque_actual (list): Bloque en construcción
+- distancia (float): Distancia vertical entre líneas consecutivas
+
+ALGORITMO DE PROXIMIDAD (líneas 864-893):
+Para i in range(1, len(lines_ordenadas)):
+    line_anterior = lines_ordenadas[i-1]
+    line_actual = lines_ordenadas[i]
+    
+    # Calcular distancia vertical
+    y_anterior = max(w['coordinates'][3] for w in line_anterior)  # Bottom de línea anterior
+    y_actual = min(w['coordinates'][1] for w in line_actual)      # Top de línea actual
+    distancia = y_actual - y_anterior
+    
+    Si distancia <= 30:
+        bloque_actual.append(line_actual)  # Mismo bloque
+    Sino:
+        bloques.append(bloque_actual)      # Finalizar bloque
+        bloque_actual = [line_actual]      # Nuevo bloque
+
+PASO 5 - CONSTRUCCIÓN DE TEXTO (Línea 832):
+Función: self._construir_texto_estructurado(bloques)
+SEPARADORES:
+- Entre palabras: ' ' (espacio)
+- Entre líneas del mismo bloque: '\n'
+- Entre bloques: '\n\n'
+
+ALGORITMO DE CONSTRUCCIÓN (líneas 895-912):
+texto_final = []
+Para cada bloque en bloques:
+    lineas_bloque = []
+    Para cada línea en bloque:
+        texto_linea = ' '.join(word['text'] for word in line)
+        lineas_bloque.append(texto_linea)
+    texto_bloque = '\n'.join(lineas_bloque)
+    texto_final.append(texto_bloque)
+return '\n\n'.join(texto_final)
+
+MANEJO DE ERRORES (Líneas 836-839):
+Si Exception:
+    logger.warning(f"Error en lógica de oro coordenadas: {e}")
+    return self._fallback_ordenamiento_basico(word_data)
+
+FALLBACK CRÍTICO (líneas 914-922):
+Función: _fallback_ordenamiento_basico()
+Algoritmo simple: sorted(word_data, key=lambda w: (w.get('coordinates', [0,0,0,0])[1], w.get('coordinates', [0,0,0,0])[0]))
+PROPÓSITO: Ordenamiento Y, X básico sin agrupación por bloques
+
+================================================================================
+II. ORIGEN DE COORDENADAS REALES - CADENA DE EXTRACCIÓN
+================================================================================
+
+FUENTE PRIMARIA - OnnxTR geometry:
+Archivo: aplicador_ocr.py
+Función: _process_single_image_with_coordinates()
+Líneas: 405-420
+
+EXTRACCIÓN DIRECTA DE OnnxTR:
+for page_result in result.pages:
+    for block in page_result.blocks:
+        for line in block.lines:
+            for word in line.words:
+                coords = word.geometry
+                if hasattr(coords, 'polygon') and len(coords.polygon) >= 4:
+                    # CONVERSIÓN CRÍTICA: polígono → bounding box
+                    x_coords = [point[0] for point in coords.polygon]
+                    y_coords = [point[1] for point in coords.polygon]
+                    bbox = [min(x_coords), min(y_coords), max(x_coords), max(y_coords)]
+                else:
+                    bbox = [0, 0, 0, 0]  # ← PROBLEMA POTENCIAL
+
+ESTRUCTURA WORD.GEOMETRY DE OnnxTR:
+word.geometry.polygon: Lista de puntos [(x1,y1), (x2,y2), (x3,y3), (x4,y4)]
+FORMATO ESPERADO: Cuadrilátero que enmarca la palabra
+CONVERSIÓN: min/max para obtener bounding box rectangular
+
+VALIDACIÓN DE COORDENADAS:
+Variable: bbox = [x_min, y_min, x_max, y_max]
+RANGO VÁLIDO: 
+- x_min, x_max: 0 ≤ x ≤ ancho_imagen
+- y_min, y_max: 0 ≤ y ≤ alto_imagen
+- x_max > x_min, y_max > y_min
+
+FUNCIÓN ALTERNATIVA - extract_word_coordinates():
+Archivo: aplicador_ocr.py
+Líneas: 28-60
+USO: Función standalone para extraer coordenadas de doc_result
+
+ALGORITMO ALTERNATIVO:
+for page in doc_result.pages:
+    for block in page.blocks:
+        for line in block.lines:
+            for word in line.words:
+                if hasattr(word, 'geometry') and word.geometry:
+                    coords = [
+                        float(word.geometry[0][0]),  # x1
+                        float(word.geometry[0][1]),  # y1
+                        float(word.geometry[2][0]),  # x2
+                        float(word.geometry[2][1])   # y2
+                    ]
+
+DIFERENCIA CRÍTICA:
+- _process_single_image_with_coordinates(): Usa word.geometry.polygon
+- extract_word_coordinates(): Usa word.geometry[índice] directamente
+
+INCONGRUENCIA IDENTIFICADA #1:
+Las dos funciones usan métodos diferentes para acceder a coordenadas:
+1. word.geometry.polygon (conversión min/max)
+2. word.geometry[0], word.geometry[2] (acceso directo)
+
+PROBLEMA POTENCIAL: ¿Cuál es el formato real de word.geometry en OnnxTR?
+
+ESTRUCTURA ESPERADA FINAL:
+word_data = [
+    {
+        'text': 'BANCO',
+        'coordinates': [145.2, 89.7, 198.3, 112.4],  # [x1, y1, x2, y2]
+        'confidence': 0.92,
+        'raw_geometry': [(145.2, 89.7), (198.3, 89.7), (198.3, 112.4), (145.2, 112.4)]
+    },
+    ...
+]
+
+================================================================================
+III. FLUJO COMPLETO DE DATOS DESDE EXTRACCIÓN HASTA REORDENAMIENTO
+================================================================================
+
+ETAPA 1 - EXTRACCIÓN OCR:
+Función: aplicador_ocr.extraer_texto()
+Línea: 581 → doc = DocumentFile.from_images([str(image_path)])
+Línea: 600 → result = predictor(doc)
+
+ETAPA 2 - PROCESAMIENTO COORDENADAS:
+Función: _process_single_image_with_coordinates()
+Variable: word_data (list) con coordenadas extraídas
+
+ETAPA 3 - APLICACIÓN LÓGICA DE ORO:
+Función: _aplicar_logica_de_oro_coordenadas()
+Entrada: word_data
+Salida: texto_estructurado (string)
+
+ETAPA 4 - INCORPORACIÓN EN RESULTADO:
+Variable: datos_extraidos['texto_total_ocr'] = texto_estructurado
+
+VARIABLES CRÍTICAS EN EL FLUJO:
+1. result (OnnxTR): Resultado crudo de predictor
+2. word_data (list): Coordenadas + texto + confianza
+3. valid_words (list): Palabras con coordenadas válidas
+4. lines_ordenadas (list): Líneas agrupadas y ordenadas
+5. bloques (list): Bloques de información relacionados
+6. texto_estructurado (string): Resultado final reordenado
+
+PUNTO DE VALIDACIÓN CRÍTICO:
+Línea 814: if w.get('coordinates') and w['coordinates'] != [0, 0, 0, 0]
+
+SI ESTA VALIDACIÓN FALLA → NO HAY LÓGICA DE ORO
+CAUSA: Coordenadas no se extrajeron correctamente de OnnxTR
+
+================================================================================
+IV. FUNCIONES RELACIONADAS CON SALIDA EN INTERFACE
+================================================================================
+
+ENDPOINT DE RESULTADOS:
+Archivo: routes.py
+Función: api_get_result_data()
+Línea: Endpoint GET /api/ocr/result_data/<filename>
+
+ESTRUCTURA DE RESPUESTA:
+{
+    'status': 'success',
+    'archivo_info': {
+        'nombre': filename,
+        'fecha_procesamiento': timestamp
+    },
+    'datos_extraidos': {
+        'texto_completo': texto_estructurado,  ← AQUÍ LLEGA LA LÓGICA DE ORO
+        'palabras_detectadas': word_data,
+        'coordenadas': {
+            'total': total_coordenadas,
+            'palabras_con_posicion': len(valid_words)
+        }
+    },
+    'metadatos_financieros': extracted_fields
+}
+
+TEMPLATE DE VISUALIZACIÓN:
+Archivo: templates/interface_excellence_dashboard.html
+Elemento: <div id="texto-extraido">
+JavaScript: function mostrarResultado(data)
+
+BINDING DE DATOS:
+data.datos_extraidos.texto_completo → elemento DOM
+DISPLAY: Texto reordenado por lógica de oro visible en interfaz
+
+ENDPOINT DE EXTRACCIÓN CONSOLIDADA:
+Archivo: routes.py
+Función: api_extract_results()
+Campo: 'concepto' → _refinar_concepto_empresarial(texto_estructurado)
+
+RELACIÓN CRÍTICA:
+texto_estructurado (lógica de oro) → concepto_empresarial (refinado)
+
+================================================================================
+V. INCONGRUENCIAS Y PROBLEMAS IDENTIFICADOS
+================================================================================
+
+INCONGRUENCIA #1 - MÉTODOS DE EXTRACCIÓN DE COORDENADAS:
+PROBLEMA: Dos funciones diferentes para extraer coordenadas de OnnxTR
+ARCHIVO: aplicador_ocr.py
+FUNCIONES:
+- extract_word_coordinates(): usa word.geometry[0], word.geometry[2]
+- _process_single_image_with_coordinates(): usa word.geometry.polygon
+
+EVIDENCIA:
+Línea 45-50 (extract_word_coordinates):
+coords = [
+    float(word.geometry[0][0]),  # x1
+    float(word.geometry[0][1]),  # y1
+    float(word.geometry[2][0]),  # x2
+    float(word.geometry[2][1])   # y2
+]
+
+Línea 409-411 (_process_single_image_with_coordinates):
+x_coords = [point[0] for point in coords.polygon]
+y_coords = [point[1] for point in coords.polygon]
+bbox = [min(x_coords), min(y_coords), max(x_coords), max(y_coords)]
+
+IMPACTO: Potencial inconsistencia en formato de coordenadas extraídas
+
+INCONGRUENCIA #2 - FALLBACK A COORDENADAS [0,0,0,0]:
+PROBLEMA: Si OnnxTR no proporciona coordenadas válidas, se asigna [0,0,0,0]
+LÍNEA: 413 → bbox = [0, 0, 0, 0]  # Coordenadas por defecto si no disponibles
+CONSECUENCIA: Palabras sin coordenadas NO participan en lógica de oro
+RESULTADO: Texto puede quedar desordenado para imágenes problemáticas
+
+INCONGRUENCIA #3 - VALIDACIÓN ESTRICTA EN LÓGICA DE ORO:
+PROBLEMA: La función es muy estricta con coordenadas válidas
+LÍNEA: 814 → w['coordinates'] != [0, 0, 0, 0]
+IMPACTO: Si CUALQUIER palabra tiene [0,0,0,0], se excluye del reordenamiento
+RESULTADO ESPERADO vs REAL: Solo palabras con coordenadas válidas se reordenan
+
+INCONGRUENCIA #4 - UMBRAL FIJO DE PROXIMIDAD:
+PROBLEMA: Valores hardcodeados no adaptativos
+LÍNEAS:
+- 853: tolerancia_y = 10 (agrupación líneas)
+- 882: distancia <= 30 (agrupación bloques)
+LIMITACIÓN: No se adapta al tamaño de imagen o DPI
+CASOS PROBLEMÁTICOS: Imágenes de alta resolución o muy pequeñas
+
+INCONGRUENCIA #5 - FUNCIÓN extract_word_coordinates NO UTILIZADA:
+PROBLEMA: Función definida pero no llamada en flujo principal
+LÍNEAS: 28-60 definición, pero no hay referencias en extraer_texto()
+EVIDENCIA: Solo se usa _process_single_image_with_coordinates()
+IMPACTO: Código duplicado potencialmente inconsistente
+
+================================================================================
+VI. PATRONES DE RECIBOS Y ESTRUCTURA ESPERADA
+================================================================================
+
+PATRÓN TÍPICO DE RECIBO MÓVIL:
+```
+[Título/Logo]                    ← Bloque 1 (superior)
+
+[Tipo de operación]              ← Bloque 2 (identificación)
+[Fecha y hora]
+
+[Banco origen] → [Banco destino] ← Bloque 3 (entidades)
+[Monto]                         ← Bloque 4 (cantidad)
+[Referencia]                    ← Bloque 5 (tracking)
+
+[Beneficiario]                  ← Bloque 6 (destinatario)
+[Cédula/Teléfono]
+
+[Concepto/Motivo]               ← Bloque 7 (descripción)
+```
+
+COORDENADAS ESPERADAS POR PATRÓN:
+- Título: Y=10-50, X=centro imagen
+- Tipo operación: Y=60-100, X=izquierda
+- Bancos: Y=150-200, X distribuido horizontal
+- Monto: Y=220-260, X=centro/derecha, FONT_SIZE=grande
+- Referencia: Y=280-320, X=izquierda
+- Beneficiario: Y=340-380, X=izquierda
+- Concepto: Y=400-450, X=justificado
+
+ALGORITMO PROPUESTO PARA DETECTAR PATRONES:
+1. Identificar área de título (Y < 100, texto centrado)
+2. Detectar área de monto (FONT_SIZE > promedio, números)
+3. Agrupar información relacionada por proximidad Y < 40px
+4. Ordenar dentro de grupo por relevancia (monto > referencia > fecha)
+
+MEJORAS SUGERIDAS PARA LÓGICA DE ORO:
+1. Tolerancia adaptativa basada en resolución imagen
+2. Detección de campos importantes por tamaño de fuente
+3. Agrupación semántica además de espacial
+4. Fallback inteligente con texto parcialmente ordenado
+
+================================================================================
+VII. VALIDACIÓN DE FUNCIONAMIENTO ACTUAL
+================================================================================
+
+CRITERIOS DE ÉXITO:
+1. ¿Existen coordenadas reales? → Verificar word_data[i]['coordinates'] != [0,0,0,0]
+2. ¿Se ejecuta lógica de oro? → Verificar valid_words tiene elementos
+3. ¿Texto está reordenado? → Comparar orden texto_estructurado vs raw_text
+4. ¿Bloques están separados? → Verificar '\n\n' en resultado
+
+MÉTRICAS DE CALIDAD:
+- Porcentaje palabras con coordenadas válidas
+- Número de líneas detectadas
+- Número de bloques identificados
+- Coherencia del orden de lectura
+
+PUNTOS DE LOGGING CRÍTICOS:
+- Línea 556: "CACHÉ HIT adaptado: X caracteres disponibles"
+- Línea 814: Conteo de valid_words
+- Línea 837: "Error en lógica de oro coordenadas"
+
+EVIDENCIA DE FUNCIONAMIENTO:
+Si en logs aparece cantidad de caracteres extraídos → Lógica de oro se ejecutó
+Si hay separación por bloques en texto final → Algoritmo funciona correctamente
+
+================================================================================
+CONCLUSIÓN DEL ANÁLISIS
+================================================================================
+
+La función _aplicar_logica_de_oro_coordenadas() está FUNCIONALMENTE IMPLEMENTADA pero tiene DEPENDENCIAS CRÍTICAS:
+
+1. REQUIERE coordenadas reales de OnnxTR geometry
+2. FILTRA estrictamente palabras con [0,0,0,0]
+3. USA umbrales fijos que pueden no adaptarse a todos los casos
+4. TIENE inconsistencias en métodos de extracción de coordenadas
+
+El sistema SÍ USA LAS COORDENADAS cuando están disponibles, pero la calidad del reordenamiento depende completamente de la calidad de las coordenadas extraídas de OnnxTR.
+
+La lógica implementa correctamente los principios geométricos de proximidad vertical/horizontal y agrupación por bloques para crear una estructura de lectura natural empresarial.
