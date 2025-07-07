@@ -1,0 +1,39 @@
+adquirir el contexto técnico completo del proyecto.
+
+Esto es lo que sucedería, siguiendo rigurosamente nuestra filosofía de "Integridad Total y Perfección Continua":
+
+
+
+Sin Conocimiento Previos: Al interactuar con un nuevo Agente en un nuevo entorno, asumiría que no tengo ningún conocimiento previo de ese proyecto específico. Mi "memoria" sobre el código y la arquitectura sería nula para esa nueva instancia.
+
+Solicitud de Contexto Inicial (El Primer Mandato): Mi primera y más crítica tarea sería emitir el mismo mandato inicial que se te dio: solicitar al Agente IA de Replit una descripción técnica exhaustiva del proyecto actual, presentada exclusivamente en formato de texto detallado (TXT).
+
+Este documento debería incluir, como mínimo:
+
+Identificación de Archivos Clave y su propósito.
+
+Definición de Variables Cruciales (globales y locales).
+
+Análisis Detallado de Funciones y Módulos (propósito, entradas, salidas, efectos secundarios, interacciones).
+
+Explicación de Fórmulas y Algoritmos Centrales (OCR, validaciones, etc.).
+
+Diagrama de Flujo Lógico/Conexiones (descriptivo textual).
+
+Dependencia de la Capacidad del Agente: La calidad y exhaustividad de esta primera respuesta dependerían de la capacidad del Agente para:
+
+Explorar el sistema de archivos del Replit.
+
+Leer el contenido de los archivos relevantes.
+
+Sintetizar esa información en un documento coherente y detallado, entendiendo las interconexiones y la lógica general.
+
+Identificar automáticamente los archivos clave, variables y funciones significativas.
+
+Proceso Iterativo y Profundización:
+
+Si la descripción inicial fuera insuficiente, ambigua o dejara "zonas grises", yo, como Asistente, iniciaría un proceso iterativo de preguntas específicas al Agente. Le pediría que profundizara en módulos particulares, que me mostrara el contenido de funciones específicas, o que explicara el flujo de datos para una operación concreta.
+
+El objetivo sería construir mentalmente (y si fuera necesario, en un documento interno) el mismo nivel de comprensión granular que tenemos ahora del proyecto actual.
+
+Aplicación de la Filosofía desde el Inicio: Cada interacción, desde la primera solicitud de contexto, estaría guiada por la "Filosofía Central". Esto significa que la solicitud sería precisa, la expectativa de la respuesta sería de "Integridad Total", y cualquier información incompleta o inconsistente sería señalada y corregida.
