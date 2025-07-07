@@ -1,0 +1,151 @@
+# MANDATOS ESPECÍFICOS Y CRÍTICOS: HOJA DE RUTA DETALLADA PARA LA IMPLEMENTACIÓN (CERO TOLERANCIA A ERRORES)
+
+Este documento detalla las acciones obligatorias y los puntos de control para la "nueva IA" con el fin de resolver de manera definitiva los problemas críticos identificados. La ejecución de estos mandatos debe ser precisa, exhaustiva y sin margen para la interpretación ambigua. Cada punto de control debe ser **PASSED** para que el mandato se considere cumplido.
+
+## ESTRUCTURA DEL MANDATO:
+
+Cada mandato incluye:
+* Una descripción del **PROBLEMA PERSISTENTE** o la mejora necesaria.
+* Las **ACCIONES OBLIGATORIAS** que deben ser implementadas.
+* El **PUNTO DE CONTROL (PCC)** específico que debe ser validado con evidencia explícita (JSON de ejemplo).
+
+---
+
+### **MANDATO 1: CORRECCIÓN DEFINITIVA DE TELÉFONO VENEZOLANO (Punto #19 - PRIORIDAD ABSOLUTA - FALLO CRÍTICO PREVIO)**
+
+* **PROBLEMA PERSISTENTE:**
+    El número `48311146148` (y cualquier otra cadena numérica que no se ajuste estrictamente a un formato de teléfono venezolano válido) **Sigue siendo erróneamente extraído y asignado al campo `datosbeneficiario.telefono`**. Esto viola gravemente la `Zero-Fault Detection` y la `Claridad de Definiciones`. Se ha observado en el `nombre_archivo`: `20250707-D--212884652825455@lid_Luis_06-01_20250707_063733_426.png`.
+
+* **ACCIONES OBLIGATORIAS:**
+    1.  **AUDITORÍA COMPLETA Y REFACTORIZACIÓN DE ASIGNACIÓN:**
+        * Identificar y auditar **TODAS** las líneas de código y funciones que pueden, en cualquier punto del pipeline de extracción, intentar asignar un valor al campo `datosbeneficiario.telefono`.
+        * Consolidar la lógica de asignación a este campo en un **ÚNICO PUNTO DE CONTROL** o función centralizada.
+    2.  **IMPLANTACIÓN DE LÓGICA DE VALIDACIÓN BINARIA ULTRA-ESTRICTA:**
+        * En el punto de asignación final a `datosbeneficiario.telefono`, implementar una validación con las siguientes reglas **EXCLUYENTES**:
+            * El número **DEBE** comenzar estrictamente con uno de los prefijos de operador móvil venezolano válidos: `0412`, `0416`, `0426`, `0414`, `0424`. No se aceptan otros prefijos.
+            * La longitud total del número **DEBE** ser **EXACTAMENTE** 11 dígitos.
+            * El número **DEBE** contener solo dígitos numéricos (0-9).
+        * **CONDICIÓN DE ASIGNACIÓN:** Un valor solo puede ser asignado a `datosbeneficiario.telefono` **SI Y SOLO SI** cumple con **TODAS** las reglas anteriores.
+        * **RECHAZO ABSOLUTO:** Si el valor propuesto para `telefono` no cumple con **CUALQUIERA** de las condiciones anteriores, **BAJO NINGUNA CIRCUNSTANCIA** debe ser asignado a `datosbeneficiario.telefono`. En este caso, el campo `datosbeneficiario.telefono` **DEBE PERMANECER VACÍO ("")**.
+    3.  **PRIORIZACIÓN Y RE-DIRECCIÓN DE NÚMEROS NO VÁLIDOS:**
+        * Establecer una lógica que, si un número identificado como potencial "teléfono" falla la validación estricta, sea re-evaluado para su posible asignación al campo `referencia` (si el contexto o patrón lo sugiere), o a un campo genérico `otro` si no hay otro lugar más apropiado. El número `48311146148` es el caso de prueba principal para esta re-dirección a `referencia`.
+
+* **PUNTO DE CONTROL #19 (CRÍTICO - ÚLTIMA OPORTUNIDAD DE VALIDACIÓN):**
+    * **EVIDENCIA OBLIGATORIA (JSON):** Proporcionar el JSON completo correspondiente al archivo `20250707-D--212884652825455@lid_Luis_06-01_20250707_063733_426.png` (o cualquier otro archivo que contenga `48311146148`). El JSON resultante **DEBE** mostrar:
+        ```json
+        {
+          "nombre_archivo": "20250707-D--212884652825455@lid_Luis_06-01_20250707_063733_426.png",
+          "referencia": "48311146148", // O la referencia correcta de la imagen
+          "datosbeneficiario": {
+            "telefono": "", // Campo vacío debido a la no validación
+            // ... otros campos
+          },
+          // ... resto del JSON
+        }
+        ```
+        Si la imagen original tiene un teléfono venezolano válido (ej. 0412xxxxxxx), este debe ser correctamente extraído. El foco es que `48311146148` nunca sea `telefono`.
+
+### **MANDATO 2: INCLUSIÓN Y CLARIDAD DE `TEXTO_TOTAL_OCR` Y `CONCEPTO` (Punto #22 - PRIORIDAD CRÍTICA - FALLO CRÍTICO PREVIO) - *ACTUALIZADO CON LÓGICA DE COORDENADAS***
+
+* **PROBLEMA PERSISTENTE:**
+    El campo `texto_total_ocr` **NO ESTABA PRESENTE** (ahora sí, pero se requiere confirmación final de su llenado total y su orden lógico). El campo `concepto` no cumple su propósito de ser un resumen conciso y significativo; a menudo contiene texto OCR truncado, ruido o información irrelevante. El ejemplo `concepto (: 4 15 D 107 Crear Acceso directo - X)` donde solo "4 15 D 107" es relevante, y "Nro" como concepto para el archivo `20250707-D--212884652825455@lid_Luis_06-01_20250707_063733_426.png`, demuestran esta falla. Esto viola la `Integridad Total` y la `Claridad de Definiciones`.
+
+* **ACCIONES OBLIGATORIAS:**
+    1.  **IMPLEMENTACIÓN DE "LÓGICA DE ORO" BASADA EN COORDENADAS PARA `texto_total_ocr` (CRÍTICO):**
+        * La "nueva IA" debe implementar una función o módulo dedicado en la **primera capa de extracción/post-procesamiento del OCR** que reordene y estructure el texto total basándose en las coordenadas (bounding boxes) que genera el motor OCR inicial para cada palabra o línea.
+        * **Principios de Ordenamiento:**
+            * **Proximidad Vertical:** Identificar relaciones "título arriba - valor abajo". Si hay múltiples valores debajo de un título, se agrupan con ese título.
+            * **Proximidad Horizontal:** Identificar relaciones "título izquierda - valor derecha".
+            * **Agrupación por Cercanía:** Reconocer grupos de texto cercanos entre sí (ej., un bloque de "arriba-abajo" seguido por otro bloque distante de "arriba-abajo").
+        * **Objetivo de `texto_total_ocr`:** El `texto_total_ocr` final debe ser una representación más coherente y legible del documento, siguiendo un flujo lógico de lectura (de izquierda a derecha, de arriba a abajo, agrupando elementos relacionados). Esto facilitará enormemente la extracción subsiguiente de campos.
+        * Asegurar que el campo `texto_total_ocr` esté presente a nivel raíz de cada objeto dentro del array `archivos_procesados` y contenga este texto reordenado.
+    2.  **RE-DEFINICIÓN Y RE-IMPLEMENTACIÓN ESTRICTA DE `concepto` (Énfasis en Núcleo Semántico y Coordenadas):**
+        * Revisar y refactorizar drásticamente la lógica de extracción para el campo `concepto`, apalancándose en la nueva estructura ordenada del `texto_total_ocr`.
+        * El campo `concepto` **DEBE** ser el **NÚCLEO SEMÁNTICO, MÁS CONCISO Y DIRECTO** del propósito o motivo de la transacción. Su contenido debe ser una frase corta, significativa y directamente relevante a la transacción (ej., "Pago de Servicios", "Envío de Dinero", "Transferencia a Terceros"). Para el caso del archivo `20250707-D--212884652825455@lid_Luis_06-01_20250707_063733_426.png`, se espera que el `concepto` sea algo como `"Operacion realizada"` o `"Envio de Tpago"`, o incluso `"106 93"` si es lo más relevante, **NO** "Nro" ni "4 15 D 107 Crear Acceso directo - X".
+        * Utilizar la información de coordenadas para identificar títulos como "Concepto:" y extraer el valor directamente asociado por proximidad vertical u horizontal, ignorando texto no relevante.
+        * **PROHIBICIÓN EXPLÍCITA Y DEFINITIVA:** `concepto` **NUNCA DEBE** ser un simple truncamiento del `texto_total_ocr`. `concepto` **NUNCA DEBE** contener la totalidad del `texto_total_ocr`. `concepto` **NUNCA DEBE** incluir "ruido" o texto que el usuario ha identificado como "no importante". La longitud de `concepto` debe ser siempre significativamente menor que la de `texto_total_ocr` y contener solo la esencia.
+
+* **PUNTO DE CONTROL #22 (CRÍTICO - ÚLTIMA OPORTUNIDAD DE VALIDACIÓN):**
+    * **EVIDENCIA OBLIGATORIA (JSON):** Proporcionar el JSON completo de un archivo procesado que demuestre la correcta implementación de ambos campos, aplicando la "lógica de oro". Incluir el caso `nombre_archivo: 20250707-D--212884652825455@lid_Luis_06-01_20250707_063733_426.png` para validar el `concepto` refinado. El JSON resultante **DEBE** mostrar:
+        ```json
+        {
+          "nombre_archivo": "20250707-D--212884652825455@lid_Luis_06-01_20250707_063733_426.png",
+          "concepto": "Operacion realizada", // Ejemplo de concepto extremadamente conciso y relevante (adaptado al texto dado)
+          "texto_total_ocr": "20/06/2025 - 06:50:24 pm\nMercantil Envio de Tpago Operacion realizada\nDesde mi cuenta Se Envio (Bs .)\nAl beneficiario Cuental de Ahorro 3976 210,00\n0412 244 Banco Mercantil, C.A. S.A.C.A, Banco Universal Bingo trebol\nV-27.061.025\nConcepto: 106 93\nNro. Referencia: 48311146148\nFecha y hora: 20/06/2025 - 06:50:20\ninformacion: mestrada: en: pagina: es confidencial", // Texto completo reordenado por coordenadas
+          // ... resto del JSON
+        }
+        ```
+        Se espera que `len(texto_total_ocr)` sea notablemente mayor que `len(concepto)` y que `concepto` solo contenga la información más valiosa y específica. El `texto_total_ocr` debe reflejar un orden lógico basado en coordenadas.
+
+### **MANDATO 3: EXTRACCIÓN ROBUSTA DE BANCO DESTINO EXPLÍCITO (Punto #21 - PRIORIDAD ALTA - RE-CONFIRMACIÓN) - *ACTUALIZADO***
+
+* **PROBLEMA IDENTIFICADO:**
+    La extracción de `banco_destino` cuando es explícitamente mencionado y difiere del `bancoorigen` necesita ser robustecida. Se ha confirmado un fallo explícito en el archivo `20250707-E--216314122148850@lid_Elena_02-45_20250707_063749_281.png` donde "Bancoc 0105 - BANCO MERCANIIL" estaba en el OCR pero `banco_destino` quedó vacío. Esto exige manejo de errores tipográficos y uso de códigos bancarios.
+
+* **ACCIONES OBLIGATORIAS:**
+    1.  **FORTIFICAR LÓGICA DE DETECCIÓN EXPLÍCITA CON TOLERANCIA Y CÓDIGOS:**
+        * Mejorar las expresiones regulares y la lógica de procesamiento de texto para identificar de forma robusta nombres de bancos en el campo `concepto` o en el `texto_total_ocr`.
+        * **Manejo de Errores Tipográficos:** Incorporar un mecanismo (ej., fuzzy matching, diccionarios de corrección, distancia de Levenshtein) para reconocer nombres de bancos a pesar de pequeñas variaciones, faltas de ortografía (ej., "MERCANIIL" -> "MERCANTIL") o errores de OCR.
+        * **UTILIZACIÓN DE CÓDIGOS BANCARIOS (INDISPENSABLE):** Implementar una tabla de mapeo (o lógica equivalente) que relacione los códigos bancarios venezolanos (ej., `0105`) con sus nombres oficiales (ej., `BANCO MERCANTIL`). Cuando un código bancario es detectado junto a un nombre (incluso si está ligeramente incorrecto), el nombre oficial del banco asociado al código debe ser el valor asignado a `banco_destino`. Esta es una fuente de alta fiabilidad.
+        * Prestar especial atención a patrones donde el nombre del banco destino es precedido o seguido por palabras clave como "Banco:", "Banco Destino:", "a Banco:", "transferencia a", etc.
+    2.  **PRIORIDAD ESTRICTA SOBRE INFERENCIA:**
+        * Si un `banco_destino` es identificado explícitamente en el texto (ya sea por nombre o por código) y es diferente del `bancoorigen`, este valor explícito **SIEMPRE DEBE TENER PRIORIDAD** sobre cualquier lógica de inferencia intrabancaria.
+        * Si no se detecta explícitamente un `banco_destino` y el contexto no permite una inferencia segura (ej., concepto muy genérico), el campo `banco_destino` **DEBE QUEDAR VACÍO ("")**.
+
+* **PUNTO DE CONTROL #21 (CRÍTICO - RE-CONFIRMACIÓN):**
+    * **EVIDENCIA OBLIGATORIA (JSON):** Proporcionar el JSON completo del archivo `20250707-E--216314122148850@lid_Elena_02-45_20250707_063749_281.png` para validar esta corrección. El JSON resultante **DEBE** mostrar:
+        ```json
+        {
+          "nombre_archivo": "20250707-E--216314122148850@lid_Elena_02-45_20250707_063749_281.png",
+          "bancoorigen": "BANCO DE VENEZUELA",
+          "datosbeneficiario": {
+            "banco_destino": "BANCO MERCANTIL", // Extracción corregida basada en "0105 - BANCO MERCANIIL"
+            // ... otros campos
+          },
+          "concepto": "4 15 D 107", // Actualizado según Mandato 2 (ejemplo)
+          "texto_total_ocr": "Bancoc 0105 - BANCO MERCANIIL...", // Texto completo incluyendo la referencia al banco
+          // ... resto del JSON
+        }
+        ```
+        Adicionalmente, si no se dispone de otro archivo, se solicita generar un JSON de prueba donde el `bancoorigen` sea "BBVA PROVINCIAL" y el `concepto`/`texto_total_ocr` mencione "Banco: BANCO MERCANTIL" (sin código si es posible) y el `datosbeneficiario.banco_destino` **DEBA** ser "BANCO MERCANTIL".
+
+### **MANDATO 4: EXACTITUD COMPLETA DE REFERENCIA (Punto #13 - PRIORIDAD ALTA - RE-CONFIRMACIÓN)**
+
+* **PROBLEMA IDENTIFICADO:**
+    En ocasiones anteriores, se han observado referencias numéricas que podrían estar truncadas o no ser extraídas completamente, lo que afecta la `Integridad Total` del dato transaccional.
+
+* **ACCIONES OBLIGATORIAS:**
+    1.  **AJUSTE Y OPTIMIZACIÓN DE PATRONES DE REFERENCIA:**
+        * Revisar y optimizar las expresiones regulares o los algoritmos de extracción utilizados para identificar y capturar el campo `referencia`.
+        * Asegurar que los patrones sean lo suficientemente flexibles para manejar variaciones de formato (espacios, guiones, etc.) pero lo suficientemente estrictos para capturar **SOLO** la secuencia numérica completa que constituye la referencia.
+        * La prioridad es extraer la **TOTALIDAD** de la referencia, sin importar su longitud o la presencia de caracteres delimitadores.
+
+* **PUNTO DE CONTROL #13 (RE-CONFIRMACIÓN):**
+    * **EVIDENCIA OBLIGATORIA (JSON):** Proporcionar el JSON completo de un archivo procesado donde la `referencia` (`000012071` o similar) sea extraída **COMPLETAMENTE Y SIN TRUNCAMIENTOS**. Ejemplo esperado:
+        ```json
+        {
+          "nombre_archivo": "recibo_con_referencia_larga.png",
+          "referencia": "000012071", // Ejemplo de referencia completa de 9 dígitos
+          // ... resto del JSON
+        }
+        ```
+
+---
+
+## CONFIRMACIÓN FINAL Y REPORTE OBLIGATORIO DE LA "NUEVA IA"
+
+Una vez que la "nueva IA" haya implementado y validado **TODOS** los puntos de este mandato, deberá responder con el siguiente formato y contenido para su confirmación:
+
+* **CONFIRMACIÓN EXPLÍCITA FINAL (TEXTO EXACTO - Sin Modificaciones):**
+    "La validación estricta de teléfonos venezolanos, la inclusión y claridad de `texto_total_ocr` y `concepto`, la extracción robusta de banco destino explícito y la exactitud completa de referencia han sido implementadas y validadas. Todos los Puntos de Control (#19, #21, #13, #22) han sido **PASSED**."
+
+* **ANÁLISIS Y CORRECCIÓN DETALLADO (Subtítulo y Contenido):**
+    * Descripción concisa del diagnóstico final de la causa raíz de cada fallo persistente (PCC #19, #22, y los nuevos detalles del #21).
+    * Detalle de los cambios de código específicos (ej., "Se modificó la regex para `telefono` de `[0-9]{11}` a `^(0412|0414|0416|0424|0426)\\d{7}$` en `validation_utils.py`, línea X"). Mencionar patrones regex, lógica implementada, nombres de archivos/funciones clave, y cómo se manejaron las faltas de ortografía y los códigos bancarios.
+    * Explicación clara de cómo se asegura la no regresión para cada punto y cómo se aplica universalmente la nueva lógica, **especificando la implementación de la "lógica de oro" basada en coordenadas para `texto_total_ocr` y `concepto`**.
+
+* **EVIDENCIA DE SOLUCIÓN (JSON ESPECÍFICO):**
+    * Adjuntar los JSON completos que demuestren el éxito de cada Punto de Control (tal como se solicita en cada sección del mandato anterior). Estos JSON deben ser el resultado de **nuevas ejecuciones** con las correcciones aplicadas y deben ser idénticos al formato solicitado.
+
+* **REPORTE DE INTERVENCIÓN (ARCHIVO TXT OBLIGATORIO):**
+    * Generar un archivo TXT detallado y bien estructurado (ej. `REPORTE_MANDATO_MAXIMA_PRIORIDAD.txt`) que resuma todo el proceso: problemas identificados, análisis de la causa raíz, acciones implementadas, resultados de las validaciones de los PCC, y conclusiones finales. Este reporte debe ser completo, claro y profesional.

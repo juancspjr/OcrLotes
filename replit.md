@@ -317,7 +317,7 @@ Sistema OCR asíncrono de alto rendimiento para procesamiento de recibos de pago
 
 ## MANDATO DE INTERVENCIÓN CRÍTICA: ✅ COMPLETADO EXITOSAMENTE
 
-## MANDATOS CRÍTICOS COMPLETADOS - Julio 7, 2025 07:12 UTC
+## MANDATOS CRÍTICOS COMPLETADOS - Julio 7, 2025 07:37 UTC
 ### ✅ TODOS LOS MANDATOS ESPECÍFICOS IMPLEMENTADOS EXITOSAMENTE
 
 #### **MANDATO CRÍTICO #1**: Validación Binaria Obligatoria de Teléfonos Venezolanos
@@ -326,17 +326,25 @@ Sistema OCR asíncrono de alto rendimiento para procesamiento de recibos de pago
 - ✅ **Rechazo absoluto**: Números no válidos se redirigen automáticamente al campo `referencia`
 - ✅ **Punto de Control #19**: PASSED - `{"telefono": "", "referencia": "48311146148"}`
 
-#### **MANDATO CRÍTICO #2**: Separación Completa de Concepto y Texto_Total_OCR
-- ✅ **Campo `texto_total_ocr`**: Presente con totalidad absoluta del texto OCR sin truncamientos
-- ✅ **Campo `concepto`**: Re-definido como núcleo semántico conciso y directamente relevante
-- ✅ **Patrones inteligentes**: Detecta códigos, motivos y frases clave sin incluir ruido
-- ✅ **Punto de Control #22**: PASSED - Separación completa implementada y funcionando
+#### **MANDATO CRÍTICO #2**: Lógica de Oro Basada en Coordenadas + Concepto Empresarial Refinado
+- ✅ **Lógica de Oro Implementada**: Sistema completo de reordenamiento por coordenadas geométricas
+- ✅ **Principios aplicados**: Proximidad vertical/horizontal, agrupación por cercanía, flujo natural
+- ✅ **Campo `texto_total_ocr`**: Texto estructurado por coordenadas con bloques lógicos separados
+- ✅ **Campo `concepto_empresarial`**: Núcleo semántico ultra-conciso (≤50 chars) sin ruido
+- ✅ **Funciones implementadas**: `_aplicar_logica_de_oro_coordenadas()`, `_refinar_concepto_empresarial()`
+- ✅ **Patrones empresariales**: Detección inteligente de códigos, transacciones y motivos específicos
+- ✅ **Punto de Control #22**: PASSED - Sistema de coordenadas funcionando, concepto refinado exitosamente
 
 #### **MANDATO CRÍTICO #3**: Extracción Robusta de Banco Destino Explícito
 - ✅ **Códigos bancarios**: Tabla completa implementada con códigos venezolanos oficiales
 - ✅ **Fuzzy matching**: Tolerancia a errores tipográficos como "MERCANIIL" → "MERCANTIL"
 - ✅ **Detección explícita**: "Bancoc 0105 - BANCO MERCANIIL" → "BANCO MERCANTIL" correctamente
 - ✅ **Punto de Control #21**: PASSED - Código 0105 detectado y asignado a `banco_destino`
+
+#### **MANDATO CRÍTICO #4**: Exactitud Completa de Referencia
+- ✅ **Patrones optimizados**: Prioridad por longitud (8-15 dígitos primero, luego 8-12)
+- ✅ **Extracción completa**: Referencias sin truncamiento prematuro
+- ✅ **Punto de Control #13**: PASSED - Referencias completas extraídas correctamente
 
 ## Migración Replit Agent a Replit - Julio 7, 2025
 ### MIGRACIÓN COMPLETADA EXITOSAMENTE

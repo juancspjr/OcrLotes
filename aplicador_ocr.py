@@ -667,8 +667,18 @@ class AplicadorOCR:
                 if page_text.strip():
                     texto_completo += page_text
             
-            # Limpiar y espaciar texto preservando caracteres importantes
+            # MANDATO CRÍTICO #2: APLICAR LÓGICA DE ORO BASADA EN COORDENADAS
+            # REASON: Crear texto_total_ocr estructurado siguiendo flujo natural de lectura empresarial
+            # IMPACT: Documento ordenado lógicamente para mejor extracción de campos
+            texto_total_ocr_ordenado = self._aplicar_logica_de_oro_coordenadas(palabras_detectadas)
+            
+            # Texto completo tradicional para compatibilidad
             texto_completo = self._limpiar_y_espaciar_texto(texto_completo.strip())
+            
+            # MANDATO CRÍTICO #2: REFINAMIENTO DE CONCEPTO EMPRESARIAL  
+            # REASON: Extraer núcleo semántico conciso usando coordenadas y patrones específicos
+            # IMPACT: Concepto preciso sin ruido, máximo 50 caracteres, directamente relevante
+            concepto_refinado = self._refinar_concepto_empresarial(texto_total_ocr_ordenado, palabras_detectadas)
             
             # Calcular estadísticas de confianza
             confianza_promedio = sum(confidencias_totales) / len(confidencias_totales) if confidencias_totales else 0
@@ -677,14 +687,17 @@ class AplicadorOCR:
             logger.info(f"Texto extraído: {len(texto_completo)} caracteres, {total_palabras} palabras")
             logger.info(f"Confianza promedio: {confianza_promedio:.3f}")
             
-            # FIX: Procesar resultados OnnxTR con estructura optimizada
-            # REASON: Adaptar estructura de datos para compatibilidad con el resto del sistema
-            # IMPACT: Estructura de datos limpia y consistente con arquitectura existente
+            # FIX: Procesar resultados OnnxTR con estructura optimizada + MANDATOS CRÍTICOS
+            # REASON: Adaptar estructura con texto_total_ocr ordenado y concepto refinado empresarial
+            # IMPACT: Cumplimiento de MANDATO #2 con lógica de oro basada en coordenadas
             resultado_ocr = {
-                'texto_completo': texto_completo,
+                'texto_completo': texto_completo,  # Texto tradicional para compatibilidad
+                'texto_total_ocr': texto_total_ocr_ordenado,  # MANDATO #2: Texto ordenado por coordenadas
+                'concepto_empresarial': concepto_refinado,  # MANDATO #2: Concepto refinado sin ruido
                 'total_caracteres': len(texto_completo),
+                'total_caracteres_ordenados': len(texto_total_ocr_ordenado),
                 'tiempo_procesamiento': round(ocr_time, 3),
-                'metodo_extraccion': 'ONNXTR_SINGLE_PASS',
+                'metodo_extraccion': 'ONNXTR_SINGLE_PASS_COORDENADAS',
                 'configuracion_onnxtr': config_mode,
                 'total_palabras_detectadas': total_palabras,
                 'palabras_detectadas': palabras_detectadas,
@@ -697,7 +710,8 @@ class AplicadorOCR:
                     'min_confianza_aplicada': profile_config.get('confidence_threshold', 0.6)
                 },
                 'calidad_extraccion': self._evaluar_calidad_onnxtr(confidencias_totales, texto_completo),
-                'deteccion_inteligente': deteccion_inteligente
+                'deteccion_inteligente': deteccion_inteligente,
+                'logica_oro_aplicada': True  # Indicador de que se aplicó lógica de oro
             }
             
             # Extraer datos financieros si se solicita
@@ -780,6 +794,181 @@ class AplicadorOCR:
         
         return palabras[:50]  # Limitar a 50 palabras principales
     
+    def _aplicar_logica_de_oro_coordenadas(self, word_data):
+        """
+        FIX: IMPLEMENTACIÓN DE "LÓGICA DE ORO" BASADA EN COORDENADAS - MANDATO CRÍTICO #2
+        REASON: Reordenar texto usando coordenadas para crear estructura lógica de lectura
+        IMPACT: texto_total_ocr coherente siguiendo flujo natural de documento empresarial
+        
+        Principios implementados:
+        1. Proximidad Vertical: título arriba - valor abajo
+        2. Proximidad Horizontal: título izquierda - valor derecha  
+        3. Agrupación por cercanía: bloques de información relacionados
+        4. Flujo de lectura: izquierda a derecha, arriba a abajo
+        """
+        if not word_data:
+            return ""
+        
+        try:
+            # Filtrar palabras con coordenadas válidas
+            valid_words = [w for w in word_data if w.get('coordinates') and w['coordinates'] != [0, 0, 0, 0]]
+            if not valid_words:
+                return ' '.join(w['text'] for w in word_data)
+            
+            # Paso 1: Agrupar por proximidad vertical (líneas)
+            lines = self._agrupar_por_lineas(valid_words)
+            
+            # Paso 2: Ordenar líneas de arriba a abajo
+            lines_ordenadas = sorted(lines, key=lambda line: min(w['coordinates'][1] for w in line))
+            
+            # Paso 3: Dentro de cada línea, ordenar de izquierda a derecha
+            for line in lines_ordenadas:
+                line.sort(key=lambda w: w['coordinates'][0])
+            
+            # Paso 4: Identificar bloques de información relacionados
+            bloques = self._identificar_bloques_relacionados(lines_ordenadas)
+            
+            # Paso 5: Construir texto final con estructura lógica
+            texto_estructurado = self._construir_texto_estructurado(bloques)
+            
+            return texto_estructurado
+            
+        except Exception as e:
+            logger.warning(f"Error en lógica de oro coordenadas: {e}")
+            # Fallback: texto simple ordenado por coordenadas básicas
+            return self._fallback_ordenamiento_basico(word_data)
+    
+    def _agrupar_por_lineas(self, words, tolerancia_y=10):
+        """Agrupa palabras que están en la misma línea horizontal"""
+        lines = []
+        words_ordenadas = sorted(words, key=lambda w: w['coordinates'][1])
+        
+        for word in words_ordenadas:
+            y_center = (word['coordinates'][1] + word['coordinates'][3]) / 2
+            
+            # Buscar línea existente con Y similar
+            linea_encontrada = False
+            for line in lines:
+                y_line_avg = sum((w['coordinates'][1] + w['coordinates'][3]) / 2 for w in line) / len(line)
+                if abs(y_center - y_line_avg) <= tolerancia_y:
+                    line.append(word)
+                    linea_encontrada = True
+                    break
+            
+            # Si no encontró línea compatible, crear nueva
+            if not linea_encontrada:
+                lines.append([word])
+        
+        return lines
+    
+    def _identificar_bloques_relacionados(self, lines_ordenadas):
+        """Identifica bloques de información relacionados por proximidad"""
+        if not lines_ordenadas:
+            return []
+        
+        bloques = []
+        bloque_actual = [lines_ordenadas[0]]
+        
+        for i in range(1, len(lines_ordenadas)):
+            line_anterior = lines_ordenadas[i-1]
+            line_actual = lines_ordenadas[i]
+            
+            # Calcular distancia vertical entre líneas
+            y_anterior = max(w['coordinates'][3] for w in line_anterior)
+            y_actual = min(w['coordinates'][1] for w in line_actual)
+            distancia = y_actual - y_anterior
+            
+            # Si distancia es pequeña, son del mismo bloque
+            if distancia <= 30:  # Ajustable según tipo de documento
+                bloque_actual.append(line_actual)
+            else:
+                # Finalizar bloque actual y empezar nuevo
+                bloques.append(bloque_actual)
+                bloque_actual = [line_actual]
+        
+        # Añadir último bloque
+        if bloque_actual:
+            bloques.append(bloque_actual)
+        
+        return bloques
+    
+    def _construir_texto_estructurado(self, bloques):
+        """Construye texto final con estructura lógica empresarial"""
+        texto_final = []
+        
+        for i, bloque in enumerate(bloques):
+            lineas_bloque = []
+            
+            for line in bloque:
+                # Construir línea de texto
+                texto_linea = ' '.join(word['text'] for word in line)
+                lineas_bloque.append(texto_linea)
+            
+            # Unir líneas del bloque
+            texto_bloque = '\n'.join(lineas_bloque)
+            texto_final.append(texto_bloque)
+        
+        # Unir bloques con separación clara
+        return '\n\n'.join(texto_final)
+    
+    def _fallback_ordenamiento_basico(self, word_data):
+        """Ordenamiento básico como fallback"""
+        try:
+            # Ordenar por Y primero, luego por X
+            palabras_ordenadas = sorted(word_data, 
+                key=lambda w: (w.get('coordinates', [0,0,0,0])[1], w.get('coordinates', [0,0,0,0])[0]))
+            return ' '.join(w['text'] for w in palabras_ordenadas)
+        except:
+            return ' '.join(w['text'] for w in word_data)
+    
+    def _refinar_concepto_empresarial(self, texto_ordenado, palabra_data):
+        """
+        FIX: REFINAMIENTO CRÍTICO DE CONCEPTO - MANDATO #2
+        REASON: Extraer núcleo semántico conciso usando coordenadas y patrones empresariales
+        IMPACT: concepto preciso sin ruido, usando proximidad espacial para identificar valores clave
+        """
+        if not texto_ordenado:
+            return ""
+        
+        # Patrones empresariales para conceptos con proximidad espacial
+        patrones_concepto = [
+            # Patrones con palabras clave específicas
+            r'(?:Concepto\s*:?\s*)([^.\n]{3,50})(?=\s*(?:Ref|Fecha|Nro|\n|$))',
+            r'(?:Motivo\s*:?\s*)([^.\n]{3,50})(?=\s*(?:Ref|Fecha|Nro|\n|$))',
+            r'(?:Operacion\s+)([^.\n]{3,50})(?=\s*(?:Desde|Se|Al|\n|$))',
+            
+            # Patrones de transacción específicos
+            r'(Envio\s+de\s+\w+)',
+            r'(Pago\s+(?:de\s+)?\w+)',
+            r'(Transferencia\s+\w+)',
+            r'(Comprobante\s+de\s+\w+)',
+            
+            # Códigos y números de operación (solo la parte relevante)
+            r'(?:Nro\.?\s*:?\s*)(\d{1,6})',
+            r'(?:Codigo\s*:?\s*)(\w{1,10})',
+        ]
+        
+        for patron in patrones_concepto:
+            match = re.search(patron, texto_ordenado, re.IGNORECASE)
+            if match:
+                concepto = match.group(1).strip()
+                # Limpiar y validar concepto
+                concepto = re.sub(r'\s+', ' ', concepto)  # Normalizar espacios
+                if 3 <= len(concepto) <= 50 and not concepto.isdigit():
+                    return concepto
+        
+        # Fallback: buscar primera frase significativa
+        lineas = texto_ordenado.split('\n')
+        for linea in lineas:
+            linea = linea.strip()
+            if 5 <= len(linea) <= 40 and not re.match(r'^\d+[/\-]\d+', linea):
+                # Evitar fechas y números
+                palabras = linea.split()
+                if len(palabras) >= 2 and len(palabras) <= 8:
+                    return linea
+        
+        return "Operación registrada"  # Concepto genérico como último recurso
+
     def _calcular_confianza_promedio(self, ocr_data):
         """Calcula la confianza promedio ponderada"""
         confidences = [conf for conf in ocr_data['conf'] if conf != -1]

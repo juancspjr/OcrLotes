@@ -1966,41 +1966,56 @@ def _extract_enterprise_fields(result_data, texto_completo):
                 campos['confidence'] = round(sum(confidencias) / len(confidencias), 3)
                 campos['total_words'] = len(palabras_detectadas)
         
-        # FIX: REESTRUCTURACIÓN CRÍTICA CONCEPTO Y TEXTO_TOTAL_OCR - MANDATO CORRECCIÓN CRÍTICA PUNTO #22
-        # REASON: Separar texto OCR completo del concepto conciso según mandato estructural
-        # IMPACT: Campo concepto con motivo conciso, nuevo campo texto_total_ocr con texto completo
+        # MANDATO CRÍTICO #2: INTEGRACIÓN DIRECTA DE LÓGICA DE ORO COORDENADAS
+        # REASON: Usar campos texto_total_ocr y concepto_empresarial ya procesados por lógica de oro
+        # IMPACT: Texto estructurado y concepto refinado automáticamente disponibles
+        texto_total_ocr_coordenadas = datos_extraidos.get('texto_total_ocr', '')
+        concepto_empresarial_refinado = datos_extraidos.get('concepto_empresarial', '')
         texto_completo_local = datos_extraidos.get('texto_completo', '')
         
-        # NUEVO CAMPO: texto_total_ocr con texto completo original
-        campos['texto_total_ocr'] = texto_completo_local
+        # PRIORIDAD MÁXIMA: Usar texto ordenado por coordenadas si está disponible
+        if texto_total_ocr_coordenadas:
+            campos['texto_total_ocr'] = texto_total_ocr_coordenadas
+            logger.info(f"🏗️ LÓGICA DE ORO APLICADA: {len(texto_total_ocr_coordenadas)} caracteres ordenados por coordenadas")
+        else:
+            # Fallback al texto tradicional
+            campos['texto_total_ocr'] = texto_completo_local
+            logger.info(f"📄 Texto tradicional usado: {len(texto_completo_local)} caracteres")
         
-        # MANDATO CRÍTICO #2: RE-DEFINICIÓN ULTRA-ESTRICTA DE CONCEPTO (NÚCLEO SEMÁNTICO)
-        # REASON: Extraer SOLO el núcleo semántico más relevante según mandato específico
-        # IMPACT: Concepto conciso y significativo, NO truncamiento de texto_total_ocr
-        if texto_completo_local and not campos['concepto']:
-            # PRIORIDAD MÁXIMA: Códigos y números de proyecto/referencia específicos
-            concepto_patterns = [
-                r'(?:Concepto|CONCEPTO)[:=]?\s*([A-Z0-9\s]{3,25})',   # Códigos como "4 15 D 107"
-                r'(?:Por|Para)[:=]?\s*([A-Za-z0-9\s]{5,30})',         # "Por: Pago Servicios"
-                r'(?:Motivo|MOTIVO)[:=]?\s*([A-Za-z\s]{5,30})',       # Motivo conciso
-                r'(Pago\s+(?:Móvil|Movil|de\s+\w+))',                # "Pago Móvil", "Pago de Servicios"
-                r'(Transferencia\s+(?:a\s+\w+|Bancaria))',            # "Transferencia Bancaria"
-                r'(Envío?\s+de\s+\w+)',                              # "Envío de Dinero"
-                r'([A-Z0-9]{2,}\s+[A-Z0-9]{2,}\s+[A-Z0-9]{1,})',     # Códigos alfanuméricos separados
-            ]
-            
-            concepto_extraido = ""
-            for pattern in concepto_patterns:
-                match = re.search(pattern, texto_completo_local, re.IGNORECASE)
-                if match:
-                    concepto_extraido = match.group(1).strip()
-                    # VALIDAR QUE NO SEA RUIDO (como "Crear Acceso directo")
-                    ruido_keywords = ['crear', 'acceso', 'directo', 'webpage', 'url', 'http', 'x', '-']
-                    texto_limpio = concepto_extraido.lower().replace(' ', '')
-                    if not any(ruido in texto_limpio for ruido in ruido_keywords):
-                        break
-                    else:
-                        concepto_extraido = ""  # Resetear si es ruido
+        # MANDATO CRÍTICO #2: USO DIRECTO DE CONCEPTO EMPRESARIAL REFINADO
+        # REASON: Aplicar concepto ya procesado por lógica de oro con patrones empresariales
+        # IMPACT: Concepto ultra-conciso sin ruido, máximo 50 caracteres, núcleo semántico puro
+        if concepto_empresarial_refinado:
+            campos['concepto'] = concepto_empresarial_refinado
+            logger.info(f"🎯 CONCEPTO EMPRESARIAL REFINADO: '{concepto_empresarial_refinado}'")
+        elif not campos['concepto']:
+            # FALLBACK: Extracción tradicional como respaldo
+            texto_para_concepto = texto_total_ocr_coordenadas or texto_completo_local
+            if texto_para_concepto:
+                # PRIORIDAD MÁXIMA: Códigos y números de proyecto/referencia específicos
+                concepto_patterns = [
+                    r'(?:Concepto|CONCEPTO)[:=]?\s*([A-Z0-9\s]{3,25})',   # Códigos como "4 15 D 107"
+                    r'(?:Por|Para)[:=]?\s*([A-Za-z0-9\s]{5,30})',         # "Por: Pago Servicios"
+                    r'(?:Motivo|MOTIVO)[:=]?\s*([A-Za-z\s]{5,30})',       # Motivo conciso
+                    r'(Pago\s+(?:Móvil|Movil|de\s+\w+))',                # "Pago Móvil", "Pago de Servicios"
+                    r'(Transferencia\s+(?:a\s+\w+|Bancaria))',            # "Transferencia Bancaria"
+                    r'(Envío?\s+de\s+\w+)',                              # "Envío de Dinero"
+                    r'([A-Z0-9]{2,}\s+[A-Z0-9]{2,}\s+[A-Z0-9]{1,})',     # Códigos alfanuméricos separados
+                ]
+                
+                concepto_extraido = ""
+                for pattern in concepto_patterns:
+                    match = re.search(pattern, texto_para_concepto, re.IGNORECASE)
+                    if match:
+                        concepto_extraido = match.group(1).strip()
+                        # VALIDAR QUE NO SEA RUIDO (como "Crear Acceso directo")
+                        ruido_keywords = ['crear', 'acceso', 'directo', 'webpage', 'url', 'http', 'x', '-']
+                        texto_limpio = concepto_extraido.lower().replace(' ', '')
+                        if not any(ruido in texto_limpio for ruido in ruido_keywords):
+                            campos['concepto'] = concepto_extraido
+                            break
+                        else:
+                            concepto_extraido = ""  # Resetear si es ruido
             
             # FALLBACK ULTRA-ESPECÍFICO: Solo para casos extremos
             if not concepto_extraido:
