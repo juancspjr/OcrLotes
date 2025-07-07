@@ -813,10 +813,22 @@ class AplicadorOCR:
                 # REASON: Cumplir mandato específico de logica_oro_aplicada = true
                 # IMPACT: Sistema reporta correctamente la aplicación de lógica de oro
                 
-                # Verificar si la lógica de oro produjo resultado diferente
-                if (not texto_total_ocr_ordenado or 
-                    texto_total_ocr_ordenado.strip() == texto_completo.strip() or
-                    len(texto_total_ocr_ordenado.strip()) < 10):
+                # FIX MANDATO CRÍTICO: Re-evaluación de Lógica de Oro según coordenadas disponibles  
+                # REASON: Mandato específico para fallback cuando coordinates_available es 0
+                # IMPACT: Sistema cumple mandato exacto según disponibilidad de coordenadas
+                
+                coordenadas_validas = len([w for w in palabras_detectadas if w.get('coordinates') and w['coordinates'] != [0, 0, 0, 0]])
+                
+                if coordenadas_validas == 0:
+                    # MANDATO: Si coordinates_available es 0, crear versión "limpia" del original
+                    logger.info("🔧 MANDATO: Aplicando fallback de Lógica de Oro (sin coordenadas válidas)")
+                    texto_total_ocr_ordenado = self._crear_texto_limpio_fallback(texto_completo)
+                    logica_oro_exitosa = False
+                    error_messages.append("Lógica de Oro basada en coordenadas no aplicada: No se detectaron coordenadas válidas en el OCR de origen")
+                    
+                elif (not texto_total_ocr_ordenado or 
+                      texto_total_ocr_ordenado.strip() == texto_completo.strip() or
+                      len(texto_total_ocr_ordenado.strip()) < 10):
                     
                     logger.warning("🔧 MANDATO: Aplicando restructuración forzada para diferenciación")
                     # Crear estructura empresarial diferente para cumplir mandato
@@ -1148,7 +1160,10 @@ class AplicadorOCR:
             
             for line in bloque:
                 # Construir línea de texto
-                texto_linea = ' '.join(word['text'] for word in line)
+                # FIX MANDATO CRÍTICO: Acceso seguro a campos text/texto evitando KeyError
+                # REASON: Eliminar error 'text' usando acceso seguro con fallback
+                # IMPACT: Extracción robusta sin fallos por campos inconsistentes
+                texto_linea = ' '.join(word.get('text', word.get('texto', '')) for word in line if word.get('text') or word.get('texto'))
                 lineas_bloque.append(texto_linea)
             
             # Unir líneas del bloque
@@ -1215,6 +1230,36 @@ class AplicadorOCR:
                     return linea
         
         return "Operación registrada"  # Concepto genérico como último recurso
+    
+    def _crear_texto_limpio_fallback(self, texto_original):
+        """
+        FIX MANDATO CRÍTICO: Crear versión "limpia" del texto original cuando no hay coordenadas
+        REASON: Mandato específico para fallback de Lógica de Oro cuando coordinates_available es 0
+        IMPACT: Cumple mandato exacto proporcionando texto mejorado sin depender de coordenadas
+        """
+        import re
+        
+        if not texto_original:
+            return texto_original
+        
+        # Eliminar espacios dobles y múltiples  
+        texto_limpio = re.sub(r'\s+', ' ', texto_original)
+        
+        # Normalizar puntuación común
+        texto_limpio = re.sub(r'\s+([,.;:])', r'\1', texto_limpio)  # Quitar espacios antes de puntuación
+        texto_limpio = re.sub(r'([,.;:])\s*', r'\1 ', texto_limpio)  # Agregar espacio después de puntuación
+        
+        # Normalizar números con espacios
+        texto_limpio = re.sub(r'(\d)\s+(\d)', r'\1\2', texto_limpio)  # Unir números separados
+        
+        # Normalizar fechas
+        texto_limpio = re.sub(r'(\d{1,2})\s*/\s*(\d{1,2})\s*/\s*(\d{4})', r'\1/\2/\3', texto_limpio)
+        
+        # Limpiar espacios al inicio y final
+        texto_limpio = texto_limpio.strip()
+        
+        logger.debug(f"🔧 MANDATO: Texto limpio fallback creado: {len(texto_limpio)} caracteres")
+        return texto_limpio
 
     def _calcular_confianza_promedio(self, ocr_data):
         """Calcula la confianza promedio ponderada"""
@@ -2462,9 +2507,13 @@ class AplicadorOCR:
         mapped_texts = {field['raw_text_segment'] for field in extracted_fields if field.get('raw_text_segment')}
         
         for word in word_data:
-            if word['text'] not in mapped_texts:
+            # FIX MANDATO CRÍTICO: Acceso seguro a campos text/texto evitando KeyError
+            # REASON: Eliminar error 'text' usando acceso seguro con fallback
+            # IMPACT: Procesamiento robusto de segmentos sin fallos por campos inconsistentes
+            word_text = word.get('text', word.get('texto', ''))
+            if word_text and word_text not in mapped_texts:
                 unmapped_segments.append({
-                    'text': word['text'],
+                    'text': word_text,
                     'confidence': word['confidence'],
                     'coordinates': word['coordinates'],
                     'relative_position': self._calculate_relative_position(word['coordinates'], word_data)
@@ -2484,7 +2533,10 @@ class AplicadorOCR:
         
         # Buscar keywords del campo en el texto
         for i, label_word in enumerate(word_data):
-            label_text = label_word['text'].lower()
+            # FIX MANDATO CRÍTICO: Acceso seguro a campos text/texto evitando KeyError
+            # REASON: Eliminar error 'text' usando acceso seguro con fallback
+            # IMPACT: Búsqueda de proximidad robusta sin fallos por campos inconsistentes
+            label_text = label_word.get('text', label_word.get('texto', '')).lower()
             
             # Verificar si contiene algún keyword del campo
             for keyword in keywords:
@@ -2510,7 +2562,10 @@ class AplicadorOCR:
                                 'relative_position': self._calculate_relative_position(
                                     value_candidate['coordinates'], word_data
                                 ),
-                                'raw_text_segment': f"{label_word['text']} {value_candidate['text']}"
+                                # FIX MANDATO CRÍTICO: Acceso seguro a campos text/texto evitando KeyError  
+                                # REASON: Eliminar error 'text' usando acceso seguro con fallback
+                                # IMPACT: Generación robusta de segmentos de texto sin fallos por campos inconsistentes
+                                'raw_text_segment': f"{label_word.get('text', label_word.get('texto', ''))} {value_candidate.get('text', value_candidate.get('texto', ''))}"
                             }
         
         return best_match
@@ -2616,18 +2671,49 @@ class AplicadorOCR:
 
     def _clean_field_value(self, raw_value, field_name):
         """
-        FIX: Limpia y normaliza valores extraídos según el tipo de campo
-        REASON: Garantizar consistencia en formato de datos extraídos
-        IMPACT: Datos estructurados listos para validación y almacenamiento
+        FIX MANDATO CRÍTICO: Limpia y normaliza valores extraídos según el tipo de campo
+        REASON: RECTIFICACIÓN PROFUNDA - Corregir conversión incorrecta de 104,54 a 10.454.00
+        IMPACT: Datos estructurados con formato decimal correcto según contexto venezolano
         """
         import re
         
         cleaned = raw_value.strip()
         
-        if field_name == 'monto':
-            # Extraer solo números y decimales
-            match = re.search(r'(\d+(?:[.,]\d{2})?)', cleaned)
-            return match.group(1).replace(',', '.') if match else cleaned
+        if field_name in ['monto', 'monto_total']:
+            # FIX MANDATO: Preservar formato decimal venezolano 104,54 → 104.54 (NO 10.454.00)
+            # REASON: El patrón anterior causaba conversión incorrecta de comas venezolanas
+            # IMPACT: Extracción correcta de montos en formato estándar para procesamiento
+            
+            # Buscar patrón de monto venezolano: hasta 3 dígitos, coma, 2 decimales
+            match = re.search(r'(\d{1,3}),(\d{2})', cleaned)
+            if match:
+                # Convertir formato venezolano a estándar: 104,54 → 104.54
+                enteros = match.group(1)
+                decimales = match.group(2) 
+                normalized = f"{enteros}.{decimales}"
+                logger.debug(f"🏆 MANDATO: Monto normalizado {cleaned} → {normalized}")
+                return normalized
+            
+            # Si no tiene decimales con coma, buscar solo números
+            match_int = re.search(r'(\d+)', cleaned)
+            if match_int:
+                return match_int.group(1)
+                
+            return cleaned
+            
+        elif field_name in ['cedula', 'ci']:
+            # FIX MANDATO: Extracción correcta de cédula sin mezclar con referencias
+            # REASON: Extraer 061025 de "2/ 061025" correctamente sin confundir con referencia
+            # IMPACT: Separación clara entre cédula y otros identificadores numéricos
+            
+            # Buscar patrón de cédula venezolana: formato 061025 (6 dígitos típicos)
+            match = re.search(r'(?:V-?|E-?|J-?)?(\d{6,8})', cleaned)
+            if match:
+                cedula_num = match.group(1)
+                logger.debug(f"🏆 MANDATO: Cédula extraída {cleaned} → {cedula_num}")
+                return cedula_num
+            
+            return cleaned
             
         elif field_name == 'numero_referencia':
             # Extraer solo caracteres alfanuméricos y guiones

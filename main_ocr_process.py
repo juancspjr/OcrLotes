@@ -1215,10 +1215,28 @@ class OrquestadorOCR:
             for pattern in monto_patterns:
                 matches = re.findall(pattern, texto_completo, re.IGNORECASE)
                 if matches:
-                    # Tomar el monto más grande (probable monto principal)
-                    montos = [float(m.replace(',', '').replace('.', '')) for m in matches]
-                    monto_principal = max(montos)
-                    extraccion_empresa['monto'] = f"{monto_principal:,.2f}".replace(',', '.')
+                    # FIX MANDATO CRÍTICO: Preservar formato decimal venezolano 104,54 → 104.54 (NO 10.454.00)
+                    # REASON: Corrección específica del mandato - conversión incorrecta de 104,54 a 10.454.00
+                    # IMPACT: Extracción correcta de montos decimales según formato venezolano
+                    
+                    montos_normalizados = []
+                    for monto_str in matches:
+                        # Identificar formato venezolano con coma como separador decimal
+                        if ',' in monto_str and monto_str.count(',') == 1 and monto_str.split(',')[1].isdigit() and len(monto_str.split(',')[1]) == 2:
+                            # Formato venezuelano: 104,54 → 104.54
+                            monto_normalizado = monto_str.replace(',', '.')
+                            montos_normalizados.append(float(monto_normalizado))
+                        else:
+                            # Formato internacional con puntos como separadores de miles
+                            monto_limpio = monto_str.replace('.', '').replace(',', '.')
+                            try:
+                                montos_normalizados.append(float(monto_limpio))
+                            except ValueError:
+                                continue
+                    
+                    if montos_normalizados:
+                        monto_principal = max(montos_normalizados)
+                        extraccion_empresa['monto'] = f"{monto_principal:.2f}"
                     extraccion_empresa['campos_detectados'] += 1
                     break
             

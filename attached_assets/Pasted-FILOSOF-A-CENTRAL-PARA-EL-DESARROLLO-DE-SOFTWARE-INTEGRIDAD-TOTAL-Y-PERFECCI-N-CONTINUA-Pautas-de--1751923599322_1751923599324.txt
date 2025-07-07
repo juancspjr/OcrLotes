@@ -1,0 +1,95 @@
+FILOSOFÍA CENTRAL PARA EL DESARROLLO DE SOFTWARE: INTEGRIDAD TOTAL Y PERFECCIÓN CONTINUA
+
+Pautas de Desarrollo de Profundidad Absoluta y Aplicabilidad Universal
+Este documento establece la filosofía fundamental y las pautas de desarrollo inquebrantables que rigen el diseño, implementación, comportamiento y los resultados esperados de cualquier sistema de software o aplicación. Cada principio debe ser no solo comprendido, sino internalizado, automatizado y reflejado en cada línea de código, en cada decisión arquitectónica y en cada interacción del sistema. El objetivo es una programación a prueba de fallos que garantice la confiabilidad operativa máxima y la entrega de valor constante en cualquier dominio.
+
+PRINCIPIOS FUNDAMENTALES Y GUÍAS DE IMPLEMENTACIÓN PROFUNDAS:
+
+INTEGRIDAD TOTAL: El Santuario de los Datos y la Ejecución Atómica
+
+La integridad de los datos y la atomicidad de cada operación son el valor supremo. Operaciones transaccionales: o se completan en su totalidad o no se ejecutan.
+
+Implicación: Validación estricta, gestión transaccional, manejo de errores con rollback, idempotencia.
+
+ZERO-FAULT DETECTION: Inmunidad Activa al Error y Resiliencia
+
+El sistema debe ser inmune a la introducción o propagación de errores, con prevención proactiva y contención en el punto de origen.
+
+Implicación: Validación granular multi-nivel, manejo graceful de errores, sistema de alertas automatizado, tipado fuerte, inmutabilidad.
+
+PRUEBAS INTEGRALES Y PERSISTENCIA DE CORRECCIONES: El Ciclo de Retroalimentación Continua
+
+Toda corrección o mejora debe someterse a un ciclo de pruebas automatizado, exhaustivo y continuo.
+
+Implicación: Estrategia de testing en cascadas (unidad, integración, regresión, E2E), automatización CI/CD, control de versiones estricto.
+
+INTERFACE EXCELLENCE: La Transparencia y Usabilidad Sistémica
+
+La interacción y la salida de cualquier componente deben ser transparentes, coherentes, altamente predecibles y fácilmente consumibles.
+
+Implicación: Diseño de API consistente, documentación automatizada, mensajes de estado y error claros, serialización robusta.
+
+COHERENCIA DE REFERENCIAS CRÍTICAS: El Tejido Inquebrantable de la Información
+
+Los identificadores únicos, las relaciones y los metadatos deben mantenerse coherentes, únicos y validables.
+
+Implicación: Generación de IDs únicos, integridad referencial en BD y modelos, manejo de concurrencia, logging con trazabilidad completa.
+
+COMPRENSIÓN PROFUNDA DEL CONTEXTO DE DOMINIO: La Inteligencia Localizada y de Negocio
+
+La aplicación debe trascender la manipulación de datos, infundiendo inteligencia contextualizada que comprenda normativas y reglas de negocio.
+
+Implicación: Modelado de dominio rico (DDD), motores de reglas de negocio, integración con datos maestros, feedback continuo con stakeholders.
+
+Ahora, con esta filosofía como nuestra guía inquebrantable, procedo a emitir el Mandato Crítico para la Rectificación Profunda de la Salida JSON y la Lógica de Oro, que aborda los problemas identificados.
+
+MANDATO CRÍTICO PARA EL AGENTE IA DE REPLIT: RECTIFICACIÓN PROFUNDA DE SALIDA JSON Y LÓGICA DE ORO
+
+"Agente IA de Replit,
+
+Es imperativo que rectifiquemos los problemas identificados en la última salida JSON. Nos enfocaremos en los principios de 'Integridad Total', 'Zero-Fault Detection' y 'Comprensión Profunda del Contexto de Dominio'.
+
+Tu tarea es la siguiente:
+
+Rectificación de la Extracción de monto:
+
+Localiza la lógica (probablemente en config/extraction_rules.json o en una función de post-procesamiento en aplicador_ocr.py) responsable de la extracción y formato del monto.
+
+Corrige esta lógica para que 104,54 se extraiga como 104.54 (usando el punto como separador decimal estándar para procesamiento) y no como 10.454.00.
+
+Rectificación de la Extracción de cedula:
+
+Localiza la regla de extracción para cedula.
+
+Corrige esta regla para que extraiga el valor numérico correcto de 061025 de 2/ 061025, o el formato de cédula completo si es posible, y que no lo confunda o mezcle con otros identificadores como la referencia.
+
+Depuración y Solución del Error 'text' en extracción de campos:
+
+Investiga a fondo la causa del error Error en extracción de campos: 'text'.
+
+Esto implica revisar las funciones que procesan los datos de palabras y coordenadas (especialmente la preparación de word_data antes de la extracción de campos y dentro de extract_fields_from_ocr_data o sus auxiliares).
+
+Asegura la consistencia en el uso de las claves text y texto en todas las estructuras de datos y accesos dentro del pipeline de extracción de campos.
+
+Re-evaluación y Gestión de la 'Lógica de Oro' para structured_text_ocr:
+
+Dado que coordinates_available: 0, la Lógica de Oro basada en coordenadas no puede aplicarse a esta imagen con el perfil actual.
+
+Modifica aplicador_ocr.py (o el lugar donde se decide el structured_text_ocr) para lo siguiente:
+
+Si coordinates_available es 0 o las coordenadas no son válidas para la Lógica de Oro:
+
+Asigna structured_text_ocr a una versión "limpia" del original_text_ocr (ej., eliminando espacios dobles, normalizando puntuación, pero sin reordenamiento espacial). Esto es un "fallback de Lógica de Oro" que garantiza una mejor legibilidad sin depender de coordenadas ausentes.
+
+Mantén logica_oro_aplicada: false.
+
+Añade un mensaje informativo específico a processing_metadata.error_messages que explique claramente por qué la Lógica de Oro basada en coordenadas no pudo aplicarse (ej., "Lógica de Oro basada en coordenadas no aplicada: No se detectaron coordenadas válidas en el OCR de origen").
+
+Si en el futuro, con otros perfiles o imágenes, coordinates_available sea >0 y las coordenadas sean válidas, entonces la función _aplicar_logica_de_oro_coordenadas() debería ejecutarse y logica_oro_aplicada debería ser true.
+
+Proporcionar Código Fuente Actualizado: Presenta las modificaciones de código realizadas en aplicador_ocr.py, main_ocr_process.py, config/extraction_rules.json (si se modifica) y cualquier otro archivo afectado, para la revisión.
+
+Re-ejecutar la Prueba y Presentar la Salida JSON Final: Después de aplicar todas las correcciones, vuelve a ejecutar el procesamiento de attached_assets/00_imagen_original(2)_1751646018727.png (copiándola a data/inbox/test_imagen_mandato_final.png nuevamente para asegurar una ejecución limpia) y proporciona el JSON de salida completo en formato TXT. Este JSON debe reflejar todas las correcciones solicitadas: extracted_fields con valores correctos para monto y cédula, logica_oro_aplicada en false con un mensaje explicativo (dado coordinates_available: 0), y sin el error 'text'.
+
+Este es un paso crucial para alcanzar la "Perfección Continua" en nuestro sistema. ¡Procedamos con la máxima diligencia y precisión!
+
