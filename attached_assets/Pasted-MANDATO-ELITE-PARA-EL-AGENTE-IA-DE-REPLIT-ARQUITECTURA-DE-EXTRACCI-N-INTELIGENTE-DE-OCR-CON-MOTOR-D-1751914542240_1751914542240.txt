@@ -1,0 +1,182 @@
+MANDATO ELITE PARA EL AGENTE IA DE REPLIT: ARQUITECTURA DE EXTRACCIÓN INTELIGENTE DE OCR CON MOTOR DE REGLAS CONFIGURABLE Y DOCUMENTACIÓN EXHAUSTIVA DE PATRONES
+
+Contexto Operacional y Visión de Alto Nivel:
+El Sistema OCR Empresarial Asíncrono es crítico para la automatización de la extracción de datos financieros de recibos de pago. El objetivo actual es evolucionar su "Lógica de Oro" y motor de mapeo de campos a un estado de inteligencia superior, adaptabilidad dinámica y extensibilidad sin precedentes. Esto significa trascender la extracción basada en coordenadas estáticas para implementar un "Motor de Reglas de Extracción Configurable" que permita al sistema "aprender" y reconocer nuevos patrones de recibos (nuevos bancos, nuevos layouts) simplemente actualizando un archivo de configuración, sin requerir modificaciones en el código fuente principal. Esto garantiza la Integridad Total de la base de código y la Perfección Continua en la adaptabilidad del sistema.
+
+FILOSOFÍA DE DESARROLLO NO NEGOCIABLE (INCLUIR TEXTUALMENTE EN LA SALIDA):
+Toda la concepción, diseño, implementación y validación de esta solución DEBE adherirse estrictamente y reflejar cada uno de los principios de la "FILOSOFÍA CENTRAL PARA EL DESARROLLO DE SOFTWARE: INTEGRIDAD TOTAL Y PERFECCIÓN CONTINUA". Es imperativo que el Agente IA demuestre explícitamente cómo cada punto de la solución propuesta contribuye al cumplimiento de esta filosofía, especialmente en los siguientes aspectos:
+
+INTEGRIDAD TOTAL: La precisión, completitud y consistencia de los datos financieros extraídos (referencia/operación, beneficiario, concepto/motivo) es el valor supremo. Cualquier operación de extracción debe comportarse como atómica, garantizando que el estado de los datos procesados sea siempre consistente, incluso ante anomalías.
+
+Aplicación: Las nuevas reglas y validaciones deben minimizar la posibilidad de extracciones parciales o corruptas, y cualquier ambigüedad en la asignación de campos debe resolverse con lógicas de desambiguación robustas.
+
+ZERO-FAULT DETECTION: El sistema debe ser proactivamente inmune a la introducción y propagación de errores y falsos positivos. Los datos irrelevantes deben ser descartados de forma inteligente y segura.
+
+Aplicación: Implementación de validaciones multi-nivel (confianza OCR, regex, validación cruzada), listas negras contextuales y mecanismos de logging que detecten y alerten sobre anomalías en la extracción antes de que impacten el resultado final.
+
+PRUEBAS INTEGRALES Y PERSISTENCIA DE CORRECCIONES: Cada mejora debe estar respaldada por un ciclo exhaustivo de pruebas automatizadas que garanticen la no regresión y la persistencia de las correcciones.
+
+Aplicación: Generación de nuevos casos de prueba unitarios para cada componente del motor de reglas, pruebas de integración para el flujo completo de extracción y pruebas de regresión utilizando el conjunto de imágenes de recibos proporcionado (incluyendo casos conocidos de éxito y falsos positivos) para asegurar que las nuevas reglas no rompen la funcionalidad existente.
+
+INTERFACE EXCELLENCE: La interfaz de las funciones modificadas y, crucialmente, la estructura y el uso del motor de reglas configurable, deben ser transparentes, coherentes, altamente predecibles y auto-documentados en su uso. La documentación debe ser de CLARIDAD ABSOLUTA.
+
+Aplicación: Diseño de un esquema de reglas intuitivo y una explicación detallada sobre cómo se interactúa con él para extender la capacidad del sistema.
+
+COMPRENSIÓN PROFUNDA DEL CONTEXTO DE DOMINIO: La solución debe infundir inteligencia contextualizada que comprenda las particularidades (ej. variabilidad de layouts de recibos) y reglas de negocio implícitas del dominio financiero.
+
+Aplicación: Las reglas configurables deben permitir la definición de heurísticas de negocio complejas y la priorización de información relevante en función del contexto (ej. palabras clave de bancos, formato de montos).
+
+TAREAS ESPECÍFICAS DE ALTO DETALLE PARA EL AGENTE IA:
+
+REFACTORIZACIÓN DE _aplicar_logica_de_oro_coordenadas() PARA ADAPTABILIDAD GEOMÉTRICA (Archivo: aplicador_ocr.py, Ubicación actual: Líneas 795-840):
+
+Propósito de la Modificación: Eliminar la dependencia de umbrales de píxeles fijos (tolerancia_y, distancia_threshold) que limitan la adaptabilidad a diversos layouts de recibos.
+
+Diseño de la Lógica Dinámica:
+
+Implementar un algoritmo para calcular tolerancia_y y distancia_threshold dinámicamente. Este algoritmo debe realizar un análisis estadístico de las dimensiones y el espaciado de las palabras reconocidas en word_data.
+
+Cálculo Sugerido: Podría ser la desviación estándar o un porcentaje del promedio de las alturas de las palabras (height = y2 - y1) para tolerancia_y, y un porcentaje del ancho promedio de los caracteres o palabras para distancia_threshold. El algoritmo debe ser robusto a outliers.
+
+Validación: La nueva lógica dinámica debe ser probada para asegurar que el reordenamiento del texto (agrupación por líneas y bloques) sea consistente y preciso en una amplia gama de documentos de prueba (considerando las imágenes de recibos proporcionadas como casos de estudio).
+
+Impacto en la Filosofía: Fortalece Zero-Fault Detection al reducir errores de agrupamiento y Comprensión Profunda del Contexto de Dominio al adaptarse a la geometría real del documento.
+
+DISEÑO E IMPLEMENTACIÓN DE UN "MOTOR DE REGLAS DE EXTRACCIÓN CONFIGURABLE" PARA _extract_fields_with_positioning():
+
+Propósito Central: Permitir la definición y gestión de patrones de extracción de forma externa al código, haciendo el sistema adaptable a nuevos formatos de recibos sin re-despliegue de código.
+
+Diseño del Esquema de Configuración (extraction_rules.json / receipt_patterns.yaml):
+
+Proponer un esquema JSON (o YAML) detallado para el archivo de configuración. Este esquema debe ser jerárquico, permitiendo la definición de reglas para cada campo clave: valor_referencia_operacion, datos_beneficiario, concepto_motivo, y cualquier otro campo que se identifique como estratégico.
+
+Para cada campo, el esquema debe permitir la especificación de una lista de objetos de reglas (rule_set), donde cada objeto represente un patrón de extracción potencial.
+
+Cada objeto de regla DEBE incluir (como mínimo):
+
+rule_id: String único para identificar la regla (ej., "REF_BANCO_A_PATRON_1").
+
+keywords: Una lista de strings. Términos exactos o frases clave (ej., ["Referencia:", "No. Operación"]) que el sistema debe buscar.
+
+fuzzy_matching_tolerance: (Float, 0.0-1.0). Umbral de tolerancia para el fuzzy matching (ej., distancia Levenshtein) aplicado a las keywords. Un valor de 0.8 podría significar 80% de similitud.
+
+proximity_preference: (String: "vertical_below", "horizontal_right", "any"). Define la dirección preferente de búsqueda del valor con respecto a la keyword.
+
+search_window_relative_px: (Integer). Tamaño de la ventana de búsqueda en píxeles alrededor de la keyword, relativa a su posición (ej., 100px).
+
+value_regex_patterns: Una lista de strings. Expresiones regulares que el valor candidato DEBE cumplir (ej., ^\d{10,}$, ^\d{1,3}(?:[.,]\d{3})*(?:[.,]\d{2})?$). El valor se validará contra CADA regex hasta encontrar una coincidencia.
+
+min_ocr_confidence_keyword: (Float, 0.0-1.0). Confianza mínima requerida para la palabra clave en sí.
+
+min_ocr_confidence_value: (Float, 0.0-1.0). Confianza mínima requerida para el texto del valor candidato.
+
+exclusion_patterns: Una lista de strings (palabras/frases). Si estas palabras/frases se encuentran dentro de la search_window_relative_px, la regla actual debe ser descartada para ese candidato, previniendo falsos positivos (ej., ["Total a pagar", "Atendido por"]).
+
+priority: (Integer). Un valor de prioridad para la regla (ej., 1 para alta, 5 para baja). Si múltiples reglas coinciden, se prefiere la de mayor prioridad.
+
+description: (String). Una breve descripción de cuándo aplicar esta regla.
+
+Lógica de Procesamiento del Motor de Reglas en _extract_fields_with_positioning():
+
+Implementar la carga del archivo de configuración al inicio del AplicadorOCR (o un mecanismo de recarga en caliente si se considera necesario para entornos de producción con alta iteración).
+
+Modificar la lógica de mapeo para iterar sobre las reglas definidas en el archivo de configuración para cada campo.
+
+Para cada campo candidato, calcular un "score de coincidencia" que considere:
+
+La presencia de keywords (y su fuzzy_matching_tolerance).
+
+La proximity_preference y search_window_relative_px.
+
+La validación de value_regex_patterns.
+
+Los min_ocr_confidence_keyword y min_ocr_confidence_value.
+
+La ausencia de exclusion_patterns.
+
+Asignar el valor al campo basándose en el candidato con el score más alto que cumpla todas las condiciones, priorizando por priority.
+
+Manejo de Múltiples Coincidencias y Desambiguación (Integridad Total y Zero-Fault Detection):
+
+Si un mismo texto OCR coincide con reglas de diferentes campos (ej., un número largo que podría ser referencia o monto), implementar una lógica de desambiguación. Esto podría basarse en la priority de la regla, la presencia de símbolos de moneda para montos, o reglas de dominio específicas (ej., si hay un monto obvio en la proximidad, el otro número largo es probablemente la referencia).
+
+El sistema debe registrar las ambigüedades y las decisiones de desambiguación en el logging para auditoría.
+
+Impacto en la Filosofía: Esto es el corazón de la Comprensión Profunda del Contexto de Dominio (a través de la parametrización del conocimiento de negocio), Integridad Total (validaciones precisas y desambiguación), Zero-Fault Detection (descarte inteligente de irrelevantes y falsos positivos) e Interface Excellence (configuración clara y extensible).
+
+REFINAMIENTO DE _refinar_concepto_empresarial():
+
+Propósito: Mejorar la extracción del campo "Concepto/Motivo", que a menudo es texto libre.
+
+Lógica de Refinamiento: Después de que el "Motor de Reglas" haya extraído los campos estructurados, esta función debe analizar el texto residual. Se buscará el texto más largo y coherente que no haya sido mapeado a otros campos y que se encuentre en áreas comunes para conceptos (ej., en el centro del documento, debajo de los detalles de la transacción, o cerca de "Concepto:" si no fue capturado por la regla principal debido a variaciones). Se debe priorizar el texto con mayor min_ocr_confidence_value en el residual.
+
+Impacto en la Filosofía: Fortalece la Integridad Total al asegurar la captura de información crucial y la Comprensión Profunda del Contexto de Dominio al inferir la intención del texto residual.
+
+CONSIDERACIONES ADICIONALES CLAVE (METAFILOSOFÍA):
+
+GESTIÓN DE LA CONFIGURACIÓN (extraction_rules.json / receipt_patterns.yaml):
+
+El Agente IA debe proponer una ubicación lógica para este archivo (ej., un subdirectorio config/ o directamente en config.py si es pequeño, aunque se prefiere un archivo separado para la extensibilidad).
+
+Detallar el mecanismo de carga (ej., uso de json.load() al iniciar AplicadorOCR).
+
+LOGGING AVANZADO (Zero-Fault Detection y Perfección Continua):
+
+Mejorar los puntos de logging existentes en _aplicar_logica_de_oro_coordenadas() y _extract_fields_with_positioning().
+
+El logging debe registrar:
+
+Los valores dinámicos calculados para tolerancia_y y distancia_threshold.
+
+Qué reglas del extraction_rules.json se están aplicando.
+
+Los score de coincidencia de los candidatos a cada campo.
+
+Las razones específicas por las cuales un candidato fue descartado (ej., "Baja confianza OCR", "Exclusión por palabra clave").
+
+Las decisiones de desambiguación cuando múltiples reglas coinciden.
+
+Esto es vital para la depuración, el monitoreo y la optimización continua de las reglas.
+
+PRUEBAS INTEGRALES (Persistencia de Correcciones):
+
+Unitarias: Pruebas para el algoritmo dinámico de umbrales y para cada componente del motor de reglas (carga de configuración, evaluación de reglas, cálculo de scores, desambiguación).
+
+Integración: Pruebas que validen el flujo completo desde la entrada word_data hasta la salida de campos extraídos, utilizando diversas configuraciones de reglas.
+
+Regresión: Utilizar las imágenes de recibos proporcionadas como un conjunto de datos de regresión. Asegurar que las extracciones que actualmente funcionan sigan funcionando y que los falsos positivos previamente identificados sean correctamente manejados por las nuevas reglas. Cada caso de regresión debe tener una expectativa de salida definida.
+
+El Agente IA debe explicar cómo se asegurarían estas pruebas.
+
+FORMATO DE RESPUESTA DEL AGENTE IA (EXIGENCIA ELITE):
+
+La respuesta debe ser una explicación EXTREMADAMENTE DETALLADA, CLARA Y SIN AMBIGÜEDADES, en formato TXT y en español. Debe incluir:
+
+Resumen de la Solución Propuesta: Visión general de cómo se abordarán los requerimientos.
+
+Plan de Implementación Detallado por Tarea:
+
+Modificaciones en _aplicar_logica_de_oro_coordenadas().
+
+Diseño del esquema de extraction_rules.json (o YAML) con ejemplos.
+
+Lógica del "Motor de Reglas" en _extract_fields_with_positioning().
+
+Refinamiento de _refinar_concepto_empresarial().
+
+SECCIÓN CRÍTICA: GUÍA DETALLADA Y EJEMPLOS PARA AGREGAR NUEVOS PATRONES/REGLAS. Esta sección debe ser lo suficientemente clara para un nuevo desarrollador, incluyendo:
+
+Explicación de cada campo en el esquema de reglas.
+
+Ejemplos de cómo crear una nueva regla para un campo específico de un recibo de un "nuevo banco".
+
+Consejos para la depuración y optimización de reglas.
+
+Cómo el sistema "aprovecha" estos nuevos patrones sin cambios de código.
+
+Estrategia de Logging Mejorado: Descripción de los nuevos puntos de logging y su propósito.
+
+Plan de Pruebas: Cómo se validará la solución, incluyendo ejemplos de casos de prueba.
+
+Validación con la Filosofía: Una sección explícita que explique cómo cada componente de la solución propuesta se alinea y refuerza los principios de la "FILOSOFÍA CENTRAL PARA EL DESARROLLO DE SOFTWARE: INTEGRIDAD TOTAL Y PERFECCIÓN CONTINUA".
+

@@ -16,6 +16,8 @@ from PIL import Image
 import config
 from onnxtr.io import DocumentFile
 from onnxtr.models import ocr_predictor
+from fuzzywuzzy import fuzz
+import statistics
 
 # Configurar logging
 # FIX: Configuración directa para evitar problemas con tipos de datos en LOGGING_CONFIG
@@ -69,6 +71,8 @@ class AplicadorOCR:
     _predictor_instance = None
     _predictor_lock = threading.Lock()
     _instance_initialized = False
+    _extraction_rules = None
+    _rules_lock = threading.Lock()
     
     @classmethod
     def _get_predictor(cls, profile_config=None):
@@ -296,7 +300,83 @@ class AplicadorOCR:
         if self.cpu_config.get('enable_warmup', False):
             import threading
             threading.Thread(target=self._warmup_common_models, daemon=True).start()
+            
+        # FIX: Motor de Reglas de Extracción Configurable - MANDATO ELITE
+        # REASON: Permitir definición externa de patrones de extracción sin redespliegue
+        # IMPACT: Sistema adaptable a nuevos formatos de recibos mediante configuración
+        self._load_extraction_rules()
     
+    def _load_extraction_rules(self):
+        """
+        FIX: Carga del archivo de configuración de reglas de extracción
+        REASON: Implementar motor configurable para patrones de extracción externos
+        IMPACT: Sistema adaptable sin redespliegue de código
+        """
+        with self._rules_lock:
+            if self._extraction_rules is None:
+                try:
+                    rules_path = Path('config/extraction_rules.json')
+                    if rules_path.exists():
+                        with open(rules_path, 'r', encoding='utf-8') as f:
+                            self._extraction_rules = json.load(f)
+                        logger.info(f"✅ Reglas de extracción cargadas: {len(self._extraction_rules.get('extraction_rules', {}))} campos configurados")
+                    else:
+                        logger.warning(f"❌ Archivo de reglas no encontrado: {rules_path}")
+                        self._extraction_rules = {"extraction_rules": {}, "global_settings": {}}
+                except Exception as e:
+                    logger.error(f"❌ Error cargando reglas de extracción: {e}")
+                    self._extraction_rules = {"extraction_rules": {}, "global_settings": {}}
+
+    def _calculate_dynamic_thresholds(self, word_data):
+        """
+        FIX: Cálculo dinámico de umbrales para lógica de oro adaptativa
+        REASON: Eliminar dependencia de píxeles fijos para adaptarse a layouts diversos
+        IMPACT: Agrupamiento preciso independiente del tamaño de imagen
+        """
+        if not word_data or len(word_data) < 2:
+            return {"tolerancia_y": 10, "distancia_threshold": 30}
+        
+        try:
+            # Calcular alturas de palabras
+            heights = []
+            widths = []
+            for word in word_data:
+                coords = word.get('coordinates', [0, 0, 0, 0])
+                if len(coords) == 4 and coords != [0, 0, 0, 0]:
+                    height = abs(coords[3] - coords[1])  # y2 - y1
+                    width = abs(coords[2] - coords[0])   # x2 - x1
+                    if height > 0 and width > 0:
+                        heights.append(height)
+                        widths.append(width)
+            
+            if not heights:
+                return {"tolerancia_y": 10, "distancia_threshold": 30}
+            
+            # Cálculo estadístico de umbrales
+            avg_height = statistics.mean(heights)
+            std_height = statistics.stdev(heights) if len(heights) > 1 else avg_height * 0.2
+            avg_width = statistics.mean(widths) if widths else avg_height
+            
+            # Tolerancia Y: 50% de la altura promedio + 1 desviación estándar
+            tolerancia_y = max(5, int(avg_height * 0.5 + std_height))
+            
+            # Distancia threshold: 150% de la altura promedio (espacio entre bloques)
+            distancia_threshold = max(15, int(avg_height * 1.5))
+            
+            logger.debug(f"🔧 Umbrales dinámicos calculados: tolerancia_y={tolerancia_y}, distancia_threshold={distancia_threshold}")
+            logger.debug(f"📊 Estadísticas: altura_promedio={avg_height:.1f}, std_altura={std_height:.1f}, {len(heights)} palabras analizadas")
+            
+            return {
+                "tolerancia_y": tolerancia_y,
+                "distancia_threshold": distancia_threshold,
+                "avg_height": avg_height,
+                "avg_width": avg_width
+            }
+            
+        except Exception as e:
+            logger.warning(f"⚠️ Error calculando umbrales dinámicos: {e}, usando valores por defecto")
+            return {"tolerancia_y": 10, "distancia_threshold": 30}
+
     def _warmup_common_models(self):
         """
         FIX: Pre-carga de modelos más frecuentes en background
@@ -813,10 +893,19 @@ class AplicadorOCR:
             # Filtrar palabras con coordenadas válidas
             valid_words = [w for w in word_data if w.get('coordinates') and w['coordinates'] != [0, 0, 0, 0]]
             if not valid_words:
+                logger.warning("🔧 No hay coordenadas válidas - usando fallback de ordenamiento básico")
                 return ' '.join(w['text'] for w in word_data)
             
-            # Paso 1: Agrupar por proximidad vertical (líneas)
-            lines = self._agrupar_por_lineas(valid_words)
+            # FIX: Cálculo dinámico de umbrales basado en estadísticas de la imagen
+            # REASON: Adaptación automática a diferentes tamaños y resoluciones de imagen
+            # IMPACT: Agrupamiento preciso sin configuración manual
+            thresholds = self._calculate_dynamic_thresholds(valid_words)
+            
+            logger.debug(f"🎯 Aplicando lógica de oro con {len(valid_words)} palabras válidas")
+            logger.debug(f"⚙️ Umbrales adaptativos: tolerancia_y={thresholds['tolerancia_y']}, distancia_threshold={thresholds['distancia_threshold']}")
+            
+            # Paso 1: Agrupar por proximidad vertical (líneas) con umbral adaptativo
+            lines = self._agrupar_por_lineas(valid_words, thresholds['tolerancia_y'])
             
             # Paso 2: Ordenar líneas de arriba a abajo
             lines_ordenadas = sorted(lines, key=lambda line: min(w['coordinates'][1] for w in line))
@@ -825,16 +914,18 @@ class AplicadorOCR:
             for line in lines_ordenadas:
                 line.sort(key=lambda w: w['coordinates'][0])
             
-            # Paso 4: Identificar bloques de información relacionados
-            bloques = self._identificar_bloques_relacionados(lines_ordenadas)
+            # Paso 4: Identificar bloques de información relacionados con umbral adaptativo
+            bloques = self._identificar_bloques_relacionados(lines_ordenadas, thresholds['distancia_threshold'])
             
             # Paso 5: Construir texto final con estructura lógica
             texto_estructurado = self._construir_texto_estructurado(bloques)
             
+            logger.debug(f"✅ Lógica de oro completada: {len(bloques)} bloques, {len(lines_ordenadas)} líneas")
+            
             return texto_estructurado
             
         except Exception as e:
-            logger.warning(f"Error en lógica de oro coordenadas: {e}")
+            logger.warning(f"❌ Error en lógica de oro coordenadas: {e}")
             # Fallback: texto simple ordenado por coordenadas básicas
             return self._fallback_ordenamiento_basico(word_data)
     
@@ -861,7 +952,7 @@ class AplicadorOCR:
         
         return lines
     
-    def _identificar_bloques_relacionados(self, lines_ordenadas):
+    def _identificar_bloques_relacionados(self, lines_ordenadas, distancia_threshold=30):
         """Identifica bloques de información relacionados por proximidad"""
         if not lines_ordenadas:
             return []
@@ -1605,7 +1696,279 @@ class AplicadorOCR:
         
         return texto
     
-    def _extract_fields_with_positioning(self, word_data, full_text, caption_text=""):
+    def _extract_fields_with_positioning_configurable(self, word_data, full_text, caption_text=""):
+        """
+        FIX: Motor de Extracción Configurable con Reglas Inteligentes - MANDATO ELITE
+        REASON: Sistema de extracción basado en reglas configurables externas sin redespliegue
+        IMPACT: Adaptabilidad total a nuevos formatos de recibos mediante configuración JSON
+        """
+        extracted_fields = {}
+        
+        try:
+            # Obtener reglas de extracción cargadas
+            if not self._extraction_rules or not self._extraction_rules.get('extraction_rules'):
+                logger.warning("⚠️ Reglas de extracción no disponibles - usando extracción básica")
+                return self._extract_fields_with_positioning_legacy(word_data, full_text, caption_text)
+            
+            extraction_rules = self._extraction_rules['extraction_rules']
+            global_settings = self._extraction_rules.get('global_settings', {})
+            
+            logger.debug(f"🔧 Iniciando extracción configurable con {len(extraction_rules)} reglas")
+            
+            # Procesar cada campo según sus reglas configuradas
+            for field_name, field_config in extraction_rules.items():
+                extracted_value = self._extract_field_by_rules(
+                    field_name, field_config, word_data, full_text, global_settings
+                )
+                
+                if extracted_value:
+                    extracted_fields[field_name] = extracted_value
+                    logger.debug(f"✅ Campo {field_name} extraído: {extracted_value}")
+                else:
+                    extracted_fields[field_name] = ""
+                    logger.debug(f"❌ Campo {field_name} no encontrado")
+            
+            logger.info(f"🎯 Extracción configurable completada: {len([v for v in extracted_fields.values() if v])} campos encontrados")
+            
+            return extracted_fields
+            
+        except Exception as e:
+            logger.error(f"❌ Error en extracción configurable: {e}")
+            return self._extract_fields_with_positioning_legacy(word_data, full_text, caption_text)
+    
+    def _extract_field_by_rules(self, field_name, field_config, word_data, full_text, global_settings):
+        """
+        FIX: Extracción de campo individual usando reglas configuradas
+        REASON: Implementar lógica de extracción flexible basada en patrones, proximidad y validación
+        IMPACT: Extracción precisa usando múltiples estrategias configurables
+        """
+        try:
+            patterns = field_config.get('patterns', [])
+            proximity_keywords = field_config.get('proximity_keywords', [])
+            fuzzy_enabled = field_config.get('fuzzy_matching', False)
+            validation_rules = field_config.get('validation', {})
+            
+            # Estrategia 1: Extracción por patrones regex (prioridad más alta)
+            regex_result = self._extract_by_regex_patterns(patterns, full_text)
+            if regex_result and self._validate_extracted_value(regex_result, validation_rules):
+                logger.debug(f"🎯 {field_name} extraído por regex: {regex_result}")
+                return regex_result
+            
+            # Estrategia 2: Extracción por proximidad espacial con coordenadas
+            if word_data and proximity_keywords:
+                proximity_result = self._extract_by_spatial_proximity(
+                    proximity_keywords, word_data, patterns, global_settings, fuzzy_enabled
+                )
+                if proximity_result and self._validate_extracted_value(proximity_result, validation_rules):
+                    logger.debug(f"🎯 {field_name} extraído por proximidad: {proximity_result}")
+                    return proximity_result
+            
+            # Estrategia 3: Fuzzy matching en texto completo
+            if fuzzy_enabled and proximity_keywords:
+                fuzzy_result = self._extract_by_fuzzy_matching(
+                    proximity_keywords, full_text, patterns, global_settings
+                )
+                if fuzzy_result and self._validate_extracted_value(fuzzy_result, validation_rules):
+                    logger.debug(f"🎯 {field_name} extraído por fuzzy: {fuzzy_result}")
+                    return fuzzy_result
+            
+            return None
+            
+        except Exception as e:
+            logger.warning(f"⚠️ Error extrayendo campo {field_name}: {e}")
+            return None
+    
+    def _extract_by_regex_patterns(self, patterns, text):
+        """Extrae valor usando patrones regex ordenados por prioridad"""
+        if not patterns or not text:
+            return None
+        
+        # Ordenar patrones por prioridad (menor número = mayor prioridad)
+        sorted_patterns = sorted(patterns, key=lambda p: p.get('priority', 999))
+        
+        for pattern_config in sorted_patterns:
+            regex_pattern = pattern_config.get('regex')
+            if not regex_pattern:
+                continue
+                
+            try:
+                matches = re.findall(regex_pattern, text, re.IGNORECASE | re.MULTILINE)
+                if matches:
+                    # Tomar el primer grupo capturado o el match completo
+                    result = matches[0] if isinstance(matches[0], str) else matches[0][0] if matches[0] else None
+                    if result and result.strip():
+                        return result.strip()
+            except re.error as e:
+                logger.warning(f"⚠️ Regex inválido: {regex_pattern} - {e}")
+                continue
+        
+        return None
+    
+    def _extract_by_spatial_proximity(self, keywords, word_data, patterns, global_settings, fuzzy_enabled):
+        """Extrae valor usando proximidad espacial de coordenadas"""
+        try:
+            tolerance_h = global_settings.get('coordinate_tolerance', {}).get('horizontal', 50)
+            tolerance_v = global_settings.get('coordinate_tolerance', {}).get('vertical', 20)
+            
+            # Buscar keywords en las palabras detectadas
+            for keyword in keywords:
+                for i, word in enumerate(word_data):
+                    word_text = word.get('text', '').lower()
+                    
+                    # Comparación exacta o fuzzy
+                    is_match = False
+                    if fuzzy_enabled:
+                        is_match = fuzz.ratio(keyword.lower(), word_text) >= global_settings.get('fuzzy_matching', {}).get('threshold', 80)
+                    else:
+                        is_match = keyword.lower() in word_text
+                    
+                    if is_match:
+                        # Buscar valores cercanos espacialmente
+                        nearby_value = self._find_nearby_value_by_patterns(
+                            word, word_data, patterns, tolerance_h, tolerance_v
+                        )
+                        if nearby_value:
+                            return nearby_value
+            
+            return None
+            
+        except Exception as e:
+            logger.warning(f"⚠️ Error en proximidad espacial: {e}")
+            return None
+    
+    def _find_nearby_value_by_patterns(self, anchor_word, word_data, patterns, tolerance_h, tolerance_v):
+        """Busca valores cercanos que coincidan con los patrones"""
+        try:
+            anchor_coords = anchor_word.get('coordinates', [0, 0, 0, 0])
+            if anchor_coords == [0, 0, 0, 0]:
+                return None
+            
+            anchor_x, anchor_y = anchor_coords[0], anchor_coords[1]
+            
+            # Buscar palabras cercanas espacialmente
+            nearby_words = []
+            for word in word_data:
+                if word == anchor_word:
+                    continue
+                    
+                word_coords = word.get('coordinates', [0, 0, 0, 0])
+                if word_coords == [0, 0, 0, 0]:
+                    continue
+                
+                word_x, word_y = word_coords[0], word_coords[1]
+                
+                # Calcular distancia espacial
+                distance_h = abs(word_x - anchor_x)
+                distance_v = abs(word_y - anchor_y)
+                
+                if distance_h <= tolerance_h and distance_v <= tolerance_v:
+                    nearby_words.append({
+                        'word': word,
+                        'distance': distance_h + distance_v
+                    })
+            
+            # Ordenar por cercanía
+            nearby_words.sort(key=lambda x: x['distance'])
+            
+            # Probar patrones en palabras cercanas
+            for nearby in nearby_words:
+                word_text = nearby['word'].get('text', '')
+                for pattern_config in patterns:
+                    regex_pattern = pattern_config.get('regex')
+                    if not regex_pattern:
+                        continue
+                    
+                    try:
+                        if re.search(regex_pattern, word_text, re.IGNORECASE):
+                            return word_text.strip()
+                    except re.error:
+                        continue
+            
+            return None
+            
+        except Exception as e:
+            logger.warning(f"⚠️ Error buscando valores cercanos: {e}")
+            return None
+    
+    def _extract_by_fuzzy_matching(self, keywords, text, patterns, global_settings):
+        """Extrae valor usando fuzzy matching como fallback"""
+        try:
+            threshold = global_settings.get('fuzzy_matching', {}).get('threshold', 80)
+            
+            # Dividir texto en líneas y palabras
+            lines = text.split('\n')
+            
+            for keyword in keywords:
+                for line in lines:
+                    words_in_line = line.split()
+                    
+                    for word in words_in_line:
+                        if fuzz.ratio(keyword.lower(), word.lower()) >= threshold:
+                            # Buscar patrones en la misma línea
+                            for pattern_config in patterns:
+                                regex_pattern = pattern_config.get('regex')
+                                if not regex_pattern:
+                                    continue
+                                
+                                try:
+                                    matches = re.findall(regex_pattern, line, re.IGNORECASE)
+                                    if matches:
+                                        result = matches[0] if isinstance(matches[0], str) else matches[0][0] if matches[0] else None
+                                        if result and result.strip():
+                                            return result.strip()
+                                except re.error:
+                                    continue
+            
+            return None
+            
+        except Exception as e:
+            logger.warning(f"⚠️ Error en fuzzy matching: {e}")
+            return None
+    
+    def _validate_extracted_value(self, value, validation_rules):
+        """Valida valor extraído según reglas de validación"""
+        if not value or not validation_rules:
+            return bool(value)
+        
+        try:
+            # Validación de longitud
+            if 'min_length' in validation_rules:
+                if len(str(value)) < validation_rules['min_length']:
+                    return False
+            
+            if 'max_length' in validation_rules:
+                if len(str(value)) > validation_rules['max_length']:
+                    return False
+            
+            # Validación de valor numérico
+            if 'min_value' in validation_rules or 'max_value' in validation_rules:
+                try:
+                    numeric_value = float(str(value).replace(',', '.'))
+                    if 'min_value' in validation_rules and numeric_value < validation_rules['min_value']:
+                        return False
+                    if 'max_value' in validation_rules and numeric_value > validation_rules['max_value']:
+                        return False
+                except ValueError:
+                    return False
+            
+            # Validación de formato específico
+            validation_format = validation_rules.get('format')
+            if validation_format:
+                if validation_format == 'venezuelan_mobile':
+                    return bool(re.match(r'^(?:0412|0416|0426|0414|0424)\d{7}$', str(value)))
+                elif validation_format == 'venezuelan_id':
+                    return bool(re.match(r'^(?:V|E)[-]?\d{7,8}$', str(value), re.IGNORECASE))
+                elif validation_format == 'date':
+                    return bool(re.match(r'^\d{1,2}[-/]\d{1,2}[-/]\d{2,4}$', str(value)) or 
+                               re.match(r'^\d{4}[-/]\d{1,2}[-/]\d{1,2}$', str(value)))
+            
+            return True
+            
+        except Exception as e:
+            logger.warning(f"⚠️ Error validando valor: {e}")
+            return False
+    
+    def _extract_fields_with_positioning_legacy(self, word_data, full_text, caption_text=""):
         """
         FIX: Sistema de extracción posicional inteligente para recibos de pago
         REASON: Implementar mapeo de campos basado en proximidad y contexto posicional
