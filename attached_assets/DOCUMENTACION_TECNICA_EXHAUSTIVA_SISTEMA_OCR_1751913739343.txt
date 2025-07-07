@@ -1,0 +1,533 @@
+DOCUMENTACIÓN TÉCNICA EXHAUSTIVA DEL SISTEMA OCR EMPRESARIAL ASÍNCRONO
+=====================================================================================
+
+FECHA: 7 de Julio 2025
+ESTADO: Sistema completamente funcional tras migración Replit Agent → Replit
+FILOSOFÍA: Integridad Total + Zero-Fault Detection + Persistencia Inquebrantable
+
+=====================================================================================
+I. IDENTIFICACIÓN DE ARCHIVOS CLAVE Y ARQUITECTURA GENERAL
+=====================================================================================
+
+El sistema está organizado en una arquitectura modular de 6 capas principales:
+
+CAPA DE APLICACIÓN (app.py):
+- Archivo principal Flask que inicializa la aplicación web
+- Contiene manejo estandarizado de errores HTTP (400, 404, 413, 500)
+- Gestiona pre-carga de componentes OCR para sistema asíncrono
+- Variables críticas: _ocr_components_loaded (bool), _ocr_orchestrator (singleton)
+- Configuración de seguridad: SESSION_SECRET del ambiente, ProxyFix para HTTPS
+- Límite de archivos: 16MB máximo por upload
+- Workers asíncronos: batch_processing_worker() ejecuta en hilo separado
+
+CAPA DE CONFIGURACIÓN (config.py):
+- Contiene TODAS las constantes y configuraciones centralizadas del sistema
+- Variables críticas de rendimiento: ONNXTR_CONFIG con 7 perfiles distintos
+- Directorios base: BASE_DIR, TEMP_DIR, UPLOADS_DIR, MODELS_DIR, CACHE_DIR
+- Perfiles OCR: ultra_rapido, rapido, default, high_confidence, screenshot_optimized, elite_binary, digits
+- Cada perfil define: detection_model, recognition_model, confidence_threshold, onnx_providers
+- Umbrales de calidad: IMAGE_QUALITY_THRESHOLDS para validación automática
+- Configuración de memoria: límites para entorno de 4GB RAM
+
+CAPA DE ORQUESTACIÓN (main_ocr_process.py):
+- OrquestadorOCR: clase principal que coordina todo el flujo de procesamiento
+- Implementa Lazy Loading para módulos (validador, mejorador, aplicador)
+- Variables de estado: _processing_lock (threading.RLock), _max_concurrent_processes = 2
+- Métodos principales: procesar_lote_imagenes(), procesar_imagen(), generar_resultado_json()
+- Maneja procesamiento individual y por lotes con metadatos WhatsApp
+- Gestiona extracción de coordenadas y mapeo inteligente de campos
+
+CAPA DE VALIDACIÓN (validador_ocr.py):
+- ValidadorOCR: analiza calidad de imagen antes del procesamiento
+- Métricas calculadas: calidad_imagen, deteccion_texto, ruido_artefactos, geometria_orientacion
+- Algoritmos de análisis: histograma, variaciones de fondo, detección inteligente de tipo
+- Variables críticas: thresholds basados en config.IMAGE_QUALITY_THRESHOLDS
+- Genera puntuación_general (0-100) para determinar viabilidad OCR
+- Funciones clave: analizar_imagen(), _detectar_tipo_imagen_inteligente()
+
+CAPA DE MEJORA (mejora_ocr.py):
+- MejoradorOCR: aplica preprocesamiento adaptativo basado en diagnóstico
+- Pool de memoria para arrays NumPy reutilizables (50MB máximo)
+- Perfiles de procesamiento: ultra_rapido, rapido, equilibrado, alta_calidad
+- Secuencia adaptativa: deskewing, denoising, contraste, binarización, morfología
+- Variables de control: save_steps (bool), output_dir (Path), memory_pools (dict)
+- Función principal: procesar_imagen() con pasos condicionales basados en análisis
+
+CAPA DE APLICACIÓN OCR (aplicador_ocr.py):
+- AplicadorOCR: ejecuta OCR con OnnxTR y extrae datos estructurados
+- Patrón Singleton para predictor OnnxTR: _predictor_instance, _predictor_lock
+- Cache de resultados: _get_cached_result(), _save_cached_result()
+- Algoritmos centrales: 
+  * _aplicar_logica_de_oro_coordenadas(): reordena texto por proximidad espacial
+  * _refinar_concepto_empresarial(): extrae núcleo semántico conciso
+  * _extract_fields_with_positioning(): mapeo inteligente de campos financieros
+- Variables de extracción: word_data (coordenadas), full_text, extracted_fields
+
+CAPA DE RUTAS (routes.py):
+- Contiene todos los endpoints REST API del sistema
+- Variables globales asíncronas: _worker_running (bool), _worker_thread (threading.Thread)
+- Endpoints principales:
+  * POST /upload: carga de archivos con metadatos WhatsApp
+  * POST /api/ocr/process_batch: procesamiento por lotes
+  * GET /api/ocr/processed_files: lista archivos procesados
+  * GET /api/extract_results: descarga JSON consolidado
+  * POST /api/clean: limpieza con retención 24h
+- Funciones de validación: validate_whatsapp_metadata(), extract_metadata_from_filename()
+
+CAPA DE TEMPLATES (templates/):
+- interface_excellence_dashboard.html: dashboard principal con interfaz reactiva
+- dashboard_workflow.html: interfaz de flujo empresarial por etapas
+- results_viewer.html: visualizador de resultados individuales
+- Componentes JavaScript: binding reactivo, validación en tiempo real, preview automático
+
+=====================================================================================
+II. VARIABLES CRUCIALES Y SU FUNCIÓN EN EL SISTEMA
+=====================================================================================
+
+VARIABLES GLOBALES DE ESTADO:
+_ocr_components_loaded (bool): Indica si componentes OCR están pre-cargados
+_ocr_orchestrator (OrquestadorOCR): Instancia singleton del orquestador principal
+_worker_running (bool): Estado del worker asíncrono de procesamiento
+_worker_thread (threading.Thread): Hilo de ejecución del worker
+_predictor_instance (ocr_predictor): Instancia singleton del predictor OnnxTR
+_predictor_cache (dict): Cache de predictors por configuración de modelo
+
+VARIABLES DE CONFIGURACIÓN CRÍTICAS:
+ONNXTR_CONFIG (dict): Configuración maestra de todos los perfiles OCR
+- Perfiles disponibles: ultra_rapido, rapido, default, high_confidence, etc.
+- Cada perfil define modelos, umbrales y proveedores ONNX
+- Valores típicos: confidence_threshold (0.5-0.9), batch_size (1-16)
+
+IMAGE_QUALITY_THRESHOLDS (dict): Umbrales para validación automática
+- brillo_min/max: rango aceptable de luminosidad
+- contraste_min: contraste mínimo requerido
+- resolucion_min: resolución mínima en píxeles
+- score_minimo_aceptable: puntuación mínima para procesar
+
+VARIABLES DE PROCESAMIENTO:
+language (str): Idioma OCR ('spa', 'en') - afecta reconocimiento de caracteres
+config_mode (str): Perfil de configuración activo - determina modelos usados
+extract_financial (bool): Activa extracción de campos financieros específicos
+deteccion_inteligente (dict): Metadatos de detección automática de tipo imagen
+
+VARIABLES DE METADATOS WHATSAPP:
+numerosorteo (str): Identificador A-Z o 01-99 del archivo
+fechasorteo (str): Fecha formato YYYYMMDD
+idWhatsapp (str): ID único terminado en @lid
+nombre (str): Nombre del remitente
+horamin (str): Hora formato HH-MM
+caption (str): Texto del mensaje WhatsApp
+
+VARIABLES DE RESULTADOS:
+texto_total_ocr (str): Texto completo extraído reordenado por coordenadas
+concepto_empresarial (str): Núcleo semántico conciso (≤50 chars)
+palabras_detectadas (list): Lista de palabras con coordenadas y confianza
+coordenadas_palabras (list): Coordenadas [x1,y1,x2,y2] de cada palabra
+datos_extraidos (dict): Estructura con campos financieros mapeados
+
+VARIABLES DE EXTRACCIÓN FINANCIERA:
+referencia (str): Número de referencia de transacción (8-15 dígitos)
+monto (float): Cantidad monetaria extraída
+bancoorigen (str): Banco emisor de la transacción
+banco_destino (str): Banco receptor
+telefono (str): Teléfono venezolano validado (0412/0416/0426/0414/0424)
+cedula (str): Cédula de identidad
+pago_fecha (str): Fecha del pago extraída
+
+=====================================================================================
+III. ANÁLISIS DETALLADO DE FUNCIONES Y MÓDULOS PRINCIPALES
+=====================================================================================
+
+MÓDULO: aplicador_ocr.AplicadorOCR
+
+extraer_texto():
+- PROPÓSITO: Función principal de OCR que coordina todo el proceso de extracción
+- ENTRADAS: image_path (str), language ('spa'/'en'), config_mode (str), extract_financial (bool)
+- ALGORITMO: 
+  1. Verifica cache por hash MD5 de imagen
+  2. Selecciona perfil óptimo basado en detección inteligente
+  3. Inicializa predictor OnnxTR singleton
+  4. Ejecuta OCR y extrae coordenadas reales
+  5. Aplica lógica de oro para reordenamiento
+  6. Extrae campos financieros por proximidad
+  7. Guarda resultado en cache
+- SALIDAS: dict con texto_total_ocr, datos_extraidos, coordenadas, estadísticas
+- EFECTOS SECUNDARIOS: Crea cache, logs detallados, warm-up de modelos
+
+_aplicar_logica_de_oro_coordenadas():
+- PROPÓSITO: Reordena texto usando coordenadas geométricas para estructura lógica
+- ENTRADAS: word_data (list) con texto, coordenadas y confianza de cada palabra
+- ALGORITMO CENTRAL:
+  1. Agrupa palabras por líneas (tolerancia_y=10 píxeles)
+  2. Ordena líneas por coordenada Y (arriba a abajo)
+  3. Ordena palabras dentro de línea por coordenada X (izquierda a derecha)
+  4. Identifica bloques relacionados por proximidad (<50 píxeles)
+  5. Construye texto estructurado separando bloques con \n\n
+- PRINCIPIOS GEOMÉTRICOS:
+  * Proximidad Vertical: título arriba - valor abajo
+  * Proximidad Horizontal: título izquierda - valor derecha
+  * Agrupación por cercanía: información relacionada junta
+  * Flujo natural: lectura occidental estándar
+- SALIDAS: str con texto reordenado lógicamente
+- JUSTIFICACIÓN: Convierte OCR desordenado en estructura empresarial legible
+
+_extract_fields_with_positioning():
+- PROPÓSITO: Mapeo inteligente de campos financieros usando proximidad espacial
+- ENTRADAS: word_data (coordenadas), full_text (str), caption_text (str)
+- ALGORITMO DE MAPEO:
+  1. Define keywords por campo (ej: monto: ['bs', 'bolivares', 'monto'])
+  2. Busca keywords en texto con tolerancia fuzzy
+  3. Calcula proximidad espacial entre keyword y valores candidatos
+  4. Aplica score de proximidad: distancia euclidiana normalizada
+  5. Valida valores según tipo de campo
+  6. Asigna valor con mayor score de proximidad
+- CAMPOS MAPEADOS: referencia, monto, bancoorigen, banco_destino, telefono, cedula
+- VALIDACIONES:
+  * Teléfonos: solo prefijos venezolanos (0412/0416/0426/0414/0424) + 11 dígitos
+  * Bancos: tabla de códigos oficiales + fuzzy matching
+  * Montos: patrones decimales + símbolos monetarios
+  * Referencias: secuencias 8-15 dígitos priorizando longitud
+- SALIDAS: dict con campos mapeados y validados
+
+MÓDULO: main_ocr_process.OrquestadorOCR
+
+procesar_lote_imagenes():
+- PROPÓSITO: Procesamiento asíncrono de múltiples imágenes con metadatos
+- ENTRADAS: image_paths (list), caption_texts (list), metadata_list (list), language, profile
+- FLUJO DE PROCESAMIENTO:
+  1. Valida archivos de entrada
+  2. Inicializa componentes con lazy loading
+  3. Procesa cada imagen individualmente
+  4. Genera request_id único para tracking
+  5. Guarda resultados JSON estructurados
+  6. Mueve archivos a directorio processed
+- CONCURRENCIA: Máximo 2 procesos simultáneos (limitación RAM 4GB)
+- SALIDAS: list de resultados con metadatos completos
+- MANEJO DE ERRORES: Continúa procesamiento aunque falle imagen individual
+
+procesar_imagen():
+- PROPÓSITO: Procesamiento individual con validación, mejora y extracción
+- ENTRADAS: image_path (str), caption (str), metadata (dict)
+- SECUENCIA COMPLETA:
+  1. ValidadorOCR.analizar_imagen() → diagnóstico de calidad
+  2. MejoradorOCR.procesar_imagen() → preprocesamiento adaptativo
+  3. AplicadorOCR.extraer_texto() → OCR con coordenadas
+  4. Mapeo de campos financieros por proximidad
+  5. Generación de JSON estructurado empresarial
+- VALIDACIONES: Calidad mínima, formato de archivo, tamaño límite
+- SALIDAS: dict con toda la información estructurada
+- TIEMPO TÍPICO: 0.8-3.0s según perfil y complejidad
+
+MÓDULO: routes.py (Endpoints REST API)
+
+POST /api/ocr/process_batch:
+- PROPÓSITO: Endpoint principal para procesamiento por lotes
+- ENTRADAS: JSON con profile, batch_size, archivos en data/inbox
+- VALIDACIONES:
+  * Verifica existencia de archivos
+  * Valida perfiles disponibles
+  * Genera request_id único con timestamp
+- PROCESAMIENTO:
+  1. Lista archivos en data/inbox
+  2. Extrae metadatos WhatsApp de nombres
+  3. Llama OrquestadorOCR.procesar_lote_imagenes()
+  4. Almacena request_id del último lote
+- RESPUESTA: JSON con status, request_id, archivos procesados
+- MANEJO ASÍNCRONO: Ejecuta en worker thread sin bloquear API
+
+GET /api/extract_results:
+- PROPÓSITO: Genera JSON consolidado empresarial del último lote
+- ALGORITMO DE FILTRADO:
+  1. Recupera request_id del último lote procesado
+  2. Filtra archivos JSON por prefijo de request_id
+  3. Extrae datos de cada archivo JSON
+  4. Consolida en estructura empresarial única
+- ESTRUCTURA DE SALIDA:
+  * fecha_extraccion: timestamp actual
+  * total_archivos: contador
+  * archivos: array con datos empresariales
+  * metadatos_consolidados: resumen estadístico
+- CAMPOS POR ARCHIVO: nombre_archivo, caption, referencia, monto, bancoorigen, etc.
+- MANEJO DE ERRORES: Incluye archivos problemáticos con campos en blanco
+
+POST /api/clean:
+- PROPÓSITO: Limpieza del sistema con retención de 24 horas
+- ALGORITMO DE RETENCIÓN:
+  1. Verifica timestamp de creación de archivos
+  2. Preserva archivos <24h automáticamente
+  3. Mueve archivos procesados a historial
+  4. Elimina solo archivos >24h
+- DIRECTORIOS LIMPIADOS: data/inbox, data/processed, temp/
+- PRESERVACIÓN: Archivos JSON de resultados mantenidos 24h mínimo
+- RESPUESTA: Contadores detallados de operaciones realizadas
+
+=====================================================================================
+IV. FÓRMULAS Y ALGORITMOS CENTRALES
+=====================================================================================
+
+ALGORITMO 1: LÓGICA DE ORO BASADA EN COORDENADAS
+Objetivo: Reordenar texto OCR usando posición espacial para estructura lógica
+
+Entrada: word_data = [(texto, [x1,y1,x2,y2], confianza), ...]
+Salida: texto_estructurado (string)
+
+PASO 1 - Agrupación por Líneas:
+Para cada palabra w en word_data:
+  centro_y = (y1 + y2) / 2
+  Para cada línea L existente:
+    Si |centro_y - L.centro_y| <= tolerancia_y (10px):
+      Agregar w a L
+      Recalcular L.centro_y = promedio(centros_y)
+    Sino:
+      Crear nueva línea L con w
+
+PASO 2 - Ordenamiento Geométrico:
+Ordenar líneas por centro_y (arriba → abajo)
+Para cada línea L:
+  Ordenar palabras por centro_x (izquierda → derecha)
+
+PASO 3 - Identificación de Bloques:
+distancia_threshold = 50px
+Para líneas consecutivas L1, L2:
+  Si |L2.centro_y - L1.centro_y| > distancia_threshold:
+    Crear separador de bloque
+  Sino:
+    Líneas pertenecen al mismo bloque
+
+PASO 4 - Construcción de Texto:
+Para cada bloque B:
+  Para cada línea L en B:
+    texto += " ".join(L.palabras) + "\n"
+  texto += "\n"  // Separador entre bloques
+
+JUSTIFICACIÓN: Convierte secuencia aleatoria OCR en flujo de lectura natural
+
+ALGORITMO 2: MAPEO DE CAMPOS POR PROXIMIDAD ESPACIAL
+Objetivo: Asignar valores a campos usando cercanía geométrica de keywords
+
+Entrada: word_data, keywords_dict = {campo: [keyword1, keyword2, ...]}
+Salida: campos_mapeados = {campo: valor}
+
+FUNCIÓN calculate_proximity_score(coord1, coord2):
+  dx = |coord1.centro_x - coord2.centro_x|
+  dy = |coord1.centro_y - coord2.centro_y|
+  distancia = sqrt(dx² + dy²)
+  score = 1.0 / (1.0 + distancia/100)  // Normalización 0-1
+  Retornar score
+
+PARA cada campo en keywords_dict:
+  mejor_score = 0
+  mejor_valor = ""
+  
+  PARA cada keyword en keywords_dict[campo]:
+    PARA cada palabra w1 en word_data:
+      Si w1.texto contiene keyword (fuzzy match):
+        PARA cada palabra w2 cerca de w1:
+          Si w2 es valor válido para campo:
+            score = calculate_proximity_score(w1.coord, w2.coord)
+            Si score > mejor_score:
+              mejor_score = score
+              mejor_valor = w2.texto
+              
+  campos_mapeados[campo] = mejor_valor
+
+VALIDACIONES ESPECÍFICAS:
+- Teléfonos: regex r'^(0412|0416|0426|0414|0424)\d{7}$'
+- Montos: regex r'\d+[.,]\d{2}' + símbolos monetarios
+- Referencias: regex r'\d{8,15}' priorizando secuencias más largas
+- Bancos: tabla lookup con fuzzy matching (distancia Levenshtein ≤2)
+
+ALGORITMO 3: VALIDACIÓN BINARIA DE TELÉFONOS VENEZOLANOS
+Objetivo: Aceptar solo números telefónicos con formato venezolano válido
+
+FUNCIÓN validar_telefono_venezolano(numero):
+  // Limpiar número
+  numero_limpio = regex_replace(numero, r'[^\d]', '')
+  
+  // Validación exacta
+  Si len(numero_limpio) != 11:
+    Retornar False
+    
+  prefijo = numero_limpio[:4]
+  Si prefijo not in ['0412', '0416', '0426', '0414', '0424']:
+    Retornar False
+    
+  // Validar dígitos restantes
+  Si not numero_limpio[4:].isdigit():
+    Retornar False
+    
+  Retornar True
+
+ALGORITMO 4: EXTRACCIÓN BANCARIA CON PRIORIDAD DE ACRÓNIMOS
+Objetivo: Detectar bancos con prioridad para acrónimos incrustados
+
+TABLA_BANCOS = {
+  'BDV': 'BANCO DE VENEZUELA',
+  'MERCANTIL': 'BANCO MERCANTIL',
+  'BBVA': 'BBVA PROVINCIAL',
+  'BANESCO': 'BANESCO',
+  // ... tabla completa
+}
+
+FUNCIÓN extraer_banco_con_prioridad(texto):
+  // NIVEL 1: Acrónimos incrustados (máxima prioridad)
+  Para acronimo in TABLA_BANCOS.keys():
+    patron = f'[A-Z]*{acronimo}[A-Z]*'
+    Si regex_match(texto, patron):
+      Retornar TABLA_BANCOS[acronimo]
+  
+  // NIVEL 2: Primer banco mencionado
+  Para banco in TABLA_BANCOS.values():
+    Si banco in texto (fuzzy match):
+      Retornar banco
+      
+  // NIVEL 3: Código bancario (0105, 0102, etc.)
+  codigos = extract_codes(texto, r'\b0\d{3}\b')
+  Para codigo in codigos:
+    Si codigo in TABLA_CODIGOS_BANCARIOS:
+      Retornar TABLA_CODIGOS_BANCARIOS[codigo]
+      
+  Retornar ""
+
+=====================================================================================
+V. DIAGRAMA DE FLUJO LÓGICO Y CONEXIONES ENTRE COMPONENTES
+=====================================================================================
+
+FLUJO PRINCIPAL DE PROCESAMIENTO:
+
+1. ENTRADA DE USUARIO (Frontend):
+   interface_excellence_dashboard.html
+   ↓ (Upload archivos + metadatos)
+   
+2. ENDPOINT DE CARGA:
+   POST /upload → routes.py
+   ↓ (Validación + almacenamiento)
+   data/inbox/ (archivos preparados)
+   
+3. PROCESAMIENTO POR LOTES:
+   POST /api/ocr/process_batch → routes.py
+   ↓ (Lista archivos + genera request_id)
+   OrquestadorOCR.procesar_lote_imagenes()
+   
+4. PROCESAMIENTO INDIVIDUAL POR ARCHIVO:
+   OrquestadorOCR.procesar_imagen()
+   ↓
+   a) ValidadorOCR.analizar_imagen()
+      → Diagnóstico de calidad
+      → Decisión continuar/rechazar
+   ↓
+   b) MejoradorOCR.procesar_imagen()
+      → Preprocesamiento adaptativo
+      → Imagen optimizada para OCR
+   ↓
+   c) AplicadorOCR.extraer_texto()
+      → OCR con OnnxTR
+      → Extracción de coordenadas
+      → Lógica de oro (reordenamiento)
+      → Mapeo de campos financieros
+   ↓
+   d) Generación JSON estructurado
+      → data/results/BATCH_*.json
+      → Movimiento a data/processed/
+
+5. EXTRACCIÓN DE RESULTADOS:
+   GET /api/extract_results → routes.py
+   ↓ (Filtrado por request_id)
+   JSON consolidado empresarial
+   
+6. LIMPIEZA SISTEMA:
+   POST /api/clean → routes.py
+   ↓ (Retención 24h)
+   Historial preservado
+
+CONEXIONES CRÍTICAS ENTRE MÓDULOS:
+
+config.py → TODOS LOS MÓDULOS
+- Proporciona configuraciones centralizadas
+- Perfiles de rendimiento para cada componente
+- Umbrales y constantes del sistema
+
+app.py ↔ routes.py
+- app.py inicializa Flask y componentes
+- routes.py registra endpoints en app
+- Compartición de workers asíncronos
+
+main_ocr_process.py → validador_ocr.py, mejora_ocr.py, aplicador_ocr.py
+- Orquestación secuencial de procesamiento
+- Paso de diagnósticos entre módulos
+- Manejo unificado de errores
+
+aplicador_ocr.py ↔ cache local
+- Almacenamiento de resultados por hash MD5
+- Recuperación instantánea para imágenes repetidas
+- Gestión de memoria en entorno limitado
+
+routes.py ↔ sistema de archivos
+- Gestión de directorios (inbox, processed, results, historial)
+- Movimiento atómico de archivos
+- Validación de integridad referencial
+
+FLUJO DE DATOS:
+
+Imagen → Validación → Mejora → OCR → Coordenadas → Reordenamiento → Mapeo → JSON → Consolidación
+
+ESTADOS DEL SISTEMA:
+
+1. INICIALIZACIÓN: Pre-carga de modelos ONNX
+2. ESPERA: Worker asíncrono en standby
+3. PROCESAMIENTO: Ejecución paralela de OCR
+4. COMPLETADO: Archivos en data/results/
+5. HISTÓRICO: Retención 24h en historial/
+
+PUNTOS DE SINCRONIZACIÓN:
+
+- _processing_lock: Controla concurrencia OCR
+- request_id: Tracking de lotes de archivos
+- cache_lock: Acceso thread-safe a cache
+- worker_thread: Procesamiento asíncrono
+
+MANEJO DE ERRORES:
+
+Cada módulo implementa manejo graceful:
+- Logging detallado de errores
+- Continuación de procesamiento cuando posible
+- Respuestas estructuradas con códigos de error
+- Rollback automático en transacciones
+
+=====================================================================================
+VI. ELEMENTOS DE SEGURIDAD Y VALIDACIÓN
+=====================================================================================
+
+VALIDACIÓN DE ENTRADA:
+- Tamaño máximo archivos: 16MB
+- Formatos permitidos: PNG, JPG, JPEG
+- Sanitización nombres archivos: secure_filename()
+- Validación metadatos WhatsApp: formato estricto
+
+VALIDACIÓN DE PROCESAMIENTO:
+- Umbrales de calidad mínima antes OCR
+- Validación de coordenadas dentro de imagen
+- Verificación integridad JSON antes guardado
+- Control de memoria en pools de arrays
+
+VALIDACIÓN DE SALIDA:
+- Conversión tipos NumPy a Python nativo
+- Serialización JSON verificada
+- Validación campos financieros extraídos
+- Consistencia referencial entre archivos
+
+SEGURIDAD:
+- No ejecución de código desde archivos subidos
+- Aislamiento de procesamiento en directorios temp
+- Limpieza automática de archivos temporales
+- Validación de rutas para prevenir path traversal
+
+=====================================================================================
+CONCLUSIÓN TÉCNICA
+=====================================================================================
+
+El sistema implementa una arquitectura modular robusta que procesa recibos de pago mediante OCR asíncrono con extracción inteligente de coordenadas. La "Lógica de Oro" basada en proximidad espacial convierte texto OCR desordenado en estructura empresarial legible, mientras que el mapeo de campos por coordenadas asigna valores a campos financieros específicos usando algoritmos de proximidad geométrica.
+
+La arquitectura sigue estrictamente la filosofía de Integridad Total con validación en múltiples capas, Zero-Fault Detection mediante manejo robusto de errores, y Persistencia Inquebrantable con retención de datos y caché inteligente.
+
+El sistema está completamente operativo tras la migración exitosa de Replit Agent a Replit, con todos los componentes funcionando según especificaciones empresariales.
