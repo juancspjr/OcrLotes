@@ -1,0 +1,82 @@
+# MANDATO DE CORRECCIÓN CRÍTICA Y MEJORA ESTRUCTURAL: VALIDACIÓN ESTRICTA DE TELÉFONOS, EXTRACCIÓN DE BANCO DESTINO Y CONCEPTO CLARO
+
+**Fecha:** 7 de Julio de 2025, 08:30 UTC
+**MANDATO PRINCIPAL:** **RESOLVER DEFINITIVAMENTE la extracción incorrecta de teléfonos que no cumplen el formato venezolano, garantizar la extracción del banco destino explícito y reestructurar la extracción de `concepto` y `texto_total_ocr`.**
+
+## PROBLEMAS CRÍTICOS IDENTIFICADOS Y ANÁLISIS REFINADO
+
+### 1. FALLA CRÍTICA: EXTRACCIÓN DE TELÉFONO INADMISIBLE (`48311146148` aún persiste)
+
+* **Problema:** Números que NO comienzan con los prefijos celulares venezolanos (`0412, 0416, 0426, 0414, 0424`) y no tienen 11 dígitos, como `48311146148`, están siendo persistente y **erróneamente** extraídos como `datosbeneficiario.telefono`. Este comportamiento viola directamente el mandato anterior y es inaceptable.
+* **Análisis Forense:** A pesar de las correcciones previas, una o más rutas de extracción de `telefono` siguen siendo permisivas o están siendo omitidas por la nueva lógica. Es **obligante** que **CUALQUIER** número que no cumpla estrictamente con el formato venezolano sea **RECHAZADO** para el campo `telefono`. Si es una referencia, debe ir en `referencia`.
+* **Impacto:** Fallo en la **Filosofía Zero-Fault Detection** y **Integridad Total** de los datos de contacto.
+
+### 2. EXTRACCIÓN INCOMPLETA DE BANCO DESTINO (Mención Explícita Ignorada)
+
+* **Problema:** El campo `datosbeneficiario.banco_destino` permanece vacío incluso cuando el banco destino es **mencionado explícitamente** en el `concepto` (Ej: `concepto` dice "Banco: BANCO MERCANTIL" y `banco_destino` está vacío, siendo `bancoorigen` diferente). La inferencia intrabancaria fue un paso, pero la detección explícita interbancaria es prioritaria.
+* **Análisis Forense:** La lógica actual no está capturando de manera robusta los bancos destino mencionados directamente en el texto, especialmente en transacciones interbancarias.
+* **Impacto:** Datos incompletos que dificultan la conciliación y el flujo de trabajo empresarial.
+
+### 3. EXTRACCIÓN INCOMPLETA DE REFERENCIA (`0000120` en lugar de `000012071`)
+
+* **Problema:** El campo `referencia` no está capturando la totalidad del número de referencia (ej. `0000120` en lugar de `000012071`).
+* **Análisis Forense:** La expresión regular o la lógica de extracción para `referencia` puede estar truncando el número o deteniéndose prematuramente.
+* **Impacto:** Imprecisión en un dato clave para la trazabilidad financiera.
+
+### 4. ESTRUCTURA DE DATOS `CONCEPTO` ERRÓNEA (Contiene `texto_total_ocr`)
+
+* **Problema:** El campo `concepto` está siendo rellenado con la totalidad del texto extraído por OCR, cuando su propósito es ser un resumen conciso del "concepto" o "motivo" del pago. Esto es una mala práctica de modelado de datos.
+* **Análisis Forense:** Falta una distinción clara entre el texto OCR crudo completo y el motivo conciso de la transacción. Necesitamos una reestructuración de estos campos.
+* **Impacto:** Dificultad para procesar automáticamente el motivo del pago, redundancia de datos y falta de un campo para el texto OCR completo.
+
+## ACCIONES CORRECTIVAS Y MEJORAS ESTRUCTURALES OBLIGATORIAS
+
+### 1. RE-DEFINICIÓN CRÍTICA DE LA LÓGICA DE EXTRACCIÓN DE TELÉFONOS (Punto #19 - RE-VALIDACIÓN CRÍTICA)
+
+* **Revisar TODAS las funciones y patrones** de extracción de números de teléfono en el código (`routes.py`, `main_ocr_process.py` y cualquier otra ubicación relevante).
+* **IMPLANTAR VALIDACIÓN BINARIA OBLIGATORIA:** Si un número no cumple **ambas** condiciones (inicio con `0412, 0416, 0426, 0414, 0424` **Y** longitud de 11 dígitos), **DEBE SER RECHAZADO** para el campo `datosbeneficiario.telefono`. No hay excepciones.
+* **Priorización de `referencia`:** Si un número rechazado como teléfono cumple con patrones de `referencia` (como `48311146148`), debe ser asignado correctamente al campo `referencia`.
+
+### 2. EXTRACCIÓN ROBUSTA DE BANCO DESTINO EXPLÍCITO (Punto #21 - NUEVO CRÍTICO)
+
+* **Implementar Lógica de Detección Explícita:** Añadir una regla para buscar y extraer el `banco_destino` cuando sea **mencionado explícitamente** en el `concepto` o texto, independientemente de si es igual o diferente al `bancoorigen`.
+* **Prioridad:** Esta detección explícita tiene **MÁXIMA PRIORIDAD** sobre la inferencia intrabancaria. Si se detecta un banco destino explícito, ese es el valor final.
+* **Patrones de Búsqueda:** Utilizar patrones como "Banco: [Nombre del Banco]", "destino: [Nombre del Banco]", o la aparición clara del nombre de un banco en un contexto de destino.
+
+### 3. MEJORA DE LA EXTRACCIÓN DE REFERENCIA (Punto #13 - RE-VALIDACIÓN)
+
+* **Ajustar Regex/Lógica:** Modificar la expresión regular o el algoritmo de extracción para `referencia` para asegurar que capture la **totalidad** de la secuencia numérica que compone la referencia, sin truncamientos (ej., de `0000120` a `000012071`).
+* **Robustez:** Considerar espacios, guiones o saltos de línea menores que puedan fragmentar el número.
+
+### 4. RE-ESTRUCTURACIÓN DE CAMPOS `CONCEPTO` Y `TEXTO_TOTAL_OCR` (Punto #22 - NUEVO CRÍTICO)
+
+* **Crear Nuevo Campo `texto_total_ocr`:**
+    * Implementar un nuevo campo `texto_total_ocr` a nivel del objeto de archivo procesado.
+    * Este campo **DEBE** contener el **texto completo y crudo** extraído de la imagen por el proceso OCR, sin ningún procesamiento posterior.
+* **Redefinir `concepto`:**
+    * El campo `concepto` **DEBE** ser redefinido para extraer **únicamente** la frase o fragmento de texto que describe el *motivo* o *razón* concisa del pago/transacción.
+    * Esto puede requerir una lógica más inteligente (ej., búsqueda de palabras clave como "Pago de", "Transferencia por", "Concepto:", o el párrafo más relevante de la transacción).
+* **Exclusividad:** El contenido de `concepto` no debe ser un subconjunto del `texto_total_ocr` que simplemente repita todo. Debe ser una extracción semántica.
+
+## PUNTOS DE CONTROL OBLIGATORIOS PARA VALIDACIÓN FINAL:
+
+Al completar este mandato, se **DEBE** presentar evidencia clara y concisa de que los siguientes puntos de control han sido **PASSED**:
+
+* **`Punto de Control #19 (CRÍTICO - Re-validación): Precisión ABSOLUTA de Teléfono Venezolano`**:
+    * **Evidencia de RECHAZO definitivo:** Proporcionar el JSON completo del archivo (`20250707-H--219526027338537@lid_Carmen_14-29_20250707_062109_045.png` o similar) donde `48311146148` **NO** esté presente en `datosbeneficiario.telefono`. Mostrar que si el número es una referencia, está correctamente en `referencia`.
+    * **Evidencia de ACEPTACIÓN correcta:** Proporcionar un JSON de un archivo donde un número de teléfono venezolano **válido** (ej., `04125318244`) sea extraído correctamente como `telefono`.
+* **`Punto de Control #21 (NUEVO - CRÍTICO): Extracción de Banco Destino Explícito (Interbancario)`**:
+    * Proporcionar el JSON completo del archivo (`20250707-F--21875320635479@lid_Juan_12-04_20250707_062128_671.png` o similar) donde `bancoorigen` es "BBVA PROVINCIAL" y `datosbeneficiario.banco_destino` **AHORA** sea "BANCO MERCANTIL" (extraído explícitamente del `concepto`).
+* **`Punto de Control #13 (Re-validación): Exactitud COMPLETA de Referencia y Monto`**:
+    * Re-confirmar y demostrar que el campo `referencia` captura el número completo (ej., `000012071`), sin truncamientos. Mostrar el JSON correspondiente.
+    * Confirmar que `monto` se mantiene sin regresiones.
+* **`Punto de Control #22 (NUEVO - CRÍTICO): Separación y Precisión de Concepto y Texto Total OCR`**:
+    * Proporcionar un JSON que muestre tanto el nuevo campo `texto_total_ocr` (con el texto completo original) como el campo `concepto` (con el resumen conciso del motivo de pago).
+    * El `concepto` **NO DEBE** contener la totalidad del texto del `texto_total_ocr`.
+
+**FORMATO DE CONFIRMACIÓN AL FINALIZAR ESTE MANDATO:**
+
+* **Confirmación Explícita:** "La validación estricta de teléfonos venezolanos, la extracción robusta de banco destino explícito, la mejora en la extracción de referencia y la re-estructuración de `concepto`/`texto_total_ocr` han sido implementadas y validadas. Todos los Puntos de Control (#19, #21, #13, #22) han sido **PASSED**."
+* **Análisis y Corrección:** [Detallar el diagnóstico final, los cambios específicos en el código para cada punto (ej. regex actualizada, nuevas funciones, etc.) y cómo se asegura que no habrá regresiones.]
+* **Evidencia Detallada de Solución:** [Proporcionar los fragmentos JSON solicitados para cada Punto de Control, mostrando claramente el ANTES y el DESPUÉS y el resultado esperado.]
+* **REPORTE DE INTERVENCIÓN (ARCHIVO TXT):** **Adjuntar un archivo TXT** completo y bien estructurado (`REPORTE_CORRECCION_CRITICA_Y_MEJORA_ESTRUCTURAL.txt`) con el reporte de esta intervención, siguiendo el formato empresarial.

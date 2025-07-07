@@ -1205,30 +1205,42 @@ class OrquestadorOCR:
                 r'(\+58\d{10})'  # Formato internacional
             ]
             
+            # MANDATO CRÍTICO: VALIDACIÓN BINARIA OBLIGATORIA DE TELÉFONOS VENEZOLANOS
+            # REASON: 48311146148 aún persiste - implementar validación ABSOLUTA
+            # IMPACT: RECHAZO TOTAL de números que no cumplan AMBAS condiciones
+            telefono_encontrado = False
             for pattern in telefono_patterns:
                 matches = re.findall(pattern, texto_completo, re.IGNORECASE)
                 for match in matches:
-                    telefono_str = match.strip()
+                    telefono_str = re.sub(r'[^\d+]', '', match.strip())  # Limpiar caracteres no numéricos
                     
-                    # VALIDACIÓN ESTRICTA DE FORMATO VENEZOLANO
-                    if telefono_str.startswith('+58') and len(telefono_str) == 13:
+                    # VALIDACIÓN BINARIA OBLIGATORIA: AMBAS condiciones DEBEN cumplirse
+                    es_formato_internacional = telefono_str.startswith('+58') and len(telefono_str) == 13
+                    es_formato_nacional = len(telefono_str) == 11 and any(telefono_str.startswith(prefijo) for prefijo in prefijos_validos)
+                    
+                    if es_formato_internacional:
                         # Convertir formato internacional a nacional
                         telefono_nacional = '0' + telefono_str[3:]
                         if any(telefono_nacional.startswith(prefijo) for prefijo in prefijos_validos):
                             extraccion_empresa['datosbeneficiario']['telefono'] = telefono_nacional
                             extraccion_empresa['campos_detectados'] += 1
+                            telefono_encontrado = True
                             break
-                    elif len(telefono_str) == 11:
-                        # Verificar que empiece con prefijo venezolano válido
-                        if any(telefono_str.startswith(prefijo) for prefijo in prefijos_validos):
-                            # Verificar que NO es la referencia ya extraída
-                            if telefono_str != extraccion_empresa.get('referencia', ''):
-                                extraccion_empresa['datosbeneficiario']['telefono'] = telefono_str
-                                extraccion_empresa['campos_detectados'] += 1
-                                break
-                    # MANDATO CRÍTICO: Rechazar números que no cumplan formato venezolano (como 48311146148)
+                    elif es_formato_nacional:
+                        # Verificar que NO es la referencia ya extraída
+                        if telefono_str != extraccion_empresa.get('referencia', ''):
+                            extraccion_empresa['datosbeneficiario']['telefono'] = telefono_str
+                            extraccion_empresa['campos_detectados'] += 1
+                            telefono_encontrado = True
+                            break
                     
-                if extraccion_empresa['datosbeneficiario'].get('telefono'):
+                    # MANDATO CRÍTICO: Si llega aquí, el número es RECHAZADO (ej: 48311146148)
+                    # Agregarlo a referencia si cumple patrón de referencia y no se ha extraído
+                    if not extraccion_empresa.get('referencia') and len(telefono_str) >= 8:
+                        extraccion_empresa['referencia'] = telefono_str
+                        extraccion_empresa['campos_detectados'] += 1
+                    
+                if telefono_encontrado:
                     break
             
             # EXTRACCIÓN DE FECHA DE PAGO

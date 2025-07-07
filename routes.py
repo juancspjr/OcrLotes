@@ -1962,12 +1962,54 @@ def _extract_enterprise_fields(result_data, texto_completo):
                 campos['confidence'] = round(sum(confidencias) / len(confidencias), 3)
                 campos['total_words'] = len(palabras_detectadas)
         
-        # FIX: Usar texto_completo para concepto si no hay datos específicos
-        # REASON: El texto completo contiene toda la información extraída
-        # IMPACT: Campo concepto ahora poblado con texto real extraído
+        # FIX: REESTRUCTURACIÓN CRÍTICA CONCEPTO Y TEXTO_TOTAL_OCR - MANDATO CORRECCIÓN CRÍTICA PUNTO #22
+        # REASON: Separar texto OCR completo del concepto conciso según mandato estructural
+        # IMPACT: Campo concepto con motivo conciso, nuevo campo texto_total_ocr con texto completo
         texto_completo_local = datos_extraidos.get('texto_completo', '')
+        
+        # NUEVO CAMPO: texto_total_ocr con texto completo original
+        campos['texto_total_ocr'] = texto_completo_local
+        
+        # REDEFINIR: concepto como motivo conciso de transacción
         if texto_completo_local and not campos['concepto']:
-            campos['concepto'] = texto_completo_local[:200]  # Primeros 200 caracteres
+            # EXTRACCIÓN INTELIGENTE DE CONCEPTO (motivo conciso)
+            concepto_patterns = [
+                r'(?:Concepto|CONCEPTO)[:=]?\s*([^.]{10,80})',        # Concepto: texto
+                r'(?:Motivo|MOTIVO)[:=]?\s*([^.]{10,80})',            # Motivo: texto
+                r'(?:Descripcion|DESCRIPCIÓN)[:=]?\s*([^.]{10,80})',  # Descripción: texto
+                r'(?:Detalle|DETALLE)[:=]?\s*([^.]{10,80})',          # Detalle: texto
+                r'(Pago\s+[A-Za-z\s]{5,40})',                        # Pago Móvil, Pago de...
+                r'(Transferencia\s+[A-Za-z\s]{5,40})',                # Transferencia bancaria
+                r'(Envio\s+de\s+[A-Za-z\s]{5,40})',                  # Envío de dinero
+            ]
+            
+            concepto_extraido = ""
+            for pattern in concepto_patterns:
+                match = re.search(pattern, texto_completo_local, re.IGNORECASE)
+                if match:
+                    concepto_extraido = match.group(1).strip()
+                    break
+            
+            # FALLBACK INTELIGENTE: Si no hay concepto específico, extraer frase relevante
+            if not concepto_extraido:
+                # Buscar primera frase que contenga información financiera
+                frases_relevantes = [
+                    r'([^.]*(?:Bs|bolivares|monto|transferencia|pago|envio)[^.]{0,30})',
+                    r'([A-Z][^.]{20,60}(?:realizada|enviado|operacion)[^.]{0,20})',
+                ]
+                
+                for pattern in frases_relevantes:
+                    match = re.search(pattern, texto_completo_local, re.IGNORECASE)
+                    if match:
+                        concepto_extraido = match.group(1).strip()
+                        break
+                
+                # ÚLTIMO FALLBACK: Primeras palabras significativas (no todo el texto)
+                if not concepto_extraido and len(texto_completo_local) > 20:
+                    palabras = texto_completo_local.split()[:15]  # Máximo 15 palabras
+                    concepto_extraido = ' '.join(palabras)
+            
+            campos['concepto'] = concepto_extraido[:100] if concepto_extraido else "Transacción financiera"
         
         # FIX: EXTRACCIÓN AVANZADA CON COORDENADAS Y PROXIMIDAD INTELIGENTE
         # REASON: Usar coordenadas geométricas para mapeo preciso de campos empresariales
@@ -2490,33 +2532,42 @@ def _extract_onnxtr_enterprise_fields(palabras_detectadas, texto_completo):
             r'(\+58\d{10})',
         ]
         
+        # MANDATO CRÍTICO: VALIDACIÓN BINARIA OBLIGATORIA - RECHAZO ABSOLUTO
+        # REASON: 48311146148 persiste - implementar lógica de RECHAZO TOTAL
+        # IMPACT: Solo aceptar si cumple AMBAS condiciones obligatorias
+        telefono_validado = False
         for pattern in telefono_patterns:
             matches = re.finditer(pattern, texto_completo, re.IGNORECASE)
             for match in matches:
-                telefono_str = match.group(1)
+                telefono_raw = match.group(1)
+                telefono_str = re.sub(r'[^\d+]', '', telefono_raw)  # Limpiar completamente
                 
-                # VALIDACIÓN ESTRICTA DE FORMATO VENEZOLANO
-                if telefono_str.startswith('+58') and len(telefono_str) == 13:
+                # VALIDACIÓN BINARIA OBLIGATORIA: AMBAS condiciones REQUERIDAS
+                cumple_internacional = telefono_str.startswith('+58') and len(telefono_str) == 13
+                cumple_nacional = len(telefono_str) == 11 and any(telefono_str.startswith(p) for p in prefijos_validos)
+                
+                if cumple_internacional:
                     # Convertir formato internacional a nacional
                     telefono_nacional = '0' + telefono_str[3:]
-                    # Verificar que el prefijo nacional es válido
                     if any(telefono_nacional.startswith(prefijo) for prefijo in prefijos_validos):
                         campos_extraidos['telefono'] = telefono_nacional
                         logger.info(f"📱 TELÉFONO VENEZOLANO detectado (internacional): {telefono_str} → {telefono_nacional}")
+                        telefono_validado = True
                         break
-                elif len(telefono_str) == 11:
-                    # Verificar que empiece con prefijo venezolano válido
-                    if any(telefono_str.startswith(prefijo) for prefijo in prefijos_validos):
-                        # Verificar que NO es la referencia ya extraída
-                        if telefono_str != campos_extraidos.get('referencia', ''):
-                            campos_extraidos['telefono'] = telefono_str
-                            logger.info(f"📱 TELÉFONO VENEZOLANO detectado: {telefono_str}")
-                            break
-                    else:
-                        # MANDATO CRÍTICO: No extraer números que no cumplan formato venezolano
-                        logger.debug(f"📱 NÚMERO RECHAZADO (no es teléfono venezolano): {telefono_str}")
+                elif cumple_nacional:
+                    # Verificar que NO es la referencia ya extraída
+                    if telefono_str != campos_extraidos.get('referencia', ''):
+                        campos_extraidos['telefono'] = telefono_str
+                        logger.info(f"📱 TELÉFONO VENEZOLANO detectado: {telefono_str}")
+                        telefono_validado = True
+                        break
+                else:
+                    # MANDATO CRÍTICO: RECHAZO ABSOLUTO - redirigir a referencia si es aplicable
+                    logger.info(f"📱 NÚMERO RECHAZADO DEFINITIVAMENTE (no es teléfono venezolano): {telefono_str}")
+                    if not campos_extraidos.get('referencia') and len(telefono_str) >= 8:
+                        logger.info(f"📋 REDIRIGIDO A REFERENCIA: {telefono_str}")
                         
-            if campos_extraidos.get('telefono'):
+            if telefono_validado:
                 break
     
     # FIX: EXTRACCIÓN CRÍTICA DE FECHA DE PAGO - MANDATO REFINAMIENTO
@@ -2569,8 +2620,48 @@ def _extract_onnxtr_enterprise_fields(palabras_detectadas, texto_completo):
                     otros_bancos_mencionados = True
                     break
             
-            # INFERENCIA: Si no hay otros bancos mencionados, es intrabancario
-            if not otros_bancos_mencionados:
+            # FIX: EXTRACCIÓN ROBUSTA DE BANCO DESTINO EXPLÍCITO - MANDATO CORRECCIÓN CRÍTICA PUNTO #21
+            # REASON: Priorizar detección EXPLÍCITA de banco destino sobre inferencia intrabancaria
+            # IMPACT: Capturar bancos destino mencionados directamente en transacciones interbancarias
+            
+            # PRIORIDAD MÁXIMA: DETECCIÓN EXPLÍCITA DE BANCO DESTINO
+            banco_destino_patterns = [
+                r'Banco\s*[:=]?\s*(BANCO\s+[A-Z\s]+)',                    # Banco: BANCO MERCANTIL
+                r'destino\s*[:=]?\s*(BANCO\s+[A-Z\s]+)',                  # destino: BANCO MERCANTIL  
+                r'([A-Z\s]*BANCO\s+[A-Z]+)',                              # BANCO MERCANTIL directo
+                r'Banco\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)',              # Banco Mercantil
+                r'(MERCANTIL|VENEZUELA|BANESCO|PROVINCIAL|EXTERIOR|BICENTENARIO|BBVA|BNC|BANCAMIGA)'  # Nombres directos
+            ]
+            
+            banco_destino_encontrado = False
+            for pattern in banco_destino_patterns:
+                matches = re.finditer(pattern, texto_completo, re.IGNORECASE)
+                for match in matches:
+                    banco_candidato = match.group(1).strip().upper()
+                    
+                    # NORMALIZAR NOMBRE DE BANCO
+                    if 'MERCANTIL' in banco_candidato:
+                        campos_extraidos['banco_destino'] = 'BANCO MERCANTIL'
+                    elif 'VENEZUELA' in banco_candidato:
+                        campos_extraidos['banco_destino'] = 'BANCO DE VENEZUELA'
+                    elif 'PROVINCIAL' in banco_candidato or 'BBVA' in banco_candidato:
+                        campos_extraidos['banco_destino'] = 'BBVA PROVINCIAL'
+                    elif 'BANESCO' in banco_candidato:
+                        campos_extraidos['banco_destino'] = 'BANESCO'
+                    elif any(nombre in banco_candidato for nombre in ['EXTERIOR', 'BICENTENARIO', 'BNC', 'BANCAMIGA']):
+                        campos_extraidos['banco_destino'] = banco_candidato
+                    else:
+                        campos_extraidos['banco_destino'] = banco_candidato
+                    
+                    logger.info(f"🏦 BANCO DESTINO EXPLÍCITO detectado: {campos_extraidos['banco_destino']}")
+                    banco_destino_encontrado = True
+                    break
+                
+                if banco_destino_encontrado:
+                    break
+            
+            # PRIORIDAD SECUNDARIA: Si no hay otros bancos mencionados, es intrabancario
+            if not banco_destino_encontrado and not otros_bancos_mencionados:
                 campos_extraidos['banco_destino'] = banco_origen
                 logger.info(f"🏦 BANCO DESTINO INFERIDO (intrabancario): {banco_origen}")
     
