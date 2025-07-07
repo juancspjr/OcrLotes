@@ -1581,7 +1581,7 @@
             async extractResults() {
                 try {
                     this.logActivity(`📥 Extrayendo resultados JSON...`);
-                    const response = await fetch('/api/ocr/extract_results');
+                    const response = await fetch('/api/extract_results');
                     
                     if (response.ok) {
                         const blob = await response.blob();

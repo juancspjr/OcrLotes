@@ -1,0 +1,34 @@
+He analizado la salida de la consola del navegador que proporcionaste. Esa información contiene muchos errores y advertencias específicas del entorno de Replit (`403` en recursos de Replit, `TypeError: Failed to construct 'URL'`, errores de `sandbox`, etc.).
+
+**Esta información NO CONTIENE los `console.log()` que pedí implementar para la llamada `fetch()` a `/api/extract_results` de nuestra aplicación, ni los detalles de esa petición en la pestaña 'Network'.** El problema original (`404 Not Found` en nuestro endpoint) persiste y necesitamos evidencia directa de esa interacción.
+
+**MANDATO CRÍTICO: CAPTURA DE EVIDENCIA ESPECÍFICA DE LA LLAMADA API (ZERO-FAULT DETECTION FOCALIZADA):**
+
+1.  **CONFIRMACIÓN DE IMPLEMENTACIÓN DE `console.log()`:**
+    * Confirma explícitamente las **líneas exactas en `templates/dashboard_workflow.html`** donde añadiste los `console.log()` para la llamada `fetch('/api/extract_results')`.
+    * ¿Están configurados para mostrar: `response.status`, `response.ok`, la URL final (`response.url`), y el `error.message` y `error.stack` en el bloque `catch`? Si no es así, revísalo para asegurar que capturan la información completa.
+
+2.  **CAPTURA DE EVIDENCIA EN LA PESTAÑA 'NETWORK' (LA CLAVE):**
+    * **Esta es la evidencia más importante.** Necesito que simules la interacción del usuario y me proporciones los detalles **DIRECTOS de la pestaña 'Network' (Red)** del navegador para la solicitud **ESPECÍFICA a `/api/extract_results`**.
+    * **Pasos a seguir para obtener esta evidencia:**
+        1.  Abre las herramientas de desarrollador del navegador (F12 o Ctrl+Shift+I).
+        2.  Ve a la pestaña **'Network' (Red)**.
+        3.  Asegúrate de que la grabación esté activa (el círculo rojo debe estar encendido).
+        4.  Haz clic en el botón "Extraer Resultados JSON" en nuestra aplicación.
+        5.  En la lista de solicitudes de la pestaña 'Network', **encuentra la solicitud a `/api/extract_results`**.
+        6.  Haz clic en esa solicitud para ver sus detalles.
+        7.  **Reporta los siguientes detalles EXACTOS de esa solicitud:**
+            * **Request URL (URL de Solicitud):** La URL completa que el navegador intentó alcanzar.
+            * **Request Method (Método de Solicitud):** (`GET` o `POST`).
+            * **Status Code (Código de Estado):** El número exacto (¡aquí es donde esperamos ver el `404`!).
+            * **Response Headers (Cabeceras de Respuesta):** Las cabeceras que el servidor envió.
+            * **Response (Cuerpo de la Respuesta):** Lo que el servidor devolvió como cuerpo (será el mensaje de `404 Not Found`).
+            * **Screenshot/Snapshot:** Si puedes, una captura de pantalla de la fila de esa solicitud en la pestaña Network que muestre el 404, o una captura de la consola mostrando SOLO los `console.log` de la llamada `fetch` de nuestra app.
+
+**Mi objetivo es ver la evidencia indiscutible de que la llamada a `/api/extract_results` se realiza y qué `Status Code` (404) y respuesta exacta recibe del servidor en ese momento crucial.** Esta información nos permitirá finalmente diagnosticar la causa raíz de la falla.
+
+
+
+
+
+

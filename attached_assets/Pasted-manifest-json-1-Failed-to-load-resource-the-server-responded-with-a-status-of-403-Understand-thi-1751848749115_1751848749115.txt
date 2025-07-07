@@ -1,0 +1,85 @@
+manifest.json:1  Failed to load resource: the server responded with a status of 403 ()Understand this error
+/~:1 Manifest fetch from https://replit.com/public/manifest.json failed, code 403Understand this error
+_app-1dfc359d2d776d85.js:38 
+      /////////////////////
+   ///////////////////////////
+  ////////@@@@@@@//////////////
+  ////////@@@@@@@//////////////
+  ////////@@@@@@@//////////////        Curious and driven?
+  ///////////////@@@@@@@///////        Work with us!
+  ///////////////@@@@@@@///////
+  ///////////////@@@@@@@///////        https://join.replit.com/hack.with.us
+  ////////@@@@@@@//////////////
+  ////////@@@@@@@//////////////
+  ////////@@@@@@#//////////////
+   ///////////////////////////
+      /////////////////////
+      
+_app-1dfc359d2d776d85.js:38 [LaunchDarkly] LaunchDarkly client initialized
+jquery.js:1040 [Violation] Permissions policy violation: unload is not allowed in this document.
+Sizzle.setDocument @ jquery.js:1040Understand this error
+2_app-1dfc359d2d776d85.js:38 WARN: A component changed from uncontrolled to controlled.
+(anonymous) @ _app-1dfc359d2d776d85.js:38Understand this warning
+/data/__reachability:1  Failed to load resource: the server responded with a status of 403 ()Understand this error
+/data/__reachability:1  Failed to load resource: the server responded with a status of 403 ()Understand this error
+/data/__reachability:1  Failed to load resource: the server responded with a status of 403 ()Understand this error
+3xxHelper.js:3054 Uncaught TypeError: Failed to construct 'URL': Invalid URL
+    at HTMLVideoElement.<anonymous> (xxHelper.js:3054:37)
+    at e.each (xxHelper.js:135:72)
+    at E.fn.init.each (xxHelper.js:69:34)
+    at t.value (xxHelper.js:3051:86)
+    at xxHelper.js:3042:31Understand this error
+framework-c2be319115910dbc.js:1 Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+_ @ framework-c2be319115910dbc.js:1Understand this error
+framework-c2be319115910dbc.js:1 Unrecognized feature: 'ambient-light-sensor'.
+_ @ framework-c2be319115910dbc.js:1Understand this warning
+framework-c2be319115910dbc.js:1 Unrecognized feature: 'battery'.
+_ @ framework-c2be319115910dbc.js:1Understand this warning
+framework-c2be319115910dbc.js:1 Unrecognized feature: 'execution-while-not-rendered'.
+_ @ framework-c2be319115910dbc.js:1Understand this warning
+framework-c2be319115910dbc.js:1 Unrecognized feature: 'execution-while-out-of-viewport'.
+_ @ framework-c2be319115910dbc.js:1Understand this warning
+framework-c2be319115910dbc.js:1 Unrecognized feature: 'layout-animations'.
+_ @ framework-c2be319115910dbc.js:1Understand this warning
+framework-c2be319115910dbc.js:1 Unrecognized feature: 'legacy-image-formats'.
+_ @ framework-c2be319115910dbc.js:1Understand this warning
+framework-c2be319115910dbc.js:1 Unrecognized feature: 'navigation-override'.
+_ @ framework-c2be319115910dbc.js:1Understand this warning
+framework-c2be319115910dbc.js:1 Unrecognized feature: 'oversized-images'.
+_ @ framework-c2be319115910dbc.js:1Understand this warning
+framework-c2be319115910dbc.js:1 Unrecognized feature: 'publickey-credentials'.
+_ @ framework-c2be319115910dbc.js:1Understand this warning
+framework-c2be319115910dbc.js:1 Unrecognized feature: 'speaker-selection'.
+_ @ framework-c2be319115910dbc.js:1Understand this warning
+framework-c2be319115910dbc.js:1 Unrecognized feature: 'unoptimized-images'.
+_ @ framework-c2be319115910dbc.js:1Understand this warning
+framework-c2be319115910dbc.js:1 Unrecognized feature: 'unsized-media'.
+_ @ framework-c2be319115910dbc.js:1Understand this warning
+framework-c2be319115910dbc.js:1 Unrecognized feature: 'pointer-lock'.
+_ @ framework-c2be319115910dbc.js:1Understand this warning
+framework-c2be319115910dbc.js:1 Allow attribute will take precedence over 'allowfullscreen'.
+_ @ framework-c2be319115910dbc.js:1Understand this warning
+framework-c2be319115910dbc.js:1 Allow attribute will take precedence over 'allowpaymentrequest'.
+_ @ framework-c2be319115910dbc.js:1Understand this warning
+framework-c2be319115910dbc.js:1 Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+_ @ framework-c2be319115910dbc.js:1Understand this error
+6OcrLotes:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was receivedUnderstand this error
+framework-c2be319115910dbc.js:1 Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+_ @ framework-c2be319115910dbc.js:1Understand this error
+workspace_iframe.html:32 Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.Understand this error
+workspace_iframe.html:32 Unrecognized feature: 'ambient-light-sensor'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'battery'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'execution-while-not-rendered'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'execution-while-out-of-viewport'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'layout-animations'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'legacy-image-formats'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'navigation-override'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'oversized-images'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'publickey-credentials'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'speaker-selection'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'unoptimized-images'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'unsized-media'.Understand this warning
+workspace_iframe.html:32 Allow attribute will take precedence over 'allowfullscreen'.Understand this warning
+workspace_iframe.html:32 Allow attribute will take precedence over 'allowpaymentrequest'.Understand this warning
+beacon.js:1  Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOriginUnderstand this error
+manifest.json:1  Failed to load resource: the server responded with a status of 403 ()
