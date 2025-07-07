@@ -1,0 +1,41 @@
+Hemos recibido el "Resumen de Información de Migración Esencial", lo cual es útil. Sin embargo, la **falla crítica `404 Not Found` PERSISTE** al intentar extraer el JSON consolidado empresarial desde el frontend, anulando cualquier validación previa de este endpoint. Esto indica una discrepancia fundamental.
+
+**PROBLEMA CRÍTICO A RESOLVER:**
+A pesar de que el "Resumen de Información de Migración Esencial" indica que el endpoint es `GET /api/extract_results`, el servidor sigue devolviendo un `404 Not Found` cuando el frontend intenta acceder a él.
+
+**MANDATO DE ANÁLISIS FORENSE (DEBUGGING METÓDICO INTENSIVO Y VIBE CODING):**
+
+1.  **AUDITORÍA CRUZADA EXACTA - FRONTEEND VS. BACKEND:**
+    * Tu tarea es realizar una **auditoría y comparación CARÁCTER A CARÁCTER** de la URL y el método HTTP que el **frontend (en `templates/dashboard_workflow.html`)** intenta llamar, versus la **definición exacta de la ruta en el backend (en `routes.py`)** para el endpoint `/api/extract_results`.
+    * **Paso 1.1: Inspecciona el Frontend (`templates/dashboard_workflow.html`):**
+        * Muestra el **fragmento de código JavaScript** donde se construye y se ejecuta la llamada `fetch()` (o similar) para la extracción del JSON.
+        * Identifica la **URL COMPLETA y el MÉTODO HTTP (`GET` o `POST`)** que está utilizando el frontend. Considera prefijos o si la URL es relativa.
+    * **Paso 1.2: Inspecciona el Backend (`routes.py`):**
+        * Muestra el **fragmento de código Python** donde se define el endpoint `@app.route` para `/api/extract_results`.
+        * Confirma la **URL EXACTA definida** y los **MÉTODOS PERMITIDOS (`methods=['GET', 'POST']`)**.
+
+2.  **IDENTIFICACIÓN Y CORRECCIÓN DE LA DISCREPANCIA (ZERO-FAULT DETECTION):**
+    * Basándote en la auditoría anterior, **IDENTIFICA LA DISCREPANCIA ESPECÍFICA** (ej., error de escritura, prefijo faltante, método incorrecto) que causa el `404`.
+    * **APLICA LA CORRECCIÓN MÍNIMA Y MÁS PRECISA** para asegurar que el frontend llame al endpoint backend **correctamente**. La corrección debe ser sistémica y persistente. Prioriza la modificación en el frontend si es ahí donde reside la incorrección.
+
+3.  **VALIDACIÓN OBLIGATORIA DE PUNTOS DE CONTROL:**
+    * Una vez implementada la corrección, **DEBES demostrar y confirmar** que has superado **OBLIGATORIAMENTE** los siguientes Puntos de Control:
+        * **`Punto de Control #1: Pre-Commit/Merge Validation`**: Confirma que el `Static Reference Scanning` y la `Auto-Inspección de Conexiones Lógicas` verifican que la URL ahora apunta a un endpoint existente y válido, sin ningún `404` en el lado del servidor.
+        * **`Punto de Control #2: Testing Completo Post-Implementación`**:
+            * Ejecuta una prueba explícita para verificar que la llamada `fetch()` del frontend ahora resulta en una respuesta **`200 OK`** del backend, sin `404`.
+            * Luego, procede con las **pruebas de serialización/deserialización del JSON** y la **simulación de carga** que confirmarán que el JSON se genera y se extrae correctamente.
+
+**FORMATO DE CONFIRMACIÓN AL FINALIZAR:**
+
+NO me digas solo que está "corregido". Al finalizar tu trabajo, debes proporcionarme un informe conciso que incluya:
+
+* **Confirmación Explícita:** "La corrección de la discrepancia de ruta/método ha sido validada, resolviendo el `404 Not Found`."
+* **Discrepancia Identificada:** "La causa del `404` fue: [DESCRIBE CLARAMENTE EL ERROR ESPECÍFICO DE COINCIDENCIA ENTRE FRONTEEND Y BACKEND, EJ. 'El frontend llamaba a /api/extract-results y el backend esperaba /api/extract_results'] y se corrigió en [ARCHIVO AFECTADO]."
+* **Detalles del Punto de Control #1:** "El `Static Reference Scanning` confirma que la referencia al endpoint ahora es válida."
+* **Detalles del Punto de Control #2:** "Se ejecutaron las siguientes pruebas específicas: [LISTA BREVEMENTE LAS PRUEBAS EJECUTADAS, EJ. 'prueba de conexión frontend-backend (200 OK)', 'pruebas de serialización JSON', 'simulación de carga']. Los resultados de todas las pruebas son `PASSED`."
+
+
+
+
+
+
