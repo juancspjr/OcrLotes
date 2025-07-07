@@ -1892,109 +1892,125 @@ def _extract_enterprise_fields(result_data, texto_completo):
         'total_words': 0
     }
     
-    # Extraer estadísticas técnicas
+    # FIX: Extraer estadísticas técnicas desde estructura real de datos
+    # REASON: estadisticas_ocr no existe, datos están directamente en result_data
+    # IMPACT: Extracción correcta de confidence y total_words reales
     if isinstance(result_data, dict):
         datos_extraidos = result_data.get('datos_extraidos', {})
-        estadisticas = datos_extraidos.get('estadisticas_ocr', {})
         
-        campos['confidence'] = estadisticas.get('confianza_promedio', 0)
-        campos['total_words'] = estadisticas.get('total_palabras', 0)
+        # FIX: Calcular estadísticas desde palabras_detectadas reales
+        palabras_detectadas = datos_extraidos.get('palabras_detectadas', [])
+        if palabras_detectadas:
+            # Calcular confianza promedio real
+            confidencias = [p.get('confianza', 0) for p in palabras_detectadas if isinstance(p, dict)]
+            if confidencias:
+                campos['confidence'] = round(sum(confidencias) / len(confidencias), 3)
+                campos['total_words'] = len(palabras_detectadas)
         
-        # Buscar datos financieros estructurados
-        datos_financieros = datos_extraidos.get('datos_financieros', {})
-        if datos_financieros:
-            campos['monto'] = datos_financieros.get('monto', '')
-            campos['referencia'] = datos_financieros.get('referencia', '')
-            campos['concepto'] = datos_financieros.get('concepto', '')
+        # FIX: Usar texto_completo para concepto si no hay datos específicos
+        # REASON: El texto completo contiene toda la información extraída
+        # IMPACT: Campo concepto ahora poblado con texto real extraído
+        texto_completo_local = datos_extraidos.get('texto_completo', '')
+        if texto_completo_local and not campos['concepto']:
+            campos['concepto'] = texto_completo_local[:200]  # Primeros 200 caracteres
         
-        # Buscar en extracción posicional si está disponible
-        extracted_fields = datos_extraidos.get('extracted_fields', {})
+        # FIX: Buscar datos financieros en estructura real de extracción posicional
+        # REASON: Los datos están en extracted_fields_positional, no en datos_financieros
+        # IMPACT: Extracción correcta de montos, referencias y datos empresariales
+        extracted_fields = datos_extraidos.get('extracted_fields_positional', {})
         if extracted_fields:
-            campos['referencia'] = extracted_fields.get('referencia', campos['referencia'])
-            campos['monto'] = extracted_fields.get('monto', campos['monto'])
-            campos['concepto'] = extracted_fields.get('concepto', campos['concepto'])
+            campos['referencia'] = extracted_fields.get('referencia', '')
+            campos['monto'] = extracted_fields.get('monto', '')
+            campos['bancoorigen'] = extracted_fields.get('bancoorigen', '')
+            campos['cedula'] = extracted_fields.get('cedula', '')
+            campos['telefono'] = extracted_fields.get('telefono', '')
+            campos['banco_destino'] = extracted_fields.get('banco_destino', '')
+            campos['pago_fecha'] = extracted_fields.get('pago_fecha', '')
+            
+        # FIX: Buscar también en datos_financieros como fallback
+        datos_financieros = datos_extraidos.get('datos_financieros', {})
+        if datos_financieros and not campos['monto']:
+            campos['monto'] = datos_financieros.get('monto', '')
+            campos['referencia'] = datos_financieros.get('referencia', campos['referencia'])
+            
+        # FIX: Extraer bancoorigen desde texto si no está en campos estructurados
+        if not campos['bancoorigen'] and texto_completo_local:
+            # Buscar patrón "Banco : XXXX" o "BANCO XXXX"
+            import re
+            banco_match = re.search(r'[Bb]anco\s*[:=]?\s*([A-Z][A-Z\s]+)', texto_completo_local)
+            if banco_match:
+                campos['bancoorigen'] = banco_match.group(1).strip()
     
-    # Análisis de texto completo con patrones empresariales
+    # FIX: Análisis mejorado de texto completo con patrones empresariales específicos
+    # REASON: Extraer datos desde texto cuando no están en campos estructurados
+    # IMPACT: Mejora significativa en población de campos empresariales
     if texto_completo:
-        # Buscar referencia con patrones comunes
-        ref_patterns = [
-            r'[Rr]ef[:]?\s*([A-Z0-9]{6,})',
-            r'[Rr]eferencia[:]?\s*([A-Z0-9]{6,})',
-            r'[Nn]°[:]?\s*([A-Z0-9]{6,})',
-            r'[Nn]umero[:]?\s*([A-Z0-9]{6,})'
-        ]
+        import re
         
-        for pattern in ref_patterns:
-            match = re.search(pattern, texto_completo, re.IGNORECASE)
-            if match and not campos['referencia']:
-                campos['referencia'] = match.group(1)
-                break
+        # FIX: Buscar monto con patrones venezolanos específicos
+        if not campos['monto']:
+            monto_patterns = [
+                r'(\d{1,3}(?:[,\.]\d{2,3})*(?:[,\.]\d{2})?\s*Bs)',  # 104,54 Bs
+                r'Bs\.?\s*(\d{1,3}(?:[,\.]\d{2,3})*(?:[,\.]\d{2})?)',  # Bs 104,54
+                r'(\d{1,3}(?:[,\.]\d{2,3})*(?:[,\.]\d{2})?)\s*bolivares',  # 104,54 bolivares
+            ]
+            for pattern in monto_patterns:
+                match = re.search(pattern, texto_completo, re.IGNORECASE)
+                if match:
+                    campos['monto'] = match.group(1) if 'Bs' in match.group(0) else match.group(0)
+                    break
         
-        # Buscar monto con patrones monetarios
-        monto_patterns = [
-            r'[\$]?\s*([0-9]{1,3}(?:[.,][0-9]{3})*(?:[.,][0-9]{2})?)',
-            r'[Mm]onto[:]?\s*[\$]?\s*([0-9]{1,3}(?:[.,][0-9]{3})*(?:[.,][0-9]{2})?)',
-            r'[Tt]otal[:]?\s*[\$]?\s*([0-9]{1,3}(?:[.,][0-9]{3})*(?:[.,][0-9]{2})?)'
-        ]
+        # FIX: Buscar referencia/operación con patrones específicos
+        if not campos['referencia']:
+            ref_patterns = [
+                r'Operacion\s*[:=]?\s*(\d+)',  # Operacion : 003039387344
+                r'Referencia\s*[:=]?\s*([A-Z0-9]+)',  # Referencia: ABC123
+                r'Ref\s*[:=]?\s*([A-Z0-9]+)',  # Ref: 12345
+                r'Op\s*[:=]?\s*(\d+)',  # Op: 12345
+            ]
+            for pattern in ref_patterns:
+                match = re.search(pattern, texto_completo, re.IGNORECASE)
+                if match:
+                    campos['referencia'] = match.group(1)
+                    break
         
-        for pattern in monto_patterns:
-            match = re.search(pattern, texto_completo)
-            if match and not campos['monto']:
-                campos['monto'] = match.group(1)
-                break
+        # FIX: Buscar cédula en texto
+        if not campos['cedula']:
+            cedula_patterns = [
+                r'Identificacion\s*[:=]?\s*(\d{7,8})',  # Identificacion : 27061025
+                r'CI\s*[:=]?\s*(\d{7,8})',  # CI: 27061025
+                r'V-(\d{7,8})',  # V-27061025
+            ]
+            for pattern in cedula_patterns:
+                match = re.search(pattern, texto_completo, re.IGNORECASE)
+                if match:
+                    campos['cedula'] = match.group(1)
+                    break
         
-        # Buscar cédula con patrones comunes
-        cedula_patterns = [
-            r'[Cc]edula[:]?\s*([0-9]{7,10})',
-            r'[Cc]\.?[Ii]\.?[:]?\s*([0-9]{7,10})',
-            r'[Dd]oc[:]?\s*([0-9]{7,10})'
-        ]
+        # FIX: Buscar teléfono en texto
+        if not campos['telefono']:
+            telefono_patterns = [
+                r'Destino\s*[:=]?\s*(\d{11})',  # Destino : 04125318244
+                r'(\d{11})',  # 04125318244 directo
+                r'(\d{4}-?\d{7})',  # 0412-5318244
+            ]
+            for pattern in telefono_patterns:
+                match = re.search(pattern, texto_completo)
+                if match and len(match.group(1).replace('-', '')) == 11:
+                    campos['telefono'] = match.group(1).replace('-', '')
+                    break
         
-        for pattern in cedula_patterns:
-            match = re.search(pattern, texto_completo)
-            if match and not campos['cedula']:
-                campos['cedula'] = match.group(1)
-                break
-        
-        # Buscar teléfono con patrones comunes
-        telefono_patterns = [
-            r'[Tt]el[:]?\s*([0-9]{10,11})',
-            r'[Tt]elefono[:]?\s*([0-9]{10,11})',
-            r'[Cc]elular[:]?\s*([0-9]{10,11})'
-        ]
-        
-        for pattern in telefono_patterns:
-            match = re.search(pattern, texto_completo)
-            if match and not campos['telefono']:
-                campos['telefono'] = match.group(1)
-                break
-        
-        # Buscar fecha con patrones comunes
-        fecha_patterns = [
-            r'([0-9]{1,2}[\/\-][0-9]{1,2}[\/\-][0-9]{4})',
-            r'([0-9]{4}[\/\-][0-9]{1,2}[\/\-][0-9]{1,2})',
-            r'[Ff]echa[:]?\s*([0-9]{1,2}[\/\-][0-9]{1,2}[\/\-][0-9]{4})'
-        ]
-        
-        for pattern in fecha_patterns:
-            match = re.search(pattern, texto_completo)
-            if match and not campos['pago_fecha']:
-                campos['pago_fecha'] = match.group(1)
-                break
-        
-        # Buscar banco origen con patrones comunes
-        banco_patterns = [
-            r'[Bb]anco\s+([A-Za-z\s]+)',
-            r'[Bb]anco[:]?\s*([A-Za-z\s]+)',
-            r'[Ee]ntidad[:]?\s*([A-Za-z\s]+)'
-        ]
-        
-        for pattern in banco_patterns:
-            match = re.search(pattern, texto_completo)
-            if match and not campos['bancoorigen']:
-                banco = match.group(1).strip()
-                if len(banco) > 3:  # Evitar matches muy cortos
-                    campos['bancoorigen'] = banco
+        # FIX: Buscar fecha en texto
+        if not campos['pago_fecha']:
+            fecha_patterns = [
+                r'Fecha\s*[:=]?\s*(\d{1,2}/\d{1,2}/\d{4})',  # Fecha : 20/06/2025
+                r'(\d{1,2}/\d{1,2}/\d{4})',  # 20/06/2025 directo
+                r'(\d{4}-\d{2}-\d{2})',  # 2025-06-20
+            ]
+            for pattern in fecha_patterns:
+                match = re.search(pattern, texto_completo)
+                if match:
+                    campos['pago_fecha'] = match.group(1)
                     break
     
     return campos

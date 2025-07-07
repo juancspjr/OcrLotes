@@ -1,0 +1,45 @@
+Confirmamos la superación del `404 Not Found`, lo cual es un hito importante. Sin embargo, ahora nos enfrentamos a una **FALLA CRÍTICA EN LA INTEGRIDAD DE LA DATA CONSOLIDADA**:
+
+**PROBLEMA IDENTIFICADO (DISCREPANCIA EN LA DATA EXTRAÍDA):**
+El JSON consolidado de `/api/extract_results` muestra campos incompletos o vacíos (`caption`, `otro`, `datosbeneficiario`, `pago_fecha`, `concepto`, `extraction_stats.confidence`, `extraction_stats.total_words`), mientras que los JSON individuales (`/api/ocr/result/<request_id>`) contienen información mucho más rica y necesaria, como `Texto Extraído.texto_completo`, `Estadísticas.confianza_promedio`, `Estadísticas.total_palabras`, y detalles de las entidades financieras (`monto`, `referencia`, `bancoorigen`).
+
+**MANDATO DE "VIBE CODING ESTRATÉGICO" PARA LA RECONSTRUCCIÓN DE LA INTEGRIDAD DE DATOS (REVISIÓN PROFUNDA CONTINUA):**
+
+1.  **AUDITORÍA FORENSE DEL FLUJO Y AGREGACIÓN DE DATOS (DEBUGGING METÓDICO INTENSIVO):**
+    * Tu prioridad es comprender y diagnosticar dónde y por qué los datos extraídos individualmente no se están consolidando completamente en el JSON final.
+    * **Paso 1.1: Mapeo de Flujo de Datos OCR a Consolidado:**
+        * Explica el **flujo de datos desde que un archivo es procesado por OCR (generando el JSON individual detallado)** hasta que su información es recuperada y agregada para formar el JSON consolidado.
+        * **Identifica el módulo/función específico en el backend** que es responsable de construir cada elemento del array `archivos_procesados` dentro del JSON consolidado para `/api/extract_results`. Es decir, la lógica que toma los resultados individuales y los transforma en el formato del JSON consolidado.
+    * **Paso 1.2: Auditoría de Mapeo de Campos Críticos:**
+        * Realiza una comparación explícita (campo por campo) entre los datos disponibles en el **JSON individual detallado** (que me has mostrado "en pantalla") y los campos correspondientes en el **JSON consolidado (`archivos_procesados` / `extraction_stats`)**.
+        * **Identifica los campos específicos que:**
+            * **Faltan completamente** en el consolidado (ej., `texto_completo`).
+            * **Están vacíos o incorrectos** en el consolidado a pesar de existir en el individual (ej., `cedula`, `telefono`, `banco_destino` dentro de `datosbeneficiario`, `confidence` y `total_words` en `extraction_stats`).
+
+2.  **PROPUESTA DE CORRECCIÓN SISTÉMICA Y PERSISTENTE (PERSISTENCIA INQUEBRANTABLE):**
+    * Basado en la auditoría, **propón las modificaciones de código exactas** necesarias para asegurar que la información crítica del JSON individual se transfiera y mapee correctamente al JSON consolidado.
+    * **Prioriza la inclusión de:**
+        * `Texto Extraído.texto_completo` (probablemente mapeado a un nuevo campo o a `concepto` si es apropiado, o añadir un nuevo campo `texto_ocr_completo`).
+        * `Estadísticas.confianza_promedio` y `Estadísticas.total_palabras` en `extraction_stats`.
+        * **Diagnóstico y propuesta** para la población de `cedula`, `telefono`, `banco_destino`, `pago_fecha`, `concepto` en `datosbeneficiario`. Si estos datos provienen de un módulo de Named Entity Recognition (NER), indica dónde está la discrepancia en ese proceso.
+
+3.  **ACLARA LA GESTIÓN DE ARCHIVOS INDIVIDUALES (MAESTRÍA DEL CONTEXTO):**
+    * Aborda la preocupación sobre si los "archivos individuales buenos" caducan o se "pierden". Explica brevemente la política de retención y almacenamiento de los resultados OCR individuales, y cómo se asegura su disponibilidad hasta su consolidación o limpieza.
+
+4.  **VALIDACIÓN OBLIGATORIA DE PUNTOS DE CONTROL (ZERO-FAULT DETECTION):**
+    * Después de implementar las correcciones, **DEBES demostrar y confirmar** que has superado **OBLIGATORIAMENTE** los siguientes Puntos de Control, enfocados en la calidad de los datos:
+        * **`Punto de Control #3: Integridad de Data Consolidada`**: Valida que el JSON consolidado ahora contiene `texto_completo` (o equivalente), `confianza_promedio`, `total_palabras`, y una mejora significativa en la población de `datosbeneficiario`, `pago_fecha`, `concepto` (si los datos originales lo permiten).
+        * **`Punto de Control #4: Consistencia de Flujo de Datos`**: Confirma que el proceso de OCR, almacenamiento individual y agregación consolidada es coherente y no descarta información valiosa.
+
+**FORMATO DE CONFIRMACIÓN AL FINALIZAR:**
+
+* **Confirmación Explícita:** "La integridad de la data extraída consolidada ha sido restablecida y validada."
+* **Diagnóstico y Corrección:** "[EXPLICA CLARAMENTE EL FLUJO DE DATOS IDENTIFICADO, LOS CAMPOS ESPECÍFICOS QUE FALTABAN/ERAN INCORRECTOS Y CÓMO SE CORRIGIÓ EL CÓDIGO PARA INCLUIRLOS. INCLUYE LOS FRAGMENTOS DE CÓDIGO MODIFICADOS]."
+* **Gestión de Archivos Individuales:** "[EXPLICA BREVEMENTE LA POLÍTICA DE RETENCIÓN DE RESULTADOS INDIVIDUALES]."
+* **Detalles de Puntos de Control #3 y #4:** "Se ejecutaron pruebas de validación de campos, consistencia de datos y mapeo. Los resultados son `PASSED`."
+
+
+
+
+
+
