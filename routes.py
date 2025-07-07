@@ -1637,7 +1637,9 @@ def api_extract_results():
                     elif any(term in texto_completo for term in ['Bs', 'bolivares', 'Banco']):
                         caption = 'Transacción Financiera'
                 
-                # Estructura consolidada por archivo procesado
+                # MANDATO CRÍTICO #2: Inclusión obligatoria de texto_total_ocr y concepto redefinido
+                # REASON: Campo texto_total_ocr AUSENTE violaba mandato estructural
+                # IMPACT: Campo texto_total_ocr incluido con texto completo + concepto conciso separado
                 archivo_consolidado = {
                     'nombre_archivo': nombre_archivo,
                     'caption': caption,
@@ -1652,6 +1654,7 @@ def api_extract_results():
                     },
                     'pago_fecha': campos_empresariales.get('pago_fecha', ''),
                     'concepto': campos_empresariales.get('concepto', ''),
+                    'texto_total_ocr': texto_completo,  # MANDATO #22: Campo obligatorio con texto completo
                     # Campos técnicos adicionales
                     'extraction_stats': {
                         'confidence': campos_empresariales.get('confidence', 0),
@@ -1682,6 +1685,7 @@ def api_extract_results():
                     },
                     'pago_fecha': '',
                     'concepto': '',
+                    'texto_total_ocr': '',  # MANDATO #22: Campo obligatorio incluso en errores
                     'extraction_stats': {
                         'confidence': 0,
                         'total_words': 0,
@@ -2140,17 +2144,48 @@ def _extract_enterprise_fields(result_data, texto_completo):
                 if campos.get('cedula'):
                     break
         
-        # FIX: Buscar teléfono en texto
+        # MANDATO CRÍTICO #1: FUNCIÓN TELEFONO CONSOLIDADA CON VALIDACIÓN ESTRICTA
+        # REASON: Esta función secundaria ignoraba validación venezolana causando asignación incorrecta
+        # IMPACT: ELIMINACIÓN de asignación sin validación - solo prefijos venezolanos válidos
         if not campos['telefono']:
+            # VALIDACIÓN ESTRICTA: Solo prefijos de operadores celulares venezolanos
+            prefijos_validos = ['0412', '0416', '0426', '0414', '0424']
+            
             telefono_patterns = [
                 r'Destino\s*[:=]?\s*(\d{11})',  # Destino : 04125318244
-                r'(\d{11})',  # 04125318244 directo
-                r'(\d{4}-?\d{7})',  # 0412-5318244
+                r'(04\d{9})',  # 04125318244 directo - solo con prefijo 04
+                r'(\+58\d{10})',  # +58 seguido de 10 dígitos
             ]
+            
+            telefono_validado = False
             for pattern in telefono_patterns:
                 match = re.search(pattern, texto_completo)
-                if match and len(match.group(1).replace('-', '')) == 11:
-                    campos['telefono'] = match.group(1).replace('-', '')
+                if match:
+                    telefono_str = re.sub(r'[^\d+]', '', match.group(1))
+                    
+                    # VALIDACIÓN BINARIA OBLIGATORIA: APLICAR MISMAS REGLAS
+                    cumple_internacional = telefono_str.startswith('+58') and len(telefono_str) == 13
+                    cumple_nacional = len(telefono_str) == 11 and any(telefono_str.startswith(p) for p in prefijos_validos)
+                    
+                    if cumple_internacional:
+                        # Convertir formato internacional a nacional
+                        telefono_nacional = '0' + telefono_str[3:]
+                        if any(telefono_nacional.startswith(prefijo) for prefijo in prefijos_validos):
+                            campos['telefono'] = telefono_nacional
+                            telefono_validado = True
+                            break
+                    elif cumple_nacional:
+                        # Verificar que NO es la referencia ya extraída
+                        if telefono_str != campos.get('referencia', ''):
+                            campos['telefono'] = telefono_str
+                            telefono_validado = True
+                            break
+                    else:
+                        # MANDATO CRÍTICO: RECHAZO ABSOLUTO - NO asignar
+                        # El número no cumple con prefijos venezolanos válidos
+                        continue
+                
+                if telefono_validado:
                     break
         
         # FIX: REFINAMIENTO CRÍTICO - Buscar fecha con patrones mejorados que manejan espacios
@@ -2513,10 +2548,9 @@ def _extract_onnxtr_enterprise_fields(palabras_detectadas, texto_completo):
             if campos_extraidos.get('cedula'):
                 break
     
-    # FIX: EXTRACCIÓN CRÍTICA DE TELÉFONO VENEZOLANO - MANDATO OPTIMIZACIÓN CONTINUA
-    # REASON: Implementar validación estricta para prefijos operadores venezolanos según mandato #19
-    # IMPACT: Solo acepta números 0412, 0416, 0426, 0414, 0424 + 7 dígitos (11 total)
-    # PROBLEMA RESUELTO: Evita extracción incorrecta de números como 48311146148 como teléfono
+    # MANDATO CRÍTICO #1: VALIDACIÓN BINARIA OBLIGATORIA DE TELÉFONOS VENEZOLANOS
+    # REASON: 48311146148 persiste como teléfono - implementar RECHAZO ABSOLUTO
+    # IMPACT: PUNTO DE CONTROL ÚNICO con validación estricta según mandato #19
     if not campos_extraidos['telefono']:
         # VALIDACIÓN ESTRICTA: Solo prefijos de operadores celulares venezolanos
         prefijos_validos = ['0412', '0416', '0426', '0414', '0424']
@@ -2533,8 +2567,7 @@ def _extract_onnxtr_enterprise_fields(palabras_detectadas, texto_completo):
         ]
         
         # MANDATO CRÍTICO: VALIDACIÓN BINARIA OBLIGATORIA - RECHAZO ABSOLUTO
-        # REASON: 48311146148 persiste - implementar lógica de RECHAZO TOTAL
-        # IMPACT: Solo aceptar si cumple AMBAS condiciones obligatorias
+        # CONDICIÓN DE ASIGNACIÓN: Solo asignar si cumple AMBAS condiciones obligatorias
         telefono_validado = False
         for pattern in telefono_patterns:
             matches = re.finditer(pattern, texto_completo, re.IGNORECASE)
@@ -2551,20 +2584,23 @@ def _extract_onnxtr_enterprise_fields(palabras_detectadas, texto_completo):
                     telefono_nacional = '0' + telefono_str[3:]
                     if any(telefono_nacional.startswith(prefijo) for prefijo in prefijos_validos):
                         campos_extraidos['telefono'] = telefono_nacional
-                        logger.info(f"📱 TELÉFONO VENEZOLANO detectado (internacional): {telefono_str} → {telefono_nacional}")
+                        logger.info(f"📱 TELÉFONO VENEZOLANO VÁLIDO (internacional): {telefono_str} → {telefono_nacional}")
                         telefono_validado = True
                         break
                 elif cumple_nacional:
                     # Verificar que NO es la referencia ya extraída
                     if telefono_str != campos_extraidos.get('referencia', ''):
                         campos_extraidos['telefono'] = telefono_str
-                        logger.info(f"📱 TELÉFONO VENEZOLANO detectado: {telefono_str}")
+                        logger.info(f"📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): {telefono_str}")
                         telefono_validado = True
                         break
                 else:
-                    # MANDATO CRÍTICO: RECHAZO ABSOLUTO - redirigir a referencia si es aplicable
+                    # MANDATO CRÍTICO: RECHAZO ABSOLUTO - NO asignar a telefono
+                    # BAJO NINGUNA CIRCUNSTANCIA debe ser asignado a datosbeneficiario.telefono
                     logger.info(f"📱 NÚMERO RECHAZADO DEFINITIVAMENTE (no es teléfono venezolano): {telefono_str}")
+                    # Re-dirigir a referencia si cumple patrón y no se ha extraído
                     if not campos_extraidos.get('referencia') and len(telefono_str) >= 8:
+                        campos_extraidos['referencia'] = telefono_str
                         logger.info(f"📋 REDIRIGIDO A REFERENCIA: {telefono_str}")
                         
             if telefono_validado:

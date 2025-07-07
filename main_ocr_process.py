@@ -1205,9 +1205,9 @@ class OrquestadorOCR:
                 r'(\+58\d{10})'  # Formato internacional
             ]
             
-            # MANDATO CRÍTICO: VALIDACIÓN BINARIA OBLIGATORIA DE TELÉFONOS VENEZOLANOS
-            # REASON: 48311146148 aún persiste - implementar validación ABSOLUTA
-            # IMPACT: RECHAZO TOTAL de números que no cumplan AMBAS condiciones
+            # MANDATO CRÍTICO #1: VALIDACIÓN BINARIA OBLIGATORIA DE TELÉFONOS VENEZOLANOS
+            # REASON: 48311146148 persiste - implementar RECHAZO ABSOLUTO siguiendo mandato
+            # IMPACT: PUNTO DE CONTROL ÚNICO para validación estricta de teléfonos
             telefono_encontrado = False
             for pattern in telefono_patterns:
                 matches = re.findall(pattern, texto_completo, re.IGNORECASE)
@@ -1225,6 +1225,7 @@ class OrquestadorOCR:
                             extraccion_empresa['datosbeneficiario']['telefono'] = telefono_nacional
                             extraccion_empresa['campos_detectados'] += 1
                             telefono_encontrado = True
+                            logger.info(f"📱 TELÉFONO VENEZOLANO VÁLIDO (internacional): {telefono_str} → {telefono_nacional}")
                             break
                     elif es_formato_nacional:
                         # Verificar que NO es la referencia ya extraída
@@ -1232,13 +1233,17 @@ class OrquestadorOCR:
                             extraccion_empresa['datosbeneficiario']['telefono'] = telefono_str
                             extraccion_empresa['campos_detectados'] += 1
                             telefono_encontrado = True
+                            logger.info(f"📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): {telefono_str}")
                             break
-                    
-                    # MANDATO CRÍTICO: Si llega aquí, el número es RECHAZADO (ej: 48311146148)
-                    # Agregarlo a referencia si cumple patrón de referencia y no se ha extraído
-                    if not extraccion_empresa.get('referencia') and len(telefono_str) >= 8:
-                        extraccion_empresa['referencia'] = telefono_str
-                        extraccion_empresa['campos_detectados'] += 1
+                    else:
+                        # MANDATO CRÍTICO: RECHAZO ABSOLUTO - NO asignar a teléfono
+                        # BAJO NINGUNA CIRCUNSTANCIA debe ser asignado a datosbeneficiario.telefono
+                        logger.info(f"📱 NÚMERO RECHAZADO DEFINITIVAMENTE (no es teléfono venezolano): {telefono_str}")
+                        # Re-dirigir a referencia si cumple patrón y no se ha extraído
+                        if not extraccion_empresa.get('referencia') and len(telefono_str) >= 8:
+                            extraccion_empresa['referencia'] = telefono_str
+                            extraccion_empresa['campos_detectados'] += 1
+                            logger.info(f"📋 REDIRIGIDO A REFERENCIA: {telefono_str}")
                     
                 if telefono_encontrado:
                     break
@@ -1257,15 +1262,51 @@ class OrquestadorOCR:
                     extraccion_empresa['campos_detectados'] += 1
                     break
             
-            # EXTRACCIÓN DE CONCEPTO
-            concepto_keywords = ['concepto', 'descripcion', 'detalle', 'motivo', 'por', 'pago']
-            for keyword in concepto_keywords:
-                pattern = rf'{keyword}[:\s]*([a-zA-Z\s]{{10,50}})'
+            # MANDATO CRÍTICO #2: EXTRACCIÓN SEPARADA DE CONCEPTO Y TEXTO_TOTAL_OCR
+            # REASON: Separar texto OCR completo del concepto conciso según mandato estructural
+            # IMPACT: Campo concepto con motivo conciso, campo texto_total_ocr con texto completo
+            
+            # NUEVO CAMPO: texto_total_ocr con texto completo original
+            extraccion_empresa['texto_total_ocr'] = texto_completo
+            
+            # REDEFINIR: concepto como motivo conciso de transacción (máx 100 caracteres)
+            concepto_patterns = [
+                r'(?:Concepto|CONCEPTO)[:=]?\s*([^.]{10,80})',        # Concepto: texto
+                r'(?:Motivo|MOTIVO)[:=]?\s*([^.]{10,80})',            # Motivo: texto
+                r'(?:Descripcion|DESCRIPCIÓN)[:=]?\s*([^.]{10,80})',  # Descripción: texto
+                r'(?:Detalle|DETALLE)[:=]?\s*([^.]{10,80})',          # Detalle: texto
+                r'(Pago\s+[A-Za-z\s]{5,40})',                        # Pago Móvil, Pago de...
+                r'(Transferencia\s+[A-Za-z\s]{5,40})',                # Transferencia bancaria
+                r'(Envio\s+de\s+[A-Za-z\s]{5,40})',                  # Envío de dinero
+            ]
+            
+            concepto_extraido = ""
+            for pattern in concepto_patterns:
                 matches = re.findall(pattern, texto_completo, re.IGNORECASE)
                 if matches:
-                    extraccion_empresa['concepto'] = matches[0].strip()
-                    extraccion_empresa['campos_detectados'] += 1
+                    concepto_extraido = matches[0].strip()
                     break
+            
+            # FALLBACK INTELIGENTE: Si no hay concepto específico, extraer frase relevante
+            if not concepto_extraido:
+                frases_relevantes = [
+                    r'([^.]*(?:Bs|bolivares|monto|transferencia|pago|envio)[^.]{0,30})',
+                    r'([A-Z][^.]{20,60}(?:realizada|enviado|operacion)[^.]{0,20})',
+                ]
+                
+                for pattern in frases_relevantes:
+                    matches = re.findall(pattern, texto_completo, re.IGNORECASE)
+                    if matches:
+                        concepto_extraido = matches[0].strip()
+                        break
+                
+                # ÚLTIMO FALLBACK: Primeras palabras significativas (no todo el texto)
+                if not concepto_extraido and len(texto_completo) > 20:
+                    palabras = texto_completo.split()[:15]  # Máximo 15 palabras
+                    concepto_extraido = ' '.join(palabras)
+            
+            extraccion_empresa['concepto'] = concepto_extraido[:100] if concepto_extraido else "Transacción financiera"
+            extraccion_empresa['campos_detectados'] += 1
             
             # CALCULAR POSICIÓN RELATIVA DE ELEMENTOS CRÍTICOS
             if word_data:
