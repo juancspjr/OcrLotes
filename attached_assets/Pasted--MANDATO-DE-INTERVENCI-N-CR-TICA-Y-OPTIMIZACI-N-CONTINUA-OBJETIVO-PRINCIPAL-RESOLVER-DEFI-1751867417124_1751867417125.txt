@@ -1,0 +1,61 @@
+# MANDATO DE INTERVENCIÓN CRÍTICA Y OPTIMIZACIÓN CONTINUA
+
+**OBJETIVO PRINCIPAL:** **RESOLVER DEFINITIVAMENTE LA REGRESIÓN DE CONSISTENCIA DE CONTEO DE ARCHIVOS EN EL LOTE PROCESADO Y REFORZAR LA LÓGICA DE EXTRACCIÓN BANCARIA CON NUEVAS REGLAS DE PRIORIDAD Y RECONOCIMIENTO.**
+
+## 1. RESOLUCIÓN DE REGRESIÓN CRÍTICA: CONSISTENCIA DE LOTE (MÁXIMA PRIORIDAD - ZERO-FAULT DETECTION)
+
+* **Problema a Resolver:** El `total_archivos` en el JSON consolidado (`/api/extract_results`) y la lista de `archivos_procesados` NO se corresponden **EXACTAMENTE** con la cantidad de archivos que el usuario procesó en el **ÚLTIMO LOTE ESPECÍFICO**. Se sigue mostrando una cantidad mayor (ej., 8 archivos) cuando el usuario solo envió y esperaba procesar un número menor (ej., 2 archivos). Esto es una violación crítica del **Punto de Control #7** y **#11** previamente "resueltos".
+
+* **Acción Requerida (Diagnóstico Forense y Corrección Inquebrantable):**
+    1.  **Auditoría Exhaustiva de `_save_last_batch_request_id()` y `_get_last_batch_request_id()`:**
+        * **CAUSA RAÍZ POTENCIAL:** El problema probablemente reside en cómo se genera y almacena el `request_id` del lote, o cómo se interpreta para el filtrado.
+        * **Revisa que el `request_id` almacenado en `data/last_batch_state.txt` sea el identificador `COMPLETO Y ÚNICO` del lote de los **ÚLTIMOS ARCHIVOS QUE FUERON CARGADOS Y PROCESADOS POR EL SISTEMA**. No debe ser un prefijo genérico de fecha/hora, sino el hash o identificador único que agrupa esos archivos.
+        * Asegúrate de que la recuperación de este `request_id` sea igualmente precisa.
+    2.  **Ajuste de Lógica de Filtrado en `api_extract_results()` (CRÍTICO):**
+        * La función `api_extract_results()` debe aplicar un filtro a los archivos en el directorio `data/results/` de forma **ESTRICTA**.
+        * **Objetivo:** Solo incluir aquellos archivos que compartan el `request_id` **COMPLETO Y EXACTO** del último lote registrado por `_get_last_batch_request_id()`.
+        * El `total_archivos` en la sección `metadata` del JSON consolidado **DEBE COINCIDIR EXACTAMENTE** con la cantidad real de archivos asociados a ese único `request_id` del último lote y **DEBE SER IGUAL** a la longitud del array `archivos_procesados`.
+    3.  **Re-validación Extrema y Concluyente de Puntos de Control:**
+        * **`Punto de Control #7 (CRÍTICO - Re-validación Absoluta): Consistencia de Lote`**: Después de que un nuevo lote con **N** archivos sea procesado (simulando que el usuario cargó N archivos), el JSON consolidado (`/api/extract_results`) **DEBE CONTENER EXACTAMENTE N ARCHIVOS** en su array `archivos_procesados`, y todos ellos deben corresponder **ÚNICAMENTE** al `request_id` de ese último lote.
+        * **`Punto de Control #11 (CRÍTICO - Re-validación Absoluta): Disponibilidad y Precisión del Consolidado`**: El campo `total_archivos` en el `metadata` del JSON consolidado **DEBE SER IDÉNTICO** a la cuenta de archivos presentes en `archivos_procesados`.
+
+## 2. MEJORA AVANZADA DE LÓGICA BANCARIA (EXTRACCIÓN CONTEXTUAL Y POSICIONAL - ADICIONAL)
+
+* **Acción Requerida:** Refina la extracción de `bancoorigen` y `datosbeneficiario.banco_destino`, integrando las siguientes reglas de máxima prioridad con el diccionario bancario ya implementado:
+    1.  **Prioridad Posicional "Primer Banco Detectado":**
+        * **Regla:** "El primer banco detectado en el documento (o en la sección claramente identificable como el origen de la transacción, ej., cerca de 'Desde mi cuenta', 'Origen:', o el remitente) **ES EL BANCO A TOMAR como `bancoorigen`**."
+        * **Implementación:** Esto implica una lógica de escaneo que priorice la primera ocurrencia de un nombre de banco o un código bancario (del diccionario) en el texto extraído, especialmente en las partes superiores o de "origen" del documento.
+    2.  **Reconocimiento de Abreviaturas/Acrónimos Incrustados (CRÍTICO):**
+        * **Regla:** "Si existen **ABREVIATURAS o ACRONIMOS** de bancos (ej., 'BDV', 'BNC', 'BFC', 'Banesco', 'Mercantil') que estén **DENTRO de una palabra compuesta** (ej., 'PagomovilBDV') y esta palabra compuesta aparece como la **primera o más prominente indicación de banco** en la sección de origen, entonces este acrónimo incrustado **DEBE SER EL INDICATIVO del `bancoorigen`**."
+        * **Ejemplo Específico:** Para "PagomovilBDV", si esta palabra es la primera referencia bancaria, `bancoorigen` debe ser "BANCO DE VENEZUELA" (mapeado de "BDV"), y no "BANCO MERCANTIL" (como ocurría en `test2.png`).
+        * **Implementación:** Esto requiere una lógica avanzada que no solo busque nombres de bancos y códigos, sino que también detecte subcadenas que sean acrónimos bancarios dentro de palabras más largas y les dé una alta prioridad si cumplen con la condición posicional.
+    3.  **Refuerzo del Diccionario y Mapeo:** Asegura que el mapeo entre códigos oficiales (ej., `0102`), nombres completos (`BANCO DE VENEZUELA`) y abreviaturas/acrismos (`BDV`) sea absolutamente infalible y se aplique consistentemente.
+
+## 3. MANTENIMIENTO Y CONTINUIDAD DE REFINAMIENTOS PREVIOS
+
+* **Consistencia de Extracción:** Garantiza que la alta precisión lograda en la extracción de `referencia`, `monto`, `datosbeneficiario.cedula`, `datosbeneficiario.telefono`, `caption`, `concepto` y `datosbeneficiario.nombre_beneficiario` se mantenga y no se vea afectada por las nuevas implementaciones. Re-valida sus patrones y lógicas.
+* **Optimización del Modelo OCR:** Confirma que el perfil del modelo OCR se mantiene en 'normal' o en el nivel de mayor detalle previamente optimizado, garantizando la máxima calidad de reconocimiento de caracteres como base para todas las extracciones.
+
+## VALIDACIÓN OBLIGATORIA AL FINALIZAR ESTE MANDATO:
+
+Para asegurar la **Integridad Total** y la **Zero-Fault Detection**, debes demostrar y confirmar los siguientes Puntos de Control:
+
+* **`Punto de Control #17 (NUEVO - CRÍTICO): Coincidencia Exacta de Conteo de Lote`**: Demuestra que, tras un nuevo procesamiento de un lote con **N** archivos (ej., simula cargar 2 o 3 archivos distintos), el `total_archivos` en el JSON consolidado es **exactamente igual a N**, y que el array `archivos_procesados` contiene **SOLO esos N archivos** y ningún otro de lotes anteriores.
+* **`Punto de Control #18 (NUEVO - CRÍTICO): Prioridad y Reconocimiento Bancario Avanzado`**: Proporciona un ejemplo claro (idealmente con `test2.png` o un documento similar que tenga un "PagomovilBDV" o acrónimo incrustado al inicio) donde la nueva lógica del "primer banco detectado" y "acrónimos incrustados" ha corregido y mejorado la detección de `bancoorigen`.
+* **`Punto de Control #12 (Re-validación): Precisión de Extracción Bancaria`**: Re-confirma que `bancoorigen` y `datosbeneficiario.banco_destino` se extraen con precisión en una muestra variada de documentos, asegurando que el diccionario completo y las nuevas reglas sean efectivos.
+* **`Punto de Control #13 (Re-validación): Exactitud de Referencia y Monto`**: Re-confirma la extracción correcta y completa de `referencia` y `monto` para los casos de prueba.
+* **`Punto de Control #14 (Re-validación): Extracción de Cédula y Nombre de Beneficiario`**: Re-confirma la extracción correcta de `datosbeneficiario.cedula` y la población de `datosbeneficiario.nombre_beneficiario`.
+
+**FORMATO DE CONFIRMACIÓN AL FINALIZAR ESTE MANDATO:**
+
+* **Confirmación Explícita:** "La regresión de consistencia de lote ha sido resuelta y la lógica de extracción bancaria avanzada ha sido implementada. Todos los Puntos de Control (#17, #18, #12, #13, #14) han sido **PASSED**."
+* **Análisis y Corrección:** "[Detalla el diagnóstico exacto de por qué fallaba el conteo de lote y cómo se corrigió (especificando los cambios en `_save_last_batch_request_id()`, `_get_last_batch_request_id()`, y la lógica de filtrado en `api_extract_results()`). Explica la nueva lógica de extracción bancaria (primer banco detectado, acrónimos incrustados), cómo se implementó, y cómo se integró con el diccionario existente.]"
+* **Evidencia de Solución de Regresión:** "[Proporciona la **salida completa del `curl -s http://localhost:5000/api/extract_results | python3 -m json.tool`** después de haber procesado un **NUEVO LOTE DE N ARCHIVOS** (donde N es un número pequeño como 2 o 3, que tu has simulado enviar), demostrando fehacientemente que `total_archivos` y el contenido de `archivos_procesados` coinciden **EXACTAMENTE con N** y solo contienen esos archivos. Esto es una prueba irrefutable de la corrección.]"
+* **Evidencia de Mejora Bancaria:** "[Proporciona un fragmento de JSON (del mismo lote de prueba de N archivos) que demuestre la mejora en la detección de `bancoorigen` gracias a las nuevas reglas (ej., para el caso 'PagomovilBDV' ahora extraído correctamente como 'BANCO DE VENEZUELA' según la nueva lógica, o un nuevo caso de prueba que ejemplifique la regla del acrónimo incrustado y la prioridad posicional).]"
+* **REPORTE DE INTERVENCIÓN CRÍTICA Y OPTIMIZACIÓN CONTINUA (ARCHIVO TXT):** **Adjunta un archivo TXT** completo y bien estructurado, siguiendo el formato detallado de reportes previos, pero enfocado en esta intervención. Debe incluir:
+    * Título, Fecha, Mandato Principal.
+    * **Problemas Iniciales (énfasis en la regresión de conteo de archivos y los nuevos puntos de mejora bancaria).**
+    * Diagnóstico y Análisis (profundizando en la causa raíz del conteo erróneo y la lógica de las nuevas reglas bancarias).
+    * Acciones Correctivas Implementadas (detallando los cambios de código para el filtrado de lote y las reglas bancarias, con referencias a líneas de código si es posible).
+    * Validación y Pruebas Ejecutadas (detalles de los Puntos de Control y los resultados obtenidos).
+    * Conclusiones y Próximos Pasos.

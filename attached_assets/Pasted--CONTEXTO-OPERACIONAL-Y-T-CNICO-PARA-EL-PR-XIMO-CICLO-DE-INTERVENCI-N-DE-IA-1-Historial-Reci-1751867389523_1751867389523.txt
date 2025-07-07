@@ -1,0 +1,35 @@
+# CONTEXTO OPERACIONAL Y TÉCNICO PARA EL PRÓXIMO CICLO DE INTERVENCIÓN DE IA
+
+## 1. Historial Reciente de Intervenciones Críticas:
+
+* **Fase 1: Restauración de Disponibilidad (MANDATO DE EMERGENCIA previo):**
+    * **Problema Inicial:** El JSON consolidado del endpoint `/api/extract_results` se mostraba vacío o incompleto.
+    * **Resolución:** Se diagnosticó y corrigió una discrepancia en la lógica de filtrado del `request_id` del lote.
+    * **Validación:** Se confirmó que el endpoint ahora devuelve un JSON válido y se validaron exitosamente los Puntos de Control #11 (Disponibilidad y Precisión del Consolidado) y #7 (Consistencia de Lote).
+
+* **Fase 2: Refinamiento de Precisión de Extracción (MANDATO DE REFINAMIENTO CRÍTICO previo):**
+    * **Problemas Iniciales:** Errores específicos de extracción en campos clave:
+        * `bancoorigen` y `datosbeneficiario.banco_destino` (ej., `PagomovilBDV` extraía "BANCO MERCANTIL" en lugar de "BANCO DE VENEZUELA").
+        * `referencia` (ej., extraía "Fecha" en lugar del número real, o números incompletos).
+        * `monto` (inconsistencias o valores vacíos).
+        * `cedula` (no reconocía formatos con puntos o prefijos "V-").
+        * `concepto` (demasiado genérico, no específico).
+        * `caption` (no automatizado para el tipo de transacción).
+        * **Nuevo Campo Requerido:** `nombre_beneficiario` no existía.
+    * **Resolución:**
+        * Se implementó un diccionario exhaustivo de 23 códigos bancarios venezolanos y sus acrónimos/nombres.
+        * Se refinaron los patrones regex para `referencia` (rango 8-15 dígitos, validación anti-teléfono) y `cedula` (soporte multi-formato, validación de longitud).
+        * Se mejoró la lógica de `concepto` y `caption` para una categorización y extracción más inteligente.
+        * Se añadió y se implementó la extracción para el campo `nombre_beneficiario`.
+        * Se elevó el perfil del modelo OCR de 'high_confidence' a 'normal' para mejorar la calidad de reconocimiento de caracteres.
+    * **Validación:** Todos los Puntos de Control (#12 al #16) fueron `PASSED` y se proporcionó evidencia de mejora en la extracción de campos específicos.
+
+## 2. Regresión Crítica Actual Detectada y PRIORIDAD ABSOLUTA:
+
+* **PROBLEMA CRÍTICO RE-EMERGENTE:** Aunque la IA informó previamente que la "consistencia de lote" estaba resuelta y que se devolvían "8 archivos del último lote", el usuario ha detectado que **solo envió DOS archivos para procesamiento en ese último lote**, y la salida consolidada (`/api/extract_results`) sigue mostrando un `total_archivos` y listando **MÁS archivos de los que realmente corresponden al último lote procesado por el usuario**.
+* **IMPACTO:** Esto representa una **violación directa** y una regresión de los principios de **Integridad Total** y **Zero-Fault Detection**. El sistema no está entregando **SOLO los resultados del lote más reciente y exacto que el usuario procesó**. La cantidad de `total_archivos` en los `metadata` del JSON **DEBE COINCIDIR EXACTAMENTE** con la cantidad de archivos que el usuario envió en la última operación de procesamiento de lote.
+
+## 3. Necesidad de Refinamiento Adicional en la Lógica Bancaria:
+
+* Se requiere una **mayor granularidad y robustez** en la detección del `bancoorigen`, incorporando reglas de **prioridad posicional** y **reconocimiento de acrónimos incrustados** para situaciones específicas (ej., "PagomovilBDV").
+* Los ejemplos de documentos (`test2.png`, `prueba2.jpg`, etc.) siguen siendo la base para estas mejoras.

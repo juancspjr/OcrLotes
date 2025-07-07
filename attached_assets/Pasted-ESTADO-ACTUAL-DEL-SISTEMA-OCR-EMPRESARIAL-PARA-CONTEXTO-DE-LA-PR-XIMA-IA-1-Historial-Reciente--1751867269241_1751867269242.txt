@@ -1,0 +1,17 @@
+ESTADO ACTUAL DEL SISTEMA OCR EMPRESARIAL - (PARA CONTEXTO DE LA PRÓXIMA IA)
+
+1. Historial Reciente de Intervenciones Críticas:
+* Fase 1: Restauración de Disponibilidad (MANDATO DE EMERGENCIA anterior): Se resolvió una regresión crítica donde el JSON consolidado del endpoint /api/extract_results había desaparecido o se mostraba vacío. Se confirmó que ahora devuelve un JSON válido y solo con el último lote, y se validaron los Puntos de Control #11, #7 y #8. La causa raíz fue un problema en la lógica de filtrado del request_id del lote.
+* Fase 2: Refinamiento de Precisión (MANDATO DE REFINAMIENTO CRÍTICO): Se abordaron errores específicos de extracción de campos como bancoorigen, referencia, monto, cedula, concepto, caption y se introdujo nombre_beneficiario. Se implementó un diccionario robusto de bancos venezolanos, lógica anti-duplicación, y se elevó el perfil del modelo OCR. Todos los Puntos de Control (#12 al #16) fueron validados como PASSED.
+
+2. Regresión Crítica Detectada y Prioridad Absoluta (ZERO-FAULT DETECTION):
+* Problema: A pesar de que la IA informó "8 archivos del último lote", el usuario informa que solo se procesaron DOS archivos en el último lote, y que la salida consolidada sigue mostrando MÁS archivos de los que realmente se procesaron en el lote actual. Esto indica que la lógica de filtrado del "último lote" no es completamente precisa y ha vuelto a introducir una regresión en el Punto de Control #7 (Consistencia de Lote) y Punto de Control #11 (Totalidad de Archivos por Lote).
+* Impacto: Esto es una violación directa del principio de "SOLO los resultados del último lote procesado" y del ZERO-FAULT DETECTION. La cantidad de archivos reportados en el JSON ("total_archivos") debe coincidir exactamente con la cantidad de archivos que el usuario envió y se procesaron en ese último lote específico.
+
+3. Necesidad de Refinamiento Adicional en la Lógica Bancaria:
+* Aunque el diccionario bancario fue implementado, se requieren reglas más granulares basadas en la posición y la naturaleza de las abreviaturas/acrismos incrustados para determinar con mayor certeza el banco de origen.
+* Ejemplos de documentos procesados recientemente:
+* test2.png (PagomovilBDV)
+* prueba2.jpg (Transferencia por página web)
+* Otros mencionados en reportes anteriores.
+

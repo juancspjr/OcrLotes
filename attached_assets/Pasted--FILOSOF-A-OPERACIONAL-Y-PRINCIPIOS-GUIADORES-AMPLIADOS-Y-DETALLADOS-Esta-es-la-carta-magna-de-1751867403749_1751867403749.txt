@@ -1,0 +1,41 @@
+# FILOSOFÍA OPERACIONAL Y PRINCIPIOS GUIADORES (AMPLIADOS Y DETALLADOS)
+
+Esta es la carta magna de nuestro sistema. Cada decisión, cada línea de código, cada prueba debe ser un reflejo inequívoco de estos principios.
+
+* **1. INTEGRIDAD TOTAL (CRÍTICA EXISTENCIAL):**
+    * **Definición:** La base sobre la cual se construye todo el sistema. Significa que cada pieza de información (desde un caracter extraído hasta un recuento total de archivos) debe ser inherentemente **coherente, completa, precisa y correcta** en todo momento y en cada capa de abstracción. No hay espacio para datos incompletos, ambiguos o erróneos.
+    * **Implicación:** Si un campo se extrae, debe ser el valor correcto. Si se informa un número de archivos, debe ser la cantidad exacta. Un solo fallo en la cadena de datos es una brecha en la integridad total y debe ser tratado con la máxima urgencia.
+    * **Extensión (Coherencia de Referencias Críticas):** Implica que todas las llamadas a funciones, endpoints, recursos internos y externos deben ser validadas exhaustivamente. Si un recurso no existe, la solución debe ser su creación bajo los estándares empresariales más rigurosos. Si ya existe, debe ser ampliado o modificado sin introducir la más mínima regresión o romper la compatibilidad con funcionalidades previas.
+
+* **2. ZERO-FAULT DETECTION (IMPERATIVO ABSOLUTO):**
+    * **Definición:** Nuestra meta no es solo corregir errores, sino diseñar el sistema de tal manera que los errores sean **inmediatamente detectables** y, idealmente, **prevenidos antes de que ocurran**. Cualquier anomalía, inconsistencia o desviación del comportamiento o de los resultados esperados debe disparar una alerta crítica y una investigación inmediata hasta la causa raíz.
+    * **Implicación:** Un "resultado dudoso" o una "inconsistencia menor" no son aceptables; son fallos. El sistema debe tener mecanismos de auto-diagnóstico y auto-validación que confirmen su correcto funcionamiento en todo momento.
+
+* **3. PERSISTENCIA INQUEBRANTABLE (GARANTÍA DE CONFIABILIDAD):**
+    * **Definición:** Las soluciones a los problemas no deben ser meros "parches" temporales. Cada corrección debe ser una **solución sistémica y duradera** que se integre permanentemente en la arquitectura.
+    * **Implicación:** Esto exige la implementación rigurosa de:
+        * **Pruebas de Regresión Automatizadas:** Para asegurar que las correcciones no introduzcan nuevos errores en funcionalidades existentes.
+        * **Análisis de Impacto en Dependencias:** Para mapear y comprender cómo un cambio afecta a otras partes del sistema, evitando efectos colaterales no deseados.
+        * **Documentación Exhaustiva:** De los flujos de trabajo afectados, la lógica implementada y las decisiones de diseño tomadas, para un mantenimiento futuro y una transferencia de conocimiento fluida.
+    * **Objetivo:** Las soluciones deben "sobrevivir" a múltiples ciclos de desarrollo y despliegue sin degradación.
+
+* **4. EXTRACCIÓN CONTEXTUAL Y POSICIONAL (INTELIGENCIA AVANZADA):**
+    * **Definición:** La extracción de datos va mucho más allá de la mera conversión de píxeles a texto (OCR). Requiere una comprensión profunda del **contexto semántico** del documento y de la **ubicación espacial y jerárquica** de la información.
+    * **Implicación:** El sistema debe ser capaz de:
+        * Entender la **proximidad de palabras clave** (ej., "monto" cerca de un valor numérico).
+        * Aplicar la **lógica posicional** (ej., "título arriba, valor abajo/a la derecha").
+        * Reconocer **patrones visuales y estructurales** específicos de los documentos venezolanos (ej., capturas de pantalla de apps o páginas web).
+        * Inferir el tipo de documento (`recibo de pago móvil`, `transferencia web`) para aplicar reglas de extracción específicas.
+    * **Regla de Oro Ampliada:** "Es sencillo reconocer las posibles palabras de título y lo que esté más cercano del lado izquierdo y/o abajo es el valor." Esta regla es una base, pero debe complementarse con la comprensión del flujo y la prominencia del texto.
+
+* **5. REFINAMIENTO CONTINUO (EVOLUCIÓN CONSTANTE):**
+    * **Definición:** Reconocemos que el sistema nunca alcanzará un "estado final" estático. Debe ser capaz de **aprender, adaptarse y mejorar** constantemente, impulsado por la detección de cada nueva variabilidad de documento o la aparición de cualquier error.
+    * **Implicación:** Cada interacción, cada nuevo conjunto de datos, cada feedback del usuario es una oportunidad para iterar y optimizar los algoritmos de extracción y las reglas de negocio. Nuestro estado es siempre "óptimo en evolución".
+
+* **6. INTERFACE EXCELLENCE (CLARIDAD Y USABILIDAD EXTERNA):**
+    * **Definición:** Las interfaces del sistema, especialmente las salidas como el JSON consolidado, deben ser **cristalinas, predecibles, consistentes y de fácil consumo** para otros sistemas o usuarios. Deben reflejar siempre el estado más exacto y consolidado de los datos.
+    * **Implicación:** Esto significa formatos JSON bien estructurados, nombres de campos auto-explicativos y una representación de datos fiel a la realidad extraída. Los metadatos deben ser informativos y precisos.
+
+* **7. ARQUITECTURA AUTO-VALIDANTE (ROBUSTEZ INTRÍNSECA):**
+    * **Definición:** El sistema debe incorporar mecanismos intrínsecos de **auto-chequeo, validación y resiliencia**. Debe ser capaz de detectar inconsistencias internas y, si es posible, corregirlas o, al menos, reportarlas de forma proactiva.
+    * **Implicación:** Esto incluye validaciones en tiempo de ejecución, manejo de excepciones robusto, y la capacidad de mantener su integridad y funcionamiento correcto incluso ante condiciones inesperadas o fallos parciales.
