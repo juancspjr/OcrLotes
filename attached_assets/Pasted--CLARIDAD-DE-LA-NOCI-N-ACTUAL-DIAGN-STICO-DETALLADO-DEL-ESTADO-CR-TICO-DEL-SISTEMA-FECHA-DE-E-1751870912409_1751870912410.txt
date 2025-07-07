@@ -1,0 +1,43 @@
+# CLARIDAD DE LA NOCIÓN ACTUAL: DIAGNÓSTICO DETALLADO DEL ESTADO CRÍTICO DEL SISTEMA
+
+**FECHA DE ESTABLECIMIENTO DEL DIAGNÓSTICO:** 7 de Julio de 2025, 08:47 UTC
+
+## VISIÓN GENERAL DEL ESTADO OPERATIVO
+
+El sistema actual de extracción de datos OCR, diseñado para procesar recibos y documentos financieros, presenta fallos persistentes y regresiones críticas que comprometen directamente la fiabilidad y la **Integridad Total** de los datos extraídos. A pesar de las iteraciones de corrección previas, los errores fundamentales en la validación de números de teléfono y la estructuración de la información textual siguen manifestándose de manera inaceptable.
+
+## PUNTOS DE FALLO CRÍTICO CONFIRMADOS (PERSISTENTES):
+
+Los siguientes puntos, que corresponden a **Puntos de Control Críticos (PCC)** previamente definidos, han **FALLADO REPETIDAMENTE** en las últimas validaciones, lo que indica la necesidad de una revisión profunda de la lógica subyacente y la implementación:
+
+### ❌ **PUNTO DE CONTROL #19: RECHAZO ABSOLUTO DE NÚMEROS NO VENEZOLANOS EN `telefono` (FALLO CRÍTICO)**
+
+* **Problema Específico Confirmado:** El número `48311146148`, que ha sido identificado reiteradamente como un valor erróneo para el campo `datosbeneficiario.telefono`, **SIGUE SIENDO ASIGNADO A ESTE CAMPO**.
+* **Implicaciones:**
+    * **Violación de la `Zero-Fault Detection`:** El sistema está permitiendo que un dato inválido (que no cumple con la estructura de un número telefónico venezolano) se incorpore a un campo de tipo estricto, comprometiendo la calidad de la información.
+    * **Confusión de Campos:** Este número es, en su contexto, claramente una `referencia` de transacción. Su asignación al campo `telefono` indica una falla en la lógica de discernimiento y priorización entre tipos de datos numéricos.
+    * **Impacto Negativo:** La persistencia de este fallo anula la confianza en la capacidad del sistema para validar y clasificar datos críticos de forma autónoma y precisa.
+
+### ❌ **PUNTO DE CONTROL #22: SEPARACIÓN ESTRUCTURAL DE `concepto` Y `texto_total_ocr` (FALLO CRÍTICO)**
+
+* **Problema Específico Confirmado:**
+    * El campo `texto_total_ocr` **ESTÁ COMPLETAMENTE AUSENTE** de la salida JSON generada. Esto significa que la totalidad del texto reconocido por el OCR no está siendo capturada y expuesta, impidiendo la trazabilidad y el análisis contextual completo.
+    * El campo `concepto`, cuando está presente, no cumple con su definición de "resumen conciso". En su lugar, se observa que contiene texto truncado del OCR completo o partes irrelevantes, lo que demuestra una falta de refinamiento en la extracción del propósito de la transacción.
+* **Implicaciones:**
+    * **Pérdida de Información Crítica:** La ausencia de `texto_total_ocr` implica que una parte fundamental de la auditoría y el enriquecimiento de datos post-extracción es imposible. No se tiene acceso al "raw data" completo de la lectura.
+    * **Deterioro de la `Claridad de Definiciones`:** La confusión entre `concepto` (resumen semántico) y `texto_total_ocr` (texto bruto completo) socava la estructura de datos definida y la utilidad de cada campo.
+    * **Impacto Negativo:** Se reduce la capacidad del sistema para ofrecer insights valiosos a través del `concepto` y limita las posibilidades de análisis avanzado y validación manual/automática basada en el texto completo.
+
+### ⚠️ **PUNTO DE CONTROL #21: EXTRACCIÓN EXPLÍCITA DE BANCO DESTINO (PENDIENTE/RE-VALIDACIÓN)**
+
+* **Problema Identificado:** Aunque no hay un caso de prueba en la última ejecución que demuestre una falla directa con un `banco_destino` explícitamente mencionado y no extraído, la robustez de esta característica es crucial. En el caso de `nombre_archivo: 20250707-E--216314122148850@lid_Elena_02-45_20250707_063749_281.png`, el `banco_destino` estaba vacío porque el `concepto` (`: 4 15 D 107 Crear Acceso directo - X`) no contenía información clara de un banco destino.
+* **Implicaciones:** La lógica debe ser capaz de identificar y priorizar la extracción explícita del banco destino cuando la información **está presente** en el texto, incluso si es un banco diferente al de origen.
+
+### ⚠️ **PUNTO DE CONTROL #13: EXACTITUD COMPLETA DE REFERENCIA (RE-VALIDACIÓN)**
+
+* **Problema Identificado:** Se han observado casos previos donde los números de referencia podrían estar truncados o incompletos.
+* **Implicaciones:** Es vital asegurar que la lógica de extracción de `referencia` capture la secuencia completa y correcta de dígitos, sin importar su formato o longitud, para mantener la **`Integridad Total`** de los datos transaccionales.
+
+## SÍNTESIS DE LA URGENCIA
+
+Los fallos en los Puntos de Control #19 y #22 son **regresiones críticas** que indican una falta de **`Persistencia de Correcciones`** y de un **`Análisis de Causa Raíz Profundo`** en las intervenciones anteriores. La prioridad es máxima para rectificar estos errores de manera **definitiva** y establecer mecanismos que impidan su reaparición. La "nueva IA" debe abordar estos problemas con un enfoque exhaustivo y una comprensión cabal de las bases filosóficas que sustentan nuestro desarrollo.

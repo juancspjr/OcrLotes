@@ -1,0 +1,52 @@
+# BASES FILOSÓFICAS DETALLADAS: PRINCIPIOS INQUEBRANTABLES PARA EL DESARROLLO DEL SISTEMA OCR EMPRESARIAL
+
+Nuestra aproximación al desarrollo de sistemas de extracción de información, especialmente para datos críticos financieros y transaccionales, se fundamenta en un conjunto de principios filosóficos estrictos. Estos no son meras directrices, sino los pilares esenciales que garantizan la calidad, la confianza y la utilidad a largo plazo de nuestra solución. La "nueva IA" debe interiorizar y aplicar cada uno de estos principios en cada línea de código y cada decisión de diseño.
+
+## PRINCIPIOS FUNDAMENTALES (AMPLIADOS Y CON ÉNFASIS):
+
+### 1. **INTEGRIDAD TOTAL DE LOS DATOS (VALOR SUPREMO)**
+
+* **Definición:** Todo dato extraído del documento fuente (OCR) debe ser una representación **100% veraz, completa y sin ambigüedades** de la información contenida. Esto implica no solo la ausencia de errores, sino también la exhaustividad y la fidelidad al dato original.
+* **Aplicación Práctica:**
+    * **Sin Truncamientos:** Los campos numéricos (montos, referencias, teléfonos) y textuales (concepto, `texto_total_ocr`) no deben sufrir truncamientos, omisiones o inferencias que alteren su valor original.
+    * **Consistencia:** Los datos extraídos deben ser consistentes entre sí y con el contexto del documento.
+    * **Fidelidad:** La información debe ser un reflejo exacto del contenido legible del documento fuente.
+* **Consecuencia de Fallo:** Cualquier desviación de la verdad o la completitud es un fallo crítico que compromete la fiabilidad del sistema para la toma de decisiones empresariales.
+
+### 2. **ZERO-FAULT DETECTION (PARADIGMA DE SEGURIDAD Y CALIDAD)**
+
+* **Definición:** El sistema debe ser inherentemente inmune a la introducción o propagación de datos erróneos en campos que poseen formatos o dominios de valores estrictamente definidos. No se trata solo de corregir errores, sino de prevenirlos activamente en el punto de extracción o asignación.
+* **Aplicación Práctica:**
+    * **Validación Estricta en Origen:** Antes de asignar un valor a un campo de tipo estricto (ej., `telefono` con formato venezolano), se debe aplicar una validación rigurosa. Si el valor no cumple, **DEBE SER RECHAZADO** para ese campo específico (no puede ser asignado).
+    * **Manejo de Excepciones Definido:** En lugar de forzar valores inválidos, el sistema debe tener mecanismos claros para gestionar estos casos (ej., dejar el campo vacío, re-dirigir a otro campo más apropiado como `otro` o `referencia`, o señalizar una advertencia).
+    * **Tipado Fuerte:** Asegurar que los tipos de datos se respeten a lo largo de todo el pipeline de procesamiento.
+* **Consecuencia de Fallo:** Un solo dato erróneo que traspasa la barrera de detección en un campo crítico es un agujero de seguridad y un indicio de una lógica de validación deficiente.
+
+### 3. **PERSISTENCIA DE CORRECCIONES (PRINCIPIO DE MEJORA CONTINUA)**
+
+* **Definición:** Una corrección implementada para resolver un error específico no debe ser una solución puntual o temporal. Debe ser duradera, robusta y diseñada para prevenir la reaparición del mismo error o la introducción de regresiones.
+* **Aplicación Práctica:**
+    * **Pruebas de Regresión Obligatorias:** Cada corrección debe ir acompañada de pruebas de regresión automatizadas que cubran el escenario del error original y otros casos de borde relacionados.
+    * **Análisis de Impacto:** Antes y después de cada cambio, se debe realizar un análisis para comprender y documentar el impacto en otros componentes o campos dependientes.
+    * **Documentación de Cambios (`CHANGE_LOG.md`):** Todos los cambios, sus razones y las pruebas asociadas deben estar meticulosamente documentados.
+* **Consecuencia de Fallo:** La reaparición de un error previamente "corregido" indica una falla en la comprensión profunda de la causa raíz o una implementación inadecuada de mecanismos de prevención de regresiones.
+
+### 4. **CLARIDAD DE DEFINICIONES Y SEPARACIÓN DE CONOCIMIENTOS (PRINCIPIO ARQUITECTÓNICO)**
+
+* **Definición:** Cada campo dentro de la estructura de datos de salida debe tener una definición precisa, inequívoca y exclusiva. No debe haber ambigüedad sobre qué tipo de información pertenece a cada campo.
+* **Aplicación Práctica:**
+    * **Unicidad Semántica:** `concepto` (motivo conciso) es fundamentalmente diferente de `texto_total_ocr` (OCR bruto completo). No deben mezclarse ni intercambiarse.
+    * **Segregación de Responsabilidades:** Las funciones de extracción de datos deben ser modularizadas y especializadas. Una función que extrae teléfonos no debe intentar extraer referencias, a menos que sea una parte explícita de su lógica de desambiguación con reglas claras.
+    * **Esquema de Salida Estricto:** La estructura del JSON de salida debe ser un contrato inquebrantable que refleje estas definiciones precisas.
+* **Consecuencia de Fallo:** La ambigüedad o superposición en las definiciones de campo conduce a datos inconsistentes, dificulta el consumo de la API y crea confusión en los sistemas downstream.
+
+### 5. **ANÁLISIS DE CAUSA RAÍZ PROFUNDO (MÉTODO DE RESOLUCIÓN)**
+
+* **Definición:** Ante cualquier fallo, especialmente uno persistente, la aproximación debe ir más allá de la solución sintomática. Se exige una investigación metódica para identificar la causa fundamental del problema, asegurando que la solución aborde la raíz y no solo la manifestación.
+* **Aplicación Práctica:**
+    * **"5 Whys" o Análisis de Espina de Pescado:** Aplicar metodologías estructuradas para desentrañar las capas del problema.
+    * **Revisión del Flujo de Datos:** Trazar el camino de un dato desde su origen OCR hasta su asignación final en el JSON para identificar dónde se introduce o se propaga el error.
+    * **Consideración de Interacciones:** Analizar cómo los cambios o errores en un módulo pueden impactar en otros.
+* **Consecuencia de Fallo:** Las soluciones superficiales solo enmascaran el problema, llevando a la recurrencia del error y al desgaste del tiempo y los recursos.
+
+Estos principios son la brújula para la "nueva IA". Su adherencia estricta es no negociable y será el criterio fundamental para la validación de cualquier implementación.

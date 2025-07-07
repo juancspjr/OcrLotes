@@ -1,0 +1,142 @@
+# MANDATOS ESPECÍFICOS Y CRÍTICOS: HOJA DE RUTA DETALLADA PARA LA IMPLEMENTACIÓN (CERO TOLERANCIA A ERRORES)
+
+Este documento detalla las acciones obligatorias y los puntos de control para la "nueva IA" con el fin de resolver de manera definitiva los problemas críticos identificados. La ejecución de estos mandatos debe ser precisa, exhaustiva y sin margen para la interpretación ambigua. Cada punto de control debe ser **PASSED** para que el mandato se considere cumplido.
+
+## ESTRUCTURA DEL MANDATO:
+
+Cada mandato incluye:
+* Una descripción del **PROBLEMA PERSISTENTE** o la mejora necesaria.
+* Las **ACCIONES OBLIGATORIAS** que deben ser implementadas.
+* El **PUNTO DE CONTROL (PCC)** específico que debe ser validado con evidencia explícita (JSON de ejemplo).
+
+---
+
+### **MANDATO 1: CORRECCIÓN DEFINITIVA DE TELÉFONO VENEZOLANO (Punto #19 - PRIORIDAD ABSOLUTA - FALLO CRÍTICO PREVIO)**
+
+* **PROBLEMA PERSISTENTE:**
+    El número `48311146148` (y cualquier otra cadena numérica que no se ajuste estrictamente a un formato de teléfono venezolano válido) **Sigue siendo erróneamente extraído y asignado al campo `datosbeneficiario.telefono`**. Esto viola gravemente la `Zero-Fault Detection` y la `Claridad de Definiciones`. Se ha observado en el `nombre_archivo`: `20250707-D--212884652825455@lid_Luis_06-01_20250707_063733_426.png`.
+
+* **ACCIONES OBLIGATORIAS:**
+    1.  **AUDITORÍA COMPLETA Y REFACTORIZACIÓN DE ASIGNACIÓN:**
+        * Identificar y auditar **TODAS** las líneas de código y funciones que pueden, en cualquier punto del pipeline de extracción, intentar asignar un valor al campo `datosbeneficiario.telefono`.
+        * Consolidar la lógica de asignación a este campo en un **ÚNICO PUNTO DE CONTROL** o función centralizada.
+    2.  **IMPLANTACIÓN DE LÓGICA DE VALIDACIÓN BINARIA ULTRA-ESTRICTA:**
+        * En el punto de asignación final a `datosbeneficiario.telefono`, implementar una validación con las siguientes reglas **EXCLUYENTES**:
+            * El número **DEBE** comenzar estrictamente con uno de los prefijos de operador móvil venezolano válidos: `0412`, `0416`, `0426`, `0414`, `0424`. No se aceptan otros prefijos.
+            * La longitud total del número **DEBE** ser **EXACTAMENTE** 11 dígitos.
+            * El número **DEBE** contener solo dígitos numéricos (0-9).
+        * **CONDICIÓN DE ASIGNACIÓN:** Un valor solo puede ser asignado a `datosbeneficiario.telefono` **SI Y SOLO SI** cumple con **TODAS** las reglas anteriores.
+        * **RECHAZO ABSOLUTO:** Si el valor propuesto para `telefono` no cumple con **CUALQUIERA** de las condiciones anteriores, **BAJO NINGUNA CIRCUNSTANCIA** debe ser asignado a `datosbeneficiario.telefono`. En este caso, el campo `datosbeneficiario.telefono` **DEBE PERMANECER VACÍO ("")**.
+    3.  **PRIORIZACIÓN Y RE-DIRECCIÓN DE NÚMEROS NO VÁLIDOS:**
+        * Establecer una lógica que, si un número identificado como potencial "teléfono" falla la validación estricta, sea re-evaluado para su posible asignación al campo `referencia` (si el contexto o patrón lo sugiere), o a un campo genérico `otro` si no hay otro lugar más apropiado. El número `48311146148` es el caso de prueba principal para esta re-dirección a `referencia`.
+
+* **PUNTO DE CONTROL #19 (CRÍTICO - ÚLTIMA OPORTUNIDAD DE VALIDACIÓN):**
+    * **EVIDENCIA OBLIGATORIA (JSON):** Proporcionar el JSON completo correspondiente al archivo `20250707-D--212884652825455@lid_Luis_06-01_20250707_063733_426.png` (o cualquier otro archivo que contenga `48311146148`). El JSON resultante **DEBE** mostrar:
+        ```json
+        {
+          "nombre_archivo": "20250707-D--212884652825455@lid_Luis_06-01_20250707_063733_426.png",
+          "referencia": "48311146148", // O la referencia correcta de la imagen
+          "datosbeneficiario": {
+            "telefono": "", // Campo vacío debido a la no validación
+            // ... otros campos
+          },
+          // ... resto del JSON
+        }
+        ```
+        Si la imagen original tiene un teléfono venezolano válido (ej. 0412xxxxxxx), este debe ser correctamente extraído. El foco es que `48311146148` nunca sea `telefono`.
+
+### **MANDATO 2: INCLUSIÓN Y CLARIDAD DE `TEXTO_TOTAL_OCR` Y `CONCEPTO` (Punto #22 - PRIORIDAD CRÍTICA - FALLO CRÍTICO PREVIO)**
+
+* **PROBLEMA PERSISTENTE:**
+    El campo `texto_total_ocr` **NO ESTÁ PRESENTE** en la salida JSON, lo que impide la auditoría y análisis completo del contenido bruto. Adicionalmente, el campo `concepto` no cumple su propósito de ser un resumen conciso, sino que a menudo contiene texto OCR truncado o irrelevante. Esto viola la `Integridad Total` y la `Claridad de Definiciones`.
+
+* **ACCIONES OBLIGATORIAS:**
+    1.  **INCLUSIÓN Y POBLACIÓN DE `texto_total_ocr`:**
+        * Añadir un nuevo campo `texto_total_ocr` a nivel raíz de cada objeto dentro del array `archivos_procesados`.
+        * Este campo **DEBE** contener la **TOTALIDAD DEL TEXTO RECONOCIDO POR EL MOTOR OCR** para el documento específico. Debe ser el texto bruto completo, sin modificaciones, truncamientos ni procesamientos adicionales.
+    2.  **RE-DEFINICIÓN Y RE-IMPLEMENTACIÓN ESTRICTA DE `concepto`:**
+        * Revisar y refactorizar la lógica de extracción para el campo `concepto`.
+        * El campo `concepto` **DEBE** ser un **RESUMEN SEMÁNTICO Y CONCISO** del propósito o motivo de la transacción. Su contenido debe ser una frase corta y significativa (ej., "Pago de Servicios", "Envío de Dinero", "Transferencia a Terceros").
+        * Implementar patrones (ej., expresiones regulares, búsqueda de palabras clave como "Concepto:", "Motivo:", "Por:", "Para:") que permitan identificar y aislar esta frase clave del texto OCR completo.
+        * **PROHIBICIÓN EXPLÍCITA:** `concepto` **NUNCA DEBE** ser un simple truncamiento del `texto_total_ocr`. `concepto` **NUNCA DEBE** contener la totalidad del `texto_total_ocr`. La longitud de `concepto` debe ser siempre significativamente menor que la de `texto_total_ocr`.
+
+* **PUNTO DE CONTROL #22 (CRÍTICO - ÚLTIMA OPORTUNIDAD DE VALIDACIÓN):**
+    * **EVIDENCIA OBLIGATORIA (JSON):** Proporcionar el JSON completo de un archivo procesado que demuestre la correcta implementación de ambos campos. El JSON resultante **DEBE** mostrar:
+        ```json
+        {
+          "nombre_archivo": "nombre_ejemplo.png",
+          "concepto": "Pago Operacion realizada", // Ejemplo de concepto conciso y relevante
+          "texto_total_ocr": "Este es el texto completo del OCR, incluyendo todo el contenido reconocido de la imagen, sin truncar ni modificar. Debe ser mucho más largo que el concepto. Incluye todos los caracteres y líneas originales.",
+          // ... resto del JSON
+        }
+        ```
+        Se espera que `len(texto_total_ocr)` sea notablemente mayor que `len(concepto)`.
+
+### **MANDATO 3: EXTRACCIÓN ROBUSTA DE BANCO DESTINO EXPLÍCITO (Punto #21 - PRIORIDAD ALTA - RE-CONFIRMACIÓN)**
+
+* **PROBLEMA IDENTIFICADO:**
+    La extracción de `banco_destino` cuando es explícitamente mencionado y difiere del `bancoorigen` necesita ser robustecida. En algunos casos, si el concepto es muy corto o no explícito, el `banco_destino` puede quedar vacío, lo cual es correcto si no hay información. Sin embargo, si la información está presente, debe ser extraída. Un ejemplo con `bancoorigen: BBVA` y `concepto` mencionando `BANCO MERCANTIL` no se validó completamente en el último ciclo.
+
+* **ACCIONES OBLIGATORIAS:**
+    1.  **FORTIFICAR LÓGICA DE DETECCIÓN EXPLÍCITA:**
+        * Mejorar las expresiones regulares y la lógica de procesamiento de texto para identificar de forma robusta nombres de bancos en el campo `concepto` o en el `texto_total_ocr` (una vez implementado).
+        * Prestar especial atención a patrones donde el nombre del banco destino es precedido o seguido por palabras clave como "Banco:", "Banco Destino:", "a Banco:", "transferencia a", etc.
+    2.  **PRIORIDAD ESTRICTA SOBRE INFERENCIA:**
+        * Si un `banco_destino` es identificado explícitamente en el texto y es diferente del `bancoorigen`, este valor explícito **SIEMPRE DEBE TENER PRIORIDAD** sobre cualquier inferencia de banco destino (ej., si la transferencia es intrabancaria y no se menciona el banco destino, se infiere que es el mismo origen).
+        * Si no se detecta explícitamente un `banco_destino` y el contexto no permite una inferencia segura (ej., concepto muy genérico), el campo `banco_destino` **DEBE QUEDAR VACÍO ("")**.
+
+* **PUNTO DE CONTROL #21 (CRÍTICO - RE-CONFIRMACIÓN):**
+    * **EVIDENCIA OBLIGATORIA (JSON):** Proporcionar el JSON completo de un archivo procesado que demuestre la correcta extracción de un `banco_destino` explícito y diferente al `bancoorigen`. Si no se dispone de un archivo de prueba natural, se solicita generar uno. Ejemplo esperado:
+        ```json
+        {
+          "nombre_archivo": "transferencia_interbancaria.png",
+          "bancoorigen": "BBVA PROVINCIAL",
+          "datosbeneficiario": {
+            "banco_destino": "BANCO MERCANTIL", // Banco destino explícitamente extraído
+            // ... otros campos
+          },
+          "concepto": "Transferencia a Banco MERCANTIL por servicios...", // Concepto donde se menciona
+          // ... resto del JSON
+        }
+        ```
+
+### **MANDATO 4: EXACTITUD COMPLETA DE REFERENCIA (Punto #13 - PRIORIDAD ALTA - RE-CONFIRMACIÓN)**
+
+* **PROBLEMA IDENTIFICADO:**
+    En ocasiones anteriores, se han observado referencias numéricas que podrían estar truncadas o no ser extraídas completamente, lo que afecta la `Integridad Total` del dato transaccional.
+
+* **ACCIONES OBLIGATORIAS:**
+    1.  **AJUSTE Y OPTIMIZACIÓN DE PATRONES DE REFERENCIA:**
+        * Revisar y optimizar las expresiones regulares o los algoritmos de extracción utilizados para identificar y capturar el campo `referencia`.
+        * Asegurar que los patrones sean lo suficientemente flexibles para manejar variaciones de formato (espacios, guiones, etc.) pero lo suficientemente estrictos para capturar **SOLO** la secuencia numérica completa que constituye la referencia.
+        * La prioridad es extraer la **TOTALIDAD** de la referencia, sin importar su longitud o la presencia de caracteres delimitadores.
+
+* **PUNTO DE CONTROL #13 (RE-CONFIRMACIÓN):**
+    * **EVIDENCIA OBLIGATORIA (JSON):** Proporcionar el JSON completo de un archivo procesado donde la `referencia` (`000012071` o similar) sea extraída **COMPLETAMENTE Y SIN TRUNCAMIENTOS**. Ejemplo esperado:
+        ```json
+        {
+          "nombre_archivo": "recibo_con_referencia_larga.png",
+          "referencia": "000012071", // Ejemplo de referencia completa de 9 dígitos
+          // ... resto del JSON
+        }
+        ```
+
+---
+
+## CONFIRMACIÓN FINAL Y REPORTE OBLIGATORIO DE LA "NUEVA IA"
+
+Una vez que la "nueva IA" haya implementado y validado **TODOS** los puntos de este mandato, deberá responder con el siguiente formato y contenido para su confirmación:
+
+* **CONFIRMACIÓN EXPLÍCITA FINAL (TEXTO EXACTO - Sin Modificaciones):**
+    "La validación estricta de teléfonos venezolanos, la inclusión y claridad de `texto_total_ocr` y `concepto`, la extracción robusta de banco destino explícito y la exactitud completa de referencia han sido implementadas y validadas. Todos los Puntos de Control (#19, #21, #13, #22) han sido **PASSED**."
+
+* **ANÁLISIS Y CORRECCIÓN DETALLADO (Subtítulo y Contenido):**
+    * Descripción concisa del diagnóstico final de la causa raíz de cada fallo persistente (PCC #19, #22).
+    * Detalle de los cambios de código específicos (ej., "Se modificó la regex para `telefono` de `[0-9]{11}` a `^(0412|0414|0416|0424|0426)\\d{7}$` en `validation_utils.py`, línea X"). Mencionar patrones regex, lógica implementada, nombres de archivos/funciones clave.
+    * Explicación clara de cómo se asegura la no regresión para cada punto y cómo se aplica universalmente la nueva lógica.
+
+* **EVIDENCIA DE SOLUCIÓN (JSON ESPECÍFICO):**
+    * Adjuntar los JSON completos que demuestren el éxito de cada Punto de Control (tal como se solicita en cada sección del mandato anterior). Estos JSON deben ser el resultado de **nuevas ejecuciones** con las correcciones aplicadas y deben ser idénticos al formato solicitado.
+
+* **REPORTE DE INTERVENCIÓN (ARCHIVO TXT OBLIGATORIO):**
+    * Generar un archivo TXT detallado y bien estructurado (ej. `REPORTE_MANDATO_MAXIMA_PRIORIDAD.txt`) que resuma todo el proceso: problemas identificados, análisis de la causa raíz, acciones implementadas, resultados de las validaciones de los PCC, y conclusiones finales. Este reporte debe ser completo, claro y profesional.
