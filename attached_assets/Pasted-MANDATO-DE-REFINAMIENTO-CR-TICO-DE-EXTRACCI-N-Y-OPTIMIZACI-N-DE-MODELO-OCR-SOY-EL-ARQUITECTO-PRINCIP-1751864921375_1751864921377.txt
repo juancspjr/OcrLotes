@@ -1,0 +1,113 @@
+MANDATO DE REFINAMIENTO CRÍTICO DE EXTRACCIÓN Y OPTIMIZACIÓN DE MODELO OCR
+SOY EL ARQUITECTO PRINCIPAL DE SISTEMAS OCR CRÍTICOS.
+
+El sistema de reporte ha sido restaurado y validado. Ahora nos enfocaremos en la precisión semántica y contextual de la extracción de datos, aplicando los principios de EXTRACCIÓN CONTEXTUAL Y POSICIONAL y REFINAMIENTO CONTINUO.
+
+Tu objetivo es mejorar significativamente la extracción de los campos específicos que presentan errores, basándote en la variabilidad de los documentos que has procesado y la información contextual que te he proporcionado.
+
+1. REFINAMIENTO DE RECONOCIMIENTO Y EXTRACCIÓN DE ENTIDADES (Aplicando Extracción Contextual y Posicional):
+Basado en los ejemplos proporcionados (test2.png, prueba2.jpg, 20250707-F...png, 20250707-B...jpg):
+
+bancoorigen y datosbeneficiario.banco_destino (CRÍTICO):
+
+Problema: test2.png (PagomovilBDV) el bancoorigen se extrae como "BANCO MERCANTIL" cuando debería ser "Banco de Venezuela" (BDV, 0102). En prueba2.jpg, el bancoorigen se identifica como "Mercantil" correctamente. En el tercer archivo, bancoorigen se extrae como "BANCO MERCANTIL N" y banco_destino vacío, cuando debería ser "BBVA Provincial" y "BANCO MERCANTIL" respectivamente, según el concepto y tu descripción. El cuarto archivo tiene bancoorigen y banco_destino vacíos.
+
+Acción:
+
+Implementa un diccionario/mapeo robusto de nombres de bancos, códigos y acrónimos venezolanos. Utiliza la lista de códigos y acrónimos que te he proporcionado (BDV: Banco de Venezuela, 0102: BANCO DE VENEZUELA, etc.) para estandarizar el reconocimiento.
+
+Prioriza el banco origen como el primero que se nombra, o el más cercano a "origen", "desde mi cuenta", o el que preceda a un número de cuenta (si visible).
+
+Utiliza la lógica de proximidad espacial para distinguir bancoorigen de banco_destino basándote en palabras clave como "Origen", "Desde mi cuenta", "Desde", "Destino", "Para", "Beneficiario", "Banco:".
+
+Considera casos como "PagomovilBDV" como una palabra clave compuesta que indica BDV como banco.
+
+referencia (CRÍTICO):
+
+Problema: En prueba2.jpg, se extrae "Fecha" cuando debería ser el número de referencia "48311146148". En el tercer archivo, es "0000120" y faltó el "71". En el cuarto, está vacío.
+
+Acción: Revisa y refuerza los patrones de expresión regular para referencia. Prioriza secuencias numéricas largas (10-12 dígitos o más), especialmente si están cerca de las palabras "referencia", "número de operación", "operación". La ubicación espacial es crucial para diferenciarlo de números de teléfono o montos.
+
+monto (CRÍTICO):
+
+Problema: En prueba2.jpg se extrae "210,00" correctamente, pero en el JSON consolidado anterior, el monto aparecía vacío.
+
+Acción: Asegura que la extracción del monto sea consistente. Revisa si hay alguna interferencia o conflicto con otras extracciones que lo esté sobrescribiendo o vaciando. La regla de oro que mencionas ("monto de pago es el primero o solitario") es una excelente pista.
+
+datosbeneficiario.cedula (CRÍTICO):
+
+Problema: En prueba2.jpg y el cuarto archivo, la cédula aparece vacía, a pesar de ser visible en la imagen ("27.061.025" y "V-27061025").
+
+Acción: Fortalece los patrones regex para la cédula, incluyendo formatos con puntos (.), guiones (-), y prefijos como V- o E-. Utiliza la lógica de proximidad a palabras clave como "C.I.", "Identificación", "Cédula", "RIF".
+
+concepto (CRÍTICO) y caption:
+
+Problema: En test2.png, el concepto debería ser "08 evelin", pero se extrae "A PagomovilBDV Personas...". El caption en test2.png se espera que sea "Caption/Mensaje Texto del mensaje WhatsApp".
+
+Acción: El campo concepto debe capturar el propósito principal o descripción breve de la transacción, no todo el texto extraído. caption debe ser un resumen más general o el tipo de documento. Ajusta las reglas para poblar concepto y caption de forma más inteligente, priorizando la información relevante para cada campo. Utiliza análisis de proximidad y reglas heurísticas para discernir la información más relevante para el concepto.
+
+nombre_beneficiario (NUEVO CAMPO - REQUERIMIENTO CRÍTICO):
+
+Problema: Has notado que el nombre del beneficiario es visible pero no se extrae.
+
+Acción: Crea un nuevo campo nombre_beneficiario dentro de datosbeneficiario. Desarrolla la lógica para extraer el nombre del beneficiario, que usualmente aparece cerca de su cédula, cuenta o banco de destino. Considera que puede haber nombres compuestos y mayúsculas/minúsculas.
+
+2. OPTIMIZACIÓN DEL MODELO OCR (Vibe Coding Estratégico):
+Elevación del Nivel de Procesamiento OCR:
+
+Problema: Has notado que el OCR podría fallar en extraer todo el texto (ej. referencia "000012071" vs "0000120").
+
+Acción: Para este mandato, aumenta el perfil del modelo OCR UN NIVEL.
+
+Si actualmente usas "ultra_rapido", súbelo a "rapido".
+
+Si actualmente usas "rapido", súbelo a "normal".
+
+Si actualmente usas "normal", súbelo a "alto_detalle".
+
+Asegúrate de que este cambio se refleje en los parámetros de ejecución del OCR. Este ajuste busca mejorar la calidad del texto reconocido, lo que a su vez impactará la precisión de las extracciones.
+
+3. CONSIDERACIONES DE ARQUITECTURA Y LÓGICA ESPACIAL (Regla de Oro):
+Persistencia de la Lógica Espacial: Mantén y mejora la prioridad de la lógica espacial. Tu regla de oro: "es sencillo reconocer las posibles palabras de título y lo que esté más cercano del lado izquierdo y/o abajo es el valor" es una directriz clave. Aplícala rigurosamente para el mapeo de campos.
+
+Manejo de Variabilidad: Los documentos tienen mucha variabilidad ("captura de transferencia por página web de escritorio", "cajas a justificación"). Tu solución debe ser adaptable y robusta a estas variaciones.
+
+VALIDACIÓN OBLIGATORIA AL FINALIZAR:
+Una vez que implementes los refinamientos de código y la optimización del modelo, DEBES demostrar y confirmar que has superado OBLIGATORIAMENTE los siguientes Puntos de Control:
+
+Punto de Control #12: Precisión de Extracción Bancaria: Validación de que bancoorigen y datosbeneficiario.banco_destino se extraen correctamente según los ejemplos proporcionados y el mapeo de códigos/acrismos.
+
+Punto de Control #13: Exactitud de Referencia y Monto: Validación de la extracción correcta y completa de referencia y monto para los ejemplos.
+
+Punto de Control #14: Extracción de Cédula y Nombre de Beneficiario: Demostración de que datosbeneficiario.cedula se extrae correctamente y que el nuevo campo datosbeneficiario.nombre_beneficiario se puebla adecuadamente.
+
+Punto de Control #15: Coherencia de Concepto y Caption: Evidencia de que concepto y caption reflejan la información correcta y concisa según su propósito.
+
+Punto de Control #16: Mejora de Calidad OCR por Perfil: Confirma que el perfil del modelo OCR ha sido elevado un nivel y que esto se refleja en una mejora en la detección de caracteres (ej., la referencia completa "000012071" vs "0000120").
+
+FORMATO DE CONFIRMACIÓN AL FINALIZAR ESTE MANDATO:
+
+Confirmación Explícita: "Los refinamientos críticos de extracción de entidades y la optimización del modelo OCR han sido implementados y validados. Todos los Puntos de Control (#12 al #16) han sido PASSED."
+
+Análisis y Corrección: "[Detalla los patrones/lógica ajustados para cada campo (bancoorigen, banco_destino, referencia, monto, cedula, concepto, caption, nombre_beneficiario), con ejemplos de cómo la nueva lógica maneja los casos fallidos. Menciona el cambio de perfil OCR y justifica por qué mejora la extracción.]"
+
+Evidencia de Mejora (JSONs Antes/Después): "[Proporciona fragmentos de JSON CONSOLIDADO (uno antes y uno después de tu intervención para cada uno de los ejemplos problemáticos: test2.png, prueba2.jpg, y los otros dos mencionados) que demuestren la mejora específica en los campos. DEBE SER DATA REAL DEL SISTEMA TRAS UN PROCESO DE OCR]."
+
+REPORTE DE ACCIONES Y DIAGNÓSTICO DETALLADO (ARCHIVO TXT): Adjunta un archivo TXT completo y bien estructurado que contenga:
+
+Título: "REPORTE DE REFINAMIENTO CRÍTICO Y OPTIMIZACIÓN OCR"
+
+Fecha y Hora del Reporte:
+
+Mandato Principal: Referencia al "MANDATO DE REFINAMIENTO CRÍTICO...".
+
+Problemas Iniciales: Lista de los errores de extracción reportados para cada archivo (test2.png, prueba2.jpg, etc.).
+
+Diagnóstico y Análisis: Descripción del análisis realizado para cada campo problemático, incluyendo la variabilidad de los documentos, la aplicación de la lógica espacial y el mapeo de bancos.
+
+Acciones Correctivas Implementadas: Los cambios de código exactos, las líneas o funciones modificadas, y cómo resuelven cada problema de extracción. Detalle del cambio de perfil OCR.
+
+Validación y Pruebas Ejecutadas: Detalles sobre la ejecución de los Puntos de Control (#12 al #16), los comandos utilizados y los resultados obtenidos.
+
+Conclusiones y Próximos Pasos: Resumen de las mejoras y cualquier recomendación futura.
+

@@ -486,7 +486,7 @@ class AplicadorOCR:
                 'metadatos': metadata or {}
             }
 
-    def extraer_texto(self, image_path, language='spa', config_mode='high_confidence', extract_financial=True, deteccion_inteligente=None):
+    def extraer_texto(self, image_path, language='spa', config_mode='normal', extract_financial=True, deteccion_inteligente=None):
         """
         FIX: OCR ULTRA-OPTIMIZADO con selección automática de perfil para máxima velocidad
         REASON: Implementa OCR con OnnxTR usando selección inteligente de modelos ultra-rápidos
