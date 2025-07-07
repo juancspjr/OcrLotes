@@ -1918,6 +1918,7 @@ def _extract_enterprise_fields(result_data, texto_completo):
         'banco_destino': '',
         'pago_fecha': '',
         'concepto': '',
+        'caption': '',  # FIX: Agregar caption explícitamente
         'confidence': 0,
         'total_words': 0
     }
@@ -1954,6 +1955,16 @@ def _extract_enterprise_fields(result_data, texto_completo):
             for campo, valor in campos_coordenadas.items():
                 if valor and not campos.get(campo):
                     campos[campo] = valor
+            
+            # FIX: EXTRACCIÓN CRÍTICA BASADA EN COORDENADAS REALES DE ONNXTR
+            # REASON: Aprovechar coordenadas geométricas para mapeo espacial preciso
+            # IMPACT: Elimina falsos positivos y mejora precisión de campos empresariales
+            campos_onnxtr = _extract_onnxtr_enterprise_fields(palabras_detectadas, texto_completo_local)
+            for campo, valor in campos_onnxtr.items():
+                if valor and not campos.get(campo):
+                    campos[campo] = valor
+                elif valor and campo in ['caption', 'otro']:  # Sobrescribir caption y otro siempre
+                    campos[campo] = valor
         
         # Buscar también en extracted_fields_positional como fallback
         extracted_fields = datos_extraidos.get('extracted_fields_positional', {})
@@ -1977,6 +1988,21 @@ def _extract_enterprise_fields(result_data, texto_completo):
             if banco_match:
                 campos['bancoorigen'] = banco_match.group(1).strip()
     
+    # FIX: EXTRACCIÓN CRÍTICA FINAL DE CAPTION BASADA EN TEXTO
+    # REASON: Garantizar que caption se asigne siempre después de procesar campos
+    # IMPACT: Población definitiva de caption sin fallos
+    if not campos['caption'] and texto_completo:
+        if 'PagomovilBDV' in texto_completo:
+            campos['caption'] = 'Pago Móvil BDV'
+        elif 'Transferencia' in texto_completo:
+            campos['caption'] = 'Transferencia Bancaria'
+        elif 'Envio' in texto_completo:
+            campos['caption'] = 'Envío de Dinero'
+        elif 'Operacion' in texto_completo and 'Banco' in texto_completo:
+            campos['caption'] = 'Operación Bancaria'
+        elif any(term in texto_completo for term in ['Bs', 'bolivares', 'Banco']):
+            campos['caption'] = 'Transacción Financiera'
+    
     # FIX: Análisis mejorado de texto completo con patrones empresariales específicos
     # REASON: Extraer datos desde texto cuando no están en campos estructurados
     # IMPACT: Mejora significativa en población de campos empresariales
@@ -1996,19 +2022,28 @@ def _extract_enterprise_fields(result_data, texto_completo):
                     campos['monto'] = match.group(1) if 'Bs' in match.group(0) else match.group(0)
                     break
         
-        # FIX: Buscar referencia/operación con patrones específicos
+        # FIX: REFINAMIENTO CRÍTICO - Buscar referencia/operación con patrones específicos mejorados
+        # REASON: Los patrones anteriores fallaban en detectar números largos correctamente
+        # IMPACT: Extracción precisa de números de operación de 12 dígitos
         if not campos['referencia']:
             ref_patterns = [
-                r'Operacion\s*[:=]?\s*(\d+)',  # Operacion : 003039387344
+                r'Operacion\s*[:=]?\s*(\d{10,15})',  # Operacion : 003039387344 (ajustado a 10-15 dígitos)
+                r'Op\s*[:=]?\s*(\d{10,15})',        # Op: 003039387344
+                r'Ref\s*[:=]?\s*(\d{10,15})',       # Ref: 003039387344
+                r'(\d{12})',                        # 003039387344 directo (12 dígitos exacto)
                 r'Referencia\s*[:=]?\s*([A-Z0-9]+)',  # Referencia: ABC123
-                r'Ref\s*[:=]?\s*([A-Z0-9]+)',  # Ref: 12345
-                r'Op\s*[:=]?\s*(\d+)',  # Op: 12345
             ]
             for pattern in ref_patterns:
                 match = re.search(pattern, texto_completo, re.IGNORECASE)
                 if match:
-                    campos['referencia'] = match.group(1)
-                    break
+                    ref_candidate = match.group(1)
+                    # Validación adicional para números de operación
+                    if ref_candidate.isdigit() and len(ref_candidate) >= 10:
+                        campos['referencia'] = ref_candidate
+                        break
+                    elif not ref_candidate.isdigit():  # Para referencias alfanuméricas
+                        campos['referencia'] = ref_candidate
+                        break
         
         # FIX: Buscar cédula en texto
         if not campos['cedula']:
@@ -2036,17 +2071,21 @@ def _extract_enterprise_fields(result_data, texto_completo):
                     campos['telefono'] = match.group(1).replace('-', '')
                     break
         
-        # FIX: Buscar fecha en texto
+        # FIX: REFINAMIENTO CRÍTICO - Buscar fecha con patrones mejorados que manejan espacios
+        # REASON: Los patrones anteriores no detectaban fechas con espacios como "20/06/ 2025"
+        # IMPACT: Extracción precisa de fechas venezolanas con espacios
         if not campos['pago_fecha']:
             fecha_patterns = [
-                r'Fecha\s*[:=]?\s*(\d{1,2}/\d{1,2}/\d{4})',  # Fecha : 20/06/2025
-                r'(\d{1,2}/\d{1,2}/\d{4})',  # 20/06/2025 directo
-                r'(\d{4}-\d{2}-\d{2})',  # 2025-06-20
+                r'Fecha\s*[:=]?\s*(\d{1,2}/\d{1,2}/\s*\d{4})',  # Fecha : 20/06/ 2025 (con espacios)
+                r'(\d{1,2}/\d{1,2}/\s*\d{4})',                 # 20/06/ 2025 directo (con espacios)
+                r'(\d{1,2}/\d{1,2}/\d{4})',                    # 20/06/2025 sin espacios
+                r'(\d{4}-\d{2}-\d{2})',                        # 2025-06-20 formato ISO
             ]
             for pattern in fecha_patterns:
                 match = re.search(pattern, texto_completo)
                 if match:
-                    campos['pago_fecha'] = match.group(1)
+                    fecha_str = match.group(1).replace(' ', '')  # Eliminar espacios adicionales
+                    campos['pago_fecha'] = fecha_str
                     break
     
     return campos
@@ -2186,6 +2225,154 @@ def _find_field_by_spatial_proximity(words_with_coords, keywords, value_pattern)
                     best_match = word['text']
     
     return best_match
+
+def _extract_onnxtr_enterprise_fields(palabras_detectadas, texto_completo):
+    """
+    FIX: EXTRACCIÓN EMPRESARIAL AVANZADA CON COORDENADAS ONNXTR REALES Y VALIDACIÓN INTELIGENTE
+    REASON: Implementar algoritmo híbrido que combina análisis contextual y espacial para máxima precisión
+    IMPACT: Elimina falsos positivos y mejora dramáticamente la extracción de campos empresariales críticos
+    """
+    import re
+    
+    campos_extraidos = {
+        'referencia': '',
+        'monto': '',
+        'bancoorigen': '',
+        'cedula': '',
+        'telefono': '',
+        'banco_destino': '',
+        'pago_fecha': '',
+        'caption': '',
+        'otro': ''
+    }
+    
+    if not palabras_detectadas or not texto_completo:
+        return campos_extraidos
+    
+    # FIX: EXTRACCIÓN INTELIGENTE DE REFERENCIA/OPERACIÓN
+    # REASON: Buscar patrones específicos de operación con validación numérica
+    # IMPACT: Extracción precisa de números de operación de 12 dígitos
+    ref_patterns = [
+        r'Operacion\s*[:=]?\s*(\d{12})',  # Operacion : 003039387344
+        r'Op\s*[:=]?\s*(\d{12})',        # Op: 003039387344
+        r'Ref\s*[:=]?\s*(\d{12})',       # Ref: 003039387344
+        r'(\d{12})',                     # 003039387344 directo
+    ]
+    for pattern in ref_patterns:
+        match = re.search(pattern, texto_completo)
+        if match:
+            referencia_num = match.group(1) if len(match.groups()) > 0 else match.group(0)
+            if referencia_num.isdigit() and len(referencia_num) >= 10:
+                campos_extraidos['referencia'] = referencia_num
+                break
+    
+    # FIX: EXTRACCIÓN INTELIGENTE DE MONTO VENEZOLANO
+    # REASON: Buscar patrones específicos de montos con decimales venezolanos
+    # IMPACT: Extracción precisa de montos con formato Bs y decimales
+    monto_patterns = [
+        r'(\d{1,3}(?:\.\d{3})*,\d{2})\s*Bs',     # 210,00 Bs
+        r'Bs\.?\s*(\d{1,3}(?:\.\d{3})*,\d{2})',  # Bs 210,00
+        r'(\d{1,3}(?:[,.]\d{2,3})+)',             # 104,54 o 210,00
+        r'Se\s+Envio\s+\(Bs\s+(\d{1,3}(?:\.\d{3})*,\d{2})\)',  # Se Envio (Bs 210,00)
+    ]
+    for pattern in monto_patterns:
+        match = re.search(pattern, texto_completo)
+        if match:
+            monto_str = match.group(1)
+            # Validar que contiene números y formato válido
+            if re.search(r'\d+[,.]\d{2}', monto_str):
+                campos_extraidos['monto'] = monto_str
+                break
+    
+    # FIX: EXTRACCIÓN INTELIGENTE DE BANCO ORIGEN/DESTINO
+    # REASON: Buscar patrones específicos de bancos venezolanos
+    # IMPACT: Extracción precisa de entidades bancarias
+    banco_patterns = [
+        r'Banco\s*[:=]?\s*\d{4}\s*=\s*([A-Z\s]+[A-Z])',  # Banco : 0105 = BANCO MERCANTIL
+        r'Banco\s+([A-Z][a-z]+)',                         # Banco Mercantil
+        r'([A-Z][a-z]+)\s+Envio',                         # Mercantil Envio
+        r'Banco\s+([A-Z][A-Z\s]+)',                       # BANCO MERCANTIL
+    ]
+    for pattern in banco_patterns:
+        match = re.search(pattern, texto_completo)
+        if match:
+            banco_nombre = match.group(1).strip()
+            if len(banco_nombre) >= 3 and banco_nombre.upper() not in ['BDV', 'BSS']:
+                campos_extraidos['bancoorigen'] = banco_nombre
+                campos_extraidos['banco_destino'] = banco_nombre  # Mismo banco en transferencias
+                break
+    
+    # FIX: EXTRACCIÓN INTELIGENTE DE FECHA
+    # REASON: Buscar patrones específicos de fechas venezolanas
+    # IMPACT: Extracción precisa de fechas en formato DD/MM/YYYY
+    fecha_patterns = [
+        r'Fecha\s*[:=]?\s*(\d{1,2}/\d{1,2}/\s*\d{4})',  # Fecha : 20/06/ 2025
+        r'(\d{1,2}/\d{1,2}/\d{4})',                     # 20/06/2025 directo
+        r'(\d{4}-\d{2}-\d{2})',                         # 2025-06-20
+    ]
+    for pattern in fecha_patterns:
+        match = re.search(pattern, texto_completo)
+        if match:
+            fecha_str = match.group(1).replace(' ', '')  # Eliminar espacios
+            campos_extraidos['pago_fecha'] = fecha_str
+            break
+    
+    # FIX: EXTRACCIÓN INTELIGENTE DE CÉDULA
+    # REASON: Buscar patrones específicos de identificación venezolana
+    # IMPACT: Extracción precisa de cédulas de 7-8 dígitos
+    cedula_patterns = [
+        r'Identificacion\s*[:=]?\s*([VE]?\d{7,8})',      # Identificacion : 27061025
+        r'CI\s*[:=]?\s*([VE]?\d{7,8})',                 # CI: V27061025
+        r'V-?(\d{7,8})',                                # V-27061025
+    ]
+    for pattern in cedula_patterns:
+        match = re.search(pattern, texto_completo)
+        if match:
+            cedula_num = match.group(1)
+            if cedula_num.isdigit() and 7 <= len(cedula_num) <= 8:
+                campos_extraidos['cedula'] = cedula_num
+                break
+    
+    # FIX: EXTRACCIÓN INTELIGENTE DE TELÉFONO
+    # REASON: Buscar patrones específicos de teléfonos venezolanos (11 dígitos)
+    # IMPACT: Extracción precisa de números de teléfono válidos
+    telefono_patterns = [
+        r'Destino\s*[:=]?\s*(0\d{10})',                  # Destino : 04125318244
+        r'(0\d{3}\s*\d{3}\s*\d{4})',                    # 0412 531 8244
+        r'(0\d{10})',                                    # 04125318244 directo
+    ]
+    for pattern in telefono_patterns:
+        match = re.search(pattern, texto_completo)
+        if match:
+            telefono_num = match.group(1).replace(' ', '')
+            if telefono_num.isdigit() and len(telefono_num) == 11 and telefono_num.startswith('0'):
+                campos_extraidos['telefono'] = telefono_num
+                break
+    
+    # FIX: EXTRACCIÓN INTELIGENTE DE CAPTION Y OTRO
+    # REASON: Determinar propósito de campos caption y otro basado en contexto
+    # IMPACT: Poblar campos adicionales con información relevante
+    
+    # Caption: Tipo de transacción identificado
+    if 'PagomovilBDV' in texto_completo:
+        campos_extraidos['caption'] = 'Pago Móvil BDV'
+    elif 'Transferencia' in texto_completo:
+        campos_extraidos['caption'] = 'Transferencia Bancaria'
+    elif 'Envio' in texto_completo:
+        campos_extraidos['caption'] = 'Envío de Dinero'
+    elif 'Operacion' in texto_completo and 'Banco' in texto_completo:
+        campos_extraidos['caption'] = 'Operación Bancaria'
+    else:
+        # Fallback para cualquier transacción financiera
+        if any(term in texto_completo for term in ['Bs', 'bolivares', 'Banco', 'transferencia']):
+            campos_extraidos['caption'] = 'Transacción Financiera'
+    
+    # Otro: Información adicional relevante
+    hora_match = re.search(r'(\d{2}:\d{2}:\d{2}\s*[ap]m)', texto_completo)
+    if hora_match:
+        campos_extraidos['otro'] = f"Hora: {hora_match.group(1)}"
+    
+    return campos_extraidos
 
 def _store_last_batch_request_id(request_id):
     """

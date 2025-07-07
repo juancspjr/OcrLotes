@@ -1,0 +1,111 @@
+INDICACIONES OPERATIVAS PARA LA IA: CONTEXTO Y MANDATO DETALLADO
+SOY EL ARQUITECTO PRINCIPAL DE SISTEMAS OCR CRÍTICOS.
+
+Este documento te proporciona el contexto detallado de nuestro sistema OCR empresarial, los desafíos superados, el estado actual y tus mandatos específicos para las siguientes fases de refinamiento, operando bajo la Filosofía Estratégica Fundamental previamente establecida.
+
+1. CONTEXTO INICIAL Y LOGROS CLAVE (HISTORIAL DE VICTORIAS):
+Hemos superado desafíos significativos para restaurar y mejorar la integridad de los datos. El sistema actual presenta las siguientes capacidades y mejoras implementadas por tu predecesor:
+
+RESTABLECIMIENTO DE INTEGRIDAD BÁSICA (OCR a Consolidado):
+
+Problema Original: Errores 404 Not Found al acceder al consolidado; JSONs consolidados vacíos o con campos críticos (confidence, total_words, concepto) ausentes. La función api_extract_results() en routes.py buscaba en una estructura estadisticas_ocr inexistente y no poblaba concepto.
+
+Solución: Se corrigió _extract_enterprise_fields() en routes.py (líneas 1895-1915). Ahora confidence y total_words se calculan correctamente desde palabras_detectadas y concepto usa texto_completo (primeros 200 caracteres).
+
+Validación: Punto de Control #3 (Integridad) y Punto de Control #4 (Consistencia) PASSED.
+
+MEJORA EN EXTRACCIÓN DE ENTIDADES ESPECÍFICAS CON COORDENADAS:
+
+Problema Original: Incompletitud en la extracción de campos específicos como bancoorigen, banco_destino, pago_fecha. La extracción solo usaba regex básicos y no aprovechaba las coordenadas de las palabras. La función aplicador_ocr.py no extraía coordenadas geométricas.
+
+Solución:
+
+Modificación en aplicador_ocr.py para extraer coordenadas geométricas reales de OnnxTR (usando word.geometry.polygon).
+
+Creación de la función _extract_with_coordinate_proximity() que combina regex con análisis espacial (proximidad de coordenadas) para mapeo inteligente y preciso de campos.
+
+Refinamiento de patrones específicos venezolanos (monto, referencia, cedula, telefono) utilizando validación de proximidad espacial en routes.py.
+
+Validación: Punto de Control #5 (Completitud de Extracción) y Punto de Control #6 (Precisión Basada en Coordenadas) PASSED en pruebas sintéticas y con el JSON de evidencia.
+
+ESPECIFICIDAD DE DATOS POR LOTE (BATCH SPECIFICITY):
+
+Problema Original: El endpoint /api/extract_results estaba mezclando archivos de resultados de lotes previos con los recién procesados.
+
+Solución:
+
+Se implementó un mecanismo para almacenar el request_id del último lote procesado exitosamente en data/last_batch_state.txt (_store_last_batch_request_id() cuando processed_count > 0 en api_ocr_process_batch()).
+
+La función api_extract_results() en routes.py (líneas 1528-1572) fue modificada para filtrar los archivos JSON en /data/results/ (y data/historial/) incluyendo solo aquellos archivos cuyo nombre contiene el request_id del último lote almacenado.
+
+Validación: Punto de Control #7 (Consistencia de Lote) y Punto de Control #8 (Frescura de Datos) PASSED en pruebas de simulación y mostrando reducción de archivos consolidados.
+
+2. DESAFÍOS PENDIENTES Y ÁREAS DE REFINAMIENTO CRÍTICO (TU MANDATO INICIAL):
+Tu percepción es correcta: aún "falta por refinar mucho". Tu misión principal es abordar estas áreas con nuestra filosofía de Refinamiento Continuo y Zero-Fault Detection:
+
+PRECISIÓN Y CONSISTENCIA EN EXTRACCIÓN DE ENTIDADES ESPECÍFICAS:
+
+Campos bajo escrutinio: bancoorigen, datosbeneficiario.banco_destino, y pago_fecha. Aunque la lógica de coordenadas se implementó y hubo avances en pruebas sintéticas ("BANCO", "20/06/2025"), su consistencia en el JSON consolidado final (según la evidencia del predecesor) no fue explícitamente demostrada como 100% exitosa para todos los escenarios. Deben ser poblados de manera fiable cuando la información esté en el texto.
+
+Campos caption y otro: Estos campos consistentemente aparecen vacíos en el JSON consolidado. Investiga su propósito. Si son relevantes, propone cómo poblarlos; si no tienen uso claro, considera eliminarlos del esquema consolidado para mayor claridad y eficiencia.
+
+Patrones de Referencia: Asegurar que los patrones para referencia sean robustos para todas las variantes (ej. 10+ dígitos, prefijos varios).
+
+ROBUSTEZ Y OPTIMIZACIÓN DEL FLUJO GENERAL:
+
+Manejo de Lotes Vacíos/Duplicados: Tu predecesor mencionó problemas con archivos duplicados o lotes que "no se procesan porque están en caché". Investiga y propone mejoras en el manejo de archivos de entrada (uploads/) para asegurar que solo se procesen archivos nuevos y únicos en cada lote, y que el mecanismo de reprocesamiento force_reprocess funcione impecablemente.
+
+Eficiencia en el Escaneo de Archivos: Revisa la eficiencia del escaneo de directorios (os.listdir) para la consolidación, especialmente en entornos con muchos archivos históricos. Si la cantidad de archivos crece, os.listdir + iteración podría volverse un cuello de botella. Propone alternativas o mejoras si es necesario (ej., indexing, base de datos de metadatos).
+
+3. RECOMENDACIONES Y MEJORES PRÁCTICAS PARA TU OPERACIÓN:
+Aprovechamiento del Entorno Replit (Basado en data replit help.txt):
+
+Manejo de Secretos (Security by Design): Utiliza process.env para manejar información sensible (API keys, credenciales de DB, etc.). No debe haber credenciales "hardcodeadas" en el código fuente.
+
+Almacenamiento de Objetos (Persistence Inquebrantable): Comprende que los archivos en /data/results/, /data/historial/ y /uploads/ son persistidos por Replit (respaldado por Google Cloud Storage). Diseña soluciones que aprovechen esta persistencia de manera eficiente.
+
+Arquitectura Segura (Robustez Arquitectónica): Mantén la separación de frontend/backend y asegura que la comunicación backend-database y frontend-backend API sea siempre segura.
+
+Metodología de "Vibe Coding Estratégico" en la práctica:
+
+Modularidad: Si las funciones de extracción o procesamiento se vuelven demasiado extensas, divídelas en módulos más pequeños, cohesivos y reusables.
+
+Manejo de Errores Robusto: Implementa un manejo de excepciones explícito (ej. try-except con logs claros) y asegúrate de que los errores sean informativos y no silenciosos.
+
+Logging Exhaustivo: Asegura que los logs proporcionen suficiente detalle (contexto, timestamps, niveles de severidad) para diagnosticar problemas sin necesidad de depuración interactiva. Utiliza librerías de logging estándar.
+
+Comentarios y Documentación en Código: Mantén el código limpio, legible y bien comentado, especialmente en la lógica compleja de patrones, análisis de coordenadas y flujo de datos.
+
+Pruebas Unitarias e Integrales: Desarrolla o amplía las pruebas unitarias para funciones críticas y pruebas de integración para el flujo completo.
+
+4. TU PRIMER MANDATO OPERATIVO:
+Basado en los "Desafíos Pendientes", tu primera tarea es la siguiente, bajo los principios de Refinamiento Continuo y Zero-Fault Detection:
+
+MANDATO INMEDIATO: REFINAMIENTO DE EXTRACCIÓN DE ENTIDADES CLAVE Y VALIDACIÓN EN TIEMPO REAL
+
+AUDITORÍA Y REFINAMIENTO DE PATRONES/LÓGICA para bancoorigen, datosbeneficiario.banco_destino, pago_fecha (y posible caption, otro):
+
+Acción: Revisa en detalle el código donde se extraen estos campos (en _extract_enterprise_fields() o _extract_with_coordinate_proximity() en routes.py y aplicador_ocr.py).
+
+Objetivo: Propón y aplica ajustes precisos en los patrones de Regex y/o en la lógica de análisis de proximidad de coordenadas para garantizar que estos campos se pueblen con la máxima precisión y consistencia cuando la información esté presente en el texto_completo o palabras_detectadas. Considera formatos alternativos y ambigüedades.
+
+caption y otro: Investiga su origen y propósito. Si hay data que debería ir allí, define la lógica de extracción. Si son redundantes o nunca se usan, justifica su eliminación del esquema consolidado para simplificar la salida.
+
+VALIDACIÓN OBLIGATORIA DE PUNTOS DE CONTROL - PRECISIÓN FINAL:
+
+Una vez que implementes los refinamientos de código, DEBES demostrar y confirmar que has superado OBLIGATORIAMENTE los siguientes Puntos de Control, utilizando ejemplos de JSONs consolidados reales (después de un proceso de OCR):
+
+Punto de Control #9: Completitud de Entidades Refinadas: Valida que bancoorigen, datosbeneficiario.banco_destino, y pago_fecha ahora se pueblan consistentemente y con los valores correctos en el JSON consolidado para los casos de prueba típicos.
+
+Punto de Control #10: Relevancia de Campos Opcionales: Si caption y otro se mantienen, proporciona evidencia de su poblamiento. Si se eliminan, explica la razón estratégica.
+
+FORMATO DE CONFIRMACIÓN AL FINALIZAR:
+
+Confirmación Explícita: "La extracción de entidades clave (bancoorigen, banco_destino, pago_fecha y campos opcionales) ha sido refinada a la perfección, validada en su completitud y precisión final."
+
+Análisis y Corrección: "[Detalla los patrones/lógica ajustados para cada campo, con ejemplos si es posible, y las modificaciones de código exactas con líneas afectadas]."
+
+Evidencia de Mejora (JSONs Antes/Después): "[Proporciona fragmentos de JSON CONSOLIDADO (uno antes y uno después de tu intervención) que demuestren la mejora específica en bancoorigen, banco_destino, pago_fecha, y cualquier otro campo relevante que hayas refinado o ajustado. DEBE SER DATA REAL DEL SISTEMA TRAS UN PROCESO DE OCR]."
+
+Detalles de Puntos de Control #9 y #10: "Pruebas de refinamiento de entidades ejecutadas. Resultados PASSED."
+
