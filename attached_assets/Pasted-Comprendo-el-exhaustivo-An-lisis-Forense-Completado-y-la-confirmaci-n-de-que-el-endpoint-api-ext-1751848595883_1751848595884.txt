@@ -1,0 +1,48 @@
+Comprendo el exhaustivo "Análisis Forense Completado" y la confirmación de que el endpoint `/api/extract_results` funciona correctamente en el backend (200 OK, JSON válido).
+
+Sin embargo, **la falla `404 Not Found` PERSISTE al interactuar desde el frontend**. Tu diagnóstico sugiere "estado temporal del sistema", "caché del navegador" o "timing de la petición durante procesamiento asíncrono". Esto indica que la validación del `Punto de Control #2` no está cubriendo el escenario de interacción real del usuario.
+
+**MANDATO CRÍTICO: DEPURACIÓN EN VIVO DE INTERACCIÓN FRONTEEND-BACKEND (VIBE CODING AVANZADO):**
+
+1.  **SIMULACIÓN Y ANÁLISIS DE INTERACCIÓN REAL (DEBUGGING METÓDICO):**
+    * Tu prioridad es replicar y diagnosticar el `404 Not Found` en el **contexto real del frontend (navegador)**.
+    * **Paso 1.1: Preparación del Frontend para Diagnóstico:**
+        * Modifica `templates/dashboard_workflow.html` para incluir **`console.log()` estratégicos** en la función JavaScript que maneja la extracción de resultados (la que llama a `/api/extract_results`). Estos `console.log()` deben mostrar:
+            * La URL y el método exactos usados en la llamada `fetch()`.
+            * El estado de la respuesta (`response.status`, `response.ok`).
+            * Cualquier error que ocurra en el bloque `catch` de JavaScript, mostrando `error.message` y `error.stack`.
+        * Asegura que el `fetch()` no tenga configuraciones de caché que puedan estar interfiriendo (ej., `cache: 'no-store'`).
+    * **Paso 1.2: Simulación de Interacción y Captura de Evidencia (PUNTO DE CONTROL #3: Monitoreo Activo simulado):**
+        * Después de hacer los cambios, **simula la acción de un usuario real haciendo clic en el botón "Extraer Resultados JSON"**.
+        * **Captura y reporta el contenido exacto de la CONSOLA DEL NAVEGADOR (Client-side Console)**:
+            * Todos los `console.log()` que hayas añadido.
+            * Cualquier error JavaScript adicional (red, parsing, etc.).
+        * **Captura y reporta los detalles de la solicitud en la pestaña 'NETWORK' (Red) del navegador** para la petición a `/api/extract_results`:
+            * **Status Code (Código de Estado):** El número exacto (esperamos 404).
+            * **Request URL (URL de la Solicitud):** La URL completa que el navegador envió.
+            * **Response Body (Cuerpo de la Respuesta):** Lo que el servidor realmente envió.
+            * **Headers (Cabeceras):** Especialmente `Content-Type`.
+
+2.  **IDENTIFICACIÓN DE CAUSA RAÍZ Y CORRECCIÓN FINAL (ZERO-FAULT DETECTION):**
+    * Basado en la evidencia **directa** de la consola y la pestaña 'Network', identifica la causa raíz final del `404` en este escenario en vivo. Podría ser:
+        * Un problema de base URL si el navegador lo resuelve de forma diferente.
+        * Un problema de cookies/sesiones/token que genera un 404 indirecto.
+        * Una caché de servicio worker (si aplica) interfiriendo.
+        * Un error de tiempo (`timing`) que expone una condición de carrera.
+    * **Aplica la corrección precisa** en el código del frontend (`dashboard_workflow.html`) para resolver el `404` en este contexto de interacción real.
+
+3.  **VALIDACIÓN OBLIGATORIA DE PUNTOS DE CONTROL (PERSISTENCIA INQUEBRANTABLE):**
+    * Una vez implementada la corrección, **DEBES demostrar y confirmar** que has superado **OBLIGATORIAMENTE** los Puntos de Control, incluyendo una **prueba específica de la interfaz de usuario que valide que el botón "Extraer Resultados JSON" ahora funciona perfectamente y descarga el archivo.**
+
+**FORMATO DE CONFIRMACIÓN AL FINALIZAR:**
+
+* **Confirmación Explícita:** "La corrección del `404 Not Found` en la interacción frontend-backend ha sido validada, resolviendo la falla persistente."
+* **Evidencia de Diagnóstico en Vivo:** "[PEGA AQUÍ EL CONTENIDO RELEVANTE DE LA CONSOLA DEL NAVEGADOR Y DE LA PESTAÑA 'NETWORK' QUE MUESTRE EL `404` Y LUEGO EL `200 OK` TRAS LA CORRECCIÓN]."
+* **Causa Raíz Identificada:** "La causa raíz fue: [DESCRIBE LA CAUSA EXACTA DE LA FALLA EN LA INTERACCIÓN EN VIVO, EJ. 'un problema con la base URL en un entorno de Replit, 'una configuración de caché inadecuada en el fetch', 'un error en la gestión de promesas asíncronas'] y se corrigió en [ARCHIVO AFECTADO]."
+* **Detalles del Punto de Control #2:** "Las pruebas de interacción de frontend-backend (`200 OK` final), serialización JSON y simulación de carga fueron `PASSED`."
+
+
+
+
+
+

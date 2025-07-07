@@ -343,8 +343,31 @@
                 
                 button.innerHTML = '<div class="spinner-border spinner-border-sm me-2"></div>Descargando...';
                 
-                // Descargar directamente sin verificación previa
-                const downloadResponse = await fetch('/api/extract_results');
+                // FIX: DIAGNÓSTICO EN VIVO - Logging estratégico para debugging de interacción real
+                // REASON: Detectar causa raíz del 404 en contexto real de navegador
+                // IMPACT: Evidencia directa de la interacción frontend-backend
+                console.log('🔍 DIAGNÓSTICO FRONTEND-BACKEND: Iniciando fetch a /api/extract_results');
+                console.log('🔍 URL absoluta:', window.location.origin + '/api/extract_results');
+                console.log('🔍 Método:', 'GET');
+                console.log('🔍 Configuración fetch:', { method: 'GET', cache: 'no-store' });
+                
+                // Descargar directamente sin verificación previa con configuración anti-caché
+                const downloadResponse = await fetch('/api/extract_results', {
+                    method: 'GET',
+                    cache: 'no-store',
+                    headers: {
+                        'Cache-Control': 'no-cache',
+                        'Pragma': 'no-cache'
+                    }
+                });
+                
+                // FIX: Logging detallado de respuesta para diagnóstico
+                console.log('🔍 RESPUESTA RECIBIDA:');
+                console.log('🔍 Status:', downloadResponse.status);
+                console.log('🔍 StatusText:', downloadResponse.statusText);
+                console.log('🔍 OK:', downloadResponse.ok);
+                console.log('🔍 Headers:', Object.fromEntries(downloadResponse.headers.entries()));
+                console.log('🔍 URL final:', downloadResponse.url);
                 
                 if (!downloadResponse.ok) {
                     throw new Error(`Error en descarga: ${downloadResponse.status} ${downloadResponse.statusText}`);
@@ -403,6 +426,14 @@ nombre_archivo, caption, otro, referencia, bancoorigen, monto, datosbeneficiario
                 
             } catch (error) {
                 console.error('Error detallado:', error);
+                
+                // FIX: Logging exhaustivo de errores para diagnóstico en vivo
+                console.error('🔍 ERROR CAPTURADO EN CATCH:');
+                console.error('🔍 Error message:', error.message);
+                console.error('🔍 Error stack:', error.stack);
+                console.error('🔍 Error name:', error.name);
+                console.error('🔍 Tipo de error:', typeof error);
+                console.error('🔍 Error completo:', error);
                 
                 // FIX: Manejo específico de errores de JSON con diagnóstico empresarial
                 // REASON: Usuario reporta "Error al extraer resultados" necesita diagnóstico específico
