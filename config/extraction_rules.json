@@ -11,12 +11,12 @@
       "field_name": "valor_referencia_operacion",
       "rules": [
         {
-          "rule_id": "REF_TRANSFERENCIA_PAGO_MOVIL",
-          "description": "Número de operación/referencia para transferencias o pagos móviles (7-15 dígitos).",
-          "keywords": ["No. de Operacion:", "N° Operación:", "Nro. Operación:", "Referencia:", "Ref.:", "Comprobante Nro.", "Cód. Transferencia"],
+          "rule_id": "REF_TRANSFERENCIA_PAGO_MOVIL_CONSOLIDADO",
+          "description": "Número de operación/referencia para transferencias o pagos móviles (7-15 dígitos), con varias palabras clave.",
+          "keywords": ["No. de Operacion:", "N° Operación:", "Nro. Operación:", "Referencia:", "Ref.:", "Comprobante Nro.", "Cód. Transferencia", "Nro. Referencia", "Referencia Interna", "Número de Referencia", "OPERACIÓN NRO:"],
           "fuzzy_matching_tolerance": 0.88,
-          "proximity_preference": "any",
-          "search_window_relative_px": 180,
+          "proximity_preference": "horizontal_right",
+          "search_window_relative_px": 200,
           "value_regex_patterns": ["^\\d{7,15}$"],
           "min_ocr_confidence_keyword": 0.75,
           "min_ocr_confidence_value": 0.8,
@@ -30,12 +30,12 @@
       "field_name": "monto_total",
       "rules": [
         {
-          "rule_id": "MONTO_FINAL_GRANDES_CIFRAS_PAGO",
-          "description": "Monto total del pago, a menudo en formato destacado al final del recibo (asumiendo Bs).",
-          "keywords": ["TOTAL:", "Monto:", "Importe:", "Bs."],
+          "rule_id": "MONTO_FINAL_GRANDES_CIFRAS_PAGO_CONSOLIDADO",
+          "description": "Monto total del pago, a menudo en formato destacado al final del recibo (asumiendo Bs), con varias palabras clave.",
+          "keywords": ["TOTAL:", "Monto:", "Importe:", "Bs.", "Se Envió (Bs.)", "MONTO A CANCELAR:", "Monto Total:", "Total Pagado:"],
           "fuzzy_matching_tolerance": 0.85,
-          "proximity_preference": "any",
-          "search_window_relative_px": 150,
+          "proximity_preference": "horizontal_right",
+          "search_window_relative_px": 180,
           "value_regex_patterns": [
             "^[Bb][Ss]\\.?\\s*\\d{1,3}(?:[.,]\\d{3})*(?:[.,]\\d{2})$",
             "^\\d{1,3}(?:[.,]\\d{3})*(?:[.,]\\d{2})$"
@@ -52,17 +52,31 @@
       "field_name": "datos_beneficiario",
       "rules": [
         {
-          "rule_id": "BENEFICIARIO_ASOCIADO_A_CUENTA_NOMBRE",
-          "description": "Nombre completo del beneficiario de la transferencia/pago.",
-          "keywords": ["Beneficiario:", "A nombre de:", "Recibido por:", "Titular Cuenta:", "Para:"],
+          "rule_id": "BENEFICIARIO_NOMBRE_CONSOLIDADO",
+          "description": "Nombre completo del beneficiario de la transferencia/pago, con varias palabras clave y adaptado a diferentes proximidades.",
+          "keywords": ["Beneficiario:", "A nombre de:", "Recibido por:", "Titular Cuenta:", "Para:", "Al beneficiario", "Nombre Beneficiario:", "Nombre del Receptor:", "NOMBRE:"],
           "fuzzy_matching_tolerance": 0.82,
-          "proximity_preference": "horizontal_right",
-          "search_window_relative_px": 250,
+          "proximity_preference": "any",
+          "search_window_relative_px": 200,
           "value_regex_patterns": ["^[A-ZÁÉÍÓÚÜÑ\\s\\.\\-]{5,80}$"],
           "min_ocr_confidence_keyword": 0.7,
           "min_ocr_confidence_value": 0.75,
-          "exclusion_patterns": ["C.I.:", "RIF:", "Cuenta:", "Banco:", "Telf.:"],
+          "exclusion_patterns": ["C.I.:", "RIF:", "Cuenta:", "Banco:", "Telf.:", "04"],
           "priority": 90,
+          "region_priority": ["body"]
+        },
+        {
+          "rule_id": "TITULAR_CUENTA_ORIGEN",
+          "description": "Nombre del titular de la cuenta de origen.",
+          "keywords": ["Titular Cuenta Origen:", "Titular Origen:", "Nombre Origen:", "Titular de la Cuenta:"],
+          "fuzzy_matching_tolerance": 0.82,
+          "proximity_preference": "horizontal_right",
+          "search_window_relative_px": 150,
+          "value_regex_patterns": ["^[A-ZÁÉÍÓÚÜÑ\\s\\.\\-]{5,80}$"],
+          "min_ocr_confidence_keyword": 0.7,
+          "min_ocr_confidence_value": 0.75,
+          "exclusion_patterns": ["C.I.:", "RIF:", "Cuenta:", "Banco:", "Telf.:", "04"],
+          "priority": 88,
           "region_priority": ["body"]
         }
       ]
@@ -71,13 +85,13 @@
       "field_name": "concepto_motivo",
       "rules": [
         {
-          "rule_id": "CONCEPTO_GENERICO_PAGO",
-          "description": "Descripción general del motivo del pago/transacción.",
-          "keywords": ["Concepto:", "Motivo:", "Descripción:", "Detalle:", "Por concepto de:"],
+          "rule_id": "CONCEPTO_GENERICO_PAGO_CONSOLIDADO",
+          "description": "Descripción general del motivo del pago/transacción, con varias palabras clave.",
+          "keywords": ["Concepto:", "Motivo:", "Descripción:", "Detalle:", "Por concepto de:", "Observaciones:", "Concepto de la Operación:"],
           "fuzzy_matching_tolerance": 0.78,
-          "proximity_preference": "any",
+          "proximity_preference": "horizontal_right",
           "search_window_relative_px": 350,
-          "value_regex_patterns": ["^[A-ZÁÉÍÓÚÜÑ0-9\\s\\.,\\-()\\/]{5,150}$"],
+          "value_regex_patterns": ["^[A-ZÁÉÍÓÚÜÑ0-9\\s\\.,\\-()\\/]{2,200}$"],
           "min_ocr_confidence_keyword": 0.68,
           "min_ocr_confidence_value": 0.72,
           "exclusion_patterns": ["Fecha:", "Monto:", "Referencia:", "Banco:", "C.I.", "RIF"],
@@ -90,12 +104,12 @@
       "field_name": "fecha_operacion",
       "rules": [
         {
-          "rule_id": "FECHA_DDMMYYYY_SL_OR_HYP_PAGO",
-          "description": "Fecha de la transacción en formatos comunes (DD/MM/YYYY o DD-MM-YYYY).",
-          "keywords": ["Fecha:", "Fch.:", "Date:", "Emitido:", "Operación:"],
+          "rule_id": "FECHA_DDMMYYYY_SL_OR_HYP_PAGO_CONSOLIDADO",
+          "description": "Fecha de la transacción en formatos comunes (DD/MM/YYYY o DD-MM-YYYY), con varias palabras clave.",
+          "keywords": ["Fecha:", "Fch.:", "Date:", "Emitido:", "Operación:", "Fecha y hora", "Fecha de Operación:"],
           "fuzzy_matching_tolerance": 0.90,
           "proximity_preference": "horizontal_right",
-          "search_window_relative_px": 100,
+          "search_window_relative_px": 150,
           "value_regex_patterns": ["^\\d{2}[\\/\\-]\\d{2}[\\/\\-]\\d{4}$"],
           "min_ocr_confidence_keyword": 0.8,
           "min_ocr_confidence_value": 0.85,
@@ -109,9 +123,9 @@
       "field_name": "telefono",
       "rules": [
         {
-          "rule_id": "TELEFONO_BENEFICIARIO_VENEZOLANO",
-          "description": "Número de teléfono del beneficiario, común en Pagos Móviles.",
-          "keywords": ["Telf. Beneficiario:", "Teléfono Recibe:", "Celular Destino:", "Telf:"],
+          "rule_id": "TELEFONO_BENEFICIARIO_VENEZOLANO_CONSOLIDADO",
+          "description": "Número de teléfono del beneficiario, común en Pagos Móviles, con varias palabras clave.",
+          "keywords": ["Telf. Beneficiario:", "Teléfono Recibe:", "Celular Destino:", "Telf:", "Teléfono Destino:", "Teléfono Receptor:", "0412", "0416", "0426", "0414", "0424"],
           "fuzzy_matching_tolerance": 0.85,
           "proximity_preference": "horizontal_right",
           "search_window_relative_px": 120,
@@ -121,6 +135,20 @@
           "exclusion_patterns": ["Fax", "Rif", "CI"],
           "priority": 70,
           "region_priority": ["body"]
+        },
+        {
+          "rule_id": "TELEFONO_EMISOR_VENEZOLANO",
+          "description": "Número de teléfono del emisor, común en Pagos Móviles.",
+          "keywords": ["Telf. Emisor:", "Teléfono Emisor:", "Celular Origen:", "Teléfono Origen:"],
+          "fuzzy_matching_tolerance": 0.85,
+          "proximity_preference": "horizontal_right",
+          "search_window_relative_px": 120,
+          "value_regex_patterns": ["^(0412|0416|0426|0414|0424)\\-?\\d{7}$"],
+          "min_ocr_confidence_keyword": 0.7,
+          "min_ocr_confidence_value": 0.75,
+          "exclusion_patterns": ["Fax", "Rif", "CI"],
+          "priority": 68,
+          "region_priority": ["body"]
         }
       ]
     },
@@ -128,13 +156,13 @@
       "field_name": "cedula",
       "rules": [
         {
-          "rule_id": "CEDULA_GENERICA_CI_RIF_PERSONA",
-          "description": "Cédulas de identidad o RIF personales venezolanos (V/E/J-NNNNNNN).",
-          "keywords": ["C.I.:", "Cedula:", "ID:", "Identificación:", "Rif:"],
+          "rule_id": "CEDULA_GENERICA_CI_RIF_PERSONA_CONSOLIDADO",
+          "description": "Cédulas de identidad o RIF personales venezolanos (V/E/J-NNNNNNN), con varias palabras clave.",
+          "keywords": ["C.I.:", "Cedula:", "ID:", "Identificación:", "Rif:", "C.I. Titular Origen:", "C.I. Beneficiario:", "C.I./RIF:", "Identificación Beneficiario:"],
           "fuzzy_matching_tolerance": 0.88,
           "proximity_preference": "horizontal_right",
-          "search_window_relative_px": 100,
-          "value_regex_patterns": ["^[VEJ]-\\d{7,9}$"],
+          "search_window_relative_px": 150,
+          "value_regex_patterns": ["^[VEJG]-\\d{7,9}$", "^\\d{7,9}$"],
           "min_ocr_confidence_keyword": 0.75,
           "min_ocr_confidence_value": 0.8,
           "exclusion_patterns": ["RIF Empresa", "Teléfono"],
@@ -147,13 +175,13 @@
       "field_name": "banco_emisor_pagador",
       "rules": [
         {
-          "rule_id": "BANCO_ORIGEN_TRANSFERENCIA",
-          "description": "Nombre del banco desde donde se origina el pago/transferencia.",
-          "keywords": ["Banco Origen:", "Emisor:", "Banco Remitente:", "Desde Banco:"],
+          "rule_id": "BANCO_ORIGEN_TRANSFERENCIA_CONSOLIDADO",
+          "description": "Nombre del banco desde donde se origina el pago/transferencia, con varias palabras clave.",
+          "keywords": ["Banco Origen:", "Emisor:", "Banco Remitente:", "Desde Banco:", "Banco Origen:", "ORIGEN DE LOS FONDOS", "Banco Cliente:"],
           "fuzzy_matching_tolerance": 0.8,
           "proximity_preference": "horizontal_right",
-          "search_window_relative_px": 180,
-          "value_regex_patterns": ["^(Banesco|Mercantil|Venezuela|Provincial|BOD|BNC|Bancaribe|BBVA|Fondo Común|Venezolano de Crédito|Citi|Standard Chartered|Bicentenario|Banplus|Banco Activo|Del Sur|Plaza|Exterior|Caribe|Comercio|Soffas|Banco Agrícola)$"],
+          "search_window_relative_px": 200,
+          "value_regex_patterns": ["^(Banesco|Mercantil|Venezuela|Provincial|BOD|BNC|Bancaribe|BBVA Provincial|Fondo Común|Venezolano de Crédito|Citi|Standard Chartered|Bicentenario|Banplus|Banco Activo|Del Sur|Plaza|Exterior|Caribe|Comercio|Soffas|Banco Agrícola|Banco Nacional de Crédito|BDV|BBVA)$"],
           "min_ocr_confidence_keyword": 0.7,
           "min_ocr_confidence_value": 0.75,
           "exclusion_patterns": ["Cuenta:", "Beneficiario:", "Banco Receptor"],
@@ -166,13 +194,13 @@
       "field_name": "banco_receptor_beneficiario",
       "rules": [
         {
-          "rule_id": "BANCO_DESTINO_TRANSFERENCIA",
-          "description": "Nombre del banco hacia donde se dirige el pago/transferencia.",
-          "keywords": ["Banco Destino:", "Receptor:", "Hacia Banco:", "Banco Beneficiario:"],
+          "rule_id": "BANCO_DESTINO_TRANSFERENCIA_CONSOLIDADO",
+          "description": "Nombre del banco hacia donde se dirige el pago/transferencia, con varias palabras clave y 'Banco Universal'.",
+          "keywords": ["Banco Destino:", "Receptor:", "Hacia Banco:", "Banco Beneficiario:", "Banco Universal", "Banco del Receptor:", "DESTINO DE LOS FONDOS", "Banco:"],
           "fuzzy_matching_tolerance": 0.8,
           "proximity_preference": "horizontal_right",
-          "search_window_relative_px": 180,
-          "value_regex_patterns": ["^(Banesco|Mercantil|Venezuela|Provincial|BOD|BNC|Bancaribe|BBVA|Fondo Común|Venezolano de Crédito|Citi|Standard Chartered|Bicentenario|Banplus|Banco Activo|Del Sur|Plaza|Exterior|Caribe|Comercio|Soffas|Banco Agrícola)$"],
+          "search_window_relative_px": 200,
+          "value_regex_patterns": ["^(Banesco|Mercantil|Venezuela|Provincial|BOD|BNC|Bancaribe|BBVA Provincial|Fondo Común|Venezolano de Crédito|Citi|Standard Chartered|Bicentenario|Banplus|Banco Activo|Del Sur|Plaza|Exterior|Caribe|Comercio|Soffas|Banco Agrícola|Banco Nacional de Crédito|Banco del Tesoro|BDV|BBVA)$"],
           "min_ocr_confidence_keyword": 0.7,
           "min_ocr_confidence_value": 0.75,
           "exclusion_patterns": ["Cuenta:", "Emisor:", "Banco Origen"],
@@ -185,13 +213,13 @@
       "field_name": "tipo_transaccion",
       "rules": [
         {
-          "rule_id": "TIPO_PAGO_MOVIL_EXACTO",
-          "description": "Identifica específicamente si la transacción es un Pago Móvil.",
-          "keywords": ["PAGO MÓVIL", "PAGO MOVIL C2P", "P2P", "P2C"],
+          "rule_id": "TIPO_PAGO_MOVIL_CONSOLIDADO",
+          "description": "Identifica específicamente si la transacción es un Pago Móvil, incluyendo 'Tpago' y otras variaciones.",
+          "keywords": ["PAGO MÓVIL", "PAGO MOVIL C2P", "P2P", "P2C", "Tpago", "Envío de Tpago", "CONFIRMACIÓN DE PAGO MÓVIL", "COMPROBANTE DE PAGO MÓVIL"],
           "fuzzy_matching_tolerance": 0.90,
           "proximity_preference": "any",
-          "search_window_relative_px": 50,
-          "value_regex_patterns": ["^(PAGO M[ÓO]VIL|P2P|P2C|MOVIL)$"],
+          "search_window_relative_px": 80,
+          "value_regex_patterns": ["^(PAGO M[ÓO]VIL|P2P|P2C|MOVIL|Tpago|ENV[ÍI]O DE TPAGO)$"],
           "min_ocr_confidence_keyword": 0.85,
           "min_ocr_confidence_value": 0.90,
           "exclusion_patterns": ["Transferencia", "Depósito"],
@@ -199,30 +227,30 @@
           "region_priority": ["header", "body"]
         },
         {
-          "rule_id": "TIPO_TRANSFERENCIA_EXACTO",
-          "description": "Identifica si la transacción es una Transferencia Bancaria.",
-          "keywords": ["TRANSFERENCIA", "TRF", "TRANSF"],
+          "rule_id": "TIPO_TRANSFERENCIA_CONSOLIDADO",
+          "description": "Identifica si la transacción es una Transferencia Bancaria, con varias palabras clave.",
+          "keywords": ["TRANSFERENCIA", "TRF", "TRANSF", "TRANSFERENCIA REALIZADA", "CONFIRMACIÓN DE TRANSFERENCIA", "DETALLE DE TRANSFERENCIA", "COMPROBANTE DE TRANSFERENCIA"],
           "fuzzy_matching_tolerance": 0.88,
           "proximity_preference": "any",
-          "search_window_relative_px": 50,
-          "value_regex_patterns": ["^(TRANSFERENCIA|TRF|TRANSF)$"],
+          "search_window_relative_px": 80,
+          "value_regex_patterns": ["^(TRANSFERENCIA|TRF|TRANSF|REALIZADA)$"],
           "min_ocr_confidence_keyword": 0.8,
           "min_ocr_confidence_value": 0.85,
-          "exclusion_patterns": ["Pago Móvil", "Depósito"],
+          "exclusion_patterns": ["Pago Móvil", "Depósito", "Tpago"],
           "priority": 125,
           "region_priority": ["header", "body"]
         },
         {
-          "rule_id": "TIPO_DEPOSITO_EXACTO",
-          "description": "Identifica si la transacción es un Depósito en efectivo/cheque.",
-          "keywords": ["DEPOSITO", "DEP."],
+          "rule_id": "TIPO_COMPROBANTE_PAGO",
+          "description": "Identifica comprobantes genéricos de pago cuando no es una transferencia o pago móvil específico.",
+          "keywords": ["COMPROBANTE DE PAGO", "COMPROBANTE"],
           "fuzzy_matching_tolerance": 0.88,
           "proximity_preference": "any",
-          "search_window_relative_px": 50,
-          "value_regex_patterns": ["^(DEP[ÓO]SITO|DEP\\.)$"],
+          "search_window_relative_px": 80,
+          "value_regex_patterns": ["^(COMPROBANTE DE PAGO|COMPROBANTE)$"],
           "min_ocr_confidence_keyword": 0.8,
           "min_ocr_confidence_value": 0.85,
-          "exclusion_patterns": ["Transferencia", "Pago Móvil"],
+          "exclusion_patterns": ["Transferencia", "Pago Móvil", "Tpago"],
           "priority": 122,
           "region_priority": ["header", "body"]
         }
@@ -232,16 +260,16 @@
       "field_name": "identificador_cuenta_origen",
       "rules": [
         {
-          "rule_id": "CUENTA_ORIGEN_PARCIAL_O_TELEFONO",
-          "description": "Últimos dígitos de la cuenta de origen o número de teléfono del pagador (Pago Móvil) - Si visible.",
-          "keywords": ["Cuenta Origen:", "Cta. Origen:", "De la cuenta:", "Telf. Origen:", "Nro. Afiliado:"],
+          "rule_id": "CUENTA_ORIGEN_PARCIAL_O_TELEFONO_CONSOLIDADO",
+          "description": "Últimos dígitos de la cuenta de origen o número de teléfono del pagador (Pago Móvil) - Si visible. Incluye varias palabras clave.",
+          "keywords": ["Cuenta Origen:", "Cta. Origen:", "De la cuenta:", "Nro. Afiliado:", "Cuenta de Ahorro", "Cuenta Corriente", "CUENTA CLIENTE:", "Cuenta Débito:", "Cuenta de Origen:", "Desde mi cuenta"],
           "fuzzy_matching_tolerance": 0.8,
           "proximity_preference": "horizontal_right",
-          "search_window_relative_px": 150,
-          "value_regex_patterns": ["^\\d{4,10}$", "(0412|0416|0426|0414|0424)\\-?\\d{7}"],
+          "search_window_relative_px": 250,
+          "value_regex_patterns": ["^\\d{4,20}$", "^[A-Z0-9]{4,20}$", "\\*+\\d{4}"],
           "min_ocr_confidence_keyword": 0.6,
           "min_ocr_confidence_value": 0.65,
-          "exclusion_patterns": ["Monto:", "Fecha:", "Referencia:", "Banco:"],
+          "exclusion_patterns": ["Monto:", "Fecha:", "Referencia:", "Banco:", "Teléfono"],
           "priority": 60,
           "region_priority": ["body"]
         }
@@ -251,16 +279,16 @@
       "field_name": "identificador_cuenta_destino",
       "rules": [
         {
-          "rule_id": "CUENTA_DESTINO_PARCIAL_O_TELEFONO",
-          "description": "Últimos dígitos de la cuenta de destino o número de teléfono del beneficiario (Pago Móvil) - Si visible.",
-          "keywords": ["Cuenta Destino:", "Cta. Destino:", "A la cuenta:", "Telf. Destino:", "Nro. Destino:"],
+          "rule_id": "CUENTA_DESTINO_PARCIAL_O_TELEFONO_CONSOLIDADO",
+          "description": "Últimos dígitos de la cuenta de destino o número de teléfono del beneficiario (Pago Móvil) - Si visible. Incluye varias palabras clave.",
+          "keywords": ["Cuenta Destino:", "Cta. Destino:", "A la cuenta:", "Nro. Destino:", "Cuenta Crédito:", "CUENTA BENEFICIARIO:"],
           "fuzzy_matching_tolerance": 0.8,
           "proximity_preference": "horizontal_right",
-          "search_window_relative_px": 150,
-          "value_regex_patterns": ["^\\d{4,10}$", "(0412|0416|0426|0414|0424)\\-?\\d{7}"],
+          "search_window_relative_px": 250,
+          "value_regex_patterns": ["^\\d{4,20}$", "^[A-Z0-9]{4,20}$", "\\*+\\d{4}"],
           "min_ocr_confidence_keyword": 0.7,
           "min_ocr_confidence_value": 0.75,
-          "exclusion_patterns": ["Monto:", "Fecha:", "Referencia:", "Banco:"],
+          "exclusion_patterns": ["Monto:", "Fecha:", "Referencia:", "Banco:", "Teléfono"],
           "priority": 85,
           "region_priority": ["body"]
         }
@@ -270,56 +298,18 @@
       "field_name": "hora_operacion",
       "rules": [
         {
-          "rule_id": "HORA_HHMMSS_PAGO",
-          "description": "Hora de la operación en formato HH:MM:SS o HH:MM.",
-          "keywords": ["Hora:", "Hr.:", "Time:"],
+          "rule_id": "HORA_HHMMSS_PAGO_CONSOLIDADO",
+          "description": "Hora de la operación en formato HH:MM:SS o HH:MM, incluyendo AM/PM, con varias palabras clave.",
+          "keywords": ["Hora:", "Hr.:", "Time:", "Fecha y hora", "Hora de Operación:"],
           "fuzzy_matching_tolerance": 0.90,
           "proximity_preference": "horizontal_right",
-          "search_window_relative_px": 80,
-          "value_regex_patterns": ["^\\d{2}:\\d{2}(?::\\d{2})?$"],
+          "search_window_relative_px": 100,
+          "value_regex_patterns": ["^\\d{2}:\\d{2}(?::\\d{2})?\\s*(?:[APap][Mm])?$"],
           "min_ocr_confidence_keyword": 0.8,
           "min_ocr_confidence_value": 0.85,
           "exclusion_patterns": [],
           "priority": 98,
           "region_priority": ["header", "body"]
-        }
-      ]
-    },
-    {
-      "field_name": "identificador_fiscal_pagador",
-      "rules": [
-        {
-          "rule_id": "CI_RIF_PAGADOR_EXPLICT",
-          "description": "Cédula de Identidad o RIF del pagador (si explícitamente indicado).",
-          "keywords": ["C.I. Pagador:", "Cedula Pagador:", "RIF Pagador:", "ID Pagador:"],
-          "fuzzy_matching_tolerance": 0.88,
-          "proximity_preference": "horizontal_right",
-          "search_window_relative_px": 120,
-          "value_regex_patterns": ["^[VEJG]-\\d{7,9}$"],
-          "min_ocr_confidence_keyword": 0.75,
-          "min_ocr_confidence_value": 0.8,
-          "exclusion_patterns": ["Beneficiario CI", "RIF Empresa"],
-          "priority": 80,
-          "region_priority": ["body"]
-        }
-      ]
-    },
-    {
-      "field_name": "identificador_fiscal_beneficiario",
-      "rules": [
-        {
-          "rule_id": "CI_RIF_BENEFICIARIO_EXPLICT",
-          "description": "Cédula de Identidad o RIF del beneficiario (si explícitamente indicado).",
-          "keywords": ["C.I. Beneficiario:", "Cedula Beneficiario:", "RIF Beneficiario:", "ID Beneficiario:"],
-          "fuzzy_matching_tolerance": 0.88,
-          "proximity_preference": "horizontal_right",
-          "search_window_relative_px": 120,
-          "value_regex_patterns": ["^[VEJG]-\\d{7,9}$"],
-          "min_ocr_confidence_keyword": 0.75,
-          "min_ocr_confidence_value": 0.8,
-          "exclusion_patterns": ["Pagador CI", "RIF Empresa"],
-          "priority": 80,
-          "region_priority": ["body"]
         }
       ]
     }
