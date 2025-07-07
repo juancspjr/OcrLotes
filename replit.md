@@ -473,6 +473,30 @@ Sistema OCR asíncrono de alto rendimiento para procesamiento de recibos de pago
 - **WORKFLOW EMPRESARIAL**: Subir → Procesar → Extraer → Limpiar ✅ COMPLETAMENTE FUNCIONAL
 - **MIGRACIÓN REPLIT**: ✅ COMPLETADA sin errores, sistema ejecutándose nativamente en Replit
 
+## MANDATO CRÍTICO COMPLETADO - Refinamiento de Reglas de Extracción para Recibos Venezolanos (Julio 7, 2025 19:44 UTC)
+### FILOSOFÍA APLICADA: INTEGRIDAD TOTAL + PERFECCIÓN CONTINUA + COMPRENSIÓN PROFUNDA DEL CONTEXTO DE DOMINIO
+
+#### ✅ **REFINAMIENTO CRÍTICO #1**: Actualización Completa de config/extraction_rules.json
+- **PROBLEMA**: Sistema necesitaba reglas específicamente optimizadas para recibos de pagos/transferencias/pagos móviles venezolanos
+- **SOLUCIÓN**: Implementación de 16 campos especializados con 20 reglas ultra-granulares
+- **RESULTADO**: ✅ Configuración dinámica de geometría habilitada con tolerancias adaptativas
+- **CAMPOS IMPLEMENTADOS**: valor_referencia_operacion, monto_total, datos_beneficiario, concepto_motivo, fecha_operacion, telefono, cedula, banco_emisor_pagador, banco_receptor_beneficiario, tipo_transaccion, identificador_cuenta_origen, identificador_cuenta_destino, hora_operacion, identificador_fiscal_pagador, identificador_fiscal_beneficiario
+- **VALIDACIÓN**: Patrones regex específicos para contexto venezolano (prefijos telefónicos, formato cédulas V/E/J, bancos locales)
+
+#### ✅ **REFINAMIENTO CRÍTICO #2**: Comprensión Profunda del Dominio Financiero Venezolano
+- **BANCOS VENEZOLANOS**: Patrones específicos para Banesco, Mercantil, Venezuela, Provincial, BOD, BNC, Bancaribe, BBVA, etc.
+- **TELÉFONOS MÓVILES**: Validación estricta de prefijos venezolanos (0412, 0416, 0426, 0414, 0424)
+- **CÉDULAS/RIF**: Formato venezolano V-XXXXXXX, E-XXXXXXX, J-XXXXXXX
+- **TIPOS DE TRANSACCIÓN**: Diferenciación específica entre PAGO MÓVIL, TRANSFERENCIA, DEPÓSITO
+- **MONTOS**: Formatos Bs. con separadores de miles venezolanos
+
+#### ✅ **REFINAMIENTO CRÍTICO #3**: Zero-Fault Detection con Validación Multi-Nivel
+- **CONFIANZA OCR**: Umbrales específicos por keyword (0.68-0.90) y valor (0.72-0.90)
+- **FUZZY MATCHING**: Tolerancias granulares por regla (0.78-0.90)
+- **EXCLUSIÓN PROACTIVA**: Patrones de exclusión para prevenir falsos positivos
+- **PRIORIDAD INTELIGENTE**: Sistema de prioridades 60-130 para precedencia de reglas
+- **REGIONES CONTEXTUALES**: Búsqueda priorizada por header/body/footer según tipo de campo
+
 ## MANDATO DE EMERGENCIA COMPLETADO - Restauración JSON Consolidado (Julio 7, 2025 04:17 UTC)
 ### FILOSOFÍA APLICADA: INTEGRIDAD TOTAL + ZERO-FAULT DETECTION + PERSISTENCIA INQUEBRANTABLE
 

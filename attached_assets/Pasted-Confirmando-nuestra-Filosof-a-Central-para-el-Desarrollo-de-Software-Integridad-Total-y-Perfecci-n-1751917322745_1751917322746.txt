@@ -1,3 +1,10 @@
+Confirmando nuestra 'Filosofía Central para el Desarrollo de Software: Integridad Total y Perfección Continua', es imperativo que actualices de manera crítica y precisa el archivo `config/extraction_rules.json` en el sistema.
+
+El objetivo es asegurar la 'Comprensión Profunda del Contexto de Dominio' para recibos de pagos, transferencias y pagos móviles venezolanos, garantizando la 'Integridad Total' y 'Zero-Fault Detection' en la extracción de datos.
+
+Utiliza *exactamente* el siguiente contenido JSON para reemplazar el archivo `config/extraction_rules.json`:
+
+```json
 {
   "dynamic_geometry_config": {
     "enabled": true,
@@ -325,3 +332,15 @@
     }
   ]
 }
+Confirmación Requerida:
+
+Una vez realizada la actualización, debes confirmarme explícitamente que:
+
+El archivo config/extraction_rules.json ha sido actualizado con el contenido exacto proporcionado.
+
+El sistema ha cargado y validado las nuevas reglas sin errores.
+
+Los logs de depuración (si son accesibles) reflejan el uso de estas reglas refinadas en el procesamiento.
+
+Se ha ejecutado una prueba de regresión para asegurar que no se introdujeron fallos y, si es posible, una mejora en la calidad de la extracción de los recibos de ejemplo."
+

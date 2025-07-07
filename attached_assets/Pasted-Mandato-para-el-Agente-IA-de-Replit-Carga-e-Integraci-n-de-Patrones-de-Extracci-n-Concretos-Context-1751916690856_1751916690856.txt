@@ -1,0 +1,199 @@
+Mandato para el Agente IA de Replit: Carga e Integración de Patrones de Extracción Concretos
+Contexto y Objetivo:
+Agente IA, con la confirmación de la exitosa implementación del esquema de reglas de máxima granularidad, el siguiente paso es dotar a nuestro "Motor de Reglas Configurable" con la base de conocimiento inicial que hemos diseñado.
+
+TAREA ESPECÍFICA:
+
+Deberás actualizar el archivo config/extraction_rules.json con el conjunto de reglas y patrones que te proporcionaré a continuación. Estas reglas están diseñadas específicamente para los campos valor_referencia_operacion, monto_total, datos_beneficiario, y concepto_motivo, basándose en el análisis de los recibos de ejemplo previos.
+
+CONTENIDO DEL config/extraction_rules.json A INTEGRAR:
+
+JSON
+
+{
+  "dynamic_geometry_config": {
+    "enabled": true,
+    "height_tolerance_multiplier": 0.2,
+    "width_tolerance_multiplier": 0.15,
+    "min_word_height_px": 5,
+    "min_word_width_px": 5
+  },
+  "extraction_rules": [
+    {
+      "field_name": "valor_referencia_operacion",
+      "rules": [
+        {
+          "rule_id": "REF_RECIBO_SERVICIO_DEFAULT",
+          "description": "Referencia numérica para recibos de servicio estándar (CANTV).",
+          "keywords": ["Referencia:", "Nro. Referencia:"],
+          "fuzzy_matching_tolerance": 0.88,
+          "proximity_preference": "horizontal_right",
+          "search_window_relative_px": 120,
+          "value_regex_patterns": ["^\\d{9,12}$"],
+          "min_ocr_confidence_keyword": 0.75,
+          "min_ocr_confidence_value": 0.8,
+          "exclusion_patterns": [],
+          "priority": 100,
+          "region_priority": ["body"]
+        },
+        {
+          "rule_id": "REF_COMPROBANTE_OP_NUM",
+          "description": "Número de operación para comprobantes de pago bancarios (genérico, Banesco, Mercantil).",
+          "keywords": ["No. de Operacion:", "N° de Operación:", "Nro. Operacion:", "Operacion Nro."],
+          "fuzzy_matching_tolerance": 0.85,
+          "proximity_preference": "horizontal_right",
+          "search_window_relative_px": 150,
+          "value_regex_patterns": ["^\\d{7,15}$"],
+          "min_ocr_confidence_keyword": 0.75,
+          "min_ocr_confidence_value": 0.8,
+          "exclusion_patterns": [],
+          "priority": 110,
+          "region_priority": ["header", "body"]
+        },
+        {
+          "rule_id": "REF_BANCO_GENERIC_FULL_REF",
+          "description": "Referencia numérica general con etiqueta 'REFERENCIA:' (ej. bancos).",
+          "keywords": ["REFERENCIA:"],
+          "fuzzy_matching_tolerance": 0.9,
+          "proximity_preference": "horizontal_right",
+          "search_window_relative_px": 100,
+          "value_regex_patterns": ["^\\d{7,12}$"],
+          "min_ocr_confidence_keyword": 0.8,
+          "min_ocr_confidence_value": 0.85,
+          "exclusion_patterns": [],
+          "priority": 105,
+          "region_priority": ["header", "body"]
+        }
+      ]
+    },
+    {
+      "field_name": "monto_total",
+      "rules": [
+        {
+          "rule_id": "MONTO_GENERIC_CURRENCY",
+          "description": "Monto total con o sin símbolo monetario, con varios separadores.",
+          "keywords": ["Bs.", "Monto:", "Total:", "Total a Pagar:", "Importe:", "Cantidad:"],
+          "fuzzy_matching_tolerance": 0.85,
+          "proximity_preference": "any",
+          "search_window_relative_px": 120,
+          "value_regex_patterns": [
+            "^[Bb][Ss]\\.?\\s*\\d{1,3}(?:[.,]\\d{3})*(?:[.,]\\d{2})$",
+            "^\\d{1,3}(?:[.,]\\d{3})*(?:[.,]\\d{2})$"
+          ],
+          "min_ocr_confidence_keyword": 0.75,
+          "min_ocr_confidence_value": 0.8,
+          "exclusion_patterns": ["SUBTOTAL", "IVA", "DESCUENTO", "PRECIO UNITARIO"],
+          "priority": 95,
+          "region_priority": ["footer", "body"]
+        }
+      ]
+    },
+    {
+      "field_name": "datos_beneficiario",
+      "rules": [
+        {
+          "rule_id": "BENEFICIARY_NAME_KEYWORD",
+          "description": "Nombre de beneficiario asociado a palabras clave (personas o empresas).",
+          "keywords": ["Beneficiario:", "A nombre de:", "Recibido de:", "Pagado a:", "Cliente:"],
+          "fuzzy_matching_tolerance": 0.8,
+          "proximity_preference": "horizontal_right",
+          "search_window_relative_px": 250,
+          "value_regex_patterns": ["^[A-ZÁÉÍÓÚÜÑ\\s\\.]{5,60}$"],
+          "min_ocr_confidence_keyword": 0.7,
+          "min_ocr_confidence_value": 0.75,
+          "exclusion_patterns": ["RIF", "Cédula", "Cuenta", "Banco", "Dirección", "Telf"],
+          "priority": 85,
+          "region_priority": ["body"]
+        }
+      ]
+    },
+    {
+      "field_name": "concepto_motivo",
+      "rules": [
+        {
+          "rule_id": "CONCEPT_GENERIC_KEYWORD_MATCH",
+          "description": "Concepto o motivo asociado a palabras clave, texto libre.",
+          "keywords": ["Concepto:", "Motivo:", "Descripción:", "Detalle:"],
+          "fuzzy_matching_tolerance": 0.75,
+          "proximity_preference": "any",
+          "search_window_relative_px": 350,
+          "value_regex_patterns": ["^[A-ZÁÉÍÓÚÜÑ0-9\\s\\.,\\-()]{5,100}$"],
+          "min_ocr_confidence_keyword": 0.65,
+          "min_ocr_confidence_value": 0.7,
+          "exclusion_patterns": ["Monto", "Referencia", "Fecha", "Hora", "Total", "Nro. Operacion"],
+          "priority": 75,
+          "region_priority": ["body"]
+        }
+      ]
+    },
+    {
+      "field_name": "fecha_operacion",
+      "rules": [
+        {
+          "rule_id": "FECHA_DDMMYYYY_SLASH",
+          "description": "Fecha en formato DD/MM/YYYY.",
+          "keywords": ["Fecha:", "Fch.:", "Date:"],
+          "fuzzy_matching_tolerance": 0.9,
+          "proximity_preference": "horizontal_right",
+          "search_window_relative_px": 100,
+          "value_regex_patterns": ["^\\d{2}\\/\\d{2}\\/\\d{4}$"],
+          "min_ocr_confidence_keyword": 0.8,
+          "min_ocr_confidence_value": 0.85,
+          "exclusion_patterns": [],
+          "priority": 90,
+          "region_priority": ["header", "body"]
+        }
+      ]
+    },
+    {
+      "field_name": "telefono",
+      "rules": [
+        {
+          "rule_id": "TELEFONO_VENEZOLANO",
+          "description": "Números de teléfono venezolanos (04XX-NNNNNNN).",
+          "keywords": ["Telf:", "Teléfono:", "Celular:"],
+          "fuzzy_matching_tolerance": 0.85,
+          "proximity_preference": "horizontal_right",
+          "search_window_relative_px": 120,
+          "value_regex_patterns": ["^(0412|0416|0426|0414|0424)\\-?\\d{7}$"],
+          "min_ocr_confidence_keyword": 0.7,
+          "min_ocr_confidence_value": 0.75,
+          "exclusion_patterns": ["Fax", "Rif"],
+          "priority": 60,
+          "region_priority": ["body", "footer"]
+        }
+      ]
+    },
+    {
+      "field_name": "cedula",
+      "rules": [
+        {
+          "rule_id": "CEDULA_VENEZOLANA",
+          "description": "Cédulas de identidad venezolanas (V-NNNNNNN o E-NNNNNNN).",
+          "keywords": ["C.I.:", "Cedula:", "ID:"],
+          "fuzzy_matching_tolerance": 0.88,
+          "proximity_preference": "horizontal_right",
+          "search_window_relative_px": 100,
+          "value_regex_patterns": ["^[VEJ]-?\\d{7,8}$"],
+          "min_ocr_confidence_keyword": 0.75,
+          "min_ocr_confidence_value": 0.8,
+          "exclusion_patterns": ["RIF", "Pasaporte"],
+          "priority": 70,
+          "region_priority": ["body"]
+        }
+      ]
+    }
+  ]
+}
+RESULTADO ESPERADO DEL AGENTE IA:
+
+Una confirmación detallada en formato TXT de que:
+
+El archivo config/extraction_rules.json ha sido actualizado exitosamente con el contenido JSON proporcionado.
+
+El motor de reglas ha cargado y validado internamente estos nuevos patrones sin errores de esquema.
+
+Se ha realizado una prueba de regresión rápida (usando los ejemplos de recibos que ya conoces internamente) para confirmar que la incorporación de estos nuevos patrones no ha introducido fallas en la extracción de campos ya conocidos, y si es posible, que ha mejorado la detección en algunos de ellos.
+
+Se ha validado que los logs (DEBUG o INFO) reflejan el uso de los nuevos rule_id y description durante el procesamiento.
+
