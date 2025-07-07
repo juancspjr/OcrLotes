@@ -158,11 +158,11 @@
         {
           "rule_id": "CEDULA_GENERICA_CI_RIF_PERSONA_CONSOLIDADO",
           "description": "Cédulas de identidad o RIF personales venezolanos (V/E/J-NNNNNNN), con varias palabras clave.",
-          "keywords": ["C.I.:", "Cedula:", "ID:", "Identificación:", "Rif:", "C.I. Titular Origen:", "C.I. Beneficiario:", "C.I./RIF:", "Identificación Beneficiario:"],
+          "keywords": ["C.I.:", "Cedula:", "ID:", "Identificación:", "Rif:", "C.I. Titular Origen:", "C.I. Beneficiario:", "C.I./RIF:", "Identificación Beneficiario:", "I - Identificacion :"],
           "fuzzy_matching_tolerance": 0.88,
           "proximity_preference": "horizontal_right",
           "search_window_relative_px": 150,
-          "value_regex_patterns": ["^[VEJG]-\\d{7,9}$", "^\\d{7,9}$"],
+          "value_regex_patterns": ["^[VEJG]-\\d{7,9}$", "^\\d{7,9}$", "^[VEJG]?\\s*[/]?\\s*\\d{6,9}$", "^\\d+\\s*/\\s*\\d{6,9}$"],
           "min_ocr_confidence_keyword": 0.75,
           "min_ocr_confidence_value": 0.8,
           "exclusion_patterns": ["RIF Empresa", "Teléfono"],
