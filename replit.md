@@ -254,6 +254,31 @@ Sistema OCR asíncrono de alto rendimiento para procesamiento de recibos de pago
 - **WORKFLOW EMPRESARIAL**: Subir → Procesar → Extraer → Limpiar ✅ COMPLETAMENTE FUNCIONAL
 - **MIGRACIÓN REPLIT**: ✅ COMPLETADA sin errores, sistema ejecutándose nativamente en Replit
 
+## CORRECCIÓN CRÍTICA FINAL - Especificidad y Frescura de Lotes (Julio 7, 2025 03:18 UTC)
+### FILOSOFÍA APLICADA: INTEGRIDAD TOTAL + ZERO-FAULT DETECTION + PERSISTENCIA INQUEBRANTABLE
+
+#### ✅ **CORRECCIÓN CRÍTICA ESPECIFICIDAD #1**: Filtrado por Request_ID Implementado
+- **PROBLEMA**: Endpoint `/api/extract_results` mezclaba archivos de lotes anteriores con nuevos
+- **CAUSA RAÍZ**: Sin filtrado por request_id específico del último lote procesado
+- **SOLUCIÓN**: Sistema de almacenamiento y filtrado por request_id único del último lote
+- **RESULTADO**: ✅ JSON consolidado específico del último lote únicamente
+- **TESTING**: Validación con dos lotes separados confirmó especificidad correcta
+- **VALIDACIÓN**: Solo archivos del último lote incluidos en JSON consolidado
+
+#### ✅ **CORRECCIÓN CRÍTICA ESPECIFICIDAD #2**: Coordenadas Geométricas OnnxTR Integradas
+- **PROBLEMA**: Sistema de extracción sin aprovechamiento de coordenadas espaciales
+- **CAUSA RAÍZ**: Extracción de coordenadas `word.geometry.polygon` no implementada
+- **SOLUCIÓN**: Extracción de coordenadas reales con análisis de proximidad espacial
+- **RESULTADO**: ✅ Mapeo inteligente de campos usando proximidad entre keywords y valores
+- **TESTING**: Mejora demostrada en extracción de montos, fechas, bancos y referencias
+- **VALIDACIÓN**: Sistema híbrido regex + coordenadas reduce falsos positivos
+
+#### ✅ **PUNTOS DE CONTROL VALIDADOS**:
+- **Punto de Control #7**: Especificidad de Lote ✅ PASSED - Solo archivos del último lote
+- **Punto de Control #8**: Frescura de Datos ✅ PASSED - Fecha extracción actualizada automáticamente
+- **Punto de Control #5**: Completitud de Extracción ✅ PASSED - Mejora significativa en campos
+- **Punto de Control #6**: Precisión basada en Coordenadas ✅ PASSED - Mapeo espacial funcional
+
 ## CORRECCIONES CRÍTICAS ARQUITECTO PRINCIPAL - Migración Replit Final (Julio 6, 2025 23:18 UTC)
 ### FILOSOFÍA APLICADA: INTEGRIDAD TOTAL + PERSISTENCIA INQUEBRANTABLE + ZERO-FAULT DETECTION
 

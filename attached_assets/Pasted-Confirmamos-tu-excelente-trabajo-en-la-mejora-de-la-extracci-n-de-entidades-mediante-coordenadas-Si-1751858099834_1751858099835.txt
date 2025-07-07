@@ -1,0 +1,37 @@
+Confirmamos tu excelente trabajo en la mejora de la extracción de entidades mediante coordenadas. Sin embargo, una nueva **DISCREPANCIA CRÍTICA** ha sido identificada en el JSON consolidado:
+
+**PROBLEMA IDENTIFICADO: INCLUSIÓN DE RESULTADOS ANTERIORES EN EL JSON CONSOLIDADO**
+El endpoint `/api/extract_results` está incluyendo archivos de resultados de lotes previos, mezclándolos con los archivos recién procesados en el mismo JSON consolidado. Esto causa una imprecisión en la data reportada y rompe la especificidad del lote.
+
+**OBJETIVO: JSON CONSOLIDADO ESPECÍFICO DEL ÚLTIMO LOTE**
+Necesitamos que el JSON consolidado (`/api/extract_results`) muestre **ÚNICAMENTE los resultados correspondientes al último lote de imágenes que se envió a procesar**.
+
+**MANDATO CRÍTICO: FILTRADO POR REQUEST_ID Y CONTROL DE FRESCURA (VIBE CODING ESTRATÉGICO + ZERO-FAULT DETECTION):**
+
+1.  **AUDITORÍA FORENSE DE LA LÓGICA DE AGREGACIÓN DE RESULTADOS:**
+    * **Paso 1.1: Identifica el punto exacto en `routes.py` (función `api_extract_results()`)** donde se recolectan los archivos JSON individuales para ser consolidados. Probablemente, está escaneando un directorio sin filtro adecuado.
+    * **Paso 1.2: Examina la función `api_ocr_process_batch()`** y confirma que genera un `request_id` único por cada lote procesado. Este `request_id` es nuestra clave para la solución.
+
+2.  **IMPLEMENTACIÓN DE MECANISMO DE FILTRADO POR REQUEST_ID Y CONTROL DE ESTADO:**
+    * **Propón e implementa un mecanismo para almacenar el `request_id` del *último* lote procesado exitosamente.** Esto puede ser en una variable global (con las consideraciones de estado para Gunicorn/Flask), un archivo temporal de estado, o una base de datos si la arquitectura lo permite. Dada la simplicidad, una variable global o un archivo de estado simple pueden ser suficientes por ahora.
+    * **Modifica la función `api_extract_results()`** para que, al ser llamada, **lea este `request_id` del último lote y filtre los archivos JSON individuales en `/data/results/` (o donde se almacenen)**, de modo que solo se incluyan aquellos archivos cuyo nombre contenga el `request_id` o que estén asociados de alguna manera a ese `request_id`.
+    * **Alternativa/Complemento (si request_id es complejo de pasar):** Implementa un filtro de tiempo, donde `/api/extract_results` solo consolide archivos procesados en los **últimos X minutos** (ej. 5-10 minutos) para asegurar frescura, asumiendo que los lotes son procesados rápidamente. **Sin embargo, la prioridad es el `request_id` por su precisión.**
+    * Asegúrate de que la lógica de limpieza o archivo de resultados antiguos no interfiera con este nuevo filtro.
+
+3.  **VALIDACIÓN OBLIGATORIA DE PUNTOS DE CONTROL - ESPECIFICIDAD DEL LOTE (ZERO-FAULT DETECTION):**
+    * Una vez implementada la solución, **DEBES demostrar y confirmar** que has superado **OBLIGATORIAMENTE** los siguientes Puntos de Control:
+        * **`Punto de Control #7: Consistencia de Lote (Batch Specificity)`**: Sube un lote de 2-3 imágenes. Luego sube un *nuevo* lote de 1-2 imágenes diferentes. Al consultar `/api/extract_results`, el JSON consolidado **SOLO debe contener las 1-2 imágenes del último lote**, y no las del lote anterior ni las de procesos históricos.
+        * **`Punto de Control #8: Frescura de Datos`**: Confirma que el `fecha_extraccion` en el metadata del JSON consolidado corresponde al momento del último procesamiento o consulta, y que no se mezclan fechas de archivos antiguos.
+
+**FORMATO DE CONFIRMACIÓN AL FINALIZAR:**
+
+* **Confirmación Explícita:** "La especificidad y frescura de los datos consolidados por lote ha sido implementada y validada."
+* **Análisis y Corrección:** "[EXPLICA CÓMO IDENTIFICASTE LA LÓGICA DE RECOLECCIÓN DE ARCHIVOS, CÓMO SE ALMACENA Y UTILIZA EL `request_id` (o el filtro de tiempo si se usó) PARA FILTRAR, Y LAS MODIFICACIONES DE CÓDIGO ESPECÍFICAS EN `routes.py`]."
+* **Evidencia de Mejora (Logs/Resultados):** "[PROPORCIONA EVIDENCIA CLARA (ej. listados de archivos filtrados, salida de `curl` del JSON consolidado) que demuestre que solo se incluyen los archivos del último lote]."
+* **Detalles de Puntos de Control #7 y #8:** "Se ejecutaron pruebas de especificidad de lote y frescura de datos. Los resultados son `PASSED`."
+
+
+
+
+
+

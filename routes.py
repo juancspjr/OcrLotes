@@ -556,6 +556,14 @@ def api_process_batch():
             }
         
         processed_count = resultado.get('batch_info', {}).get('processed_count', 0)
+        
+        # FIX: ALMACENAR REQUEST_ID DEL ÚLTIMO LOTE PROCESADO PARA FILTRADO
+        # REASON: Usuario requiere JSON consolidado específico del último lote únicamente
+        # IMPACT: Permite filtrado preciso de archivos por lote para evitar mezcla de resultados
+        if processed_count > 0:
+            _store_last_batch_request_id(request_id)
+            logger.info(f"💾 Almacenado request_id del último lote exitoso: {request_id}")
+        
         logger.info(f"✅ Lote procesado exitosamente: {processed_count} archivos. Request ID: {request_id}")
         
         return jsonify(resultado)
@@ -1517,29 +1525,51 @@ def api_extract_results():
                 'error_code': 'RESULTS_DIR_NOT_FOUND'
             }), 404
         
-        # FIX: Buscar archivos JSON en directorio results Y en historial empresarial
-        # REASON: Usuario requiere extraer datos de archivos movidos a historial por limpiador
-        # IMPACT: Extracción completa de todos los archivos procesados sin importar ubicación
+        # FIX: FILTRADO CRÍTICO POR REQUEST_ID DEL ÚLTIMO LOTE ÚNICAMENTE
+        # REASON: Usuario requiere JSON consolidado específico del último lote sin mezcla
+        # IMPACT: Eliminación completa de archivos de lotes anteriores del consolidado
+        last_request_id = _get_last_batch_request_id()
         json_files = []
         
-        # Buscar en directorio results activo
-        if os.path.exists(results_dir):
-            for file in os.listdir(results_dir):
-                if file.endswith('.json'):
-                    file_path = os.path.join(results_dir, file)
-                    if os.path.isfile(file_path):
-                        json_files.append(file_path)
-        
-        # FIX: Buscar TAMBIÉN en directorio historial empresarial
-        # REASON: Archivos procesados se mueven a historial, deben incluirse en extracción
-        # IMPACT: Extracción consolidada incluye todos los archivos históricos
-        historial_dir = 'data/historial'
-        if os.path.exists(historial_dir):
-            for file in os.listdir(historial_dir):
-                if file.endswith('.json') and 'result_' in file:  # Solo archivos de resultados en historial
-                    file_path = os.path.join(historial_dir, file)
-                    if os.path.isfile(file_path):
-                        json_files.append(file_path)
+        if not last_request_id:
+            logger.warning("No hay request_id del último lote. Retornando archivos más recientes.")
+            # Fallback: usar archivos más recientes (últimos 10 minutos)
+            import time
+            current_time = time.time()
+            ten_minutes_ago = current_time - 600
+            
+            # Buscar en directorio results activo con filtro de tiempo
+            if os.path.exists(results_dir):
+                for file in os.listdir(results_dir):
+                    if file.endswith('.json'):
+                        file_path = os.path.join(results_dir, file)
+                        if os.path.isfile(file_path):
+                            file_time = os.path.getmtime(file_path)
+                            if file_time >= ten_minutes_ago:
+                                json_files.append(file_path)
+                                
+            logger.info(f"📊 Filtro temporal: {len(json_files)} archivos de últimos 10 minutos")
+        else:
+            logger.info(f"🎯 Filtrando por request_id del último lote: {last_request_id}")
+            
+            # Buscar en directorio results activo con filtro por request_id
+            if os.path.exists(results_dir):
+                for file in os.listdir(results_dir):
+                    if file.endswith('.json') and last_request_id in file:
+                        file_path = os.path.join(results_dir, file)
+                        if os.path.isfile(file_path):
+                            json_files.append(file_path)
+            
+            # Buscar TAMBIÉN en directorio historial empresarial con filtro
+            historial_dir = 'data/historial'
+            if os.path.exists(historial_dir):
+                for file in os.listdir(historial_dir):
+                    if file.endswith('.json') and 'result_' in file and last_request_id in file:
+                        file_path = os.path.join(historial_dir, file)
+                        if os.path.isfile(file_path):
+                            json_files.append(file_path)
+                            
+            logger.info(f"📊 Filtro por request_id: {len(json_files)} archivos del último lote")
         
         if not json_files:
             logger.info("No hay archivos de resultados disponibles para extraer")
@@ -2156,6 +2186,41 @@ def _find_field_by_spatial_proximity(words_with_coords, keywords, value_pattern)
                     best_match = word['text']
     
     return best_match
+
+def _store_last_batch_request_id(request_id):
+    """
+    FIX: Almacena el request_id del último lote procesado exitosamente
+    REASON: Necesario para filtrar archivos JSON por lote específico
+    IMPACT: Permite extracción consolidada específica del último lote únicamente
+    """
+    try:
+        state_file = 'data/last_batch_state.txt'
+        os.makedirs(os.path.dirname(state_file), exist_ok=True)
+        with open(state_file, 'w') as f:
+            f.write(f"{request_id}\n{datetime.now().isoformat()}")
+        logger.debug(f"📝 Estado almacenado: {request_id}")
+    except Exception as e:
+        logger.error(f"Error almacenando request_id: {e}")
+
+def _get_last_batch_request_id():
+    """
+    FIX: Recupera el request_id del último lote procesado exitosamente
+    REASON: Necesario para filtrar archivos JSON por lote específico
+    IMPACT: Permite extracción consolidada específica del último lote únicamente
+    """
+    try:
+        state_file = 'data/last_batch_state.txt'
+        if os.path.exists(state_file):
+            with open(state_file, 'r') as f:
+                lines = f.read().strip().split('\n')
+                if len(lines) >= 1:
+                    request_id = lines[0]
+                    logger.debug(f"📖 Estado recuperado: {request_id}")
+                    return request_id
+        return None
+    except Exception as e:
+        logger.error(f"Error recuperando request_id: {e}")
+        return None
 
 def validate_api_key(api_key):
     """

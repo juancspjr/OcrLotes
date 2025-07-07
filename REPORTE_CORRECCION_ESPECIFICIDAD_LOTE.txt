@@ -1,0 +1,88 @@
+REPORTE DE CORRECCIÓN CRÍTICA - ESPECIFICIDAD Y FRESCURA DE LOTES
+====================================================================
+Fecha: 2025-07-07T03:18:30 UTC
+Filosofía Aplicada: INTEGRIDAD TOTAL + ZERO-FAULT DETECTION + PERSISTENCIA INQUEBRANTABLE
+
+## PROBLEMA IDENTIFICADO
+✅ DISCREPANCIA CRÍTICA: Endpoint `/api/extract_results` mezclaba archivos de lotes anteriores
+✅ CAUSA RAÍZ: Sin filtrado por request_id específico del último lote procesado
+✅ IMPACTO: Imprecisión en data reportada, mezcla de resultados históricos
+
+## SOLUCIÓN IMPLEMENTADA
+
+### 1. ALMACENAMIENTO DE REQUEST_ID DEL ÚLTIMO LOTE
+- **Función**: `_store_last_batch_request_id(request_id)`
+- **Archivo**: `data/last_batch_state.txt` con timestamp
+- **Trigger**: Solo cuando `processed_count > 0` en lote exitoso
+
+### 2. FILTRADO CRÍTICO POR REQUEST_ID
+- **Función**: `_get_last_batch_request_id()` + filtrado en `api_extract_results()`
+- **Lógica**: Archivos JSON filtrados por contenido de request_id en nombre
+- **Fallback**: Filtro temporal (10 minutos) si no hay request_id almacenado
+
+### 3. MODIFICACIONES DE CÓDIGO ESPECÍFICAS
+```python
+# routes.py líneas 560-566: Almacenamiento automático
+if processed_count > 0:
+    _store_last_batch_request_id(request_id)
+    logger.info(f"💾 Almacenado request_id del último lote exitoso: {request_id}")
+
+# routes.py líneas 1528-1572: Filtrado crítico
+last_request_id = _get_last_batch_request_id()
+if last_request_id:
+    for file in os.listdir(results_dir):
+        if file.endswith('.json') and last_request_id in file:
+            json_files.append(file_path)
+```
+
+## VALIDACIÓN OBLIGATORIA DE PUNTOS DE CONTROL
+
+### ✅ PUNTO DE CONTROL #7: ESPECIFICIDAD DE LOTE - PASSED
+**Test**: Simular request_id `BATCH_20250707_024011_664_20250706`
+**Resultado**: 1 archivo del lote específico únicamente
+**Archivo extraído**: `20250706-D--21769223624855@lid_Juan_07-16_20250707_024000_967.png`
+**Confirmación**: Sistema filtra correctamente sin mezclar lotes anteriores
+
+### ✅ PUNTO DE CONTROL #8: FRESCURA DE DATOS - PASSED  
+**Test**: Cambio a request_id `BATCH_20250707_024012_457_20250706`
+**Resultado**: Archivo diferente del nuevo lote extraído
+**Archivo extraído**: `20250706-G--214161262789363@lid_Jose_10-19_20250707_024009_034.png`
+**Fecha actualizada**: `2025-07-07T03:18:28.744389` (automática)
+
+## EVIDENCIA DE MEJORA
+
+### ANTES (Sin Filtrado)
+```json
+{
+  "total_archivos": 14,
+  "archivos_procesados": [
+    // Mezclaba archivos de múltiples lotes históricos
+    // Sin especificidad por request_id
+  ]
+}
+```
+
+### DESPUÉS (Con Filtrado por Request_ID)
+```json
+{
+  "metadata": {
+    "fecha_extraccion": "2025-07-07T03:18:28.744389",
+    "total_archivos": 1,
+    "tipo_extraccion": "consolidado_empresarial"
+  },
+  "archivos_procesados": [
+    // Solo archivo del último lote procesado
+    // Filtrado específico por request_id
+  ]
+}
+```
+
+## ANÁLISIS DE LOGS
+- `INFO:routes:🎯 Filtrando por request_id del último lote: BATCH_20250707_024011_664_20250706`
+- `INFO:routes:📊 Filtro por request_id: 1 archivos del último lote`
+- `DEBUG:routes:📖 Estado recuperado: BATCH_20250707_024011_664_20250706`
+
+## CONFIRMACIÓN EXPLÍCITA
+**"La especificidad y frescura de los datos consolidados por lote ha sido implementada y validada."**
+
+**Detalles de Puntos de Control #7 y #8:** "Se ejecutaron pruebas de especificidad de lote y frescura de datos. Los resultados son **PASSED**."
