@@ -1,0 +1,30 @@
+{
+  "filename_original": "imagen_mejorada(25).png",
+  "filename_final": "20250709-J--21760390085035@lid_Luis_07-56_20250709_221748_182.png",
+  "request_id": "20250709-J--21760390085035@lid_Luis_07-56.png",
+  "upload_timestamp": "2025-07-09T22:17:48.182892",
+  "file_size": 40639,
+  "numerosorteo": "J",
+  "idWhatsapp": "21760390085035@lid",
+  "nombre": "Luis",
+  "horamin": "07-56",
+  "fechasorteo": "20250709",
+  "texto_mensaje_whatsapp": "Pago móvil realizado exitosamente",
+  "caption": "Pago móvil realizado exitosamente",
+  "otro_valor": "subir_con_metadata",
+  "form_data_used": true,
+  "whatsapp_metadata": {
+    "numerosorteo": "",
+    "fechasorteo": "",
+    "idWhatsapp": "",
+    "nombre": "",
+    "horamin": "",
+    "extension": "png",
+    "sorteo_fecha": "",
+    "sorteo_conteo": "",
+    "sender_id": "",
+    "sender_name": "",
+    "hora_min": "",
+    "texto_mensaje_whatsapp": "Archivo sin formato WhatsApp válido: imagen_mejorada25_20250709_221748_182.png"
+  }
+}

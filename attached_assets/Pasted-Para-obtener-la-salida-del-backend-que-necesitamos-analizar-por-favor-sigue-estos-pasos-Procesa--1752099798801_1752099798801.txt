@@ -1,0 +1,55 @@
+Para obtener la salida del backend que necesitamos analizar, por favor, sigue estos pasos:
+
+Procesa la Imagen en tu Sistema OCR:
+
+Utiliza tu mecanismo habitual para enviar la imagen 20250709-J--21760390085035@lid_Luis_07-56_20250709_221748_182.png a tu sistema OCR empresarial.
+
+Basado en la documentación que me has proporcionado (DOCUMENTACION_TECNICA_EXHAUSTIVA_SISTEMA_OCR_EMPRESARIAL.txt), esto implica utilizar el endpoint de procesamiento por lotes, probablemente /api/ocr/process_batch.
+
+Obtén el Archivo JSON de Salida:
+
+Una vez que tu sistema haya terminado de procesar la imagen, generará un archivo de salida en formato JSON con los campos extraídos y los metadatos de procesamiento (similar a BATCH_20250707_214419_369_test_imagen_verificacion_actual.png.json o resultado_mandato_completo.json que me has compartido antes).
+
+Envía el JSON a este Chat:
+
+Por favor, sube ese archivo JSON completo a nuestro chat. Esta será la entrada clave para mi análisis.
+
+Reporte Detallado de Análisis (para Mí)
+Una vez que me proporciones el archivo JSON de salida, yo procederé a realizar un análisis profundo y detallado sobre cómo tu sistema procesó el documento. Te entregaré un informe completo en formato de texto.
+
+Este informe incluirá:
+
+Resultados de Extracción: Qué campos fueron detectados y con qué valores.
+
+Aplicación de la Lógica de Oro:
+
+Confirmaré si la logica_oro_aplicada fue true o false (basado en coordinates_available).
+
+Explicaré cómo se aplicó la Lógica de Oro (reordenamiento por coordenadas o fallback a texto lineal) y qué implicaciones tiene para los resultados.
+
+Haré referencia a funciones clave en aplicador_ocr.py como _aplicar_logica_de_oro_coordenadas, _calculate_document_regions, o _crear_texto_limpio_fallback, y las líneas de código relevantes, según lo documentado en ANALISIS_CRITICO_LOGICA_DE_ORO_COORDENADAS.txt.
+
+Evaluación de Reglas de Extracción (extraction_rules.json):
+
+Analizaré la processing_metadata para ver la confianza del OCR (ocr_confidence_avg).
+
+Basado en los campos extraídos, te indicaré qué reglas (por field_name y potencialmente rule_id si tu JSON los expone en los metadatos de extracción) parecen haberse activado.
+
+Identificaré si hubo error_messages que indiquen desafíos específicos durante el procesamiento.
+
+Posibles Confusiones y Sugerencias de Mejora:
+
+Si detecto alguna anomalía o un valor potencialmente incorrecto, analizaré por qué pudo haber ocurrido (ej., ambigüedad con otras fechas, patrón no cubierto, baja confianza del OCR).
+
+Propondré ajustes específicos en extraction_rules.json (modificación de keywords, value_regex_patterns, priority, search_window_relative_px, exclusion_patterns o region_priority) para mejorar la precisión y evitar futuras confusiones.
+
+Estoy listo para recibir el JSON de tu sistema tan pronto como lo tengas.
+
+FILOSOFÍA CENTRAL PARA EL DESARROLLO DE SOFTWARE: INTEGRIDAD TOTAL Y PERFECCIÓN CONTINUA
+
+
+
+
+
+
+
