@@ -1,0 +1,60 @@
+Mandato 1/2: Corrección de la Contradicción logica_oro_aplicada
+
+Objetivo: Asegurar que el flag logica_oro_aplicada en el processing_metadata refleje con exactitud si la lógica de oro basada en coordenadas se aplicó realmente, o si se utilizó el método de fallback de texto plano. Esto es crucial para la Integridad Total de los metadatos del procesamiento.
+
+Problema Actual: Tu reporte y el JSON mostraron logica_oro_aplicada: true y coordinates_available: 0 junto con un mensaje de error que indicaba que la lógica de coordenadas no fue aplicada y se usó el fallback de texto limpio. Esto es una inconsistencia.
+
+Archivo a Modificar: aplicador_ocr.py
+
+Acción Requerida:
+
+Localiza el archivo aplicador_ocr.py en tu sistema.
+
+Haz una copia de seguridad de este archivo antes de modificarlo.
+
+Identifica la sección en el método process_image_path (o similar) donde se decide si se aplica la lógica de oro basada en coordenadas (_aplicar_logica_de_oro_coordenadas) o el fallback (_crear_texto_limpio_fallback), usualmente basada en el valor de coordinates_available.
+
+Modifica la lógica para que el flag self.logica_oro_aplicada se establezca como True solo si self.coordinates_available > 0 Y la función _aplicar_logica_de_oro_coordenadas es llamada. En cualquier otro caso (si self.coordinates_available == 0 y se invoca el fallback), el flag self.logica_oro_aplicada debe ser False.
+
+Ejemplo de Patrón de Código a Buscar y Ajustar (guía):
+
+Busca algo similar a esto (las líneas exactas pueden variar, pero la lógica es la misma):
+
+Python
+
+# ... dentro del método process_image_path o _process_text_with_logic ...
+
+if self.coordinates_available > 0:
+    logger.debug("Coordenadas disponibles. Aplicando lógica de oro basada en coordenadas.")
+    # Aquí es donde se llama a _aplicar_logica_de_oro_coordenadas
+    # Asegúrate de que self.logica_oro_aplicada se establezca a True SOLO AQUÍ
+    self.logica_oro_aplicada = True # <--- ASEGURAR QUE SE SETEE AQUI
+    # ... llamada a la función de lógica de oro basada en coordenadas ...
+else:
+    logger.warning("Lógica de Oro basada en coordenadas no aplicada: No se detectaron coordenadas válidas en el OCR de origen. Procesado con fallback de texto limpio.")
+    # Aquí es donde se llama a _crear_texto_limpio_fallback
+    # Asegúrate de que self.logica_oro_aplicada se establezca a False O NO SE MODIFIQUE para que quede en False
+    self.logica_oro_aplicada = False # <--- ASEGURAR QUE SE SETEE AQUI A FALSE O SE DEJE EN SU ESTADO INICIAL DE FALSE
+    # ... llamada a la función _crear_texto_limpio_fallback ...
+
+# ... el resto del código ...
+Asegúrate de que la asignación de self.logica_oro_aplicada sea explícita y condicional.
+
+Una vez que hayas realizado esta modificación:
+
+Guarda el archivo aplicador_ocr.py.
+
+Vuelve a procesar la imagen 20250709-J--21760390085035@lid_Luis_07-56_20250709_221748_182.png en tu sistema.
+
+Sube el nuevo archivo JSON de salida a este chat.
+
+Confirma que el logica_oro_aplicada ahora es false en el processing_metadata del nuevo JSON, dado que coordinates_available es 0.
+
+Espero tu confirmación para proceder con el siguiente mandato.
+
+
+
+
+
+
+

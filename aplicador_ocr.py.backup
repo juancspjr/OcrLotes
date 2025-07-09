@@ -831,27 +831,19 @@ class AplicadorOCR:
                 # PASO 2: EVALUAR COORDENADAS DISPONIBLES
                 coordenadas_validas = len([w for w in word_data_granular if w.get('coordinates') and w['coordinates'] != [0, 0, 0, 0]])
                 
-                # MANDATO 1/2: CORRECCIÓN CRÍTICA DE CONTRADICCIÓN logica_oro_aplicada
-                # REASON: Asegurar que flag refleje exactamente si lógica de oro basada en coordenadas se aplicó
-                # IMPACT: Integridad Total de metadatos de procesamiento
-                
                 if coordenadas_validas > 0:
-                    # COORDENADAS DISPONIBLES: APLICAR LÓGICA DE ORO REAL
-                    logger.debug("Coordenadas disponibles. Aplicando lógica de oro basada en coordenadas.")
+                    # MANDATO: APLICAR LÓGICA DE ORO CON COORDENADAS VÁLIDAS
                     logger.info(f"🏆 MANDATO: Aplicando Lógica de Oro con {coordenadas_validas} coordenadas válidas")
                     texto_total_ocr_ordenado = self._aplicar_logica_de_oro_coordenadas(word_data_granular)
-                    # MANDATO: Establecer flag TRUE solo cuando lógica de oro real se aplica
                     logica_oro_exitosa = True
                     error_messages = []  # Limpiar errores si la lógica de oro funciona
                     
-                else:
-                    # SIN COORDENADAS: USAR FALLBACK Y MARCAR FLAG COMO FALSE
-                    logger.warning("Lógica de Oro basada en coordenadas no aplicada: No se detectaron coordenadas válidas en el OCR de origen. Procesado con fallback de texto limpio.")
+                elif coordenadas_validas == 0:
+                    # MANDATO: Si coordinates_available es 0, crear versión "limpia" del original
                     logger.info("🔧 MANDATO: Aplicando fallback de Lógica de Oro (sin coordenadas válidas)")
                     texto_total_ocr_ordenado = self._crear_texto_limpio_fallback(texto_completo)
-                    # MANDATO: Establecer flag FALSE cuando solo se usa fallback
                     logica_oro_exitosa = False
-                    error_messages.append("Lógica de oro basada en coordenadas no aplicada: No se detectaron coordenadas válidas en el OCR de origen")
+                    error_messages.append("Lógica de Oro basada en coordenadas no aplicada: No se detectaron coordenadas válidas en el OCR de origen")
                     
                 # PASO 3: VALIDAR DIFERENCIACIÓN DE TEXTOS
                 if (not texto_total_ocr_ordenado or 
@@ -863,14 +855,16 @@ class AplicadorOCR:
                     texto_total_ocr_ordenado = self._crear_estructura_empresarial_diferente(texto_completo, palabras_detectadas)
                     error_messages.append("Aplicada restructuración empresarial para cumplir mandato de diferenciación")
                 
-                # PASO 4: VALIDAR DIFERENCIACIÓN (SIN MODIFICAR FLAG logica_oro_exitosa)
-                # MANDATO 1/2: No modificar flag aquí - ya está establecido correctamente según coordenadas
+                # PASO 4: MARCAR LÓGICA DE ORO COMO EXITOSA SI HAY DIFERENCIACIÓN
                 if texto_total_ocr_ordenado and texto_total_ocr_ordenado.strip() != texto_completo.strip():
                     if coordenadas_validas > 0:
+                        logica_oro_exitosa = True
                         logger.info("🏆 MANDATO COMPLETADO: Lógica de oro aplicada exitosamente con coordenadas")
                     else:
+                        logica_oro_exitosa = False
                         logger.info("🔧 MANDATO: Texto diferenciado pero sin coordenadas válidas")
-                # Note: logica_oro_exitosa ya está establecido correctamente en PASO 2
+                else:
+                    logica_oro_exitosa = False
                 
                 # MANDATO CRÍTICO: EXTRACCIÓN PROTEGIDA CON CORRECCIÓN OBLIGATORIA
                 try:
