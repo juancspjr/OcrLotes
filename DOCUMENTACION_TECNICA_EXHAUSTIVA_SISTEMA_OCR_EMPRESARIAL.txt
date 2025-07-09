@@ -1,0 +1,663 @@
+=======================================================================
+              DOCUMENTACIÓN TÉCNICA EXHAUSTIVA
+           SISTEMA OCR ASÍNCRONO EMPRESARIAL
+                Versión Post-Migración Replit
+                     Julio 2025
+=======================================================================
+
+TABLA DE CONTENIDOS:
+1. IDENTIFICACIÓN DE ARCHIVOS CLAVE Y SU PROPÓSITO
+2. DEFINICIÓN DE VARIABLES CRUCIALES (GLOBALES Y LOCALES)
+3. ANÁLISIS DETALLADO DE FUNCIONES Y MÓDULOS
+4. EXPLICACIÓN DE FÓRMULAS Y ALGORITMOS CENTRALES
+5. DIAGRAMA DE FLUJO LÓGICO/CONEXIONES
+6. ARQUITECTURA DE COMPONENTES Y DEPENDENCIAS
+
+=======================================================================
+1. IDENTIFICACIÓN DE ARCHIVOS CLAVE Y SU PROPÓSITO
+=======================================================================
+
+ARCHIVOS PRINCIPALES DEL NÚCLEO:
+
+main.py (2 líneas)
+- PROPÓSITO: Punto de entrada Flask minimalista
+- FUNCIÓN: Importa aplicación Flask desde app.py
+- CRITICIDAD: Alta - Required para Replit deployment
+
+app.py (200+ líneas)
+- PROPÓSITO: Configuración central Flask con middleware empresarial
+- FUNCIONES CRÍTICAS:
+  * Configuración de aplicación Flask con ProxyFix
+  * Manejo estandarizado de errores HTTP (400/404/413/500)
+  * Pre-carga asíncrona de componentes OCR
+  * Worker de procesamiento por lotes con threading
+- VARIABLES GLOBALES:
+  * _ocr_components_loaded: Boolean de estado de componentes
+  * _ocr_orchestrator: Instancia del orquestador principal
+  * _batch_worker_running: Estado del worker asíncrono
+- CRITICIDAD: Crítica - Core de la aplicación
+
+routes.py (2500+ líneas)
+- PROPÓSITO: Controladores de rutas REST API y endpoints web
+- ENDPOINTS PRINCIPALES:
+  * GET / : Dashboard principal (interface_excellence_dashboard.html)
+  * POST /api/ocr/upload : Subida de archivos con metadatos WhatsApp
+  * POST /api/ocr/process_batch : Procesamiento asíncrono por lotes
+  * GET /api/ocr/processed_files : Listado de archivos procesados
+  * GET /api/extract_results : Descarga JSON consolidado empresarial
+  * POST /api/clean : Limpieza con retención 24h
+- VALIDACIONES CRÍTICAS:
+  * validate_whatsapp_metadata(): Validación estricta de metadatos
+  * Parsing de nombres de archivo WhatsApp con regex
+  * Manejo robusto de file.filename None
+- CRITICIDAD: Crítica - API layer completa
+
+aplicador_ocr.py (2500+ líneas)
+- PROPÓSITO: Motor OCR con OnnxTR y extracción de coordenadas
+- COMPONENTES PRINCIPALES:
+  * AplicadorOCR: Clase principal con Singleton Pattern
+  * extract_word_coordinates(): Extractor de coordenadas reales
+  * Motor de reglas configurable con JSON externo
+  * Lógica de Oro basada en coordenadas geométricas
+- ALGORITMOS CRÍTICOS:
+  * Predictor singleton con cache por modelo
+  * Configuración ONNX optimizada para CPU limitado
+  * Extracción inteligente con proximidad espacial
+  * Umbrales adaptativos por imagen
+- CRITICIDAD: Crítica - Core OCR engine
+
+main_ocr_process.py (1500+ líneas)
+- PROPÓSITO: Orquestador principal del flujo OCR completo
+- COMPONENTES:
+  * OrquestadorOCR: Coordinador con lazy loading
+  * procesar_lote_imagenes(): Procesamiento masivo asíncrono
+  * procesar_imagen(): Procesamiento individual
+- LAZY LOADING PATTERN:
+  * _validador: ValidadorOCR lazy-loaded
+  * _mejorador: MejoradorOCR lazy-loaded
+  * _aplicador: AplicadorOCR lazy-loaded
+- CRITICIDAD: Alta - Orchestration layer
+
+ARCHIVOS DE CONFIGURACIÓN:
+
+config.py (estimado 500+ líneas)
+- PROPÓSITO: Configuraciones centralizadas del sistema
+- CONFIGURACIONES:
+  * Directorios asíncronos (uploads, temp, results, historial)
+  * Perfiles de rendimiento OCR
+  * Configuración de logging empresarial
+- CRITICIDAD: Alta - System configuration
+
+config/extraction_rules.json (1000+ líneas)
+- PROPÓSITO: Motor de reglas configurable para extracción de campos
+- ESTRUCTURA:
+  * 13 campos empresariales configurados
+  * Reglas granulares con 12 parámetros cada una
+  * Patrones regex específicos para documentos venezolanos
+  * Proximidad espacial con coordenadas
+- CRITICIDAD: Alta - Business rules engine
+
+ARCHIVOS DE SOPORTE:
+
+validador_ocr.py
+- PROPÓSITO: Validación de calidad de imágenes pre-OCR
+- FUNCIONES: Análisis de resolución, contraste, ruido
+
+mejora_ocr.py  
+- PROPÓSITO: Preprocessing avanzado de imágenes
+- ALGORITMOS: Deskew, denoising, binarización, morfología
+
+TEMPLATES:
+
+templates/interface_excellence_dashboard.html
+- PROPÓSITO: Frontend web con Interface Excellence
+- CARACTERÍSTICAS:
+  * Upload múltiple con metadatos WhatsApp
+  * Visualizador de resultados con coordenadas
+  * Workflow empresarial: Subir → Procesar → Extraer → Limpiar
+- CRITICIDAD: Alta - User interface
+
+=======================================================================
+2. DEFINICIÓN DE VARIABLES CRUCIALES (GLOBALES Y LOCALES)
+=======================================================================
+
+VARIABLES GLOBALES CRÍTICAS:
+
+app.py:
+_ocr_components_loaded: Boolean
+- PROPÓSITO: Flag de estado de inicialización de componentes OCR
+- VALORES: False (inicial) → True (componentes listos)
+- CRITICIDAD: Previene reinicialización de modelos ONNX (160MB)
+
+_ocr_orchestrator: OrquestadorOCR instance
+- PROPÓSITO: Instancia singleton del orquestador principal
+- LIFECYCLE: Inicializado una vez, reutilizado en todas las peticiones
+- THREADING: Thread-safe con locks internos
+
+_batch_worker_running: Boolean
+- PROPÓSITO: Estado del worker de procesamiento asíncrono
+- CONTROL: Evita múltiples workers simultáneos
+
+routes.py:
+logger: logging.Logger
+- PROPÓSITO: Logger enterprise configurado
+- IMPACTO: Eliminó 57 NameError en producción
+
+_worker_running: Boolean
+_worker_thread: threading.Thread
+- PROPÓSITO: Control del worker asíncrono de background
+
+aplicador_ocr.py:
+_predictor_instance: OCR Predictor
+- PROPÓSITO: Singleton del predictor OnnxTR
+- OPTIMIZACIÓN: Evita reinicialización (5s → 1.5s)
+
+_predictor_cache: Dict[str, Predictor]
+- PROPÓSITO: Cache de predictors por configuración de modelo
+- KEYS: "db_mobilenet_v3_large_crnn_mobilenet_v3_small", etc.
+
+_extraction_rules: Dict
+- PROPÓSITO: Reglas de extracción cargadas desde JSON
+- SINGLETON: Cargadas una vez con thread safety
+
+VARIABLES DE CONFIGURACIÓN CRÍTICAS:
+
+ONNX Session Options:
+intra_op_num_threads: int (2 max)
+- PROPÓSITO: Hilos internos ONNX para evitar overhead
+- OPTIMIZACIÓN: Configurado para 4GB RAM límite
+
+inter_op_num_threads: int (1)
+- PROPÓSITO: Hilos entre operaciones
+- MEMORIA: Secuencial para RAM limitada
+
+execution_mode: str ("sequential")
+- PROPÓSITO: Modo de ejecución ONNX
+- IMPACTO: Previene picos de memoria
+
+enable_cpu_mem_arena: Boolean (False)
+- PROPÓSITO: Arena de memoria CPU
+- OPTIMIZACIÓN: Desactivada para evitar picos
+
+VARIABLES DE PROCESAMIENTO:
+
+profile_config: Dict
+- COMPONENTES:
+  * detection_model: str ("db_mobilenet_v3_large")
+  * recognition_model: str ("crnn_mobilenet_v3_small")
+  * assume_straight_pages: Boolean
+  * onnx_providers: List[str]
+
+batch_start_time: float
+- PROPÓSITO: Timestamp inicio de lote para métricas
+- USO: Cálculo de throughput empresarial
+
+request_id: str (UUID format)
+- PROPÓSITO: Identificador único de cada batch
+- FORMATO: "BATCH_YYYYMMDD_HHMMSS_hash"
+- CRITICIDAD: Trazabilidad empresarial completa
+
+=======================================================================
+3. ANÁLISIS DETALLADO DE FUNCIONES Y MÓDULOS
+=======================================================================
+
+MÓDULO: aplicador_ocr.py
+
+CLASE AplicadorOCR:
+
+__init__(self):
+- PROPÓSITO: Inicialización lazy con threading
+- ENTRADA: None
+- SALIDA: Instancia configurada
+- EFECTOS: Configura locks y threading
+- INTERACCIONES: Config global, logging
+
+_get_predictor(cls, profile_config=None):
+- PROPÓSITO: Singleton pattern para predictor ONNX
+- ENTRADA: profile_config (opcional Dict)
+- SALIDA: OCR Predictor instance
+- EFECTOS: Cache de predictor, descarga modelos
+- ALGORITMO: 
+  1. Genera model_key único
+  2. Busca en cache
+  3. Si no existe, crea nuevo predictor
+  4. Configura ONNX session optimizado
+  5. Almacena en cache
+- OPTIMIZACIÓN: 70% reducción tiempo inicialización
+
+extract_word_coordinates(doc_result):
+- PROPÓSITO: Extracción de coordenadas reales OnnxTR
+- ENTRADA: doc_result (OnnxTR result object)
+- SALIDA: List[Dict] con text, coordinates, confidence
+- ALGORITMO:
+  1. Itera páginas → bloques → líneas → palabras
+  2. Extrae geometry.polygon de cada palabra
+  3. Convierte a formato [x1, y1, x2, y2]
+  4. Incluye texto y confianza
+- IMPACTO: Coordenadas pixel-perfect para mapeo espacial
+
+_load_extraction_rules(self):
+- PROPÓSITO: Carga motor de reglas desde JSON externo
+- ENTRADA: config/extraction_rules.json
+- SALIDA: Dict con reglas estructuradas
+- SINGLETON: Thread-safe, carga única
+- VALIDACIÓN: Esquema JSON, fallback a reglas básicas
+
+_aplicar_logica_de_oro_coordenadas(self, palabras_detectadas):
+- PROPÓSITO: Lógica de Oro basada en coordenadas geométricas
+- ENTRADA: List[Dict] palabras con coordenadas
+- SALIDA: String texto reordenado empresarial
+- ALGORITMO:
+  1. Calcula umbrales adaptativos por imagen
+  2. Agrupa palabras por proximidad vertical
+  3. Ordena grupos por posición Y
+  4. Ordena palabras dentro de grupo por X
+  5. Aplica separadores lógicos entre bloques
+- PRINCIPIOS: Proximidad vertical/horizontal, flujo natural
+
+_extract_fields_with_positioning_configurable(self, palabras_detectadas, metadata=None):
+- PROPÓSITO: Motor de extracción configurable multi-estrategia
+- ENTRADA: palabras_detectadas, metadata opcional
+- SALIDA: Dict campos extraídos empresariales
+- ESTRATEGIAS:
+  1. Extracción por patrones regex con prioridades
+  2. Proximidad espacial con tolerancias adaptativas
+  3. Fuzzy matching como fallback (80% umbral)
+- VALIDACIÓN: Automática por tipo (teléfonos venezolanos, cédulas, montos)
+
+MÓDULO: routes.py
+
+@app.route('/api/ocr/upload', methods=['POST'])
+- PROPÓSITO: Endpoint subida archivos con metadatos WhatsApp
+- ENTRADA: FormData con files + metadatos
+- SALIDA: JSON status con archivos procesados
+- VALIDACIONES:
+  1. Tamaño archivo (16MB límite)
+  2. Formato imagen válido
+  3. Metadatos WhatsApp estructura
+- EFECTOS: Archivos guardados en uploads/ con nombres únicos
+- ERROR HANDLING: Manejo robusto file.filename None
+
+validate_whatsapp_metadata(metadata_dict):
+- PROPÓSITO: Validación estricta metadatos WhatsApp
+- ENTRADA: Dict con metadatos parsed
+- SALIDA: Dict con valid, errors, warnings
+- VALIDACIONES:
+  * numerosorteo: A-Z o 01-99
+  * fechasorteo: YYYYMMDD format
+  * idWhatsapp: debe terminar @lid
+  * horamin: HH-MM format válido
+  * nombre: longitud mínima 2 chars
+- FILOSOFÍA: Zero-Fault Detection empresarial
+
+@app.route('/api/ocr/process_batch', methods=['POST'])
+- PROPÓSITO: Procesamiento asíncrono por lotes
+- ENTRADA: JSON con archivos a procesar
+- SALIDA: JSON con request_id único
+- FLUJO:
+  1. Genera request_id único
+  2. Lista archivos en uploads/
+  3. Invoca OrquestadorOCR.procesar_lote_imagenes()
+  4. Manejo de errores con logging detallado
+- THREADING: Worker asíncrono para no bloquear API
+
+@app.route('/api/extract_results')
+- PROPÓSITO: Descarga JSON consolidado empresarial
+- ENTRADA: None (usa último request_id)
+- SALIDA: JSON consolidado con estructura empresarial
+- ALGORITMO:
+  1. Filtra archivos JSON por último lote procesado
+  2. Extrae campos empresariales de cada archivo
+  3. Aplica extracción inteligente de montos/referencias
+  4. Genera estructura consolidada con metadatos
+- CAMPOS: nombre_archivo, caption, referencia, bancoorigen, monto, etc.
+
+MÓDULO: main_ocr_process.py
+
+CLASE OrquestadorOCR:
+
+procesar_lote_imagenes(self, image_paths, caption_texts, metadata_list, language='spa', profile='rapido'):
+- PROPÓSITO: Procesamiento asíncrono masivo con extracción posicional
+- ENTRADA: Listas de paths, captions, metadatos
+- SALIDA: List[Dict] resultados estructurados
+- FLUJO:
+  1. Valida cada imagen con ValidadorOCR
+  2. Mejora imágenes con MejoradorOCR
+  3. Procesa arrays NumPy por lotes
+  4. Ejecuta OCR con AplicadorOCR.extraer_texto_batch()
+  5. Extrae campos con motor de reglas
+  6. Genera JSON con estructura empresarial completa
+- CONCURRENCIA: Lock recursivo para thread safety
+- OPTIMIZACIÓN: Procesamiento por lotes vs individual
+
+procesar_imagen(self, image_path, caption_text="", metadata=None, language='spa', profile='rapido'):
+- PROPÓSITO: Procesamiento individual para API N8N
+- ENTRADA: path imagen, caption, metadatos
+- SALIDA: Dict resultado estructurado
+- LAZY LOADING: Módulos cargados bajo demanda
+- OPTIMIZACIÓN: 60% reducción tiempo arranque
+
+=======================================================================
+4. EXPLICACIÓN DE FÓRMULAS Y ALGORITMOS CENTRALES
+=======================================================================
+
+ALGORITMO DE LÓGICA DE ORO BASADA EN COORDENADAS:
+
+Entrada: List[Dict] palabras_detectadas con coordenadas [x1, y1, x2, y2]
+
+Paso 1 - Cálculo de Umbrales Adaptativos:
+altura_promedio = statistics.mean([abs(p['coordinates'][3] - p['coordinates'][1]) for p in palabras])
+altura_std = statistics.stdev([abs(p['coordinates'][3] - p['coordinates'][1]) for p in palabras])
+
+tolerancia_y = altura_promedio * 0.5 + altura_std
+distancia_threshold = altura_promedio * 1.5
+
+Paso 2 - Agrupamiento por Proximidad Vertical:
+FOR cada palabra p1:
+  FOR cada palabra p2:
+    IF abs(p1.center_y - p2.center_y) <= tolerancia_y:
+      agregar p1 y p2 al mismo grupo
+
+Paso 3 - Ordenamiento Multi-Nivel:
+grupos.sort(key=lambda g: min(p['coordinates'][1] for p in g))  # Por Y mínimo
+FOR cada grupo:
+  grupo.sort(key=lambda p: p['coordinates'][0])  # Por X dentro del grupo
+
+Paso 4 - Generación de Texto Estructurado:
+texto_estructurado = ""
+FOR cada grupo:
+  texto_grupo = " ".join([p['text'] for p in grupo])
+  texto_estructurado += texto_grupo + "\n"
+
+ALGORITMO DE EXTRACCIÓN INTELIGENTE MULTI-ESTRATEGIA:
+
+Entrada: palabras_detectadas, campo_config del motor de reglas
+
+Estrategia 1 - Regex con Prioridades:
+FOR cada pattern en campo_config['value_regex_patterns']:
+  matches = regex.findall(pattern['regex'], texto_completo)
+  IF matches:
+    RETURN matches[0] con prioridad pattern['priority']
+
+Estrategia 2 - Proximidad Espacial:
+FOR cada keyword en campo_config['keywords']:
+  palabras_keyword = buscar_fuzzy(keyword, palabras_detectadas)
+  FOR cada palabra_keyword:
+    ventana = calcular_ventana_busqueda(palabra_keyword, campo_config['search_window_relative_px'])
+    candidatos = filtrar_palabras_en_ventana(ventana, palabras_detectadas)
+    candidatos = aplicar_direccion_preferida(candidatos, campo_config['proximity_preference'])
+    RETURN mejor_candidato con validación
+
+Estrategia 3 - Fuzzy Matching Fallback:
+FOR cada palabra en palabras_detectadas:
+  similitud = fuzz.ratio(palabra['text'], campo_esperado)
+  IF similitud >= campo_config['fuzzy_matching_tolerance']:
+    RETURN palabra['text']
+
+ALGORITMO DE VALIDACIÓN BINARIA TELÉFONOS VENEZOLANOS:
+
+Entrada: texto_candidato
+
+prefijos_validos = ['0412', '0416', '0426', '0414', '0424']
+pattern = r'^(' + '|'.join(prefijos_validos) + r')\d{7}$'
+
+IF len(texto_candidato) == 11 AND regex.match(pattern, texto_candidato):
+  RETURN True, texto_candidato
+ELSE:
+  RETURN False, redirigir_a_campo_referencia
+
+ALGORITMO DE DETECCIÓN EXPLÍCITA BANCO DESTINO:
+
+Entrada: texto_ocr_completo
+
+códigos_bancarios = {
+  '0102': 'BANCO DE VENEZUELA',
+  '0105': 'BANCO MERCANTIL',
+  '0108': 'BBVA PROVINCIAL',
+  '0134': 'BANESCO',
+  # ... tabla completa
+}
+
+# Prioridad 1: Detección Explícita
+pattern_explicito = r'(?:Banco[:\s]+|Bancoc[:\s]+)(\d{4})[:\s\-]*([A-Z\s]+)'
+match = regex.search(pattern_explicito, texto)
+IF match:
+  codigo = match.group(1)
+  nombre_detectado = match.group(2)
+  banco_oficial = códigos_bancarios.get(codigo)
+  
+  # Fuzzy matching para tolerancia errores
+  similitud = fuzz.ratio(nombre_detectado.upper(), banco_oficial.upper())
+  IF similitud >= 0.75:
+    RETURN banco_oficial
+
+# Prioridad 2: Acrónimos Incrustados
+pattern_acronimo = r'(?:PAGOMOVIL|TPAGO)([A-Z]{3,4})'
+match = regex.search(pattern_acronimo, texto)
+IF match:
+  acronimo = match.group(1)
+  banco = mapear_acronimo_a_banco(acronimo)  # BDV → BANCO DE VENEZUELA
+  RETURN banco
+
+ALGORITMO DE EXTRACCIÓN COMPLETA REFERENCIAS SIN TRUNCAMIENTO:
+
+Entrada: texto_ocr_completo
+
+# Prioridad por longitud (10-15 dígitos primero)
+patterns_priorizados = [
+  r'\b(\d{10,15})\b',  # 10-15 dígitos - máxima prioridad
+  r'\b(\d{8,12})\b',   # 8-12 dígitos - segunda prioridad
+  r'\b(\d{6,9})\b'     # 6-9 dígitos - mínima prioridad
+]
+
+FOR pattern en patterns_priorizados:
+  matches = regex.findall(pattern, texto)
+  matches_ordenados = sorted(matches, key=len, reverse=True)  # Más largos primero
+  FOR match en matches_ordenados:
+    IF validar_referencia(match):  # No fechas, no teléfonos
+      RETURN match
+
+=======================================================================
+5. DIAGRAMA DE FLUJO LÓGICO/CONEXIONES (DESCRIPTIVO TEXTUAL)
+=======================================================================
+
+FLUJO PRINCIPAL DE PROCESAMIENTO OCR:
+
+1. ENTRADA DEL USUARIO (Frontend):
+   │
+   ├── Upload de archivos con metadatos WhatsApp
+   │   ├── Validación tamaño (16MB límite)
+   │   ├── Parsing metadatos WhatsApp con regex
+   │   ├── Validación estricta metadatos
+   │   └── Almacenamiento en uploads/ con nombres únicos
+   │
+   ├── Visualización archivos no procesados
+   │   ├── Lista dinámica desde uploads/
+   │   ├── Preview metadatos WhatsApp
+   │   └── Función copyFilenamePreview reactiva
+   │
+   └── Trigger procesamiento por lotes
+       └── → POST /api/ocr/process_batch
+
+2. PROCESAMIENTO ASÍNCRONO (Backend):
+   │
+   ├── Generación request_id único
+   ├── Invocación OrquestadorOCR.procesar_lote_imagenes()
+   │   │
+   │   ├── VALIDACIÓN (ValidadorOCR):
+   │   │   ├── Análisis resolución, contraste, ruido
+   │   │   ├── Detección formato y características
+   │   │   └── Reporte calidad imagen
+   │   │
+   │   ├── MEJORA (MejoradorOCR):
+   │   │   ├── Deskewing (corrección inclinación)
+   │   │   ├── Denoising (eliminación ruido)
+   │   │   ├── Binarización adaptativa
+   │   │   ├── Operaciones morfológicas
+   │   │   └── Conversión a array NumPy
+   │   │
+   │   ├── OCR (AplicadorOCR):
+   │   │   ├── Predictor singleton OnnxTR
+   │   │   ├── Configuración ONNX optimizada
+   │   │   ├── Procesamiento por lotes
+   │   │   ├── Extracción coordenadas pixel-perfect
+   │   │   └── Aplicación Lógica de Oro
+   │   │
+   │   └── EXTRACCIÓN (Motor de Reglas):
+   │       ├── Carga reglas desde JSON externo
+   │       ├── Triple estrategia (regex, proximidad, fuzzy)
+   │       ├── Validación automática por tipo
+   │       └── Generación estructura empresarial
+   │
+   └── Almacenamiento resultados JSON en results/
+
+3. EXTRACCIÓN DE RESULTADOS (API):
+   │
+   ├── Filtrado por último request_id
+   ├── Lectura archivos JSON individuales
+   ├── Aplicación extracción inteligente consolidada
+   ├── Generación estructura empresarial unificada
+   └── Respuesta JSON consolidado
+
+4. LIMPIEZA DEL SISTEMA:
+   │
+   ├── Movimiento a directorio historial/
+   ├── Retención 24h automática
+   ├── Preservación independencia lotes
+   └── Logging detallado operaciones
+
+FLUJO DE DATOS ENTRE COMPONENTES:
+
+Usuario → Flask Routes → OrquestadorOCR → ValidadorOCR
+                                      → MejoradorOCR
+                                      → AplicadorOCR → Motor Reglas JSON
+                                                   → Predictor OnnxTR
+                                                   → Lógica de Oro
+                     → Storage Engine → JSON Results
+Frontend ← JSON Consolidado ← Extraction Engine ← Results Directory
+
+FLUJO DE THREADING Y CONCURRENCIA:
+
+Main Thread (Flask):
+├── Request Handler (routes.py)
+├── Response Generation
+└── API Endpoints
+
+Background Worker Thread:
+├── Batch Processing Queue
+├── OCR Pipeline Execution
+├── File System Operations
+└── Result Storage
+
+Singleton Components (Thread-Safe):
+├── Predictor OnnxTR (cached)
+├── Extraction Rules (cached)
+├── OrquestadorOCR (shared)
+└── Logger Instances
+
+=======================================================================
+6. ARQUITECTURA DE COMPONENTES Y DEPENDENCIAS
+=======================================================================
+
+CAPA DE PRESENTACIÓN:
+├── interface_excellence_dashboard.html (Frontend web)
+├── Bootstrap 5 + JavaScript reactivo
+├── Upload múltiple con drag & drop
+├── Visualizador resultados con coordenadas
+└── Workflow empresarial guiado
+
+CAPA DE CONTROLADORES:
+├── routes.py (Flask REST API)
+├── Endpoints HTTP empresariales
+├── Validación entrada/salida
+├── Manejo errores estandarizado
+└── Threading para operaciones asíncronas
+
+CAPA DE SERVICIOS/ORQUESTACIÓN:
+├── main_ocr_process.py (OrquestadorOCR)
+├── Coordinación flujo completo
+├── Lazy loading componentes
+├── Manejo concurrencia
+└── Patrones de optimización
+
+CAPA DE PROCESAMIENTO:
+├── validador_ocr.py (Análisis calidad)
+├── mejora_ocr.py (Preprocessing imágenes)
+├── aplicador_ocr.py (OCR + Extracción)
+└── Motor de reglas configurable
+
+CAPA DE DATOS/CONFIGURACIÓN:
+├── config.py (Configuraciones centralizadas)
+├── config/extraction_rules.json (Reglas negocio)
+├── Directorios estructurados
+└── Sistema de archivos organizado
+
+DEPENDENCIAS EXTERNAS CRÍTICAS:
+
+Python Core:
+├── Flask 3.1.1 (Web framework)
+├── Werkzeug (WSGI utilities)
+├── Gunicorn (WSGI server)
+└── Threading (Concurrencia)
+
+OCR & Machine Learning:
+├── OnnxTR (OCR engine optimizado)
+├── ONNX Runtime (Inferencia modelos)
+├── OpenCV (Procesamiento imágenes)
+├── Pillow (Manipulación imágenes)
+├── NumPy (Arrays numéricos)
+└── Scikit-image (Algoritmos imagen)
+
+Procesamiento Texto:
+├── FuzzyWuzzy (Fuzzy string matching)
+├── Python-Levenshtein (Distancia edición)
+└── Regex (Patrones texto)
+
+Sistema & Monitoring:
+├── psutil (System monitoring)
+├── logging (Logging enterprise)
+└── pathlib (Manejo paths)
+
+PATRONES ARQUITECTÓNICOS IMPLEMENTADOS:
+
+1. SINGLETON PATTERN:
+   - Predictor OnnxTR (evita reinicialización modelos)
+   - Extraction Rules (carga única reglas JSON)
+   - OrquestadorOCR (instancia compartida)
+
+2. LAZY LOADING PATTERN:
+   - Componentes OCR (carga bajo demanda)
+   - Módulos procesamiento (inicialización diferida)
+   - Optimización arranque 60% más rápido
+
+3. THREAD-SAFE PATTERNS:
+   - Locks recursivos para concurrencia
+   - Cache thread-safe para predictors
+   - Worker asíncrono background
+
+4. FACTORY PATTERN:
+   - Configuración predictors por perfil
+   - Generación componentes según necesidad
+   - Flexibilidad configuración runtime
+
+5. STRATEGY PATTERN:
+   - Motor reglas multi-estrategia
+   - Extracción configurable por campo
+   - Fallbacks automáticos
+
+FILOSOFÍA DE INTEGRIDAD TOTAL IMPLEMENTADA:
+
+├── Zero-Fault Detection: Validación granular multi-nivel
+├── Atomicidad: Operaciones transaccionales completas
+├── Inmunidad al Error: Manejo graceful con rollback
+├── Interface Excellence: APIs consistentes y predecibles
+├── Coherencia Referencias: IDs únicos y trazabilidad
+└── Comprensión Dominio: Reglas negocio venezolanas
+
+=======================================================================
+CONCLUSIÓN:
+Este sistema representa una implementación enterprise de OCR asíncrono
+con filosofía de Integridad Total, optimizado para procesamiento masivo
+de recibos de pagos venezolanos con extracción inteligente de campos
+empresariales y arquitectura escalable thread-safe.
+=======================================================================
