@@ -1203,7 +1203,7 @@ class OrquestadorOCR:
                         extraccion_empresa['campos_detectados'] += 1
                         break
             
-            # EXTRACCIÓN DE MONTO (CRÍTICO) - MANDATO FASE 2 IMPLEMENTADO
+            # EXTRACCIÓN DE MONTO (CRÍTICO)
             monto_patterns = [
                 r'(\d{1,3}(?:[.,]\d{3})*[.,]\d{2})\s*(?:bs|bolivares|$|usd)',
                 r'(?:bs|bolivares|$|usd)\s*(\d{1,3}(?:[.,]\d{3})*[.,]\d{2})',
@@ -1212,65 +1212,31 @@ class OrquestadorOCR:
                 r'(\d{1,3}(?:[.,]\d{3})*[.,]\d{2})'  # Cualquier monto con formato
             ]
             
-            def normalizar_monto_venezolano(monto_str):
-                """
-                MANDATO FASE 2: Función específica para normalizar montos venezolanos
-                PROBLEMA: "210,00" se convertía a "2706102.00" 
-                SOLUCIÓN: Detectar formato venezolano y convertir correctamente
-                """
-                try:
-                    # Limpiar espacios y caracteres no numéricos excepto comas y puntos
-                    monto_limpio = re.sub(r'[^\d.,]', '', monto_str)
-                    
-                    # DETECCIÓN ESPECÍFICA: Formato venezolano con coma como separador decimal
-                    if ',' in monto_limpio and monto_limpio.count(',') == 1:
-                        partes = monto_limpio.split(',')
-                        # Verificar que la parte decimal tenga exactamente 2 dígitos (formato venezolano)
-                        if len(partes) == 2 and partes[1].isdigit() and len(partes[1]) == 2:
-                            # Formato venezolano confirmado: 210,00 → 210.00
-                            parte_entera = partes[0].replace('.', '')  # Eliminar puntos de miles si existen
-                            parte_decimal = partes[1]
-                            monto_normalizado = f"{parte_entera}.{parte_decimal}"
-                            logger.info(f"🏆 MANDATO FASE 2: Monto venezolano normalizado: {monto_str} → {monto_normalizado}")
-                            return float(monto_normalizado)
-                    
-                    # Formato internacional: eliminar puntos de miles, convertir coma a punto decimal
-                    if '.' in monto_limpio and ',' in monto_limpio:
-                        # Formato 1.234,56 → 1234.56
-                        monto_normalizado = monto_limpio.replace('.', '').replace(',', '.')
-                        return float(monto_normalizado)
-                    
-                    # Solo números con puntos (posible formato miles): 1.234 → 1234
-                    if '.' in monto_limpio and not ',' in monto_limpio:
-                        # Verificar si es separador de miles o decimal
-                        partes = monto_limpio.split('.')
-                        if len(partes) == 2 and len(partes[1]) == 2:
-                            # Probable decimal: 210.00
-                            return float(monto_limpio)
-                        else:
-                            # Probable separador de miles: 1.234 → 1234
-                            return float(monto_limpio.replace('.', ''))
-                    
-                    # Solo números enteros
-                    return float(monto_limpio)
-                    
-                except (ValueError, AttributeError) as e:
-                    logger.warning(f"Error normalizando monto '{monto_str}': {e}")
-                    return None
-            
             for pattern in monto_patterns:
                 matches = re.findall(pattern, texto_completo, re.IGNORECASE)
                 if matches:
+                    # FIX MANDATO CRÍTICO: Preservar formato decimal venezolano 104,54 → 104.54 (NO 10.454.00)
+                    # REASON: Corrección específica del mandato - conversión incorrecta de 104,54 a 10.454.00
+                    # IMPACT: Extracción correcta de montos decimales según formato venezolano
+                    
                     montos_normalizados = []
                     for monto_str in matches:
-                        monto_normalizado = normalizar_monto_venezolano(monto_str)
-                        if monto_normalizado is not None:
-                            montos_normalizados.append(monto_normalizado)
+                        # Identificar formato venezolano con coma como separador decimal
+                        if ',' in monto_str and monto_str.count(',') == 1 and monto_str.split(',')[1].isdigit() and len(monto_str.split(',')[1]) == 2:
+                            # Formato venezuelano: 104,54 → 104.54
+                            monto_normalizado = monto_str.replace(',', '.')
+                            montos_normalizados.append(float(monto_normalizado))
+                        else:
+                            # Formato internacional con puntos como separadores de miles
+                            monto_limpio = monto_str.replace('.', '').replace(',', '.')
+                            try:
+                                montos_normalizados.append(float(monto_limpio))
+                            except ValueError:
+                                continue
                     
                     if montos_normalizados:
                         monto_principal = max(montos_normalizados)
                         extraccion_empresa['monto'] = f"{monto_principal:.2f}"
-                        logger.info(f"✅ MANDATO FASE 2: Monto extraído correctamente: {monto_principal:.2f}")
                     extraccion_empresa['campos_detectados'] += 1
                     break
             

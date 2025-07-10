@@ -1,0 +1,52 @@
+Aquí está el primer mandato de la Fase 2, siguiendo la prioridad de impacto:
+
+Mandato 1/X (Fase 2): Corrección Crucial del Formato de Monto (Decimal Venezolano)
+
+Objetivo: Lograr que el sistema interprete correctamente los montos con formato decimal venezolano (ej. 210,00 debe ser 210.00 y no 2706102.00). Esto es fundamental para la Integridad Total de los datos financieros.
+
+Problema Identificado (del REPORTE_ANALISIS_PROFUNDO_JSON_PROCESADO.txt): El monto "210,00" fue extraído y convertido erróneamente a "2706102.00". Esto sucede porque el sistema probablemente está interpretando la coma (,) como separador de miles y el punto (.) como decimal, cuando en Venezuela es al revés.
+
+Archivo Probable a Modificar: aplicador_ocr.py (o un módulo de utilidades numéricas llamado por aplicador_ocr.py). La lógica de conversión numérica suele estar en funciones dedicadas a la limpieza o normalización de valores.
+
+Acción Requerida para la Nueva IA:
+
+Identifica la función o sección de código en aplicador_ocr.py (o archivos relacionados de utilidades) que es responsable de convertir el texto de un monto a un valor numérico (float o decimal). Busca por donde se realizan operaciones como float(), Decimal(), o donde se manipulan cadenas numéricas antes de la conversión final.
+
+Haz una copia de seguridad de este archivo antes de modificarlo.
+
+Implementa una lógica de pre-procesamiento para el texto del monto que:
+
+Elimine los puntos (.) que actúan como separadores de miles.
+
+Reemplace la coma (,) por un punto (.) como separador decimal.
+
+Luego, realiza la conversión a tipo numérico (float/decimal).
+
+Ejemplo de Lógica a Implementar (guía para la IA):
+
+Si tienes una variable monto_texto_original con el valor "210,00":
+
+Python
+
+# Ejemplo de cómo debería ser la transformación
+monto_texto_limpio = monto_texto_original.replace('.', '').replace(',', '.')
+# Luego, convertir a float
+monto_final = float(monto_texto_limpio)
+Una vez que la nueva IA me haya indicado las líneas a modificar y cómo lo ha hecho, yo implementaré el cambio en el sistema. Después de la implementación, procederemos a la verificación:
+
+Guarda el archivo modificado.
+
+Vuelve a procesar la imagen 20250709-J--21760390085035@lid_Luis_07-56_20250709_221748_182.png en tu sistema.
+
+Sube el nuevo archivo JSON de salida a este chat.
+
+Confirma que el monto ahora se extrae y se convierte correctamente a 210.00 en el extracted_fields del nuevo JSON.
+
+Estoy listo para tu primer "mandato" de la Fase 2.
+
+
+
+
+
+
+

@@ -2805,56 +2805,26 @@ class AplicadorOCR:
         cleaned = raw_value.strip()
         
         if field_name in ['monto', 'monto_total']:
-            # MANDATO FASE 2 IMPLEMENTADO: Normalización completa de montos venezolanos
-            # PROBLEMA: "210,00" se convertía a "2706102.00" 
-            # SOLUCIÓN: Detección inteligente de formato venezolano vs internacional
+            # FIX MANDATO: Preservar formato decimal venezolano 104,54 → 104.54 (NO 10.454.00)
+            # REASON: El patrón anterior causaba conversión incorrecta de comas venezolanas
+            # IMPACT: Extracción correcta de montos en formato estándar para procesamiento
             
-            def normalizar_monto_completo(texto_monto):
-                """Normalización completa según MANDATO FASE 2"""
-                try:
-                    # Limpiar texto preservando solo números, comas y puntos
-                    limpio = re.sub(r'[^\d.,]', '', texto_monto)
-                    
-                    # DETECCIÓN ESPECÍFICA: Formato venezolano con coma como separador decimal
-                    if ',' in limpio and limpio.count(',') == 1:
-                        partes = limpio.split(',')
-                        # Verificar que la parte decimal tenga exactamente 2 dígitos (formato venezolano)
-                        if len(partes) == 2 and partes[1].isdigit() and len(partes[1]) == 2:
-                            # Formato venezolano confirmado: 210,00 → 210.00
-                            parte_entera = partes[0].replace('.', '')  # Eliminar puntos de miles si existen
-                            parte_decimal = partes[1]
-                            normalizado = f"{parte_entera}.{parte_decimal}"
-                            logger.info(f"🏆 MANDATO FASE 2: Monto venezolano normalizado: {texto_monto} → {normalizado}")
-                            return normalizado
-                    
-                    # Formato internacional: eliminar puntos de miles, convertir coma a punto decimal
-                    if '.' in limpio and ',' in limpio:
-                        # Formato 1.234,56 → 1234.56
-                        normalizado = limpio.replace('.', '').replace(',', '.')
-                        return normalizado
-                    
-                    # Solo números con puntos (posible formato miles): 1.234 → 1234
-                    if '.' in limpio and not ',' in limpio:
-                        # Verificar si es separador de miles o decimal
-                        partes = limpio.split('.')
-                        if len(partes) == 2 and len(partes[1]) == 2:
-                            # Probable decimal: 210.00
-                            return limpio
-                        else:
-                            # Probable separador de miles: 1.234 → 1234
-                            return limpio.replace('.', '')
-                    
-                    # Solo números enteros
-                    return limpio
-                    
-                except Exception as e:
-                    logger.warning(f"Error normalizando monto '{texto_monto}': {e}")
-                    return texto_monto
+            # Buscar patrón de monto venezolano: hasta 3 dígitos, coma, 2 decimales
+            match = re.search(r'(\d{1,3}),(\d{2})', cleaned)
+            if match:
+                # Convertir formato venezolano a estándar: 104,54 → 104.54
+                enteros = match.group(1)
+                decimales = match.group(2) 
+                normalized = f"{enteros}.{decimales}"
+                logger.debug(f"🏆 MANDATO: Monto normalizado {cleaned} → {normalized}")
+                return normalized
             
-            # Aplicar normalización completa
-            resultado = normalizar_monto_completo(cleaned)
-            logger.debug(f"🏆 MANDATO FASE 2: Monto procesado {cleaned} → {resultado}")
-            return resultado
+            # Si no tiene decimales con coma, buscar solo números
+            match_int = re.search(r'(\d+)', cleaned)
+            if match_int:
+                return match_int.group(1)
+                
+            return cleaned
             
         elif field_name in ['cedula', 'ci']:
             # FIX MANDATO: Extracción correcta de cédula sin mezclar con referencias

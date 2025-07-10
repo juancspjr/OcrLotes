@@ -2557,56 +2557,10 @@ def _extract_onnxtr_enterprise_fields(palabras_detectadas, texto_completo):
                     campos_extraidos['banco_destino'] = banco_nombre
                     break
     
-    # MANDATO FASE 2 IMPLEMENTADO: EXTRACCIÓN Y NORMALIZACIÓN CRÍTICA DE MONTO VENEZOLANO
-    # PROBLEMA: "210,00" se convertía a "2706102.00" - SOLUCIÓN INTEGRAL
-    # IMPACTO: Normalización correcta de formato decimal venezolano
+    # FIX: EXTRACCIÓN INTELIGENTE DE MONTO VENEZOLANO - MANDATO REFINAMIENTO
+    # REASON: Buscar patrones específicos de montos con decimales venezolanos
+    # IMPACT: Extracción precisa de montos con formato Bs y decimales
     if not campos_extraidos['monto']:
-        def normalizar_monto_venezolano_routes(monto_str):
-            """
-            MANDATO FASE 2: Normalización específica para routes.py
-            PROBLEMA: "210,00" convertido a "2706102.00"
-            SOLUCIÓN: Detectar y normalizar formato venezolano correctamente
-            """
-            try:
-                # Limpiar espacios y caracteres no numéricos excepto comas y puntos
-                monto_limpio = re.sub(r'[^\d.,]', '', monto_str)
-                
-                # DETECCIÓN ESPECÍFICA: Formato venezolano con coma como separador decimal
-                if ',' in monto_limpio and monto_limpio.count(',') == 1:
-                    partes = monto_limpio.split(',')
-                    # Verificar que la parte decimal tenga exactamente 2 dígitos (formato venezolano)
-                    if len(partes) == 2 and partes[1].isdigit() and len(partes[1]) == 2:
-                        # Formato venezolano confirmado: 210,00 → 210.00
-                        parte_entera = partes[0].replace('.', '')  # Eliminar puntos de miles si existen
-                        parte_decimal = partes[1]
-                        monto_normalizado = f"{parte_entera}.{parte_decimal}"
-                        logger.info(f"🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: {monto_str} → {monto_normalizado}")
-                        return monto_normalizado
-                
-                # Formato internacional: eliminar puntos de miles, convertir coma a punto decimal
-                if '.' in monto_limpio and ',' in monto_limpio:
-                    # Formato 1.234,56 → 1234.56
-                    monto_normalizado = monto_limpio.replace('.', '').replace(',', '.')
-                    return monto_normalizado
-                
-                # Solo números con puntos (posible formato miles): 1.234 → 1234
-                if '.' in monto_limpio and not ',' in monto_limpio:
-                    # Verificar si es separador de miles o decimal
-                    partes = monto_limpio.split('.')
-                    if len(partes) == 2 and len(partes[1]) == 2:
-                        # Probable decimal: 210.00
-                        return monto_limpio
-                    else:
-                        # Probable separador de miles: 1.234 → 1234
-                        return monto_limpio.replace('.', '')
-                
-                # Solo números enteros
-                return monto_limpio
-                
-            except Exception as e:
-                logger.warning(f"Error normalizando monto en routes.py '{monto_str}': {e}")
-                return monto_str
-        
         monto_patterns = [
             r'(\d{1,3}(?:\.\d{3})*,\d{2})\s*Bs',     # 210,00 Bs
             r'Bs\.?\s*(\d{1,3}(?:\.\d{3})*,\d{2})',  # Bs 210,00
@@ -2619,10 +2573,7 @@ def _extract_onnxtr_enterprise_fields(palabras_detectadas, texto_completo):
                 monto_str = match.group(1)
                 # Validar que contiene números y formato válido
                 if re.search(r'\d+[,.]\d{2}', monto_str):
-                    # APLICAR NORMALIZACIÓN MANDATO FASE 2
-                    monto_normalizado = normalizar_monto_venezolano_routes(monto_str)
-                    campos_extraidos['monto'] = monto_normalizado
-                    logger.info(f"✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: {monto_normalizado}")
+                    campos_extraidos['monto'] = monto_str
                     break
     
     # FIX: EXTRACCIÓN CRÍTICA DE CÉDULA - MANDATO REFINAMIENTO
