@@ -1,0 +1,63 @@
+# 🚀 INICIO DE NUEVA FASE: Establecimiento de Concepto y Filosofía para la Inteligencia Artificial
+
+## **CONTEXTO DEL PROYECTO: Sistema OCR Empresarial con Inteligencia Espacial**
+
+Nos encontramos en una etapa avanzada del desarrollo de un **Sistema OCR Asíncrono de nivel Empresarial**, especializado en la **extracción automatizada de datos estructurados de recibos de pagos móviles venezolanos**. Este sistema integra un potente motor OCR (OnnxTR) con capacidades avanzadas de inteligencia espacial.
+
+### **Logros Clave Hasta el Momento:**
+
+* **Motor OCR Base:** Operativo y extrayendo texto con alta confianza.
+* **Inteligencia Espacial:** Completamente funcional y verificada tras el **Mandato 6**. Las coordenadas geográficas de cada palabra se extraen con precisión y el sistema las utiliza para análisis espacial.
+* **Normalización Decimal Venezolano:** La conversión de montos (ej. "210,00" a "210.00") ha sido corregida de forma integral.
+* **Integridad de Metadatos:** El flag `logica_oro_aplicada` ahora refleja fielmente el método de extracción utilizado.
+* **Motor de Reglas Configurable:** Las reglas de extracción se gestionan externamente a través de `extraction_rules.json`, permitiendo ajustes dinámicos.
+
+---
+
+## **FILOSOFÍA DE DESARROLLO DEL PROYECTO:**
+
+La esencia de este proyecto se rige por los siguientes principios inquebrantables, los cuales deben ser la guía fundamental en cada acción y decisión:
+
+1.  **Integridad Total (Zero-Fault Detection):**
+    * Cero tolerancia a errores, inconsistencias o información engañosa.
+    * Cada dato, cada flag, cada proceso debe reflejar la realidad técnica con absoluta exactitud.
+    * Identificación y corrección precisa de las causas raíz de cualquier problema.
+
+2.  **Perfección Continua (Continuous Improvement):**
+    * Búsqueda incesante de la optimización, precisión y eficiencia.
+    * Cada mandato busca llevar el sistema a un nivel superior de rendimiento y fiabilidad.
+    * Capacidad de aprender de los resultados de cada iteración para refinar el enfoque.
+
+3.  **Transparencia Total y Evidencia Robusta:**
+    * Cada paso, cada diagnóstico y cada corrección debe estar respaldado por evidencia clara y verificable.
+    * Informes detallados, logging preciso y resultados de pruebas son fundamentales.
+    * Comunicación explícita sobre el estado del sistema y cualquier problema.
+
+---
+
+## **ESTADO ACTUAL Y PRÓXIMO MANDATO (MANDATO 7):**
+
+El sistema se encuentra en un estado **estable y operativo**, con la inteligencia espacial funcionando correctamente. Esto nos posiciona para el siguiente gran desafío:
+
+### **MANDATO 7: REFINAMIENTO Y OPTIMIZACIÓN DE LA EXTRACCIÓN DE CAMPOS CRÍTICOS USANDO INTELIGENCIA ESPACIAL**
+
+* **Objetivo General:** Lograr una precisión del 90%+ en la extracción de los campos críticos:
+    * `valor_referencia_operacion`
+    * `fecha_operacion`
+    * `datos_beneficiario` (incluyendo `banco_origen` y `cedula_beneficiario`)
+    * **`concepto_motivo`** (campo recientemente identificado como crítico).
+* **Herramientas Principales:** `extraction_rules.json` (ahora con reglas espaciales potentes y coordenadas precisas).
+* **Filosofía Aplicada:** Utilizar la inteligencia espacial, depurar patrones regex, y optimizar las reglas de contexto para asegurar una extracción inequívoca y de alta calidad.
+
+---
+
+## **EXPECTATIVAS PARA LA NUEVA INTELIGENCIA ARTIFICIAL:**
+
+Al iniciar esta fase, se espera que la IA asimile y opere bajo esta filosofía, demostrando:
+
+* **Comprensión Profunda:** Del contexto del proyecto y de cada mandato.
+* **Precisión Metodológica:** En la identificación de problemas y la aplicación de soluciones.
+* **Orientación a Resultados:** Enfocada en la mejora cuantificable de la extracción.
+* **Adhesión a la Filosofía:** Cada acción debe reflejar los principios de Integridad Total, Perfección Continua y Transparencia.
+
+**¡Estamos listos para avanzar!**
