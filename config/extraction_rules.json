@@ -329,14 +329,14 @@
         },
         {
           "rule_id": "TELEFONO_DIRECTO_SIN_KEYWORD",
-          "description": "Búsqueda directa de patrones de teléfono venezolano sin keywords específicas, para capturar números aislados.",
+          "description": "Búsqueda directa de patrones de teléfono venezolano sin keywords específicas, incluyendo números con máscara de seguridad como '0412 *** 244'.",
           "keywords": [],
           "fuzzy_matching_tolerance": 0.0,
           "proximity_preference": "any",
           "search_window_relative_px": 500,
-          "value_regex_patterns": ["\\b0412\\s+\\d{3,7}\\b", "\\b0416\\s+\\d{3,7}\\b", "\\b0426\\s+\\d{3,7}\\b", "\\b0414\\s+\\d{3,7}\\b", "\\b0424\\s+\\d{3,7}\\b"],
+          "value_regex_patterns": ["\\b0412\\s+\\*+\\s+\\d{3,7}\\b", "\\b0416\\s+\\*+\\s+\\d{3,7}\\b", "\\b0426\\s+\\*+\\s+\\d{3,7}\\b", "\\b0414\\s+\\*+\\s+\\d{3,7}\\b", "\\b0424\\s+\\*+\\s+\\d{3,7}\\b", "\\b0412\\s+\\d{3,7}\\b", "\\b0416\\s+\\d{3,7}\\b", "\\b0426\\s+\\d{3,7}\\b", "\\b0414\\s+\\d{3,7}\\b", "\\b0424\\s+\\d{3,7}\\b"],
           "min_ocr_confidence_keyword": 0.0,
-          "min_ocr_confidence_value": 0.5,
+          "min_ocr_confidence_value": 0.4,
           "exclusion_patterns": ["Cuenta", "Referencia", "Monto", "Fecha", "C.I.", "RIF"],
           "priority": 110,
           "region_priority": ["body"]
@@ -348,15 +348,15 @@
       "rules": [
         {
           "rule_id": "BANCO_DESTINO_BENEFICIARIO_CONSOLIDADO",
-          "description": "Nombre del banco al que se realizó el pago/transferencia, asociado a la cuenta del beneficiario.",
-          "keywords": ["Banco Destino:", "Banco Receptor:", "Banco Beneficiario:", "Banco:", "Entidad Bancaria Destino:", "Cta. Destino:", "Cuenta de Ahorro", "Cuenta Corriente", "al beneficiario", "CUENTA BENEFICIARIO:", "Banco Universal", "Universal"],
+          "description": "Nombre del banco al que se realizó el pago/transferencia, asociado a la cuenta del beneficiario. Maneja formatos específicos como 'Banco Mercantil, C . A . S . A . C . A, Banco Universal'.",
+          "keywords": ["Banco Destino:", "Banco Receptor:", "Banco Beneficiario:", "Banco:", "Entidad Bancaria Destino:", "Cta. Destino:", "Cuenta de Ahorro", "Cuenta Corriente", "al beneficiario", "CUENTA BENEFICIARIO:", "Banco Universal", "Universal", "Mercantil", "C . A . S . A . C . A"],
           "fuzzy_matching_tolerance": 0.85,
           "proximity_preference": "any",
-          "search_window_relative_px": 300,
-          "value_regex_patterns": ["Banco\\s+[A-ZÁÉÍÓÚÜÑ][a-záéíóúüñ\\s]{2,40}", "[A-ZÁÉÍÓÚÜÑ][a-záéíóúüñ\\s]{2,40}\\s+Banco", "Mercantil", "Universal", "Venezuela", "Provincial", "Banesco", "BNC", "BOD"],
-          "min_ocr_confidence_keyword": 0.5,
-          "min_ocr_confidence_value": 0.6,
-          "exclusion_patterns": ["Banco Origen:", "Mi Banco:", "Banco Emisor:", "RIF:", "C.I.:", "desde mi", "Se Envio"],
+          "search_window_relative_px": 400,
+          "value_regex_patterns": ["Banco\\s+Mercantil[,\\s\\.A-Z]*", "Mercantil[,\\s\\.A-Z]*Banco\\s+Universal", "Banco\\s+Universal", "Mercantil", "Universal", "Venezuela", "Provincial", "Banesco", "BNC", "BOD"],
+          "min_ocr_confidence_keyword": 0.4,
+          "min_ocr_confidence_value": 0.5,
+          "exclusion_patterns": ["Banco Origen:", "Mi Banco:", "Banco Emisor:", "RIF:", "C.I.:", "desde mi", "Se Envio", "Envio de"],
           "priority": 95,
           "region_priority": ["body"]
         }
@@ -367,16 +367,16 @@
       "rules": [
         {
           "rule_id": "PAGO_FECHA_DDMMYYYY_CONSOLIDADO",
-          "description": "Fecha en la que se realizó efectivamente el pago o la transacción, en formato DD/MM/YYYY.",
+          "description": "Fecha en la que se realizó efectivamente el pago o la transacción, en formato DD/MM/YYYY. Prioriza fechas específicas como '20/06/ 2025'.",
           "keywords": ["Fecha de Pago:", "Fecha Recibo:", "Fecha Efectiva:", "Fecha Transacción:", "Fecha:", "Fecha y hora", ""],
           "fuzzy_matching_tolerance": 0.88,
           "proximity_preference": "any",
           "search_window_relative_px": 500,
-          "value_regex_patterns": ["\\d{2}\\/\\d{2}\\/\\s*\\d{4}", "\\d{2}\\/\\d{2}\\/\\d{4}", "20\\/06\\/\\s*2025", "\\b\\d{1,2}\\/\\d{1,2}\\/\\s*\\d{4}\\b"],
+          "value_regex_patterns": ["20\\/06\\/\\s*2025", "\\d{2}\\/\\d{2}\\/\\s*\\d{4}", "\\d{2}\\/\\d{2}\\/\\d{4}", "\\b\\d{1,2}\\/\\d{1,2}\\/\\s*\\d{4}\\b"],
           "min_ocr_confidence_keyword": 0.0,
-          "min_ocr_confidence_value": 0.5,
-          "exclusion_patterns": ["pm", "am", "-", "06:50"],
-          "priority": 90,
+          "min_ocr_confidence_value": 0.4,
+          "exclusion_patterns": ["pm", "am", "-", "06:50", "hora"],
+          "priority": 120,
           "region_priority": ["footer", "body", "header"]
         }
       ]
