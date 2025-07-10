@@ -1,0 +1,23 @@
+Paso 1: Completando la Filosofía de Desarrollo y Operación
+Ampliando la base que ya tenemos, nuestra filosofía de desarrollo y operación para el sistema OCR empresarial se guía por los siguientes principios inquebrantables:
+
+Integridad Total: Cada acción y modificación debe garantizar la coherencia, validez y completitud de todos los datos extraídos y la estructura del JSON de salida. La información no solo debe ser extraída, sino también correcta en su contexto.
+
+Perfección Continua: Buscamos la optimización constante, la mejora incremental de la precisión de extracción, la cobertura de campos y la robustez del sistema ante la variabilidad de los documentos.
+
+Zero-Fault Detection: Proactividad en la identificación, categorización y corrección granular de cualquier anomalía o error en el proceso de OCR o extracción, aspirando a una tasa de error casi nula.
+
+Atomicidad: Cada implementación o corrección debe ser un cambio autocontenido, enfocado en una funcionalidad específica, testeable de forma aislada y diseñado para no introducir efectos colaterales negativos en el resto del sistema.
+
+Inmunidad al Error: Desarrollar soluciones robustas capaces de manejar una amplia gama de casuísticas, excepciones y variaciones en la calidad o formato de los recibos, garantizando un rendimiento estable y predecible.
+
+Interface Excellence: Mantener la consistencia, claridad y previsibilidad en la estructura y el contenido de la salida de datos JSON, facilitando su consumo por sistemas downstream.
+
+Coherencia de Referencias: Asegurar la trazabilidad completa del procesamiento, desde la imagen de entrada hasta el campo extraído, con identificadores únicos y metadatos coherentes que permitan auditorías.
+
+Comprensión Profunda del Dominio (Venezolano): Adaptar las soluciones y algoritmos a las particularidades culturales, lingüísticas y de formato de los documentos de pago venezolanos, incluyendo terminología, estructuras numéricas y convenciones locales.
+
+Eficiencia Operacional: Optimizar el rendimiento del sistema en términos de velocidad, uso de recursos y escalabilidad, asegurando que el procesamiento masivo sea sostenible y rentable.
+
+Adaptabilidad Tecnológica: Diseñar el sistema para ser flexible y capaz de integrar nuevas tecnologías o modelos de OCR a medida que evolucionan, sin requerir reescrituras completas.
+
