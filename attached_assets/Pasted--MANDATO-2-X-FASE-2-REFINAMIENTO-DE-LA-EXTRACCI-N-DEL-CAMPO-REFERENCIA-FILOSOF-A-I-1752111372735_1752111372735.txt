@@ -1,0 +1,56 @@
+### **MANDATO 2/X (FASE 2): REFINAMIENTO DE LA EXTRACCIÓN DEL CAMPO `REFERENCIA`**
+
+**FILOSOFÍA:** INTEGRIDAD TOTAL | PERFECCIÓN CONTINUA | ZERO-FAULT DETECTION
+
+**OBJETIVO PRINCIPAL:** Asegurar la extracción **completa y precisa** del número de referencia de la operación, evitando cualquier truncamiento.
+
+**CONTEXTO DEL PROBLEMA:**
+En el `BATCH_20250709_221810_d3e_20250709-J--21760390085035@lid_Luis_07-56_20250709_221748_182.png.json` de ejemplo, el campo `referencia` fue extraído como `"rencia"`, en lugar del valor completo y esperado como `"48311146148"`. Esto indica que la regla actual no está capturando la extensión completa del número.
+
+**ARCHIVO A MODIFICAR:** `config/extraction_rules.json`
+
+**METODOLOGÍA DE IMPLEMENTACIÓN RIGUROSA:**
+* **Backup:** Siempre realiza una copia de seguridad del archivo antes de cualquier modificación.
+* **Implementación Atómica:** Aplica los cambios exactamente como se detallan en este mandato.
+* **Prueba Inmediata:** Procesa la imagen de prueba (`20250709-J--21760390085035@lid_Luis_07-56_20250709_221748_182.png`) inmediatamente después de la modificación.
+* **Confirmación Exhaustiva:** Verifica el nuevo JSON de salida para asegurar que el objetivo se ha cumplido y que no hay efectos adversos.
+* **Reporte:** Proporciona un reporte claro y conciso de los resultados.
+
+---
+
+**ACCIONES ESPECÍFICAS PARA LA REGLA `valor_referencia_operacion` (ID: `REF_TRANSFERENCIA_PAGO_MOVIL_CONSOLIDADO`):**
+
+1.  **PASO 1: LOCALIZAR LA REGLA**
+    * Abre el archivo `config/extraction_rules.json`.
+    * Busca el objeto dentro del array `extraction_rules` que tiene `field_name: "valor_referencia_operacion"`.
+    * Dentro de este objeto, busca la regla con `rule_id: "REF_TRANSFERENCIA_PAGO_MOVIL_CONSOLIDADO"`.
+
+2.  **PASO 2: MODIFICAR `search_window_relative_px`**
+    * Dentro de la regla `"REF_TRANSFERENCIA_PAGO_MOVIL_CONSOLIDADO"`, localiza el parámetro `"search_window_relative_px"`.
+    * **AUMENTA** su valor de `200` (valor actual) a `400`.
+    * **JUSTIFICACIÓN:** Un valor mayor permite que el sistema busque el número de referencia en un área más amplia alrededor de la palabra clave, lo que es crucial si la referencia no está inmediatamente adyacente o si el OCR la dispersa ligeramente.
+
+3.  **PASO 3: REFINAR `value_regex_patterns`**
+    * Dentro de la misma regla, localiza el array `"value_regex_patterns"`.
+    * Asegúrate de que el patrón actual (que es `^\\d{7,15}$`) sea lo suficientemente flexible. Para referencias con más dígitos, es necesario ampliar el rango máximo.
+    * **MODIFICA** el patrón regex de `^\\d{7,15}$` a `^\\d{7,20}$`.
+    * **JUSTIFICACIÓN:** Este cambio permite capturar números de referencia que consistan exclusivamente en dígitos y que tengan una longitud de entre 7 y 20 caracteres, lo que cubre posibles variaciones más largas en los recibos.
+
+4.  **PASO 4: REVISAR Y COMPLEMENTAR `keywords` (Verificación y Mejora Continua)**
+    * Dentro de la misma regla, localiza el array `"keywords"`.
+    * **VERIFICA** que la lista actual de palabras clave (`"No. de Operacion:"`, `"N° Operación:"`, `"Nro. Operación:"`, `"Referencia:"`, `"Ref.:"`, `"Comprobante Nro."`, `"Cód. Transferencia"`, `"Nro. Referencia"`, `"Referencia Interna"`, `"Número de Referencia"`, `"OPERACIÓN NRO:"`) es exhaustiva.
+    * **AÑADE CUALQUIER OTRA PALABRA CLAVE** que hayas observado en recibos reales que preceda al número de referencia y que no esté ya incluida. Esta acción refuerza la **Perfección Continua** al mejorar la capacidad de detección. (Si no encuentras nuevas, mantén las actuales).
+
+5.  **PASO 5: GUARDAR EL ARCHIVO**
+    * Guarda los cambios realizados en `config/extraction_rules.json`.
+
+6.  **PASO 6: PROCESAR IMAGEN DE PRUEBA Y GENERAR NUEVO JSON**
+    * Una vez guardado el archivo, **vuelve a procesar la imagen de prueba específica**: `20250709-J--21760390085035@lid_Luis_07-56_20250709_221748_182.png`.
+    * Obtén el nuevo archivo JSON de salida generado por el sistema.
+
+7.  **PASO 7: CONFIRMACIÓN Y REPORTE**
+    * Sube el nuevo archivo JSON de salida a este chat.
+    * **VERIFICA EXPLÍCITAMENTE** que el campo `extracted_fields.referencia` ahora contenga el valor **completo y correcto** (ej., `"48311146148"`).
+    * Reporta el resultado de esta validación.
+
+---

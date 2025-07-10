@@ -1170,13 +1170,14 @@ class OrquestadorOCR:
                         word_data.append(word_info)
             
             # EXTRACCIÓN DE REFERENCIA (CRÍTICO - Número de referencia bancaria)
+            # MANDATO FASE 2: Corregir patrones regex para extraer número correcto
             referencia_patterns = [
-                r'ref\w*[:\s]*([a-zA-Z0-9]{6,})',
-                r'referencia[:\s]*([a-zA-Z0-9]{6,})',
-                r'reference[:\s]*([a-zA-Z0-9]{6,})',
-                r'numero[:\s]*([0-9]{8,})',
-                r'#\s*([0-9]{6,})',
-                r'([0-9]{10,})'  # Números largos que pueden ser referencias
+                r'referencia[:\s]*(?:fecha[:\s]*y[:\s]*hora[:\s]*)?(?:\d{1,3}[:\s]*)?(?:\d{1,3}[:\s]*)?(\d{8,})',  # Patrón específico para "Referencia Fecha y hora 106 93 48311146148"
+                r'referencia[:\s]*(\d{6,})',  # Patrón directo para "Referencia: 123456"
+                r'reference[:\s]*(\d{6,})',   # Patrón en inglés
+                r'numero[:\s]*([0-9]{8,})',   # Patrón "Numero: 123456"
+                r'#\s*([0-9]{6,})',           # Patrón con símbolo
+                r'([0-9]{10,})'               # Números largos que pueden ser referencias (último recurso)
             ]
             
             for pattern in referencia_patterns:

@@ -12,12 +12,12 @@
       "rules": [
         {
           "rule_id": "REF_TRANSFERENCIA_PAGO_MOVIL_CONSOLIDADO",
-          "description": "Número de operación/referencia para transferencias o pagos móviles (7-20 dígitos), con varias palabras clave.",
+          "description": "Número de operación/referencia para transferencias o pagos móviles (7-15 dígitos), con varias palabras clave.",
           "keywords": ["No. de Operacion:", "N° Operación:", "Nro. Operación:", "Referencia:", "Ref.:", "Comprobante Nro.", "Cód. Transferencia", "Nro. Referencia", "Referencia Interna", "Número de Referencia", "OPERACIÓN NRO:"],
           "fuzzy_matching_tolerance": 0.88,
           "proximity_preference": "horizontal_right",
-          "search_window_relative_px": 400,
-          "value_regex_patterns": ["^\\d{7,20}$"],
+          "search_window_relative_px": 200,
+          "value_regex_patterns": ["^\\d{7,15}$"],
           "min_ocr_confidence_keyword": 0.75,
           "min_ocr_confidence_value": 0.8,
           "exclusion_patterns": ["Cuenta:", "Fecha:", "Hora:", "Monto:", "C.I.", "RIF"],

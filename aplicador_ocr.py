@@ -2021,7 +2021,10 @@ class AplicadorOCR:
             logger.debug(f"🔧 Iniciando extracción GRANULAR con {len(extraction_rules)} campos")
             
             # Procesar cada campo según sus reglas refinadas
-            for field_name, field_config in extraction_rules.items():
+            for field_config in extraction_rules:
+                field_name = field_config.get('field_name')
+                if not field_name:
+                    continue
                 extracted_value = self._extract_field_by_refined_rules(
                     field_name, field_config, word_data, full_text, global_settings, document_regions
                 )
@@ -2194,6 +2197,18 @@ class AplicadorOCR:
                     logger.debug(f"✅ {rule_id}: Valor extraído '{extracted_value}' cerca de keyword '{keyword_match['text']}'")
                     return extracted_value
             
+            # MANDATO CRÍTICO: Fallback de extracción por texto plano cuando coordenadas no están disponibles
+            # REASON: Coordenadas [0,0,0,0] en caché requieren fallback por texto completo
+            # IMPACT: Permite extracción correcta incluso con caché hit
+            if self._all_coordinates_are_zero(prioritized_words):
+                logger.debug(f"🔄 {rule_id}: FALLBACK a extracción por texto plano (coordenadas vacías)")
+                extracted_value = self._extract_value_from_text_fallback(
+                    full_text, keywords, value_patterns, exclusion_patterns
+                )
+                if extracted_value:
+                    logger.debug(f"✅ {rule_id}: Valor extraído con fallback texto plano: '{extracted_value}'")
+                    return extracted_value
+            
             logger.debug(f"❌ {rule_id}: No se encontraron valores válidos")
             return ""
             
@@ -2363,6 +2378,62 @@ class AplicadorOCR:
                 logger.debug(f"❌ Texto rechazado por exclusión '{pattern}': '{text}'")
                 return True
         return False
+    
+    def _all_coordinates_are_zero(self, word_data):
+        """Verifica si todas las coordenadas están en [0,0,0,0] (caché hit)"""
+        if not word_data:
+            return True
+        
+        for word in word_data:
+            coords = word.get('coordinates', [0, 0, 0, 0])
+            if coords != [0, 0, 0, 0]:
+                return False
+        
+        return True
+    
+    def _extract_value_from_text_fallback(self, full_text, keywords, value_patterns, exclusion_patterns):
+        """
+        MANDATO CRÍTICO: Extracción por texto plano cuando coordenadas no están disponibles
+        REASON: Fallback para casos de caché hit con coordenadas [0,0,0,0]
+        IMPACT: Permite extracción correcta del campo "referencia" incluso con caché
+        """
+        import re
+        
+        try:
+            # Buscar keywords en el texto completo
+            text_lower = full_text.lower()
+            
+            for keyword in keywords:
+                keyword_lower = keyword.lower()
+                
+                # Buscar keyword en texto
+                if keyword_lower in text_lower:
+                    # Encontrar posición de la keyword
+                    keyword_pos = text_lower.find(keyword_lower)
+                    
+                    # Extraer texto después de la keyword (ventana de búsqueda)
+                    text_after_keyword = full_text[keyword_pos + len(keyword):keyword_pos + len(keyword) + 200]
+                    
+                    # Aplicar patrones regex para extraer valor
+                    for pattern in value_patterns:
+                        try:
+                            matches = re.findall(pattern, text_after_keyword, re.IGNORECASE)
+                            if matches:
+                                extracted = matches[0] if isinstance(matches[0], str) else matches[0][0] if matches[0] else ""
+                                
+                                # Verificar exclusiones
+                                if not self._contains_exclusion_patterns(extracted, exclusion_patterns):
+                                    logger.debug(f"📝 FALLBACK: Valor extraído '{extracted}' con patrón '{pattern}' después de keyword '{keyword}'")
+                                    return extracted.strip()
+                        except Exception as e:
+                            logger.warning(f"⚠️ Error en regex pattern fallback '{pattern}': {e}")
+                            continue
+            
+            return ""
+            
+        except Exception as e:
+            logger.error(f"❌ Error en fallback de extracción por texto: {e}")
+            return ""
     
     def _extract_field_by_rules(self, field_name, field_config, word_data, full_text, global_settings):
         """
