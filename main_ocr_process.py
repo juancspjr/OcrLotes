@@ -948,6 +948,7 @@ class OrquestadorOCR:
                     'cedula': extraccion_posicional.get('datosbeneficiario', {}).get('cedula', ''),
                     'banco_destino': extraccion_posicional.get('datosbeneficiario', {}).get('banco_destino', ''),
                     'pago_fecha': extraccion_posicional.get('pago_fecha', ''),
+                    'fecha_operacion': extraccion_posicional.get('fecha_operacion', ''),
                     'concepto': extraccion_posicional.get('concepto', ''),
                     'texto_total_ocr': extraccion_posicional.get('texto_total_ocr', texto_extraido)
                 }
@@ -1357,6 +1358,27 @@ class OrquestadorOCR:
                 if matches:
                     extraccion_empresa['pago_fecha'] = matches[0]
                     extraccion_empresa['campos_detectados'] += 1
+                    break
+            
+            # EXTRACCIÓN DE FECHA DE OPERACIÓN - MANDATO 3 X FASE 2
+            # REASON: Implementar extracción específica para fecha_operacion con formato venezolano
+            # IMPACT: Campo fecha_operacion disponible en extracted_fields
+            fecha_operacion_patterns = [
+                r'(\d{2}/\d{2}/\s*\d{4})',  # Formato con espacios: 20/06/ 2025
+                r'(\d{2}/\d{2}/\d{4})',     # Formato estándar: 20/06/2025
+                r'(\d{2}-\d{2}-\d{4})',     # Formato con guiones: 20-06-2025
+                r'(\d{4}/\d{2}/\d{2})',     # Formato año primero: 2025/06/20
+                r'(\d{4}-\d{2}-\d{2})'      # Formato ISO: 2025-06-20
+            ]
+            
+            for pattern in fecha_operacion_patterns:
+                matches = re.findall(pattern, texto_completo, re.IGNORECASE)
+                if matches:
+                    # Tomar la primera fecha encontrada
+                    fecha_extraida = matches[0]
+                    extraccion_empresa['fecha_operacion'] = fecha_extraida
+                    extraccion_empresa['campos_detectados'] += 1
+                    logger.info(f"📅 MANDATO 3 X FASE 2: Fecha operación extraída: {fecha_extraida}")
                     break
             
             # MANDATO CRÍTICO #2: EXTRACCIÓN SEPARADA DE CONCEPTO Y TEXTO_TOTAL_OCR

@@ -104,33 +104,17 @@
       "field_name": "fecha_operacion",
       "rules": [
         {
-          "rule_id": "FECHA_DDMMYYYY_CONSOLIDADO",
-          "description": "Fecha de la operación en formato DD/MM/YYYY con palabras clave comunes.",
-          "keywords": [
-            "Fecha:",
-            "Fech :",
-            "Fec:",
-            "Date:",
-            "Fecha de Operación:",
-            "Fecha de Emisión:",
-            "Fecha y hora",
-            "Operación:",
-            "Emitido:"
-          ],
-          "fuzzy_matching_tolerance": 0.85,
+          "rule_id": "FECHA_DDMMYYYY_SL_OR_HYP_PAGO_CONSOLIDADO",
+          "description": "Fecha de la transacción en formatos comunes (DD/MM/YYYY o DD-MM-YYYY), con varias palabras clave.",
+          "keywords": ["Fecha:", "Fch.:", "Date:", "Emitido:", "Operación:", "Fecha y hora", "Fecha de Operación:"],
+          "fuzzy_matching_tolerance": 0.90,
           "proximity_preference": "horizontal_right",
-          "search_window_relative_px": 200,
-          "value_regex_patterns": [
-            "\\d{2}/\\d{2}/\\s*\\d{4}",
-            "\\d{2}/\\d{2}/\\d{4}",
-            "\\d{2}-\\d{2}-\\d{4}",
-            "\\d{4}/\\d{2}/\\d{2}",
-            "\\d{4}-\\d{2}-\\d{2}"
-          ],
-          "min_ocr_confidence_keyword": 0.75,
-          "min_ocr_confidence_value": 0.8,
-          "exclusion_patterns": ["Monto:", "Referencia:", "Hora:"],
-          "priority": 110,
+          "search_window_relative_px": 150,
+          "value_regex_patterns": ["^\\d{2}[\\/\\-]\\d{2}[\\/\\-]\\d{4}$"],
+          "min_ocr_confidence_keyword": 0.8,
+          "min_ocr_confidence_value": 0.85,
+          "exclusion_patterns": [],
+          "priority": 100,
           "region_priority": ["header", "body"]
         }
       ]
