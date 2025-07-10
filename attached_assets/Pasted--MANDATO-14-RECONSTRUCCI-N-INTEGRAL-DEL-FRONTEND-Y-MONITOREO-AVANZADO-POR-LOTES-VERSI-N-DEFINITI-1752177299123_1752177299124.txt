@@ -1,0 +1,220 @@
+🚀 MANDATO 14: RECONSTRUCCIÓN INTEGRAL DEL FRONTEND Y MONITOREO AVANZADO POR LOTES (VERSIÓN DEFINITIVA Y AJUSTADA)
+FILOSOFÍA FUNDAMENTAL INQUEBRANTABLE (Pilares de la Excelencia y la Sostenibilidad):
+INTEGRIDAD TOTAL (Reconstrucción Impecable): El frontend será diseñado y construido desde cero con una atención meticulosa a la integridad de su código, su funcionalidad y su interacción con el backend. Cero tolerancia a la deuda técnica y a los errores de integración. Cada interacción será verificada contra el REPORTE_ESPECIFICACION_INTERFAZ_BACKEND_FRONTEND_V2_COMPLETO.md y sus nuevas clarificaciones.
+
+PERFECCIÓN CONTINUA (Diseño Proactivo y Observabilidad de Lotes): Implementación de las funcionalidades de monitoreo avanzadas desde el día uno, ofreciendo una visibilidad sin precedentes del rendimiento del sistema por lote. La interfaz será fluida, reactiva y visualmente excelente, capaz de presentar datos individuales y agrupados de forma coherente.
+
+TRANSPARENCIA TOTAL (Documentación Exhaustiva): Cada paso, cada función, cada interacción y cada dato del nuevo frontend será documentado de forma inquebrantable. El REPORTE_ESPECIFICACION_INTERFAZ_BACKEND_FRONTEND_V2_COMPLETO.md (y sus extensiones lógicas) es la biblia de la integración.
+
+OPTIMIZACIÓN SOSTENIBLE (Recursos Mínimos, Rendimiento Máximo): El nuevo frontend será concebido bajo principios de eficiencia, utilizando solo los recursos necesarios para lograr la máxima reactividad y velocidad, sin comprometer la experiencia del usuario. Se priorizará Vanilla JS/Alpine.js para una huella mínima.
+
+OBJETIVO PRINCIPAL DEL MANDATO 14:
+Diseñar y construir un nuevo frontend para el Sistema OCR Empresarial desde cero, con una especificación funcional precisa y detallada, una integración infalible con el backend existente (según REPORTE_ESPECIFICACION_INTERFAZ_BACKEND_FRONTEND_V2_COMPLETO.md y la clarificación de "salida grupal"), y un sistema de monitoreo avanzado de recursos por lote con visualización gráfica en tiempo real que refleje la consolidación de resultados por batch.
+
+FASE 1: PLANIFICACIÓN Y DISEÑO DE LA RECONSTRUCCIÓN DEL FRONTEND
+OBJETIVO DE LA FASE 1:
+Elaborar la arquitectura de software del nuevo frontend, definir sus componentes y flujos de usuario con granularidad, y seleccionar las herramientas técnicas que aseguren una "Interface Excellence Soberana" con mínima huella de recursos, garantizando la correcta gestión y visualización de resultados individuales y agrupados por lote.
+
+SUB-OBJETIVOS Y ESTRATEGIAS (Meticulosidad en el Diseño):
+Diseño de la Arquitectura del Frontend (Lightweight & Modular):
+
+1.1. Estructura de Archivos: Definir una estructura clara y modular para los archivos JavaScript, CSS y HTML que minimice las dependencias y facilite el mantenimiento.
+
+1.2. Patrones de Diseño: Emplear patrones de diseño JavaScript (ej. módulos, publicación/suscripción) para asegurar la cohesión y el desacoplamiento.
+
+1.3. Selección de Tecnología Frontend (Confirmada): Se utilizará Vanilla JavaScript puro y HTML/CSS (con Bootstrap 5 para el layout y Font Awesome para íconos) para la reactividad y la interfaz, integrándose con Jinja2 para el renderizado inicial de la plantilla. Esta elección garantiza la máxima optimización y el uso mínimo de recursos, alineándose con nuestra filosofía.
+
+Especificación Funcional Detallada del Frontend (Cada Interacción del Usuario):
+
+2.1. Pantalla de Carga y Gestión de Archivos (/, /dashboard):
+
+2.1.1. Entrada de Archivos:
+
+Implementación de área de arrastrar/soltar (drag-and-drop) de archivos intuitiva.
+
+Botón explícito "SELECCIONAR ARCHIVOS" (id="fileInput") con funcionalidad click que abre el explorador de archivos.
+
+Soporte para selección de múltiples archivos (imágenes JPG/PNG).
+
+2.1.2. Lista de Archivos en Cola:
+
+Una tabla o lista visual (id="fileListDisplay") que muestre cada archivo añadido.
+
+Para cada archivo: Nombre, tamaño, y un indicador de estado visual claro (ej. "Pendiente", "Subiendo...", "Procesando...", "Completado", "Error").
+
+Botón "ELIMINAR" junto a cada archivo para removerlo de la cola antes del procesamiento.
+
+2.1.3. Botón de Procesamiento:
+
+Botón "PROCESAR LOTE" (id="processBatchBtn") visible y claramente distinguible.
+
+Debe estar deshabilitado (disabled) si no hay archivos en la cola.
+
+Debe mostrar un spinner o un estado "Procesando..." una vez activado, hasta que el lote se complete.
+
+2.1.4. Interacción con Backend (según reporte REPORTE_ESPECIFICACION_INTERFAZ_BACKEND_FRONTEND_V2_COMPLETO.md):
+
+Upload de Archivos: Implementar la llamada POST /api/ocr/process_batch utilizando multipart/form-data, asegurando que el request_id se genere y se haga seguimiento. Cada archivo debe ir en el campo files[].
+
+Manejo de Respuestas de Carga: Procesar las respuestas JSON de process_batch para actualizar el estado visual de cada archivo en la lista.
+
+2.2. Dashboard de Monitoreo de Lotes y Resultados:
+
+2.2.1. Panel de Control General:
+
+Indicador de estado de la cola del backend (GET /api/ocr/queue/status).
+
+Contador de lotes procesados, archivos en cola, etc.
+
+2.2.2. Visualización de Resultados Procesados y Agrupación por Lote (SALIDA GRUPAL UNIFICADA):
+
+Una tabla paginada (id="resultsTable") para mostrar los recibos procesados.
+
+Capacidad de Agrupación: La tabla debe permitir la visualización y agrupación de resultados por lote, utilizando el request_id (o batch_id) proporcionado por el backend. Esto permitirá ver la "salida grupal unificada" de cada lote.
+
+Columnas críticas (field_names del reporte backend): valor_referencia_operacion, fecha_operacion, monto_total, nombre_banco_emisor, file_id, original_filename, etc.
+
+Badge de Confianza: Para cada entrada, una columna dedicada a confidence_avg.
+
+Visualización con colores intuitivos: Verde (alta confianza, ej. > 0.90), Amarillo (confianza media, ej. 0.70-0.90), Rojo (baja confianza, ej. < 0.70).
+
+Clases CSS específicas (badge-confidence-high, badge-confidence-medium, badge-confidence-low).
+
+Botón "VER DETALLE" (id="viewDetailsBtn") para cada fila, que cargue la previsualización detallada.
+
+Interacción con Backend: Utilizar GET /api/extract_results para obtener la lista consolidada.
+
+REQUERIMIENTO EXPLÍCITO AL BACKEND: Para permitir la agrupación por lote, el endpoint GET /api/extract_results DEBE incluir el request_id (o batch_id) asociado a cada archivo procesado en su respuesta JSON. Si el REPORTE_ESPECIFICACION_INTERFAZ_BACKEND_FRONTEND_V2_COMPLETO.md no lo especifica actualmente en esa respuesta, se asume como una extensión lógica requerida para la funcionalidad de "salida grupal".
+
+2.3. Previsualización Detallada de Recibo (id="fileDetailsModal"):
+
+2.3.1. Carga de Imagen: Mostrar la imagen original del recibo.
+
+2.3.2. Visualización de Campos Extraídos:
+
+Lista clara de los field_names y sus valor_extraido.
+
+Visualización Espacial (si factible): Si la tecnología lo permite y el backend proporciona coordenadas, intentar superponer las cajas de texto extraídas con sus valores y confianzas sobre la imagen del recibo.
+
+Campo confidence_avg: Mostrarlo prominentemente para el recibo individual.
+
+2.3.3. Funcionalidad de Copia: Botón "COPIAR NOMBRE DE ARCHIVO" (id="copyFilenamePreviewBtn") y botones individuales para copiar valores extraídos específicos al portapapeles.
+
+2.3.4. Interacción con Backend: Utilizar GET /api/ocr/result_data/<filename> para obtener los datos específicos de un archivo.
+
+Implementación del Monitoreo Avanzado de Recursos por Lote (PULSO DE INFORMACIÓN - Nivel de Detalle por Lote):
+
+3.1. Recopilación de Métricas por Lote (Backend - Requiere Ajuste/Confirmación):
+
+ACCIÓN IA: Asumir que el backend, tras el procesamiento de cada lote, enviará un evento o publicará métricas a un endpoint específico (GET /api/metrics/batch o similar).
+
+MÉTRICAS ESENCIALES POR LOTE (JSON):
+
+batch_id: Identificador único del lote.
+
+timestamp_processed: Marca de tiempo de finalización del lote.
+
+num_images_processed: Cantidad de imágenes en el lote.
+
+cpu_usage_avg_percent: Uso promedio de CPU (0-100%).
+
+memory_usage_avg_mb: Uso promedio de memoria (MB).
+
+gpu_usage_avg_percent: Uso promedio de GPU (0-100%, si la infraestructura lo soporta y se habilita).
+
+batch_processing_time_sec: Tiempo total de procesamiento del lote (segundos).
+
+num_errors_in_batch: Errores reportados en el lote.
+
+3.2. Visualización de "Pulso de Información" (Gráficos Dinámicos):
+
+ACCIÓN IA: Crear un área en el dashboard dedicada a los gráficos de monitoreo.
+
+Componente Gráfico (ej. Chart.js o similar, como opción ligera): Un gráfico que muestre múltiples series de datos (cpu_usage, memory_usage, gpu_usage, batch_processing_time).
+
+Eje X: Representará los batch_id (o un contador secuencial de lotes) para mostrar el "pulso" por lote.
+
+Eje Y: Representará los valores de las métricas.
+
+Interactividad: Al pasar el cursor sobre un punto del gráfico, se deben mostrar los detalles exactos del lote (todas las métricas).
+
+Actualización en Tiempo Real: El gráfico y las métricas se actualizarán dinámicamente a medida que el backend finalice el procesamiento de cada nuevo lote.
+
+3.3. Log Detallado del Proceso por Lote:
+
+Un panel de texto en el frontend (id="batchLog") que registre eventos significativos de cada lote: "Lote X iniciado", "Lote X completado en Y segundos", "Uso CPU: Z%", "Errores en lote X: N".
+
+FASE 2: CONSTRUCCIÓN Y VALIDACIÓN DEL NUEVO FRONTEND
+OBJETIVO DE LA FASE 2:
+Implementar el frontend según el diseño y las especificaciones de la Fase 1, realizando pruebas exhaustivas para garantizar su funcionalidad, estabilidad y el cumplimiento de los principios de Integridad Total y Optimización Sostenible, asegurando la correcta representación de la "salida grupal" y el monitoreo por lotes.
+
+SUB-OBJETIVOS Y ESTRATEGIAS (Ejecución Impecable):
+Desarrollo del Frontend (Codificación de Calidad Suprema):
+
+1.1. HTML/Jinja2: Reconstrucción de templates/interface_excellence_dashboard.html siguiendo la nueva estructura y los componentes definidos. Inclusión de los enlaces a los nuevos archivos JS/CSS.
+
+1.2. CSS: Implementación de los estilos visuales para la "Interface Excellence Soberana", incluyendo los badges de confianza y el layout adaptativo (responsive design).
+
+1.3. JavaScript: Codificación modular de las funcionalidades del frontend, incluyendo la gestión de archivos, interacción con la API, actualización de la UI, y la lógica de los gráficos de monitoreo.
+
+Se crearán archivos JS separados y optimizados (ej. file-manager.js, api-client.js, results-viewer.js, monitoring-dashboard.js, main.js).
+
+Cada archivo JS será auto-contenido y responsable de su dominio.
+
+Integración con el Backend (Conectividad Perfecta y Data Unificada):
+
+2.1. Implementación de llamadas API: Codificar las llamadas fetch o XMLHttpRequest a los endpoints del backend (/api/ocr/process_batch, /api/extract_results, etc.) siguiendo rigurosamente los "Contratos de Petición y Respuesta" definidos en el REPORTE_ESPECIFICACION_INTERFAZ_BACKEND_FRONTEND_V2_COMPLETO.md y la nueva necesidad del request_id en extract_results para la "salida grupal".
+
+2.2. Manejo de Errores y Estados: Implementar lógica robusta para manejar respuestas de error del backend (4xx, 5xx), mostrando mensajes de usuario claros y útiles, y gestionando los estados de carga y procesamiento.
+
+Pruebas Exhaustivas y Validación (Cero Errores Conocidos):
+
+3.1. Pruebas Funcionales:
+
+Carga de archivos individuales y por lotes (con y sin metadatos de WhatsApp).
+
+Procesamiento exitoso y fallido de lotes.
+
+Visualización correcta de resultados en el dashboard y en la previsualización detallada.
+
+Verificación de Agrupación por Lotes: Confirmar que la "salida grupal" se muestra y se puede navegar correctamente en el dashboard.
+
+Correcta aplicación de los "badges de confianza" y sus colores.
+
+Funcionalidad de copia al portapapeles.
+
+3.2. Pruebas de Monitoreo:
+
+Verificar que el "Pulso de Información" (gráficos y log) se actualiza correctamente con cada lote procesado.
+
+Validar que las métricas (CPU, Memoria, GPU, etc.) se muestran de forma precisa y coherente con la actividad del backend.
+
+3.3. Pruebas de Compatibilidad:
+
+Verificar la funcionalidad en los navegadores web principales (Chrome, Firefox, Edge).
+
+Asegurar la adaptabilidad (responsive design) en diferentes tamaños de pantalla.
+
+RESULTADOS ESPERADOS DEL MANDATO 14:
+templates/interface_excellence_dashboard.html: El nuevo y optimizado archivo de plantilla HTML.
+
+static/js/ (Nuevos Archivos JS):
+
+main.js: Lógica de inicialización y coordinación.
+
+file-manager.js: Lógica para la carga y gestión de archivos.
+
+api-client.js: Cliente robusto para todas las interacciones con el backend API.
+
+results-viewer.js: Lógica para mostrar y filtrar los resultados, incluyendo la gestión de la agrupación por lote.
+
+monitoring-dashboard.js: Lógica para los gráficos y el log de monitoreo de rendimiento por lote.
+
+(Posibles otros JS para utilidades o componentes específicos).
+
+static/css/ (Nuevos Archivos CSS):
+
+style.css (o similar): Estilos personalizados para la "Interface Excellence Soberana".
+
+REPORTE_FINAL_FRONTEND_V2.md: Un informe detallado que documente el proceso de reconstrucción, la estructura del código, los resultados de las pruebas, y la confirmación de la implementación de todas las funcionalidades, incluyendo el monitoreo avanzado y la correcta representación de la "salida grupal" unificada.
+
