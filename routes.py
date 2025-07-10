@@ -2931,5 +2931,272 @@ def validate_api_key(api_key):
             
     return None
 
+# ====================================================================================================
+# MANDATO 15 - SISTEMA DE GENERACIÓN DE API KEYS
+# FILOSOFÍA: INTEGRIDAD TOTAL + TRANSPARENCIA TOTAL + SEGURIDAD EMPRESARIAL
+# ====================================================================================================
+
+import secrets
+import hashlib
+import psycopg2
+from urllib.parse import urlparse
+
+def get_db_connection():
+    """Obtener conexión a PostgreSQL para API Keys"""
+    try:
+        database_url = os.environ.get('DATABASE_URL')
+        if not database_url:
+            logger.error("DATABASE_URL no encontrada en variables de entorno")
+            return None
+            
+        result = urlparse(database_url)
+        conn = psycopg2.connect(
+            database=result.path[1:],
+            user=result.username,
+            password=result.password,
+            host=result.hostname,
+            port=result.port
+        )
+        return conn
+    except Exception as e:
+        logger.error(f"Error conectando a PostgreSQL: {e}")
+        return None
+
+def generate_secure_api_key():
+    """Generar API Key segura de 64 caracteres"""
+    # Generar 32 bytes aleatorios seguros
+    random_bytes = secrets.token_bytes(32)
+    # Convertir a hexadecimal para API key legible
+    api_key = random_bytes.hex()
+    
+    # Generar key_id único más corto para identificación
+    key_id = f"ocr_{secrets.token_hex(8)}"
+    
+    return key_id, api_key
+
+@app.route('/api/generate_api_key', methods=['POST'])
+def generate_api_key():
+    """
+    ENDPOINT: POST /api/generate_api_key
+    PROPÓSITO: Generar nueva API Key única y segura para el sistema OCR
+    FILOSOFÍA: INTEGRIDAD TOTAL + SEGURIDAD EMPRESARIAL
+    """
+    try:
+        logger.info("🔑 Iniciando generación de nueva API Key")
+        
+        # Obtener datos del request
+        data = request.get_json() or {}
+        api_key_name = data.get('name', f'API Key {datetime.now().strftime("%Y%m%d_%H%M%S")}')
+        
+        # Generar API Key segura
+        key_id, api_key = generate_secure_api_key()
+        
+        # Conectar a base de datos
+        conn = get_db_connection()
+        if not conn:
+            return jsonify({
+                'status': 'error',
+                'mensaje': 'Error conectando a base de datos',
+                'error_code': 'DATABASE_CONNECTION_ERROR'
+            }), 500
+        
+        try:
+            cursor = conn.cursor()
+            
+            # Insertar nueva API Key en base de datos
+            insert_query = """
+                INSERT INTO api_keys (key_id, api_key, name, is_active, created_at, usage_count)
+                VALUES (%s, %s, %s, %s, %s, %s)
+                RETURNING id
+            """
+            cursor.execute(insert_query, (
+                key_id,
+                api_key,
+                api_key_name,
+                True,
+                datetime.now(),
+                0
+            ))
+            
+            new_id = cursor.fetchone()[0]
+            conn.commit()
+            
+            logger.info(f"✅ API Key generada exitosamente: {key_id}")
+            
+            # Respuesta exitosa
+            response = {
+                'status': 'success',
+                'mensaje': 'API Key generada exitosamente',
+                'data': {
+                    'key_id': key_id,
+                    'api_key': api_key,
+                    'name': api_key_name,
+                    'created_at': datetime.now().isoformat(),
+                    'is_active': True
+                }
+            }
+            
+            return jsonify(response), 201
+            
+        except psycopg2.Error as db_error:
+            conn.rollback()
+            logger.error(f"Error de base de datos: {db_error}")
+            return jsonify({
+                'status': 'error',
+                'mensaje': 'Error almacenando API Key en base de datos',
+                'error_code': 'DATABASE_INSERT_ERROR'
+            }), 500
+            
+        finally:
+            cursor.close()
+            conn.close()
+            
+    except Exception as e:
+        logger.error(f"Error generando API Key: {e}")
+        return jsonify({
+            'status': 'error',
+            'mensaje': f'Error interno generando API Key: {str(e)}',
+            'error_code': 'INTERNAL_SERVER_ERROR'
+        }), 500
+
+@app.route('/api/list_api_keys', methods=['GET'])
+def list_api_keys():
+    """
+    ENDPOINT: GET /api/list_api_keys
+    PROPÓSITO: Listar todas las API Keys activas (sin exponer las keys completas)
+    FILOSOFÍA: TRANSPARENCIA TOTAL + SEGURIDAD
+    """
+    try:
+        conn = get_db_connection()
+        if not conn:
+            return jsonify({
+                'status': 'error',
+                'mensaje': 'Error conectando a base de datos'
+            }), 500
+        
+        try:
+            cursor = conn.cursor()
+            
+            # Consultar API Keys (sin exponer las keys completas)
+            query = """
+                SELECT key_id, name, is_active, created_at, last_used, usage_count
+                FROM api_keys
+                ORDER BY created_at DESC
+            """
+            cursor.execute(query)
+            
+            rows = cursor.fetchall()
+            api_keys = []
+            
+            for row in rows:
+                api_keys.append({
+                    'key_id': row[0],
+                    'name': row[1],
+                    'is_active': row[2],
+                    'created_at': row[3].isoformat() if row[3] else None,
+                    'last_used': row[4].isoformat() if row[4] else None,
+                    'usage_count': row[5] or 0,
+                    'api_key_preview': f"{row[0][:12]}...{row[0][-4:]}" if row[0] else "N/A"
+                })
+            
+            return jsonify({
+                'status': 'success',
+                'mensaje': f'Lista de {len(api_keys)} API Keys',
+                'data': {
+                    'api_keys': api_keys,
+                    'total_count': len(api_keys),
+                    'active_count': sum(1 for key in api_keys if key['is_active'])
+                }
+            })
+            
+        finally:
+            cursor.close()
+            conn.close()
+            
+    except Exception as e:
+        logger.error(f"Error listando API Keys: {e}")
+        return jsonify({
+            'status': 'error',
+            'mensaje': f'Error interno: {str(e)}'
+        }), 500
+
+@app.route('/api/validate_api_key', methods=['POST'])
+def validate_api_key_endpoint():
+    """
+    ENDPOINT: POST /api/validate_api_key
+    PROPÓSITO: Validar una API Key específica
+    FILOSOFÍA: SEGURIDAD EMPRESARIAL
+    """
+    try:
+        data = request.get_json() or {}
+        api_key = data.get('api_key', '')
+        
+        if not api_key:
+            return jsonify({
+                'status': 'error',
+                'mensaje': 'API Key requerida',
+                'valid': False
+            }), 400
+        
+        conn = get_db_connection()
+        if not conn:
+            return jsonify({
+                'status': 'error',
+                'mensaje': 'Error conectando a base de datos',
+                'valid': False
+            }), 500
+        
+        try:
+            cursor = conn.cursor()
+            
+            # Buscar y validar API Key
+            query = """
+                SELECT key_id, name, is_active, created_at, usage_count
+                FROM api_keys
+                WHERE api_key = %s AND is_active = true
+            """
+            cursor.execute(query, (api_key,))
+            row = cursor.fetchone()
+            
+            if row:
+                # Actualizar último uso y contador
+                update_query = """
+                    UPDATE api_keys 
+                    SET last_used = %s, usage_count = usage_count + 1
+                    WHERE api_key = %s
+                """
+                cursor.execute(update_query, (datetime.now(), api_key))
+                conn.commit()
+                
+                return jsonify({
+                    'status': 'success',
+                    'mensaje': 'API Key válida',
+                    'valid': True,
+                    'data': {
+                        'key_id': row[0],
+                        'name': row[1],
+                        'created_at': row[3].isoformat() if row[3] else None,
+                        'usage_count': row[4] + 1
+                    }
+                })
+            else:
+                return jsonify({
+                    'status': 'error',
+                    'mensaje': 'API Key inválida o inactiva',
+                    'valid': False
+                }), 401
+                
+        finally:
+            cursor.close()
+            conn.close()
+            
+    except Exception as e:
+        logger.error(f"Error validando API Key: {e}")
+        return jsonify({
+            'status': 'error',
+            'mensaje': f'Error interno: {str(e)}',
+            'valid': False
+        }), 500
+
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)

@@ -101,9 +101,12 @@
                         </div>
                         
                         <!-- Botones de Acción -->
-                        <div class="mt-3 d-flex gap-2">
+                        <div class="mt-3 d-flex gap-2 flex-wrap">
                             <button type="button" id="selectFilesBtn" class="btn btn-ocr-primary">
                                 <i class="fas fa-folder-open me-2"></i>Seleccionar Archivos
+                            </button>
+                            <button type="button" id="generateBatchParamsBtn" class="btn btn-outline-primary">
+                                <i class="fas fa-magic me-2"></i>Generar Parámetros Aleatorios
                             </button>
                             <button type="button" id="processBatchBtn" class="btn btn-success" disabled>
                                 <i class="fas fa-cog me-2"></i>Procesar Lote
@@ -114,16 +117,30 @@
                         </div>
                     </div>
 
-                    <!-- LISTA DE ARCHIVOS EN COLA -->
+                    <!-- LISTA DE ARCHIVOS EN COLA CON PARÁMETROS INDIVIDUALES -->
                     <div class="ocr-card">
-                        <div class="ocr-card-header">
-                            <h6 class="ocr-card-title">
+                        <div class="ocr-card-header d-flex justify-content-between align-items-center">
+                            <h6 class="ocr-card-title mb-0">
                                 <i class="fas fa-list me-2"></i>
                                 Cola de Procesamiento
+                                <span id="fileCountBadge" class="badge bg-primary ms-2">0</span>
                             </h6>
+                            <div class="btn-group btn-group-sm">
+                                <button type="button" id="expandAllBtn" class="btn btn-outline-secondary">
+                                    <i class="fas fa-expand-arrows-alt"></i> Expandir Todo
+                                </button>
+                                <button type="button" id="collapseAllBtn" class="btn btn-outline-secondary">
+                                    <i class="fas fa-compress-arrows-alt"></i> Colapsar Todo
+                                </button>
+                            </div>
                         </div>
-                        <div id="fileListDisplay">
+                        <div id="fileListDisplay" class="file-list-container">
                             <!-- El contenido se genera dinámicamente por file-manager.js -->
+                            <div class="empty-queue-message text-center p-4 text-muted" id="emptyQueueMessage">
+                                <i class="fas fa-inbox fa-3x mb-3"></i>
+                                <h6>Cola vacía</h6>
+                                <p>Arrastra archivos aquí o usa el botón "Seleccionar Archivos" para comenzar</p>
+                            </div>
                         </div>
                     </div>
                 </div>

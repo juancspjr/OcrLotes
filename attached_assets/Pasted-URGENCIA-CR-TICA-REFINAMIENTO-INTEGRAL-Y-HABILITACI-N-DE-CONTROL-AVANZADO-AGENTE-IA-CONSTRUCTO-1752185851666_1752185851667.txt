@@ -1,0 +1,171 @@
+URGENCIA: CRÍTICA - REFINAMIENTO INTEGRAL Y HABILITACIÓN DE CONTROL AVANZADO
+
+AGENTE IA - CONSTRUCTOR EJECUTOR:
+
+MANDATO DE EJECUCIÓN UNIFICADO:
+
+Debes proceder inmediatamente con la ejecución del siguiente plan maestro, priorizando el ajuste de backend como un pre-requisito ineludible para la FASE 3 del MANDATO 15.
+
+FILOSOFÍA FUNDAMENTAL INQUEBRANTABLE (Pilares de la Excelencia y la Sostenibilidad - Regla de Vida o Muerte):
+INTEGRIDAD TOTAL: Cada componente, interacción y dato debe ser impecable, sin deuda técnica. La integración backend-frontend debe ser perfecta.
+
+PERFECCIÓN CONTINUA: La interfaz debe ser fluida, reactiva, intuitiva y las funcionalidades de control y monitoreo avanzadas deben operar con precisión milimétrica.
+
+TRANSPARENCIA TOTAL: Cada paso, función, interacción y dato será documentado de forma inquebrantable, y la documentación API será accesible directamente en el frontend.
+
+OPTIMIZACIÓN SOSTENIBLE: Prioriza el rendimiento máximo con recursos mínimos, usando Vanilla JS/Alpine.js, HTML/CSS (Bootstrap 5, Font Awesome) para una huella ligera y eficiente.
+
+OBJETIVO GLOBAL DE LA EJECUCIÓN:
+Implementar la re-arquitectura completa del frontend para la gestión de parámetros por imagen individual, la optimización avanzada de la visualización de resultados por lote (incluyendo historial y limpieza controlada), y la integración de una sección de documentación de API interactiva en el frontend que incluye la generación de API Keys (una vez el backend lo soporte).
+
+SECCIÓN 1: ACCIÓN PRIORITARIA DE BACKEND - PREREQUISITO CRÍTICO
+MANDATO DE AJUSTE DE BACKEND: ENDPOINT DE GENERACIÓN DE API KEY
+OBJETIVO DE ESTA SECCIÓN (CRÍTICO Y PRIORITARIO):
+Añadir un endpoint en el backend que permita generar y gestionar una API Key. Esta acción debe ser completada antes de implementar la funcionalidad de "crear API Key" en el frontend (FASE 3 del MANDATO 15).
+
+ACCIONES REQUERIDAS (Nivel Backend):
+
+Creación de Endpoint:
+
+Implementar un nuevo endpoint: POST /api/generate_api_key.
+
+Propósito: Generar una nueva API Key única y segura.
+
+Autenticación (Opcional pero Recomendado): Para esta fase, puede ser una autenticación simple si no hay un sistema de usuarios avanzado, o un token de administrador preexistente.
+
+Respuesta: El endpoint debe devolver la API Key generada en formato JSON (ej. {"api_key": "tu_nueva_api_key_generada"}).
+
+Persistencia: La API Key generada debe ser almacenada de forma persistente y segura en la base de datos del backend, asociada a un estado activo por defecto.
+
+Actualización del REPORTE_ESPECIFICACION_INTERFAZ_BACKEND_FRONTEND_V2_COMPLETO.md:
+
+Añadir la especificación completa del nuevo endpoint (POST /api/generate_api_key), incluyendo su propósito, método HTTP, parámetros (si los hay), y contrato de respuesta.
+
+RESULTADO ESPERADO DE ESTA SECCIÓN:
+El backend expone un endpoint funcional para generar API Keys, y su documentación está actualizada.
+
+SECCIÓN 2: MANDATO 15 - REFINAMIENTO DE CONTROL OPERACIONAL Y GESTIÓN AVANZADA DE RESULTADOS (FRONTEND)
+(Esta sección comenzará su ejecución una vez confirmada la finalización de la "ACCIÓN PRIORITARIA DE BACKEND")
+
+OBJETIVO PRINCIPAL DE ESTA SECCIÓN:
+Refinar la interfaz de usuario para permitir la asignación y gestión de parámetros esenciales por imagen individual dentro de un lote, implementar herramientas de auto-generación, optimizar la visualización de resultados por lote (con historial y limpieza controlada), y añadir una sección de documentación de API integrada en el frontend.
+
+FASE 1: RE-ARQUITECTURA DE ENTRADA Y CONTROL POR IMAGEN
+OBJETIVO DE LA FASE 1:
+Modificar la interfaz de carga de archivos y la lógica de file-manager.js para permitir la entrada y gestión de parámetros esenciales (codigo_sorteo, id_whatsapp, nombre_usuario, caption, hora_exacta) por cada imagen individual en el lote, incluyendo una herramienta de generación asistida.
+
+SUB-OBJETIVOS Y ESTRATEGIAS (Control Granular):
+
+Modificación de la Interfaz de Carga de Archivos (interface_excellence_dashboard.html, static/css/, static/js/modules/file-manager.js):
+
+1.1. Estructura de Tabla de Archivos Mejorada:
+
+La tabla o lista de archivos en cola (id="fileListDisplay") debe ser reestructurada para incluir columnas editables o pop-ups/modales por fila para cada uno de los parámetros esenciales: codigo_sorteo, id_whatsapp, nombre_usuario, caption, hora_exacta (con un selector de hora intuitivo o campo de texto con validación de formato HH:MM).
+
+Cada fila (representando una imagen) debe tener la capacidad de ver/editar sus propios parámetros esenciales.
+
+1.2. Herramienta de Generación Asistida (Botón "Generar Parámetros Aleatorios/Grupal"):
+
+Añadir un botón prominente (id="generateBatchParamsBtn") en la sección de carga de archivos.
+
+Funcionalidad: Al hacer clic, este botón permitirá al usuario aplicar un conjunto de parámetros comunes a todas las imágenes actualmente cargadas en la cola, o generar valores aleatorios para campos como codigo_sorteo, id_whatsapp, etc., y aplicar una hora_exacta basada en el momento actual para todas. Un modal o un formulario simple puede aparecer al hacer clic, pidiendo un codigo_sorteo base, id_whatsapp base, etc., y luego aplicando estos valores a todas las filas, o generando valores únicos/secuenciales para cada imagen. Esto evitará la entrada manual uno a uno y facilitará las pruebas.
+
+1.3. Ajuste de file-manager.js para Parámetros Individuales:
+
+Modificar la estructura de datos que file-manager.js mantiene para cada archivo cargado, de modo que cada objeto de archivo incluya sus propios parámetros esenciales.
+
+Ajustar la lógica que prepara la carga de lotes (processBatch en api-client.js y la función que lo llama en file-manager.js) para que cada archivo en el multipart/form-data (o en un payload JSON combinado) vaya acompañado de sus parámetros esenciales específicos.
+
+CRÍTICO - INTERACCIÓN BACKEND: Se asume que el endpoint POST /api/ocr/process_batch en el backend puede y debe ser modificado (si aún no lo está) para recibir un payload donde cada archivo en el array files[] esté asociado con un diccionario de sus metadatos (codigo_sorteo, id_whatsapp, nombre_usuario, caption, hora_exacta). Si esto no es directamente posible con multipart/form-data, se explorará un método alternativo (ej. un JSON de metadatos independiente enviado junto con el files[], referenciado por orden de archivo). La implementación priorizará la mínima alteración del backend si el contrato actual puede soportarlo.
+
+FASE 2: REFINAMIENTO DE VISUALIZACIÓN Y GESTIÓN DE RESULTADOS
+OBJETIVO DE LA FASE 2:
+Optimizar la sección de resultados para mostrar un control más claro de los lotes procesados, permitir la gestión del historial y ofrecer una limpieza selectiva o por estado.
+
+SUB-OBJETIVOS Y ESTRATEGIAS (Claridad y Control):
+
+Visualización Prioritaria del Lote Activo (results-viewer.js):
+
+Al cargar el dashboard, la sección de resultados (id="resultsTable") debe priorizar la visualización de los resultados del último lote procesado.
+
+Debe haber un selector o una forma clara de navegar entre los diferentes request_id (lotes) previamente procesados.
+
+Cada fila en la tabla de resultados (resultsTable) debe mostrar claramente los parámetros esenciales (codigo_sorteo, id_whatsapp, etc.) asociados a esa imagen individual.
+
+Gestión de Historial/Estado de Resultados (results-viewer.js, main.js):
+
+2.1. Opciones de Filtrado/Estado:
+
+Implementar filtros en el dashboard de resultados para mostrar: Solo el lote actual/más reciente; Todos los lotes procesados; Resultados con errores; Resultados de lotes específicos (seleccionando por request_id).
+
+2.2. Funcionalidad "Eliminar/Limpiar por Lote" o "Archivar":
+
+Además del botón general de LIMPIAR RESULTADOS PROCESADOS, implementar una opción para eliminar o marcar como "archivado" los resultados de un lote específico (usando el request_id). Esto invocará el endpoint POST /api/clean con parámetros específicos, o una extensión del mismo.
+
+El botón LIMPIAR RESULTADOS PROCESADOS global puede ser renombrado a "LIMPIAR TODO EL HISTORIAL" y se enfocará en la limpieza total o por criterios definidos por el backend (ej. resultados con más de 24 horas).
+
+FASE 3: SECCIÓN DE DOCUMENTACIÓN Y PRUEBAS FINALES
+OBJETIVO DE LA FASE 3:
+Añadir una sección de documentación interactiva en el frontend y realizar pruebas exhaustivas para validar todas las nuevas funcionalidades.
+
+SUB-OBJETIVOS Y ESTRATEGIAS (Transparencia y Robustez):
+
+Sección de Documentación de API en el Frontend (interface_excellence_dashboard.html, nuevo módulo JS/CSS):
+
+1.1. Pestaña/Modal de Documentación: Crear una nueva pestaña, sección expandible o modal (id="apiDocsSection") en el frontend principal.
+
+1.2. Contenido de la Documentación:
+
+API Key del Sistema: Mostrar de forma destacada la API Key que el sistema está utilizando actualmente (si es una constante en el frontend o se carga de un archivo de configuración).
+
+Botón "Generar Nueva API Key": Este botón invocará el nuevo endpoint de backend POST /api/generate_api_key (implementado en la SECCIÓN 1 de este mandato unificado). Al hacer clic, generará una nueva API Key y la mostrará al usuario, junto con un mensaje de éxito.
+
+Ejemplos de Llamadas API: Proporcionar ejemplos claros y concisos de llamadas HTTP POST (ej. en formato curl o Python requests) para: POST /api/ocr/process_batch (con la nueva estructura de parámetros esenciales por imagen); GET /api/extract_results (para obtener la salida grupal); GET /api/ocr/result_data/<filename> (para resultados individuales); POST /api/clean (con ejemplos de limpieza total y por lote, si es implementado).
+
+Formato de Respuesta: Breves ejemplos de los JSON de respuesta esperados.
+
+1.3. Funcionalidad de Copia: Botones "Copiar" junto a cada ejemplo de código o API Key.
+
+Pruebas Exhaustivas y Validación Final (REPORTE_FINAL_FRONTEND_V2.md):
+
+2.1. Pruebas de Carga y Parámetros: Verificar la correcta entrada y envío de parámetros esenciales por imagen individual. Probar la funcionalidad "Generar Parámetros Aleatorios/Grupal" para la auto-población.
+
+2.2. Pruebas de Visualización de Resultados: Validar la visualización prioritaria del último lote. Probar la navegación entre lotes y los filtros de estado. Confirmar la correcta visualización de los parámetros esenciales por imagen en los resultados.
+
+2.3. Pruebas de Gestión de Resultados: Verificar la funcionalidad del botón "LIMPIAR RESULTADOS PROCESADOS" (total/por lote).
+
+2.4. Pruebas de Documentación: Asegurar que la sección de documentación carga correctamente y muestra la información esperada. Probar la funcionalidad de copia de ejemplos de API.
+
+RESULTADOS ESPERADOS FINALES DEL MANDATO UNIFICADO:
+Backend:
+
+Endpoint POST /api/generate_api_key funcional y documentado en REPORTE_ESPECIFICACION_INTERFAZ_BACKEND_FRONTEND_V2_COMPLETO.md.
+
+Frontend (templates/interface_excellence_dashboard.html):
+
+Actualizado con la nueva UI para parámetros por imagen, botón de generación asistida, y la sección de documentación con botón para generar API Key.
+
+Archivos JavaScript (static/js/modules/):
+
+file-manager.js: Actualizado para manejar parámetros esenciales por imagen.
+
+api-client.js: Ajustado para enviar el nuevo payload de lote con metadatos por imagen y para interactuar con POST /api/generate_api_key.
+
+results-viewer.js: Actualizado para la visualización de resultados por lote (actual vs. historial) y la muestra de parámetros individuales.
+
+main.js: Coordinación de todas las nuevas funcionalidades y eventos.
+
+api-docs.js (o similar): Nuevo módulo para la lógica de la sección de documentación.
+
+Archivos CSS (static/css/):
+
+Ajustes para la nueva interfaz y la sección de documentación.
+
+Reportes:
+
+Actualización del REPORTE_ESPECIFICACION_INTERFAZ_BACKEND_FRONTEND_V2_COMPLETO.md: Completamente actualizado con la especificación del nuevo endpoint de API Key.
+
+REPORTE_FINAL_FRONTEND_V2.md: Un informe exhaustivo que consolide y documente todos los cambios del MANDATO 14 (incluyendo las correcciones previas) y este MANDATO 15, confirmando la implementación de todas las funcionalidades, la lógica de parámetros por imagen, la gestión de resultados y la sección de documentación.
+
+COMIENZA LA EJECUCIÓN INMEDIATA Y SECUENCIAL DE ESTE MANDATO UNIFICADO AHORA.
+

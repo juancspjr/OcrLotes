@@ -148,6 +148,109 @@ Paradigma: INTEGRIDAD TOTAL + PERFECCIÓN CONTINUA + ZERO-FAULT DETECTION
 - **URL exacta**: `/api/ocr/result/{request_id}`
 - **Métodos HTTP**: `GET`
 - **Propósito**: Obtener resultado individual por request_id
+
+---
+
+### 1.3. ENDPOINTS DE GESTIÓN DE API KEYS (MANDATO 15 - NUEVO)
+
+#### **1.3.1. POST /api/generate_api_key**
+- **URL exacta**: `/api/generate_api_key`
+- **Métodos HTTP**: `POST`
+- **Propósito**: Generar nueva API Key única y segura para el sistema OCR
+- **Filosofía**: INTEGRIDAD TOTAL + SEGURIDAD EMPRESARIAL
+
+**CONTRATO DE PETICIÓN (REQUEST CONTRACT)**:
+```json
+{
+  "name": "API Key para Sistema XYZ"
+}
+```
+
+**CONTRATO DE RESPUESTA (RESPONSE CONTRACT)**:
+```json
+{
+  "status": "success",
+  "mensaje": "API Key generada exitosamente",
+  "data": {
+    "key_id": "ocr_a1b2c3d4e5f6789",
+    "api_key": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+    "name": "API Key para Sistema XYZ",
+    "created_at": "2025-07-10T22:19:34.123456",
+    "is_active": true
+  }
+}
+```
+
+**Códigos de Estado HTTP**:
+- `201`: API Key creada exitosamente
+- `500`: Error interno del servidor
+
+#### **1.3.2. GET /api/list_api_keys**
+- **URL exacta**: `/api/list_api_keys`
+- **Métodos HTTP**: `GET`
+- **Propósito**: Listar todas las API Keys activas (sin exponer las keys completas)
+- **Filosofía**: TRANSPARENCIA TOTAL + SEGURIDAD
+
+**CONTRATO DE RESPUESTA (RESPONSE CONTRACT)**:
+```json
+{
+  "status": "success",
+  "mensaje": "Lista de 3 API Keys",
+  "data": {
+    "api_keys": [
+      {
+        "key_id": "ocr_a1b2c3d4",
+        "name": "API Key para Sistema XYZ",
+        "is_active": true,
+        "created_at": "2025-07-10T22:19:34.123456",
+        "last_used": "2025-07-10T22:25:00.123456",
+        "usage_count": 15,
+        "api_key_preview": "ocr_a1b2c3d4...789a"
+      }
+    ],
+    "total_count": 3,
+    "active_count": 2
+  }
+}
+```
+
+**Códigos de Estado HTTP**:
+- `200`: Lista obtenida exitosamente
+- `500`: Error interno del servidor
+
+#### **1.3.3. POST /api/validate_api_key**
+- **URL exacta**: `/api/validate_api_key`
+- **Métodos HTTP**: `POST`
+- **Propósito**: Validar una API Key específica
+- **Filosofía**: SEGURIDAD EMPRESARIAL
+
+**CONTRATO DE PETICIÓN (REQUEST CONTRACT)**:
+```json
+{
+  "api_key": "1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+}
+```
+
+**CONTRATO DE RESPUESTA (RESPONSE CONTRACT)**:
+```json
+{
+  "status": "success",
+  "mensaje": "API Key válida",
+  "valid": true,
+  "data": {
+    "key_id": "ocr_a1b2c3d4",
+    "name": "API Key para Sistema XYZ",
+    "created_at": "2025-07-10T22:19:34.123456",
+    "usage_count": 16
+  }
+}
+```
+
+**Códigos de Estado HTTP**:
+- `200`: API Key válida
+- `401`: API Key inválida o inactiva
+- `400`: API Key no proporcionada
+- `500`: Error interno del servidor
 - **Parámetros de URL**:
   - `request_id`: (string, requerido) - ID del request específico
 
