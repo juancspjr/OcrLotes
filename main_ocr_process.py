@@ -1188,21 +1188,45 @@ class OrquestadorOCR:
                     extraccion_empresa['campos_detectados'] += 1
                     break
             
-            # EXTRACCIÓN DE BANCO ORIGEN
+            # PRIORIDAD 3: EXTRACCIÓN REFINADA DE BANCO ORIGEN (EVITAR SOBRE-EXTRACCIÓN)
+            # MANDATO 4/X FASE 2: Extraer solo el nombre del banco sin texto adicional
             bancos_conocidos = [
-                'mercantil', 'venezuela', 'banesco', 'provincial', 'exterior',
-                'bicentenario', 'tesoro', 'plaza', 'caroni', 'fondo común',
-                'activo', 'banplus', 'sofitasa', '100%banco', 'banco'
+                ('mercantil', 'BANCO MERCANTIL'),
+                ('banesco', 'BANCO BANESCO'),
+                ('venezuela', 'BANCO DE VENEZUELA'),
+                ('provincial', 'BANCO PROVINCIAL'),
+                ('exterior', 'BANCO EXTERIOR'),
+                ('bicentenario', 'BANCO BICENTENARIO'),
+                ('tesoro', 'BANCO DEL TESORO'),
+                ('plaza', 'BANCO PLAZA'),
+                ('caroni', 'BANCO CARONI'),
+                ('activo', 'BANCO ACTIVO'),
+                ('banplus', 'BANCO BANPLUS'),
+                ('sofitasa', 'BANCO SOFITASA'),
+                ('100%banco', '100% BANCO')
             ]
             
-            for banco in bancos_conocidos:
-                if banco.lower() in texto_completo.lower():
-                    # Buscar contexto alrededor del banco
-                    banco_pattern = rf'({banco}[\w\s]*)'
-                    matches = re.findall(banco_pattern, texto_completo, re.IGNORECASE)
-                    if matches:
-                        extraccion_empresa['bancoorigen'] = matches[0].strip()
-                        extraccion_empresa['campos_detectados'] += 1
+            for banco_busqueda, banco_nombre in bancos_conocidos:
+                if banco_busqueda.lower() in texto_completo.lower():
+                    # PATRÓN REFINADO: Solo extraer nombre del banco (máximo 30 caracteres)
+                    banco_patterns = [
+                        rf'((?:banco\s+)?{banco_busqueda}(?:\s+[\w\s]{{0,20}})?)',
+                        rf'({banco_busqueda})',
+                        rf'({banco_nombre})'
+                    ]
+                    
+                    for pattern in banco_patterns:
+                        matches = re.findall(pattern, texto_completo, re.IGNORECASE)
+                        if matches:
+                            banco_extraido = matches[0].strip()
+                            # VALIDAR: No debe contener texto operacional
+                            exclusiones = ['envio', 'operacion', 'realizada', 'desde', 'cuenta', 'se']
+                            if not any(excl in banco_extraido.lower() for excl in exclusiones):
+                                extraccion_empresa['bancoorigen'] = banco_nombre
+                                extraccion_empresa['campos_detectados'] += 1
+                                logger.info(f"🏦 MANDATO 4/X FASE 2: Banco origen extraído: {banco_extraido} → {banco_nombre}")
+                                break
+                    if extraccion_empresa['bancoorigen']:
                         break
             
             # EXTRACCIÓN DE MONTO (CRÍTICO) - MANDATO FASE 2 IMPLEMENTADO
@@ -1216,35 +1240,49 @@ class OrquestadorOCR:
             
             def normalizar_monto_venezolano(monto_str):
                 """
-                MANDATO FASE 2: Función específica para normalizar montos venezolanos
+                MANDATO 4/X FASE 2: CORRECCIÓN CRÍTICA de normalización de montos venezolanos
                 PROBLEMA: "210,00" se convertía a "2706102.00" 
-                SOLUCIÓN: Detectar formato venezolano y convertir correctamente
+                SOLUCIÓN: Lógica revisada para detectar formato venezolano correctamente
                 """
                 try:
                     # Limpiar espacios y caracteres no numéricos excepto comas y puntos
                     monto_limpio = re.sub(r'[^\d.,]', '', monto_str)
                     
-                    # DETECCIÓN ESPECÍFICA: Formato venezolano con coma como separador decimal
+                    # PRIORIDAD CRÍTICA 1: DETECCIÓN ESPECÍFICA del formato venezolano X,XX
                     if ',' in monto_limpio and monto_limpio.count(',') == 1:
                         partes = monto_limpio.split(',')
                         # Verificar que la parte decimal tenga exactamente 2 dígitos (formato venezolano)
                         if len(partes) == 2 and partes[1].isdigit() and len(partes[1]) == 2:
-                            # Formato venezolano confirmado: 210,00 → 210.00
+                            # FORMATO VENEZOLANO CONFIRMADO: 210,00 → 210.00
                             parte_entera = partes[0].replace('.', '')  # Eliminar puntos de miles si existen
                             parte_decimal = partes[1]
                             monto_normalizado = f"{parte_entera}.{parte_decimal}"
-                            logger.info(f"🏆 MANDATO FASE 2: Monto venezolano normalizado: {monto_str} → {monto_normalizado}")
+                            logger.info(f"🏆 MANDATO 4/X FASE 2: Monto venezolano normalizado: {monto_str} → {monto_normalizado}")
                             return float(monto_normalizado)
                     
-                    # Formato internacional: eliminar puntos de miles, convertir coma a punto decimal
+                    # FORMATO INTERNACIONAL: 1.234,56 → 1234.56
                     if '.' in monto_limpio and ',' in monto_limpio:
-                        # Formato 1.234,56 → 1234.56
-                        monto_normalizado = monto_limpio.replace('.', '').replace(',', '.')
-                        return float(monto_normalizado)
+                        # Verificar que es formato internacional (punto miles + coma decimal)
+                        partes = monto_limpio.split(',')
+                        if len(partes) == 2 and len(partes[1]) == 2:
+                            # Formato 1.234,56 → 1234.56
+                            monto_normalizado = monto_limpio.replace('.', '').replace(',', '.')
+                            logger.info(f"🏆 MANDATO 4/X FASE 2: Monto internacional normalizado: {monto_str} → {monto_normalizado}")
+                            return float(monto_normalizado)
                     
-                    # Solo números con puntos (posible formato miles): 1.234 → 1234
+                    # FORMATO AMERICANO: 1,234.56 → 1234.56
+                    if '.' in monto_limpio and ',' in monto_limpio:
+                        # Verificar si es formato americano (coma miles + punto decimal)
+                        punto_pos = monto_limpio.rfind('.')
+                        coma_pos = monto_limpio.rfind(',')
+                        if punto_pos > coma_pos:
+                            # Formato americano: eliminar comas de miles
+                            monto_normalizado = monto_limpio.replace(',', '')
+                            logger.info(f"🏆 MANDATO 4/X FASE 2: Monto americano normalizado: {monto_str} → {monto_normalizado}")
+                            return float(monto_normalizado)
+                    
+                    # Solo números con puntos (verificar si es decimal o separador de miles)
                     if '.' in monto_limpio and not ',' in monto_limpio:
-                        # Verificar si es separador de miles o decimal
                         partes = monto_limpio.split('.')
                         if len(partes) == 2 and len(partes[1]) == 2:
                             # Probable decimal: 210.00
@@ -1257,7 +1295,7 @@ class OrquestadorOCR:
                     return float(monto_limpio)
                     
                 except (ValueError, AttributeError) as e:
-                    logger.warning(f"Error normalizando monto '{monto_str}': {e}")
+                    logger.warning(f"❌ MANDATO 4/X FASE 2: Error normalizando monto '{monto_str}': {e}")
                     return None
             
             for pattern in monto_patterns:
@@ -1270,26 +1308,37 @@ class OrquestadorOCR:
                             montos_normalizados.append(monto_normalizado)
                     
                     if montos_normalizados:
-                        monto_principal = max(montos_normalizados)
+                        # MANDATO 4/X FASE 2: PRIORIDAD CRÍTICA 1 - Usar monto normalizado correcto
+                        monto_principal = min(montos_normalizados)  # Usar el menor para evitar errores de conversión
                         extraccion_empresa['monto'] = f"{monto_principal:.2f}"
-                        logger.info(f"✅ MANDATO FASE 2: Monto extraído correctamente: {monto_principal:.2f}")
+                        logger.info(f"✅ MANDATO 4/X FASE 2: Monto extraído correctamente: {monto_principal:.2f}")
                     extraccion_empresa['campos_detectados'] += 1
                     break
             
-            # EXTRACCIÓN DE DATOS BENEFICIARIO
-            # Cédula
+            # PRIORIDAD CRÍTICA 2: RESOLVER CONFUSIÓN CEDULA vs. REFERENCIA
+            # MANDATO 4/X FASE 2: Extracción precisa de cédula con desambiguación
             cedula_patterns = [
-                r'(?:cedula|ci|v-|e-)[:\s]*([0-9]{7,10})',
-                r'([vVeE]-?[0-9]{7,10})',
-                r'([0-9]{7,10})'  # Números que pueden ser cédulas
+                r'(?:cedula|ci|identificacion)[:\s]*([vVeE]-?\d{1,2}\.?\d{3}\.?\d{3})',  # Con keyword específica
+                r'([vVeE]-\d{1,2}\.?\d{3}\.?\d{3})',  # Formato V-XX.XXX.XXX
+                r'([vVeE]\s*-?\s*\d{1,2}\.?\d{3}\.?\d{3})',  # Con espacios
+                r'([vVeE]\s*\d{1,2}\.?\d{3}\.?\d{3})',  # Sin guión
+                r'(V\s*-?\s*\d{1,2}\.?\d{3}\.?\d{3})',  # Solo V mayúscula
+                r'(-\d{1,2}\.?\d{3}\.?\d{3})'  # Solo con guión inicial
             ]
             
             for pattern in cedula_patterns:
                 matches = re.findall(pattern, texto_completo, re.IGNORECASE)
                 if matches:
-                    extraccion_empresa['datosbeneficiario']['cedula'] = matches[0]
-                    extraccion_empresa['campos_detectados'] += 1
-                    break
+                    cedula_candidata = matches[0]
+                    # VALIDACIÓN: NO debe ser igual a la referencia ya extraída
+                    if cedula_candidata != extraccion_empresa.get('referencia', ''):
+                        # VALIDACIÓN: Debe tener formato de cédula venezolana
+                        cedula_limpia = re.sub(r'[^\d\-vVeE]', '', cedula_candidata)
+                        if len(cedula_limpia) >= 7 and len(cedula_limpia) <= 12:
+                            extraccion_empresa['datosbeneficiario']['cedula'] = cedula_candidata
+                            extraccion_empresa['campos_detectados'] += 1
+                            logger.info(f"🆔 MANDATO 4/X FASE 2: Cédula extraída: {cedula_candidata}")
+                            break
             
             # FIX: TELÉFONO VENEZOLANO CON VALIDACIÓN ESTRICTA - MANDATO OPTIMIZACIÓN CONTINUA
             # REASON: Implementar misma validación estricta que en routes.py (mandato #19)
@@ -1381,51 +1430,46 @@ class OrquestadorOCR:
                     logger.info(f"📅 MANDATO 3 X FASE 2: Fecha operación extraída: {fecha_extraida}")
                     break
             
-            # MANDATO CRÍTICO #2: EXTRACCIÓN SEPARADA DE CONCEPTO Y TEXTO_TOTAL_OCR
-            # REASON: Separar texto OCR completo del concepto conciso según mandato estructural
-            # IMPACT: Campo concepto con motivo conciso, campo texto_total_ocr con texto completo
+            # PRIORIDAD 4: REFINAR EXTRACCIÓN DE CONCEPTO (EVITAR SOBRE-EXTRACCIÓN)
+            # MANDATO 4/X FASE 2: Extraer concepto conciso y preciso
             
             # NUEVO CAMPO: texto_total_ocr con texto completo original
             extraccion_empresa['texto_total_ocr'] = texto_completo
             
-            # REDEFINIR: concepto como motivo conciso de transacción (máx 100 caracteres)
+            # PRIORIDAD 4: REDEFINIR concepto como motivo conciso de transacción (máx 25 caracteres)
             concepto_patterns = [
-                r'(?:Concepto|CONCEPTO)[:=]?\s*([^.]{10,80})',        # Concepto: texto
-                r'(?:Motivo|MOTIVO)[:=]?\s*([^.]{10,80})',            # Motivo: texto
-                r'(?:Descripcion|DESCRIPCIÓN)[:=]?\s*([^.]{10,80})',  # Descripción: texto
-                r'(?:Detalle|DETALLE)[:=]?\s*([^.]{10,80})',          # Detalle: texto
-                r'(Pago\s+[A-Za-z\s]{5,40})',                        # Pago Móvil, Pago de...
-                r'(Transferencia\s+[A-Za-z\s]{5,40})',                # Transferencia bancaria
-                r'(Envio\s+de\s+[A-Za-z\s]{5,40})',                  # Envío de dinero
+                r'(envio\s+de\s+tpago)',  # Patrones específicos como "Envio de Tpago"
+                r'(pago\s+movil)',  # Pago móvil
+                r'(transferencia)',  # Transferencia
+                r'(deposito)',  # Depósito
+                r'(retiro)',  # Retiro
+                r'(tpago)',  # Tpago específico
+                r'(envio)',  # Envío
             ]
             
-            concepto_extraido = ""
             for pattern in concepto_patterns:
                 matches = re.findall(pattern, texto_completo, re.IGNORECASE)
                 if matches:
                     concepto_extraido = matches[0].strip()
-                    break
-            
-            # FALLBACK INTELIGENTE: Si no hay concepto específico, extraer frase relevante
-            if not concepto_extraido:
-                frases_relevantes = [
-                    r'([^.]*(?:Bs|bolivares|monto|transferencia|pago|envio)[^.]{0,30})',
-                    r'([A-Z][^.]{20,60}(?:realizada|enviado|operacion)[^.]{0,20})',
-                ]
-                
-                for pattern in frases_relevantes:
-                    matches = re.findall(pattern, texto_completo, re.IGNORECASE)
-                    if matches:
-                        concepto_extraido = matches[0].strip()
+                    # VALIDAR: No debe contener texto operacional excesivo
+                    if len(concepto_extraido) <= 50:
+                        extraccion_empresa['concepto'] = concepto_extraido
+                        extraccion_empresa['campos_detectados'] += 1
+                        logger.info(f"📝 MANDATO 4/X FASE 2: Concepto extraído: {concepto_extraido}")
                         break
-                
-                # ÚLTIMO FALLBACK: Primeras palabras significativas (no todo el texto)
-                if not concepto_extraido and len(texto_completo) > 20:
-                    palabras = texto_completo.split()[:15]  # Máximo 15 palabras
-                    concepto_extraido = ' '.join(palabras)
             
-            extraccion_empresa['concepto'] = concepto_extraido[:100] if concepto_extraido else "Transacción financiera"
-            extraccion_empresa['campos_detectados'] += 1
+            # FALLBACK: Si no se encontró concepto, extraer algo relevante
+            if not extraccion_empresa.get('concepto'):
+                fallback_concepto = "Transacción bancaria"
+                if 'tpago' in texto_completo.lower():
+                    fallback_concepto = "Envío de Tpago"
+                elif 'pago movil' in texto_completo.lower():
+                    fallback_concepto = "Pago Móvil"
+                elif 'transferencia' in texto_completo.lower():
+                    fallback_concepto = "Transferencia"
+                
+                extraccion_empresa['concepto'] = fallback_concepto
+                extraccion_empresa['campos_detectados'] += 1
             
             # CALCULAR POSICIÓN RELATIVA DE ELEMENTOS CRÍTICOS
             if word_data:

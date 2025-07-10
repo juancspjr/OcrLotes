@@ -1,0 +1,79 @@
+PLAN DE REMEDIACIÓN INTEGRAL Y CONSOLIDACIÓN DE EXTRACCIONES (MANDATO 4/X - FASE 2)
+Alineándonos con la FILOSOFÍA CENTRAL PARA EL DESARROLLO DE SOFTWARE: INTEGRIDAD TOTAL Y PERFECCIÓN CONTINUA, presento el siguiente plan estratégico. Este plan se centrará en la cohesión y no regresión, asegurando que cada ajuste mejore la precisión sin comprometer otros campos, y que la información fluya correctamente de principio a fin ("todo bien concatenado").
+
+OBJETIVO GENERAL: Restaurar la integridad y precisión de todos los campos extraídos, priorizando la resolución de regresiones y conflictos, y garantizando la coherencia y "concatenación" lógica de los datos.
+
+METODOLOGÍA DE EJECUCIÓN FORTALECIDA:
+
+Análisis Causa Raíz Reforzado: Antes de cada modificación, se realizará un análisis más profundo de cómo el cambio puede impactar campos adyacentes o de naturaleza similar.
+
+Pruebas de Regresión Multi-Campo: Después de cada ajuste, no solo se validará el campo modificado, sino también un conjunto de campos críticos adyacentes para asegurar que no se introdujeron regresiones.
+
+Priorización Absoluta de la Coherencia: Las reglas serán afinadas no solo para la detección individual, sino para la desambiguación y la relación entre campos (ej., referencia vs. cedula).
+
+Logging y Trazabilidad: Se potenciará el logging para cada decisión de extracción, permitiendo una trazabilidad detallada de por qué un campo fue extraído de cierta manera o por qué falló.
+
+PRIORIDADES Y ACCIONES ESPECÍFICAS (MANDATO 4/X):
+
+PRIORIDAD CRÍTICA 1: CORRECCIÓN URGENTE DE LA REGRESIÓN EN MONTO
+
+Problema: "210,00" se extrajo como "2706102.00".
+
+Acción: Re-evaluar la función de normalización del monto (normalizar_monto_venezolano) en main_ocr_process.py y aplicador_ocr.py. Es fundamental que la coma (,) se interprete siempre como separador decimal y el punto (.) como separador de miles. La solución ya implementada para "104,54" debe ser consistente para "210,00".
+
+Verificación: Procesar la imagen de prueba y confirmar que monto sea 210.00.
+
+PRIORIDAD CRÍTICA 2: RESOLVER CONFUSIÓN CEDULA vs. REFERENCIA y EXTRACCIÓN PRECISA DE CEDULA
+
+Problema: cedula extrae el valor de referencia y está truncada.
+
+Acción:
+
+Refinar extraction_rules.json para cedula:
+
+Ajustar keywords para incluir variantes como "V-", "E-", "C.I.", "Identificacion:".
+
+Fortalecer value_regex_patterns para capturar el formato [VEJPGGvejpgJg-]?\s*\d{1,2}\.?\d{3}\.?\d{3} de manera estricta y con desambiguación.
+
+Implementar exclusion_patterns específicos para que la cédula no se confunda con números de referencia (que ya tienen su propia regla).
+
+Ajustar priority y search_window_relative_px para optimizar su búsqueda.
+
+Verificación: Procesar la imagen de prueba y confirmar que cedula sea V -27.061.025 (o 27.061.025) y referencia siga siendo 48311146148.
+
+PRIORIDAD 3: REFINAR EXTRACCIÓN DE BANCO_ORIGEN (EVITAR SOBRE-EXTRACCIÓN)
+
+Problema: Extracción excesiva de texto.
+
+Acción:
+
+Ajustar keywords para ser más precisas (ej., "Banco:", "Banco Origen:").
+
+Refinar value_regex_patterns para que no capturen texto más allá del nombre del banco o su código.
+
+Ajustar search_window_relative_px a un rango más estrecho y relevante.
+
+Añadir exclusion_patterns que eviten capturar frases operacionales como "Envio de Tpago Operacion realizada".
+
+Considerar region_priority si el banco siempre aparece en una sección específica del recibo.
+
+Verificación: Procesar la imagen de prueba y confirmar que bancoorigen sea "Mercantil" o "Banco Mercantil" (o su código "0105").
+
+PRIORIDAD 4: REFINAR EXTRACCIÓN DE CONCEPTO (EVITAR SOBRE-EXTRACCIÓN)
+
+Problema: Extracción excesiva.
+
+Acción:
+
+Ajustar keywords (ej., "Concepto:", "Descripción:").
+
+Afinar value_regex_patterns para capturar el concepto de forma concisa.
+
+Ajustar search_window_relative_px y añadir exclusion_patterns para evitar frases irrelevantes.
+
+Verificación: Procesar la imagen de prueba y confirmar que concepto sea más preciso y conciso.
+
+REVISIÓN DE CAMPOS FALTANTES O ERRÓNEOS (telefono, pago_fecha, banco_destino)
+
+Acción: Investigar por qué estos campos no se están extrayendo. Podría requerir añadir o refinar sus reglas en extraction_rules.json, o verificar su mapeo en main_ocr_process.py si son campos nuevos. Se prestará especial atención a la posible redundancia de pago_fecha con fecha_operacion.
+
