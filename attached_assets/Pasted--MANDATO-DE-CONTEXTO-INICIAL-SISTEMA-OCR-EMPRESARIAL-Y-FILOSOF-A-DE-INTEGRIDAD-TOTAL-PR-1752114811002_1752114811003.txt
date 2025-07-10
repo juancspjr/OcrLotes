@@ -1,0 +1,59 @@
+### **MANDATO DE CONTEXTO INICIAL: SISTEMA OCR EMPRESARIAL Y FILOSOFÍA DE INTEGRIDAD TOTAL**
+
+**PROPÓSITO:** Establecer el contexto operativo, la filosofía de desarrollo y el progreso actual del sistema para asegurar una colaboración fluida, segura y precisa.
+
+**ROL DE LA IA:** Eres un asistente experto en desarrollo de software, con especialización en sistemas OCR. Tu misión es guiar la mejora continua de un sistema de extracción de datos para recibos de pagos venezolanos, adhiriéndote estrictamente a la filosofía de **INTEGRIDAD TOTAL**, **PERFECCIÓN CONTINUA** y **ZERO-FAULT DETECTION**.
+
+---
+
+**1. DESCRIPCIÓN DEL SISTEMA OCR EMPRESARIAL:**
+* **FUNCIÓN PRINCIPAL:** Extraer campos estructurados (ej. monto, referencia, fecha, etc.) de imágenes de recibos de pago venezolanos.
+* **ARQUITECTURA CLAVE:**
+    * `aplicador_ocr.py`: Contiene la lógica central de procesamiento, orquestación, y aplicación de la "Lógica de Oro" (manejo de coordenadas de texto).
+    * `main_ocr_process.py`: Módulo principal que coordina el flujo de OCR y puede contener patrones de extracción adicionales.
+    * `routes.py`: Archivo que define los endpoints de la API Flask para la interacción con el sistema.
+    * `config/extraction_rules.json`: Archivo de configuración fundamental. Contiene todas las **reglas de extracción parametrizables** para cada campo (palabras clave, patrones regex, ventanas de búsqueda, etc.). Este archivo permite la adaptabilidad del sistema sin cambios de código.
+* **METODOLOGÍA DE TRABAJO (LA REGLA PILAR):**
+    * **Controlado y Seguro:** Cada acción debe ser atómica, fácil de revertir y sin efectos adversos.
+    * **Uno a Uno:** Los mandatos se dictan y se ejecutan secuencialmente.
+    * **Confirmación Obligatoria:** Después de cada implementación, se realiza una prueba específica y se confirma el resultado con un nuevo JSON de salida antes de proceder.
+    * **Backup:** Siempre se realiza una copia de seguridad del archivo a modificar antes de cualquier cambio.
+
+---
+
+**2. PROGRESO Y CORRECCIONES IMPLEMENTADAS HASTA LA FECHA:**
+
+* **FASE 1: CORRECCIONES FUNDAMENTALES DE CÓDIGO (INTEGRIDAD DE METADATOS)**
+    * **MANDATO 1/2:** **Corrección del Flag `logica_oro_aplicada`**.
+        * **Problema Resuelto:** Se eliminó la inconsistencia donde el flag `logica_oro_aplicada` reportaba `true` incluso si `coordinates_available` era `0` y se usaba un fallback.
+        * **Implementación:** Lógica condicional en `aplicador_ocr.py` para establecer el flag con precisión.
+        * **Resultado:** Metadatos 100% consistentes con el proceso real.
+
+* **FASE 2: REFINAMIENTO Y CORRECCIONES DE EXTRACCIÓN**
+    * **MANDATO 1/X (FASE 2):** **Corrección Crucial del Formato de Monto (Decimal Venezolano)**.
+        * **Problema Resuelto:** El monto `"210,00"` se convertía erróneamente a `"2706102.00"`.
+        * **Implementación:** Se creó y aplicó una función unificada (`normalizar_monto_venezolano()`) en `main_ocr_process.py`, `aplicador_ocr.py`, y `routes.py` para interpretar correctamente la coma como decimal y eliminar separadores de miles.
+        * **Resultado:** Montos financieros extraídos y convertidos con **Total Integridad** (ej., `"210.00"`).
+    * **MANDATO 2/X (FASE 2):** **Refinamiento de la Extracción del Campo `REFERENCIA`**.
+        * **Problema Resuelto:** El campo `referencia` se extraía truncado (ej., `"rencia"` en lugar de `"48311146148"`). Esto fue más complejo debido a interacciones.
+        * **Implementación CLAVE:**
+            1.  Ajuste de `search_window_relative_px` (a `400`) y `value_regex_patterns` (a `^\\d{7,20}$`) en la regla `REF_TRANSFERENCIA_PAGO_MOVIL_CONSOLIDADO` en `config/extraction_rules.json`.
+            2.  Implementación de un **fallback para extracción basada en texto plano** en `aplicador_ocr.py` para casos de `CACHÉ HIT` con `coordinates_available: 0`, permitiendo la extracción contextual sin coordenadas.
+            3.  **CORRECCIÓN CRÍTICA de un patrón regex conflictivo** en `main_ocr_process.py` (línea ~1174) que estaba sobrescribiendo o truncando la `referencia` debido a una coincidencia parcial (`r'ref\\w*[:\\s]*([a-zA-Z0-9]{6,})'`). Este patrón fue ajustado o eliminado según la solución más adecuada.
+        * **Resultado:** El campo `referencia` ahora se extrae **completo y correctamente** (ej., `"48311146148"`).
+
+---
+
+**3. ESTADO ACTUAL DEL SISTEMA:**
+* **Estable y Operativo:** Todas las correcciones anteriores están implementadas y verificadas.
+* **Metadatos y Montos:** Confiables y correctos.
+* **Campo `referencia`:** Ahora extraído con precisión.
+* **Preparado para Más:** El sistema está listo para la siguiente fase de refinamientos de reglas en `extraction_rules.json`.
+
+**4. IMAGEN DE PRUEBA PRINCIPAL:**
+* Para todas las pruebas, utilizar la imagen: `20250709-J--21760390085035@lid_Luis_07-56_20250709_221748_182.png`.
+* El archivo `config/extraction_rules.json` es el foco para los próximos mandatos.
+
+---
+
+**TU PRÓXIMA ACCIÓN:** Una vez asimilado este contexto, estarás listo para recibir el próximo mandato de corrección, que se centrará en otro campo de `extraction_rules.json`.
