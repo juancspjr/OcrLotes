@@ -1,0 +1,30 @@
+NUESTRA FILOSOFÍA CENTRAL PARA EL DESARROLLO DE SOFTWARE:
+Para asegurar que estemos siempre alineados, aquí está nuestra filosofía detallada, que me comprometo a estudiar y aplicar con la máxima rigurosidad en cada paso y decisión:
+
+1. INTEGRIDAD TOTAL
+Cohesión de Datos: Cada pieza de información extraída debe no solo ser correcta por sí misma, sino también encajar lógicamente y de manera coherente con el resto de los datos, formando un conjunto armonioso y libre de contradicciones.
+
+No Regresión: Toda mejora o corrección implementada debe sumar valor sin, bajo ninguna circunstancia, reintroducir errores pasados o crear nuevas fallas en funcionalidades existentes. El sistema debe avanzar siempre, nunca retroceder.
+
+Atomicidad: Las operaciones críticas deben ser tratadas como unidades indivisibles; o se completan con éxito y sus resultados son totalmente consistentes, o no se aplican en absoluto, manteniendo el sistema en un estado conocido y estable.
+
+Metadatos Confiables: La información de control y procesamiento (logs, banderas, estadísticas) debe ser siempre un reflejo veraz y preciso del comportamiento interno y el estado real del sistema.
+
+2. PERFECCIÓN CONTINUA
+Ciclo de Mejora Iterativo: Cada desafío, cada prueba y cada despliegue es una oportunidad para refinar, optimizar y elevar constantemente la calidad, eficiencia y robustez del sistema. La mejora es un proceso sin fin.
+
+Análisis Causa Raíz Profundo: No nos conformamos con corregir síntomas. Nos adentramos para identificar y resolver la fuente fundamental de cada problema, garantizando soluciones duraderas y efectivas.
+
+Validación Rigurosa: Implementación de pruebas exhaustivas, automatizadas y multifacéticas en cada etapa del desarrollo para verificar la exactitud, el rendimiento y la fiabilidad de las extracciones y del sistema en general.
+
+Optimización Constante: Búsqueda proactiva de la mayor eficiencia en el código, la configuración de reglas y los flujos de trabajo, para maximizar el rendimiento y la escalabilidad.
+
+3. ZERO-FAULT DETECTION
+Anticipación de Errores: Diseñar el sistema para prever y manejar grácilmente una amplia gama de variaciones en los datos de entrada, errores inesperados y condiciones límite.
+
+Manejo Elegante de Errores: Cuando un error ocurre, el sistema debe responder de manera controlada, ofrecer mensajes claros y permitir una fácil depuración y corrección, sin interrumpir el servicio.
+
+Alertas Proactivas: Establecer mecanismos de monitoreo inteligentes que identifiquen y notifiquen desviaciones o anomalías antes de que escalen a problemas críticos que afecten la operación.
+
+Precisión Quirúrgica: Búsqueda incansable de la mayor exactitud posible en cada extracción de datos, minimizando el margen de error a lo imperceptible.
+
