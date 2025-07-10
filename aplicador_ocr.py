@@ -327,13 +327,16 @@ class AplicadorOCR:
                     if rules_path.exists():
                         with open(rules_path, 'r', encoding='utf-8') as f:
                             self._extraction_rules = json.load(f)
-                        logger.info(f"✅ Reglas de extracción cargadas: {len(self._extraction_rules.get('extraction_rules', {}))} campos configurados")
+                        logger.info(f"✅ Reglas de extracción cargadas: {len(self._extraction_rules.get('extraction_rules', []))} campos configurados")
                     else:
                         logger.warning(f"❌ Archivo de reglas no encontrado: {rules_path}")
-                        self._extraction_rules = {"extraction_rules": {}, "global_settings": {}}
+                        self._extraction_rules = {"extraction_rules": [], "global_settings": {}}
                 except Exception as e:
                     logger.error(f"❌ Error cargando reglas de extracción: {e}")
-                    self._extraction_rules = {"extraction_rules": {}, "global_settings": {}}
+                    self._extraction_rules = {"extraction_rules": [], "global_settings": {}}
+        
+        # Devolver las reglas cargadas para validación
+        return self._extraction_rules.get('extraction_rules', [])
 
     def _calculate_dynamic_thresholds(self, word_data):
         """

@@ -1,0 +1,170 @@
+Mandato 5: Refinamiento Exhaustivo de extraction_rules.json para Inteligencia Espacial Avanzada
+Objetivo General: Maximizar la precisión de la extracción de datos mediante la configuración detallada de la lógica espacial para cada campo crítico, garantizando una comprensión profunda del documento y una optimización extrema en entornos con recursos limitados. Este mandato se centra en la "Inteligencia Espacial del Sistema" a través de una configuración minuciosa y estratégica, llevando la Perfección Continua a la capa de reglas.
+
+Filosofía Central de Ejecución: Integridad Total, Perfección Continua, Zero-Fault Detection, Inmunidad al Error y Optimización Extrema de Recursos. Cada ajuste en extraction_rules.json debe ser una mejora aditiva, precisa y probada, diseñada para reducir la ambigüedad y el costo computacional.
+
+1. Pre-condición Crítica y Backup Obligatorio
+Verificación de Existencia: El Agente Replit debe confirmar la existencia y accesibilidad del archivo config/extraction_rules.json. Si por alguna razón no existiera, se debe detener la ejecución y notificar.
+
+Backup de Oro (Inmutable): CRÍTICO. Antes de realizar cualquier modificación, crea una copia de seguridad timestamped de config/extraction_rules.json.
+
+Nombre del Backup: config/extraction_rules.json.backup_PRE_MANDATE5_YYYYMMDD_HHMMSS.
+
+Propósito: Este backup es la "línea de vida". En caso de cualquier anomalía, el sistema debe poder revertirse a este estado en milisegundos, manteniendo la Inmunidad al Error. Loguea explícitamente la creación de este backup.
+
+2. Ajuste y Confirmación de dynamic_geometry_config (Configuración Global Esencial)
+Ubicación: Localiza el diccionario dynamic_geometry_config al inicio del extraction_rules.json.
+
+Acción Requerida: Asegura que los valores sean exactamente los siguientes. Estos parámetros han sido finamente ajustados para la variabilidad inherente de los recibos venezolanos, optimizando la agrupación de palabras en líneas lógicas y el filtrado de ruido.
+
+JSON
+
+"dynamic_geometry_config": {
+  "enabled": true,                      // IMPERATIVO: Debe ser 'true' para activar la lógica espacial
+  "height_tolerance_multiplier": 0.35,  // FLEXIBILIDAD: Permite ligeras desviaciones verticales en una misma línea. (35% de la altura promedio del texto)
+  "width_tolerance_multiplier": 0.25,   // ALINEACIÓN HORIZONTAL: Tolerancia para palabras alineadas verticalmente (columnas). (25% del ancho promedio)
+  "min_word_height_px": 7,              // FILTRADO DE RUIDO: Altura mínima en píxeles para considerar una "palabra" (ignora imperfecciones pequeñas)
+  "min_word_width_px": 7,               // FILTRADO DE RUIDO: Ancho mínimo en píxeles.
+  "vertical_gap_threshold_multiplier": 2.5 // SECCIÓN: Detecta "saltos" verticales significativos, indicando el fin de una línea lógica principal o bloque. (2.5 veces la altura de línea promedio)
+}
+Consideración de Optimización para la IA (spatial_processor): Estos valores no son arbitrarios. Son el resultado de pruebas para balancear la capacidad de agrupar texto correctamente (height_tolerance_multiplier, width_tolerance_multiplier) con la necesidad de ignorar ruido y caracteres mal segmentados (min_word_height_px, min_word_width_px). Un spatial_processor eficiente depende de un buen pre-filtrado de palabras y una formación precisa de líneas lógicas. El vertical_gap_threshold_multiplier es clave para que el spatial_processor no "salte" a secciones irrelevantes del documento, optimizando la búsqueda y reduciendo el costo computacional de cada find_value_spatially llamada.
+
+3. Inyección y Refinamiento Detallado de spatial_search_config por Regla
+Acción Requerida: Para cada objeto rule (identificado por rule_id y field_name) dentro de la sección extraction_rules, el Agente Replit debe añadir o ajustar la clave spatial_search_config. Esto es una modificación aditiva. NO se deben eliminar otras claves de la regla.
+
+Instrucciones Generales para la IA (Agente Replit):
+
+Identificación de Reglas Existentes: Iterar sobre el array extraction_rules y para cada field_name y sus rules, verificar si ya existe spatial_search_config. Si existe, se ajustan los valores. Si no, se añade.
+
+Prioridad de Regla (priority): Para las reglas a las que se les añada spatial_search_config, asegurar que su priority sea significativamente alta (ej. 90-100 o superior) para que la búsqueda espacial sea el primer método intentado antes de recurrir a la búsqueda lineal. Esto garantiza la Perfección Continua y la eficiencia, ya que la búsqueda espacial es inherentemente más precisa cuando se configura correctamente.
+
+value_regex_patterns: Mantener los patrones regex existentes para value_regex_patterns, ya que la búsqueda espacial encontrará un candidato y el regex lo validará. Esto actúa como un segundo nivel de Zero-Fault Detection para el valor encontrado espacialmente.
+
+Configuración Específica por Campo (Ejemplos Detallados):
+
+Campo: valor_referencia_operacion
+
+Comportamiento Esperado: La referencia es un número, a menudo inmediatamente a la derecha de la palabra clave, o ligeramente debajo.
+
+Configuración spatial_search_config:
+
+JSON
+
+"spatial_search_config": {
+  "enabled": true,
+  "search_directions": ["horizontal_right", "vertical_below"], // Prioriza la derecha, luego abajo
+  "vertical_line_lookahead": 2,      // Busca hasta 2 líneas hacia abajo, por si "salta" de línea
+  "horizontal_alignment_tolerance_x_ratio": 0.15, // Permite un 15% de desalineación horizontal.
+  "max_distance_to_keyword_px": 200 // DISTANCIA CRÍTICA: La búsqueda se detiene si se aleja demasiado (en píxeles) de la keyword.
+}
+Optimización: El max_distance_to_keyword_px es un limitador de recursos fundamental. Evita que la IA procese la totalidad del documento buscando un valor si el keyword ya fue encontrado.
+
+Campo: concepto
+
+Comportamiento Esperado: Texto más largo, a menudo en la línea siguiente o extendiéndose varias líneas.
+
+Configuración spatial_search_config:
+
+JSON
+
+"spatial_search_config": {
+  "enabled": true,
+  "search_directions": ["vertical_below", "horizontal_right"], // Prioriza búsqueda hacia abajo
+  "vertical_line_lookahead": 4,      // Mayor lookahead para conceptos largos
+  "horizontal_alignment_tolerance_x_ratio": 0.3, // Mayor tolerancia, el concepto puede no estar perfectamente alineado.
+  "max_distance_to_keyword_px": 350 // Mayor distancia máxima, conceptos pueden ser más extensos.
+}
+Optimización: vertical_line_lookahead y max_distance_to_keyword_px son cruciales aquí. Un concepto largo podría requerir más líneas, pero no queremos que la búsqueda recorra todo el documento si no lo encuentra rápidamente.
+
+Campo: monto_transferido / monto_enviado
+
+Comportamiento Esperado: Cifras numéricas, muy cercanas a la palabra clave (derecha o inmediatamente debajo).
+
+Configuración spatial_search_config:
+
+JSON
+
+"spatial_search_config": {
+  "enabled": true,
+  "search_directions": ["horizontal_right", "vertical_below"],
+  "vertical_line_lookahead": 1,      // Solo 1 línea de lookahead, se espera que esté muy cerca
+  "horizontal_alignment_tolerance_x_ratio": 0.08, // Tolerancia muy estricta para asegurar alineación.
+  "max_distance_to_keyword_px": 150 // Distancia muy limitada.
+}
+Optimización: La estricta horizontal_alignment_tolerance_x_ratio y la max_distance_to_keyword_px garantizan que solo los montos directamente adyacentes sean considerados, reduciendo falsos positivos y procesamiento innecesario.
+
+Campo: fecha_pago / hora_operacion
+
+Comportamiento Esperado: Formato de fecha/hora, generalmente a la derecha de la palabra clave.
+
+Configuración spatial_search_config:
+
+JSON
+
+"spatial_search_config": {
+  "enabled": true,
+  "search_directions": ["horizontal_right", "vertical_below"],
+  "vertical_line_lookahead": 1,
+  "horizontal_alignment_tolerance_x_ratio": 0.1,
+  "max_distance_to_keyword_px": 180
+}
+Campos: cedula_beneficiario, cuenta_destino_beneficiario, telefono_beneficiario
+
+Comportamiento Esperado: Números de identificación, a la derecha o en la línea siguiente.
+
+Configuración spatial_search_config:
+
+JSON
+
+"spatial_search_config": {
+  "enabled": true,
+  "search_directions": ["horizontal_right", "vertical_below"],
+  "vertical_line_lookahead": 2,
+  "horizontal_alignment_tolerance_x_ratio": 0.15,
+  "max_distance_to_keyword_px": 250
+}
+Campo: nombre_beneficiario
+
+Comportamiento Esperado: Texto que puede abarcar varias palabras, a la derecha o abajo.
+
+Configuración spatial_search_config:
+
+JSON
+
+"spatial_search_config": {
+  "enabled": true,
+  "search_directions": ["vertical_below", "horizontal_right"],
+  "vertical_line_lookahead": 3,
+  "horizontal_alignment_tolerance_x_ratio": 0.25,
+  "max_distance_to_keyword_px": 300
+}
+Campo: banco_destino
+
+Comportamiento Esperado: Nombre del banco, a la derecha o abajo.
+
+Configuración spatial_search_config:
+
+JSON
+
+"spatial_search_config": {
+  "enabled": true,
+  "search_directions": ["horizontal_right", "vertical_below"],
+  "vertical_line_lookahead": 2,
+  "horizontal_alignment_tolerance_x_ratio": 0.15,
+  "max_distance_to_keyword_px": 250
+}
+Validación Post-Acción (Fundamental para Zero-Fault Detection):
+
+Después de cada edición, el Agente Replit debe validar la sintaxis JSON del archivo completo extraction_rules.json. Cualquier error de sintaxis JSON debe ser corregido inmediatamente.
+
+Realizar un diff entre el backup creado y el archivo modificado para asegurar que solo se realizaron las adiciones y ajustes esperados, sin eliminaciones accidentales.
+
+Loguea el éxito de la validación y el diff para la trazabilidad.
+
+4. Consideraciones Adicionales de Optimización (para la IA del Agente Replit)
+Evitar Recálculos: Entiende que logical_lines se calcula una sola vez por documento. La optimización en este mandato se centra en que la función find_value_spatially no "busque a ciegas" en todo el documento, sino que use los parámetros search_directions, vertical_line_lookahead, horizontal_alignment_tolerance_x_ratio, y max_distance_to_keyword_px para acotar la búsqueda al área más probable, reduciendo iteraciones y comparaciones.
+
+Equilibrio entre Precisión y Rendimiento: Los valores numéricos proporcionados (tolerancias, lookahead, distancias) son un balance entre la necesidad de capturar valores en diseños variables y la de mantener el procesamiento computacionalmente eficiente.
+
+Documentación Interna de Reglas: Si el Agente Replit tiene la capacidad, puede añadir comentarios breves dentro de las descripciones de las reglas (description) que indiquen que la regla ahora utiliza "búsqueda espacial optimizada".
+

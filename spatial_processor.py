@@ -267,3 +267,89 @@ def group_words_by_proximity(words_with_coordinates: List[Dict],
     except Exception as e:
         logger.error(f"Error agrupando palabras por proximidad: {e}", exc_info=True)
         return []
+
+
+class SpatialProcessor:
+    """
+    Clase principal para procesamiento espacial de datos OCR
+    Encapsula todas las funciones de procesamiento espacial
+    """
+    
+    def __init__(self):
+        """Inicializa el procesador espacial"""
+        self.logger = logging.getLogger(__name__)
+    
+    def generate_logical_lines(self, words_with_coordinates: List[Dict], 
+                             geometry_config: Dict) -> List[List[Dict]]:
+        """
+        Genera líneas lógicas a partir de palabras con coordenadas
+        
+        Args:
+            words_with_coordinates: Lista de palabras con coordenadas
+            geometry_config: Configuración de geometría
+            
+        Returns:
+            Lista de líneas lógicas
+        """
+        return get_logical_lines(words_with_coordinates, geometry_config)
+    
+    def find_nearby_values(self, logical_lines: List[List[Dict]], 
+                          keyword_geometry: List[float], 
+                          spatial_config: Dict, 
+                          geometry_config: Dict) -> Optional[str]:
+        """
+        Encuentra valores cercanos a una palabra clave usando búsqueda espacial
+        
+        Args:
+            logical_lines: Líneas lógicas generadas
+            keyword_geometry: Coordenadas de la palabra clave
+            spatial_config: Configuración de búsqueda espacial
+            geometry_config: Configuración de geometría
+            
+        Returns:
+            Valor encontrado o None
+        """
+        return find_value_spatially(logical_lines, keyword_geometry, 
+                                   spatial_config, geometry_config)
+    
+    def calculate_distance(self, point1: Tuple[float, float], 
+                          point2: Tuple[float, float]) -> float:
+        """
+        Calcula distancia entre dos puntos
+        
+        Args:
+            point1: Primer punto (x, y)
+            point2: Segundo punto (x, y)
+            
+        Returns:
+            Distancia euclidiana
+        """
+        return calculate_spatial_distance(point1, point2)
+    
+    def find_words_in_region(self, words_with_coordinates: List[Dict], 
+                           region: Tuple[float, float, float, float]) -> List[Dict]:
+        """
+        Encuentra palabras en una región específica
+        
+        Args:
+            words_with_coordinates: Lista de palabras con coordenadas
+            region: Región de búsqueda (x1, y1, x2, y2)
+            
+        Returns:
+            Lista de palabras en la región
+        """
+        return find_words_in_region(words_with_coordinates, region)
+    
+    def group_by_proximity(self, words_with_coordinates: List[Dict], 
+                          proximity_threshold: float = 50) -> List[List[Dict]]:
+        """
+        Agrupa palabras por proximidad espacial
+        
+        Args:
+            words_with_coordinates: Lista de palabras con coordenadas
+            proximity_threshold: Umbral de proximidad en píxeles
+            
+        Returns:
+            Lista de grupos de palabras próximas
+        """
+        return group_words_by_proximity(words_with_coordinates, proximity_threshold)

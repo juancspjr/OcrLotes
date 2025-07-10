@@ -1,26 +1,10 @@
 {
   "dynamic_geometry_config": {
     "enabled": true,
-    "line_grouping_tolerance_y_ratio": 0.1,
-    "vertical_alignment_threshold_px": 15,
-    "horizontal_alignment_threshold_px": 25,
-    "height_tolerance_multiplier": 0.35,
-    "width_tolerance_multiplier": 0.25,
-    "min_word_height_px": 7,
-    "min_word_width_px": 7,
-    "vertical_gap_threshold_multiplier": 2.5,
-    "region_analysis": {
-      "header_ratio": 0.3,
-      "body_ratio": 0.5,
-      "footer_ratio": 0.2
-    },
-    "spatial_search": {
-      "preferred_directions": ["horizontal_right", "vertical_below"],
-      "distance_weights": {
-        "horizontal": 1.0,
-        "vertical": 1.5
-      }
-    }
+    "height_tolerance_multiplier": 0.2,
+    "width_tolerance_multiplier": 0.15,
+    "min_word_height_px": 5,
+    "min_word_width_px": 5
   },
   "extraction_rules": [
     {
@@ -41,10 +25,9 @@
           "region_priority": ["header", "body"],
           "spatial_search_config": {
             "enabled": true,
-            "search_directions": ["horizontal_right", "vertical_below"],
-            "vertical_line_lookahead": 2,
-            "horizontal_alignment_tolerance_x_ratio": 0.15,
-            "max_distance_to_keyword_px": 200
+            "preferred_directions": ["right", "below"],
+            "max_distance": 150,
+            "confidence_threshold": 0.8
           }
         }
       ]
@@ -70,10 +53,9 @@
           "region_priority": ["footer", "body"],
           "spatial_search_config": {
             "enabled": true,
-            "search_directions": ["horizontal_right", "vertical_below"],
-            "vertical_line_lookahead": 1,
-            "horizontal_alignment_tolerance_x_ratio": 0.08,
-            "max_distance_to_keyword_px": 150
+            "preferred_directions": ["right", "left", "below"],
+            "max_distance": 120,
+            "confidence_threshold": 0.85
           }
         }
       ]
@@ -93,14 +75,7 @@
           "min_ocr_confidence_value": 0.75,
           "exclusion_patterns": ["C.I.:", "RIF:", "Cuenta:", "Banco:", "Telf.:", "04"],
           "priority": 90,
-          "region_priority": ["body"],
-          "spatial_search_config": {
-            "enabled": true,
-            "search_directions": ["vertical_below", "horizontal_right"],
-            "vertical_line_lookahead": 3,
-            "horizontal_alignment_tolerance_x_ratio": 0.25,
-            "max_distance_to_keyword_px": 300
-          }
+          "region_priority": ["body"]
         },
         {
           "rule_id": "TITULAR_CUENTA_ORIGEN",
@@ -114,14 +89,7 @@
           "min_ocr_confidence_value": 0.75,
           "exclusion_patterns": ["C.I.:", "RIF:", "Cuenta:", "Banco:", "Telf.:", "04"],
           "priority": 88,
-          "region_priority": ["body"],
-          "spatial_search_config": {
-            "enabled": true,
-            "search_directions": ["vertical_below", "horizontal_right"],
-            "vertical_line_lookahead": 2,
-            "horizontal_alignment_tolerance_x_ratio": 0.25,
-            "max_distance_to_keyword_px": 250
-          }
+          "region_priority": ["body"]
         }
       ]
     },
@@ -140,14 +108,7 @@
           "min_ocr_confidence_value": 0.72,
           "exclusion_patterns": ["Fecha:", "Monto:", "Referencia:", "Banco:", "C.I.", "RIF"],
           "priority": 80,
-          "region_priority": ["body"],
-          "spatial_search_config": {
-            "enabled": true,
-            "search_directions": ["vertical_below", "horizontal_right"],
-            "vertical_line_lookahead": 4,
-            "horizontal_alignment_tolerance_x_ratio": 0.3,
-            "max_distance_to_keyword_px": 350
-          }
+          "region_priority": ["body"]
         }
       ]
     },
@@ -182,14 +143,7 @@
           "min_ocr_confidence_value": 0.8,
           "exclusion_patterns": ["Monto:", "Referencia:", "Hora:"],
           "priority": 110,
-          "region_priority": ["header", "body"],
-          "spatial_search_config": {
-            "enabled": true,
-            "search_directions": ["horizontal_right", "vertical_below"],
-            "vertical_line_lookahead": 1,
-            "horizontal_alignment_tolerance_x_ratio": 0.1,
-            "max_distance_to_keyword_px": 180
-          }
+          "region_priority": ["header", "body"]
         }
       ]
     },
@@ -208,14 +162,7 @@
           "min_ocr_confidence_value": 0.75,
           "exclusion_patterns": ["Fax", "Rif", "CI"],
           "priority": 70,
-          "region_priority": ["body"],
-          "spatial_search_config": {
-            "enabled": true,
-            "search_directions": ["horizontal_right", "vertical_below"],
-            "vertical_line_lookahead": 2,
-            "horizontal_alignment_tolerance_x_ratio": 0.15,
-            "max_distance_to_keyword_px": 250
-          }
+          "region_priority": ["body"]
         },
         {
           "rule_id": "TELEFONO_EMISOR_VENEZOLANO",
@@ -229,14 +176,7 @@
           "min_ocr_confidence_value": 0.75,
           "exclusion_patterns": ["Fax", "Rif", "CI"],
           "priority": 68,
-          "region_priority": ["body"],
-          "spatial_search_config": {
-            "enabled": true,
-            "search_directions": ["horizontal_right", "vertical_below"],
-            "vertical_line_lookahead": 2,
-            "horizontal_alignment_tolerance_x_ratio": 0.15,
-            "max_distance_to_keyword_px": 250
-          }
+          "region_priority": ["body"]
         }
       ]
     },
@@ -255,14 +195,7 @@
           "min_ocr_confidence_value": 0.8,
           "exclusion_patterns": ["RIF Empresa", "Teléfono"],
           "priority": 85,
-          "region_priority": ["body"],
-          "spatial_search_config": {
-            "enabled": true,
-            "search_directions": ["horizontal_right", "vertical_below"],
-            "vertical_line_lookahead": 2,
-            "horizontal_alignment_tolerance_x_ratio": 0.15,
-            "max_distance_to_keyword_px": 250
-          }
+          "region_priority": ["body"]
         }
       ]
     },
@@ -281,14 +214,7 @@
           "min_ocr_confidence_value": 0.75,
           "exclusion_patterns": ["Cuenta:", "Beneficiario:", "Banco Receptor"],
           "priority": 95,
-          "region_priority": ["body"],
-          "spatial_search_config": {
-            "enabled": true,
-            "search_directions": ["horizontal_right", "vertical_below"],
-            "vertical_line_lookahead": 2,
-            "horizontal_alignment_tolerance_x_ratio": 0.15,
-            "max_distance_to_keyword_px": 250
-          }
+          "region_priority": ["body"]
         }
       ]
     },
@@ -307,14 +233,7 @@
           "min_ocr_confidence_value": 0.75,
           "exclusion_patterns": ["Cuenta:", "Emisor:", "Banco Origen"],
           "priority": 95,
-          "region_priority": ["body"],
-          "spatial_search_config": {
-            "enabled": true,
-            "search_directions": ["horizontal_right", "vertical_below"],
-            "vertical_line_lookahead": 2,
-            "horizontal_alignment_tolerance_x_ratio": 0.15,
-            "max_distance_to_keyword_px": 250
-          }
+          "region_priority": ["body"]
         }
       ]
     },
@@ -333,14 +252,7 @@
           "min_ocr_confidence_value": 0.90,
           "exclusion_patterns": ["Transferencia", "Depósito"],
           "priority": 130,
-          "region_priority": ["header", "body"],
-          "spatial_search_config": {
-            "enabled": true,
-            "search_directions": ["horizontal_right", "vertical_below"],
-            "vertical_line_lookahead": 1,
-            "horizontal_alignment_tolerance_x_ratio": 0.1,
-            "max_distance_to_keyword_px": 180
-          }
+          "region_priority": ["header", "body"]
         },
         {
           "rule_id": "TIPO_TRANSFERENCIA_CONSOLIDADO",
@@ -354,14 +266,7 @@
           "min_ocr_confidence_value": 0.85,
           "exclusion_patterns": ["Pago Móvil", "Depósito", "Tpago"],
           "priority": 125,
-          "region_priority": ["header", "body"],
-          "spatial_search_config": {
-            "enabled": true,
-            "search_directions": ["horizontal_right", "vertical_below"],
-            "vertical_line_lookahead": 1,
-            "horizontal_alignment_tolerance_x_ratio": 0.1,
-            "max_distance_to_keyword_px": 180
-          }
+          "region_priority": ["header", "body"]
         },
         {
           "rule_id": "TIPO_COMPROBANTE_PAGO",
@@ -375,14 +280,7 @@
           "min_ocr_confidence_value": 0.85,
           "exclusion_patterns": ["Transferencia", "Pago Móvil", "Tpago"],
           "priority": 122,
-          "region_priority": ["header", "body"],
-          "spatial_search_config": {
-            "enabled": true,
-            "search_directions": ["horizontal_right", "vertical_below"],
-            "vertical_line_lookahead": 1,
-            "horizontal_alignment_tolerance_x_ratio": 0.1,
-            "max_distance_to_keyword_px": 180
-          }
+          "region_priority": ["header", "body"]
         }
       ]
     },
@@ -401,14 +299,7 @@
           "min_ocr_confidence_value": 0.65,
           "exclusion_patterns": ["Monto:", "Fecha:", "Referencia:", "Banco:", "Teléfono"],
           "priority": 60,
-          "region_priority": ["body"],
-          "spatial_search_config": {
-            "enabled": true,
-            "search_directions": ["horizontal_right", "vertical_below"],
-            "vertical_line_lookahead": 2,
-            "horizontal_alignment_tolerance_x_ratio": 0.15,
-            "max_distance_to_keyword_px": 250
-          }
+          "region_priority": ["body"]
         }
       ]
     },
@@ -427,14 +318,7 @@
           "min_ocr_confidence_value": 0.75,
           "exclusion_patterns": ["Monto:", "Fecha:", "Referencia:", "Banco:", "Teléfono"],
           "priority": 85,
-          "region_priority": ["body"],
-          "spatial_search_config": {
-            "enabled": true,
-            "search_directions": ["horizontal_right", "vertical_below"],
-            "vertical_line_lookahead": 2,
-            "horizontal_alignment_tolerance_x_ratio": 0.15,
-            "max_distance_to_keyword_px": 250
-          }
+          "region_priority": ["body"]
         }
       ]
     },
@@ -453,14 +337,7 @@
           "min_ocr_confidence_value": 0.6,
           "exclusion_patterns": ["Cuenta:", "Referencia:", "Monto:", "Fecha:", "C.I.", "RIF"],
           "priority": 105,
-          "region_priority": ["body"],
-          "spatial_search_config": {
-            "enabled": true,
-            "search_directions": ["horizontal_right", "vertical_below"],
-            "vertical_line_lookahead": 2,
-            "horizontal_alignment_tolerance_x_ratio": 0.15,
-            "max_distance_to_keyword_px": 250
-          }
+          "region_priority": ["body"]
         },
         {
           "rule_id": "TELEFONO_DIRECTO_SIN_KEYWORD",
@@ -474,14 +351,7 @@
           "min_ocr_confidence_value": 0.4,
           "exclusion_patterns": ["Cuenta", "Referencia", "Monto", "Fecha", "C.I.", "RIF"],
           "priority": 110,
-          "region_priority": ["body"],
-          "spatial_search_config": {
-            "enabled": true,
-            "search_directions": ["horizontal_right", "vertical_below"],
-            "vertical_line_lookahead": 2,
-            "horizontal_alignment_tolerance_x_ratio": 0.15,
-            "max_distance_to_keyword_px": 250
-          }
+          "region_priority": ["body"]
         }
       ]
     },
@@ -500,14 +370,7 @@
           "min_ocr_confidence_value": 0.5,
           "exclusion_patterns": ["Banco Origen:", "Mi Banco:", "Banco Emisor:", "RIF:", "C.I.:", "desde mi", "Se Envio", "Envio de"],
           "priority": 95,
-          "region_priority": ["body"],
-          "spatial_search_config": {
-            "enabled": true,
-            "search_directions": ["horizontal_right", "vertical_below"],
-            "vertical_line_lookahead": 3,
-            "horizontal_alignment_tolerance_x_ratio": 0.25,
-            "max_distance_to_keyword_px": 400
-          }
+          "region_priority": ["body"]
         }
       ]
     },
@@ -526,14 +389,7 @@
           "min_ocr_confidence_value": 0.4,
           "exclusion_patterns": ["pm", "am", "-", "06:50", "hora"],
           "priority": 120,
-          "region_priority": ["footer", "body", "header"],
-          "spatial_search_config": {
-            "enabled": true,
-            "search_directions": ["horizontal_right", "vertical_below"],
-            "vertical_line_lookahead": 1,
-            "horizontal_alignment_tolerance_x_ratio": 0.1,
-            "max_distance_to_keyword_px": 180
-          }
+          "region_priority": ["footer", "body", "header"]
         }
       ]
     },
@@ -552,14 +408,7 @@
           "min_ocr_confidence_value": 0.85,
           "exclusion_patterns": [],
           "priority": 98,
-          "region_priority": ["header", "body"],
-          "spatial_search_config": {
-            "enabled": true,
-            "search_directions": ["horizontal_right", "vertical_below"],
-            "vertical_line_lookahead": 1,
-            "horizontal_alignment_tolerance_x_ratio": 0.1,
-            "max_distance_to_keyword_px": 150
-          }
+          "region_priority": ["header", "body"]
         }
       ]
     }
