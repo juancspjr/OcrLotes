@@ -1,0 +1,33 @@
+🚀 INICIO DE MANDATO 7: REFINAMIENTO Y OPTIMIZACIÓN DE LA EXTRACCIÓN DE CAMPOS CRÍTICOS USANDO INTELIGENCIA ESPACIAL
+NOTA IMPORTANTE DE INTEGRIDAD TOTAL:
+Recordatorio: Este mandato, como todos los anteriores, debe ejecutarse bajo la estricta Filosofía de Integridad Total. Esto significa que cualquier ajuste o modificación debe mejorar la precisión y robustez del sistema sin introducir regresiones o dañar funcionalidades existentes. La detección de cero fallos es nuestro estándar. Cada cambio debe ser probado y validado para asegurar que no se compromete la estabilidad o la precisión de los datos ya corregidos (ej. coordenadas, montos, flag logica_oro_aplicada).
+
+OBJETIVO PRINCIPAL:
+Lograr una precisión del 90%+ en la extracción de los siguientes campos críticos mediante la aplicación exhaustiva de las reglas en extraction_rules.json y el uso efectivo de la inteligencia espacial (coordenadas):
+
+valor_referencia_operacion
+
+fecha_operacion
+
+datos_beneficiario (incluyendo banco_origen y cedula_beneficiario)
+
+concepto_motivo
+
+SUB-OBJETIVOS ESPECÍFICOS:
+Resolver "Confusión Referencia/Cédula": Implementar reglas más robustas (posiblemente usando exclusion_patterns o priorización espacial) para distinguir claramente entre números de referencia y números de cédula/identificación que puedan tener patrones similares, reduciendo falsos positivos.
+
+Asegurar Extracción de fecha_operacion: Validar y ajustar las reglas en extraction_rules.json para garantizar la correcta identificación y extracción de la fecha de operación en formato venezolano (DD/MM/YYYY o variantes), incluso en layouts complejos.
+
+Refinar datos_beneficiario y banco_origen: Utilizar la información espacial y patrones de contexto para mejorar la captura de los datos del beneficiario y evitar la inclusión de texto excesivo o irrelevante ("Banco Origen Excesivo").
+
+Optimizar Extracción de concepto_motivo: Desarrollar o ajustar reglas específicas en extraction_rules.json para capturar el concepto o motivo de la transacción de forma precisa, manejando la variabilidad de su ubicación y contenido en los recibos, y utilizando el contexto espacial para delimitarlo correctamente.
+
+Validación de Confianza y Coherencia: Establecer métricas para verificar que los campos extraídos no solo sean correctos, sino que también tengan una alta confianza OCR y que su ubicación espacial sea coherente con la naturaleza del campo.
+
+ENFOQUE:
+Apalancarse en las capacidades de búsqueda espacial (direcciones de búsqueda, tolerancias de alineación, distancia a palabras clave) que ahora funcionan correctamente gracias al Mandato 6.
+
+Ajustar, añadir y priorizar nuevas reglas en el archivo extraction_rules (1).json.
+
+Realizar pruebas exhaustivas con un conjunto diverso de imágenes representativas para cada campo crítico.
+
