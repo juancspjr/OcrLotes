@@ -1,0 +1,116 @@
+URGENCIA: CRÍTICA - RECONSTRUCCIÓN DE FRONTLINE NECESARIA
+
+AGENTE IA - SISTEMA OCR EMPRESARIAL (VERSIÓN MENOS DAÑADA):
+
+Como parte de una iniciativa de Integridad Total y Perfección Continua, se requiere una reconstrucción completa y optimizada del componente de frontend de nuestro Sistema OCR Empresarial. Para garantizar una integración impecable y sin errores con el backend existente, necesito que generes un "REPORTE DE ESPECIFICACIÓN DE INTERFAZ DE BACKEND PARA FRONTEND V2" con el más alto nivel de detalle posible.
+
+Este reporte debe ser una auditoría forense y exhaustiva de todas las interfaces y funcionalidades del backend relevantes para la interacción del frontend. Tu objetivo es dejar CERO dudas sobre cómo el nuevo frontend debe interactuar con el backend.
+
+ESTRUCTURA Y CONTENIDO DEL REPORTE SOLICITADO (Nivel de Detalle Absoluto):
+
+Mapeo Exhaustivo de TODOS los Endpoints API (@app.route):
+
+1.1. Identificación y Propósito:
+
+Para cada endpoint definido en routes.py y cualquier otro módulo de ruteo:
+
+URL exacta (ej. /api/ocr/process_batch, /api/extract_results).
+
+Métodos HTTP soportados (GET, POST, PUT, DELETE, etc.).
+
+Una descripción concisa pero completa de su propósito y la funcionalidad que expone.
+
+1.2. Contrato de Petición (Request Contract) - Entrada:
+
+Para cada endpoint que acepte datos (ej. POST, PUT):
+
+Tipo de Cuerpo de Petición Esperado: (application/json, multipart/form-data para archivos, etc.).
+
+Parámetros / Campos Esperados (JSON, Form Data, Query Params):
+
+Para cada campo (nombre de la clave JSON, nombre del campo de formulario, nombre del parámetro de query string):
+
+nombre_campo: Nombre exacto del parámetro.
+
+tipo_dato: Tipo de dato esperado (ej. string, integer, boolean, array, file).
+
+formato_específico: (Si aplica) Formato adicional (ej. YYYY-MM-DD, base64, UUID).
+
+es_requerido: (boolean) true si es obligatorio, false si es opcional.
+
+descripcion: Breve explicación de su propósito.
+
+ejemplo_valor: Un ejemplo concreto de valor válido para el campo.
+
+Manejo de Archivos (Para endpoints de carga):
+
+Detalle exacto del campo esperado (ej. files[]), formato (lista de bytes, archivos multi-parte), y cualquier límite de tamaño o tipo.
+
+Ejemplo de cómo un cliente debería enviar los archivos.
+
+1.3. Contrato de Respuesta (Response Contract) - Salida:
+
+Para cada endpoint, describir la estructura exacta del JSON de respuesta para casos de éxito y casos de error comunes (4xx, 5xx):
+
+Estructura JSON (Campo por Campo):
+
+nombre_campo: Nombre exacto de la clave JSON.
+
+tipo_dato: Tipo de dato del valor.
+
+formato_específico: (Si aplica) Formato adicional.
+
+descripcion: Breve explicación de lo que representa el dato.
+
+ejemplo_valor: Un ejemplo concreto de valor de respuesta exitosa.
+
+Códigos de Estado HTTP: Describir los códigos de estado HTTP esperados (200 OK, 201 Created, 400 Bad Request, 404 Not Found, 500 Internal Server Error, etc.) y su significado en el contexto de la API.
+
+Mensajes de Error Estandarizados: Detallar el formato de los mensajes de error JSON que el backend envía (ej. {"status": "error", "message": "...", "details": "..."}).
+
+Definición de Modelos de Datos Centrales (JSON Schemas o Equivalente):
+
+2.1. Recibos Procesados (Resultados OCR):
+
+Estructura JSON completa de un objeto de recibo procesado, incluyendo todos los campos extraídos (ej. nombre_empresa, fecha_operacion, monto_total, valor_referencia_operacion, etc.).
+
+ATENCIÓN ESPECÍFICA: Incluir el campo confidence_avg y su tipo/rango.
+
+Especificar el tipo de dato y formato para cada sub-campo (ej. coordinates: [x1, y1, x2, y2]).
+
+2.2. Metadatos de Archivo/Lote:
+
+Estructura JSON de los metadatos asociados a un archivo o lote (ej. file_id, filename, status, timestamp_carga, timestamp_procesado, etc.).
+
+2.3. Estructura de Métricas de Monitoreo (Para el nuevo requisito):
+
+Detallar la estructura de cualquier JSON de métricas que el backend pueda o deba generar por lote (ej. batch_id, cpu_usage_avg_percent, memory_usage_avg_mb, num_images_processed, etc.). Si actualmente no existe, especificar el formato deseable para una futura implementación en el backend.
+
+Flujos de Trabajo Backend (Diagramas de Secuencia o Descripciones Detalladas):
+
+3.1. Flujo de Procesamiento de Lotes (Desde la Carga hasta el Estado Final):
+
+Descripción paso a paso de lo que sucede en el backend desde que se recibe un lote de archivos hasta que los resultados están disponibles.
+
+Incluir interacciones con Celery/workers, aplicador_ocr.py, spatial_processor.py, y la base de datos.
+
+3.2. Flujo de Consulta de Resultados:
+
+Descripción del proceso cuando el frontend solicita los resultados de un archivo o lote específico.
+
+Consideraciones Adicionales para Frontend:
+
+4.1. Autenticación/Autorización (Si aplica): Métodos de autenticación esperados (tokens, sesiones, etc.).
+
+4.2. Manejo de Errores Backend: Tipos de errores que el frontend debería poder manejar y cómo se manifiestan en las respuestas de la API.
+
+4.3. Limitaciones o Cuotas: Si hay límites de tasa (rate limiting) o tamaño de archivo que el frontend deba considerar.
+
+FORMATO DE SALIDA DEL REPORTE:
+
+El reporte debe ser un archivo Markdown (.md), organizado con encabezados claros y ejemplos de código JSON/Python donde sea pertinente.
+
+PROPÓSITO FINAL:
+
+Este reporte será la "blueprint" para el nuevo frontend, asegurando que cada componente sea construido con un conocimiento profundo de la lógica y la interfaz del backend.
+
