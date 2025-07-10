@@ -197,24 +197,29 @@
       "field_name": "telefono",
       "rules": [
         {
-          "rule_id": "TELEFONO_BENEFICIARIO_VENEZOLANO_CONSOLIDADO",
-          "description": "Número de teléfono del beneficiario, común en Pagos Móviles, con varias palabras clave.",
+          "rule_id": "TELEFONO_BENEFICIARIO_VENEZOLANO_MANDATO_7",
+          "description": "MANDATO 7: Número de teléfono del beneficiario venezolano con inteligencia espacial mejorada",
           "keywords": ["Telf. Beneficiario:", "Teléfono Recibe:", "Celular Destino:", "Telf:", "Teléfono Destino:", "Teléfono Receptor:", "0412", "0416", "0426", "0414", "0424"],
-          "fuzzy_matching_tolerance": 0.85,
+          "fuzzy_matching_tolerance": 0.90,
           "proximity_preference": "horizontal_right",
-          "search_window_relative_px": 120,
-          "value_regex_patterns": ["^(0412|0416|0426|0414|0424)\\-?\\d{7}$"],
-          "min_ocr_confidence_keyword": 0.7,
-          "min_ocr_confidence_value": 0.75,
-          "exclusion_patterns": ["Fax", "Rif", "CI"],
-          "priority": 70,
-          "region_priority": ["body"],
+          "search_window_relative_px": 300,
+          "value_regex_patterns": [
+            "^(041[2,4,6])\\s?(\\d{7})$",
+            "^(042[4,6])\\s?(\\d{7})$",
+            "^(041[2,4,6])-(\\d{7})$",
+            "^(042[4,6])-(\\d{7})$"
+          ],
+          "min_ocr_confidence_keyword": 0.65,
+          "min_ocr_confidence_value": 0.70,
+          "exclusion_patterns": ["Fax", "Rif", "CI", "Cuenta", "Referencia"],
+          "priority": 120,
+          "region_priority": ["body", "header"],
           "spatial_search_config": {
             "enabled": true,
-            "search_directions": ["horizontal_right", "vertical_below"],
-            "vertical_line_lookahead": 2,
-            "horizontal_alignment_tolerance_x_ratio": 0.15,
-            "max_distance_to_keyword_px": 250
+            "search_directions": ["horizontal_right", "vertical_below", "any"],
+            "vertical_line_lookahead": 3,
+            "horizontal_alignment_tolerance_x_ratio": 0.25,
+            "max_distance_to_keyword_px": 400
           }
         },
         {

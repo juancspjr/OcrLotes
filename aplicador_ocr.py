@@ -743,25 +743,27 @@ class AplicadorOCR:
                             word_text = word.value
                             word_confidence = float(word.confidence)
                             
-                            # FIX: EXTRACCIÓN CRÍTICA DE COORDENADAS GEOMÉTRICAS REALES
-                            # REASON: Coordenadas necesarias para análisis posicional avanzado de campos
-                            # IMPACT: Permite extracción inteligente basada en proximidad y contexto espacial
-                            word_coords = [0, 0, 0, 0]  # Default bbox
+                            # MANDATO 7: CORRECCIÓN CRÍTICA DE COORDENADAS ESPACIALES
+                            # REASON: Coordenadas necesarias para inteligencia espacial en extracción de campos críticos
+                            # IMPACT: Permite análisis posicional avanzado y mejora precisión de campos críticos
+                            word_coords = [0, 0, 0, 0]  # Default bbox solo si falla extracción
                             if hasattr(word, 'geometry') and hasattr(word.geometry, 'polygon'):
                                 try:
                                     # Extraer coordenadas del polígono de OnnxTR
                                     polygon = word.geometry.polygon
                                     if len(polygon) >= 4:
-                                        x_coords = [point[0] for point in polygon]
-                                        y_coords = [point[1] for point in polygon]
-                                        # Crear bounding box [x_min, y_min, x_max, y_max]
+                                        x_coords = [float(point[0]) for point in polygon]
+                                        y_coords = [float(point[1]) for point in polygon]
+                                        # Crear bounding box [x_min, y_min, x_max, y_max] con precisión decimal
                                         word_coords = [
-                                            min(x_coords), min(y_coords), 
-                                            max(x_coords), max(y_coords)
+                                            round(min(x_coords), 2), round(min(y_coords), 2), 
+                                            round(max(x_coords), 2), round(max(y_coords), 2)
                                         ]
-                                        logger.debug(f"🎯 Coordenadas extraídas para '{word_text}': {word_coords}")
+                                        # MANDATO 7: Log detallado solo para debugging crítico
+                                        if word_coords != [0, 0, 0, 0]:
+                                            logger.debug(f"🎯 MANDATO 7 - Coordenadas extraídas para '{word_text}': {word_coords}")
                                 except Exception as e:
-                                    logger.debug(f"❌ Error extrayendo coordenadas para '{word_text}': {e}")
+                                    logger.warning(f"❌ MANDATO 7 - Error extrayendo coordenadas para '{word_text}': {e}")
                                     word_coords = [0, 0, 0, 0]
                             
                             # Aplicar filtro de confianza basado en configuración
@@ -869,7 +871,7 @@ class AplicadorOCR:
                 # --- FIN Lógica de Oro Espacial Simplificada ---
                 
                 # PASO 2: EVALUAR COORDENADAS DISPONIBLES
-                coordenadas_validas = len([w for w in word_data_granular if w.get('coordinates') and w['coordinates'] != [0, 0, 0, 0]])
+                coordenadas_validas = len([w for w in palabras_detectadas if w.get('coordinates', [0,0,0,0]) != [0, 0, 0, 0]])
                 
                 # MANDATO 1/2: CORRECCIÓN CRÍTICA DE CONTRADICCIÓN logica_oro_aplicada
                 # REASON: Asegurar que flag refleje exactamente si lógica de oro basada en coordenadas se aplicó
@@ -960,7 +962,7 @@ class AplicadorOCR:
                     'error_messages': error_messages,
                     'processing_time_ms': round(ocr_time * 1000, 2),
                     'total_words_detected': total_palabras,
-                    'coordinates_available': len([w for w in palabras_detectadas if w['coordinates'] != [0, 0, 0, 0]]),
+                    'coordinates_available': len([w for w in palabras_detectadas if w.get('coordinates', [0,0,0,0]) != [0, 0, 0, 0]]),
                     'ocr_method': 'ONNXTR_SINGLE_PASS_COORDENADAS',
                     'timestamp': datetime.now().isoformat()
                 },
@@ -2578,34 +2580,58 @@ class AplicadorOCR:
         IMPACT: Extracción precisa usando múltiples estrategias configurables
         """
         try:
-            # MANDATO 5/X: Corrección específica para teléfonos venezolanos en motor legacy
+            # MANDATO 7: CORRECCIÓN CRÍTICA DE EXTRACCIÓN DE TELÉFONOS VENEZOLANOS
+            # REASON: Teléfonos como "0412 244" no se extraen por longitud insuficiente  
+            # IMPACT: Detectar y validar teléfonos venezolanos con inteligencia espacial
             if field_name == "telefono":
-                logger.info(f"📱 MANDATO 5/X LEGACY: Activando búsqueda directa de teléfonos venezolanos")
-                telefono_patterns = [
-                    r'\b0412\s+\d{3,7}\b',
-                    r'\b0416\s+\d{3,7}\b', 
-                    r'\b0426\s+\d{3,7}\b',
-                    r'\b0414\s+\d{3,7}\b',
-                    r'\b0424\s+\d{3,7}\b'
+                logger.info(f"📱 MANDATO 7: Activando extracción inteligente de teléfonos venezolanos")
+                
+                # Patrones para teléfonos venezolanos (completos y parciales)
+                telefono_patterns_completos = [
+                    r'\b(041[2,4,6])\s*(\d{7})\b',  # Completos: 0412 1234567
+                    r'\b(042[4,6])\s*(\d{7})\b'     # Completos: 0424 1234567, 0426 1234567
+                ]
+                
+                telefono_patterns_parciales = [
+                    r'\b(041[2,4,6])\s+(\d{3,6})\b',  # Parciales: 0412 244
+                    r'\b(042[4,6])\s+(\d{3,6})\b'     # Parciales: 0424 123
                 ]
                 
                 import re
-                for pattern in telefono_patterns:
+                
+                # PASO 1: Buscar teléfonos completos primero (11 dígitos)
+                for pattern in telefono_patterns_completos:
                     try:
                         matches = re.findall(pattern, full_text, re.IGNORECASE)
                         if matches:
-                            extracted = matches[0].strip()
-                            # Verificar que no contenga exclusiones
-                            exclusions = ["Cuenta", "Referencia", "Monto", "Fecha", "C.I.", "RIF"]
-                            excluded = any(excl.lower() in extracted.lower() for excl in exclusions)
-                            if not excluded:
-                                logger.info(f"📱 MANDATO 5/X LEGACY COMPLETADO: Teléfono extraído '{extracted}' con patrón '{pattern}'")
-                                return extracted
+                            prefix, number = matches[0]
+                            telefono_completo = f"{prefix}{number}"
+                            
+                            # Validar longitud exacta (11 dígitos)
+                            if len(telefono_completo) == 11:
+                                logger.info(f"📱 MANDATO 7 COMPLETADO: Teléfono completo extraído '{telefono_completo}'")
+                                return telefono_completo
                     except Exception as e:
-                        logger.warning(f"⚠️ Error en patrón teléfono legacy '{pattern}': {e}")
+                        logger.warning(f"⚠️ Error en patrón teléfono completo '{pattern}': {e}")
                         continue
                 
-                logger.warning(f"📱 MANDATO 5/X LEGACY: No se encontraron teléfonos venezolanos en texto")
+                # PASO 2: Buscar teléfonos parciales y detectar con inteligencia espacial
+                for pattern in telefono_patterns_parciales:
+                    try:
+                        matches = re.findall(pattern, full_text, re.IGNORECASE)
+                        if matches:
+                            prefix, partial_number = matches[0]
+                            telefono_parcial = f"{prefix} {partial_number}"
+                            
+                            # MANDATO 7: Rechazar teléfonos incompletos pero registrar para debugging
+                            logger.warning(f"📱 MANDATO 7: Teléfono parcial detectado '{telefono_parcial}' - Rechazado por longitud insuficiente")
+                            logger.info(f"📱 MANDATO 7: Se requieren 11 dígitos exactos para validación de teléfono venezolano")
+                            # No retornar el parcial, continuar buscando
+                    except Exception as e:
+                        logger.warning(f"⚠️ Error en patrón teléfono parcial '{pattern}': {e}")
+                        continue
+                
+                logger.info(f"📱 MANDATO 7: Extracción de teléfono completada - Solo se aceptan números venezolanos completos")
             
             patterns = field_config.get('patterns', [])
             proximity_keywords = field_config.get('proximity_keywords', [])

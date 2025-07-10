@@ -1,0 +1,106 @@
+INICIO DEL MANDATO 7: REFINAMIENTO Y OPTIMIZACIÓN DE LA EXTRACCIÓN DE CAMPOS CRÍTICOS USANDO INTELIGENCIA ESPACIAL
+FILOSOFÍA FUNDAMENTAL (Guía de Operación):
+INTEGRIDAD TOTAL: Cada ajuste, cada regla, cada línea de código debe garantizar la veracidad y consistencia de los datos. Cero errores, cero contradicciones. ¡No se comprometerá la funcionalidad ya establecida ni la precisión alcanzada en mandatos anteriores!
+
+PERFECCIÓN CONTINUA: Buscamos la máxima precisión para cada campo, iterando y afinando las reglas hasta alcanzar el umbral del 90%+ de confianza y exactitud.
+
+ZERO-FAULT DETECTION: Anticipar y resolver proactivamente cualquier posible fallo o ambigüedad en la extracción.
+
+TRANSPARENCIA TOTAL: Cada paso, cada decisión y los resultados detallados serán documentados y presentados con evidencia clara (incluyendo el JSON solicitado).
+
+OBJETIVO PRINCIPAL DEL MANDATO 7:
+Lograr una precisión del 90% o superior en la extracción de los campos críticos específicos de los recibos de pagos móviles venezolanos, utilizando al máximo las capacidades de la inteligencia espacial avanzada y las reglas configurables en extraction_rules.json.
+
+Campos Críticos a Optimizar:
+
+valor_referencia_operacion
+
+fecha_operacion
+
+datos_beneficiario (incluyendo banco_origen y cedula_beneficiario)
+
+concepto_motivo
+
+SUB-OBJETIVOS Y ESTRATEGIAS DETALLADAS:
+valor_referencia_operacion - Resolver Confusión con Cédulas:
+
+Problema: Alta similitud numérica con patrones de cédulas, llevando a extracciones incorrectas.
+
+Estrategia:
+
+Refinar value_regex_patterns para ser más específicos al contexto de referencia.
+
+Implementar y priorizar exclusion_patterns para evitar cadenas que se parezcan a cédulas o números de teléfono.
+
+Utilizar spatial_search_config para buscar la referencia en proximidad directa a palabras clave como "Referencia:", "No. Operación:", y evitar regiones donde es más probable encontrar cédulas.
+
+Considerar proximity_preference y search_window_relative_px para limitar el área de búsqueda.
+
+fecha_operacion - Asegurar Extracción Consistente:
+
+Problema: La fecha puede aparecer en múltiples formatos o ubicaciones, a veces no siendo capturada o capturada incorrectamente.
+
+Estrategia:
+
+Ampliar y diversificar value_regex_patterns para cubrir formatos comunes de fecha venezolanos (DD/MM/YYYY, DD-MM-YYYY, etc.) y posibles combinaciones con la hora.
+
+Definir keywords variadas ("Fecha:", "Fecha y hora", "Día:") y sus fuzzy_matching_tolerance.
+
+Utilizar spatial_search_config para priorizar la búsqueda en la sección superior/inferior del recibo o cerca de etiquetas claras.
+
+Establecer min_ocr_confidence_value alto para la fecha.
+
+datos_beneficiario (incluyendo banco_origen y cedula_beneficiario) - Refinar Contexto:
+
+Problema: Extracción de texto irrelevante junto con el nombre/banco del beneficiario ("Banco Origen Excesivo"), o dificultad para asociar la cédula correcta.
+
+Estrategia:
+
+Para banco_origen: Definir keywords claras ("Banco:", "Banco Receptor:") y value_regex_patterns que apunten a nombres de bancos reconocidos.
+
+Para cedula_beneficiario: Utilizar keywords como "C.I.:", "V-", "E-", y patrones regex específicos ([VE]-\\d{7,9}).
+
+Apalancarse fuertemente en spatial_search_config para definir ventanas de búsqueda muy precisas alrededor de las palabras clave, o en líneas específicas donde se sabe que aparecen estos datos, limitando el max_distance_to_keyword_px.
+
+Implementar vertical_line_lookahead o horizontal_alignment_tolerance_x_ratio para agrupar palabras del beneficiario y su cédula/banco.
+
+concepto_motivo - Extracción Precisa de Texto Variable:
+
+Problema: El concepto puede ser texto libre, variable en longitud y posición.
+
+Estrategia:
+
+Identificar keywords comunes ("Concepto:", "Motivo:", "Descripción:") y utilizarlas como anclas espaciales.
+
+Usar search_directions para buscar el valor justo después de la palabra clave, posiblemente vertical_below o horizontal_right.
+
+Ajustar search_window_relative_px o max_distance_to_keyword_px para capturar un bloque de texto coherente sin excederse.
+
+Considerar block_level_extraction si el concepto tiende a ser un bloque de texto independiente.
+
+Podría requerir una combinación de reglas para diferentes escenarios.
+
+ENFOQUE METODOLÓGICO Y HERRAMIENTAS:
+Iteración basada en Pruebas: Utilizar imágenes de prueba que representen los escenarios problemáticos para cada campo.
+
+Modificación de extraction_rules.json: Todos los ajustes se realizarán en este archivo de configuración, evitando cambios en el código principal a menos que sea estrictamente necesario para la lógica del motor de reglas.
+
+Análisis Espacial Activo: Aplicación consciente de spatial_search_config dentro de cada regla para maximizar la precisión contextual.
+
+Generación de Evidencia: Cada mejora será verificada con salidas claras y cuantificables.
+
+POST-MANDATO 7: VERIFICACIÓN Y CONEXIÓN CON EL FRONTEND
+Una vez completado y validado el Mandato 7, procederemos con los siguientes pasos críticos:
+
+Generación de JSON de Resultados Finales:
+
+Se generará un archivo JSON detallado (resultado_mandato_7_final.json) que contendrá los resultados del procesamiento de las imágenes de prueba con la precisión mejorada. Este archivo incluirá todos los campos críticos extraídos, sus coordenadas, confianza OCR, y cualquier metadato relevante, sirviendo como evidencia transparente de los logros del mandato.
+
+Verificación de Visualización en el Frontend:
+
+Se realizará una verificación exhaustiva de cómo los datos mejorados y ahora precisos se visualizan en el dashboard web del frontend.
+
+Si el frontend ya está diseñado para consumir y visualizar dinámicamente todos los campos extraídos del JSON de resultados: Se verificará la correcta representación de los nuevos datos optimizados.
+
+Si el frontend NO está completamente diseñado para visualizar dinámicamente estos campos específicos (ej. si concepto_motivo o banco_origen no tienen un widget de visualización claro): Se identificará la necesidad de realizar adaptaciones o extensiones en el frontend para asegurar que todos los datos extraídos (y ahora altamente precisos) sean presentados al usuario de forma clara y útil. Esto implicaría una comunicación y un plan para una posible "Extensión de Visualización de Frontend".
+
