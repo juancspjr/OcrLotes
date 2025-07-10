@@ -311,6 +311,39 @@
       ]
     },
     {
+      "field_name": "telefono",
+      "rules": [
+        {
+          "rule_id": "TELEFONO_VENEZOLANO_CONSOLIDADO",
+          "description": "Números de teléfono venezolanos con prefijos válidos (0412, 0416, 0426, 0414, 0424) en formato completo o parcial.",
+          "keywords": ["Telf.:", "Teléfono:", "Celular:", "Contacto:", "Tel:", "Móvil:", "telefono", "celular"],
+          "fuzzy_matching_tolerance": 0.75,
+          "proximity_preference": "any",
+          "search_window_relative_px": 250,
+          "value_regex_patterns": ["0(412|416|426|414|424)\\s*\\d{1,7}", "\\b0(412|416|426|414|424)\\b", "\\b\\d{3,4}\\s*\\d{3,4}\\b"],
+          "min_ocr_confidence_keyword": 0.5,
+          "min_ocr_confidence_value": 0.6,
+          "exclusion_patterns": ["Cuenta:", "Referencia:", "Monto:", "Fecha:", "C.I.", "RIF"],
+          "priority": 105,
+          "region_priority": ["body"]
+        },
+        {
+          "rule_id": "TELEFONO_DIRECTO_SIN_KEYWORD",
+          "description": "Búsqueda directa de patrones de teléfono venezolano sin keywords específicas, para capturar números aislados.",
+          "keywords": [],
+          "fuzzy_matching_tolerance": 0.0,
+          "proximity_preference": "any",
+          "search_window_relative_px": 500,
+          "value_regex_patterns": ["\\b0412\\s+\\d{3,7}\\b", "\\b0416\\s+\\d{3,7}\\b", "\\b0426\\s+\\d{3,7}\\b", "\\b0414\\s+\\d{3,7}\\b", "\\b0424\\s+\\d{3,7}\\b"],
+          "min_ocr_confidence_keyword": 0.0,
+          "min_ocr_confidence_value": 0.5,
+          "exclusion_patterns": ["Cuenta", "Referencia", "Monto", "Fecha", "C.I.", "RIF"],
+          "priority": 110,
+          "region_priority": ["body"]
+        }
+      ]
+    },
+    {
       "field_name": "hora_operacion",
       "rules": [
         {

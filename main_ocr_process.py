@@ -1352,48 +1352,87 @@ class OrquestadorOCR:
                 r'(\+58\d{10})'  # Formato internacional
             ]
             
-            # MANDATO CRÍTICO #1: VALIDACIÓN BINARIA OBLIGATORIA DE TELÉFONOS VENEZOLANOS
-            # REASON: 48311146148 persiste - implementar RECHAZO ABSOLUTO siguiendo mandato
-            # IMPACT: PUNTO DE CONTROL ÚNICO para validación estricta de teléfonos
+            # MANDATO 5/X: BÚSQUEDA DIRECTA DE TELÉFONOS VENEZOLANOS SIN KEYWORDS
+            # REASON: "0412 244" aparece aislado sin keywords contextuales
+            # IMPACT: Extracción directa por patrones específicos venezolanos
+            telefono_directo_patterns = [
+                r'\b0412\s+\d{3,7}\b',
+                r'\b0416\s+\d{3,7}\b', 
+                r'\b0426\s+\d{3,7}\b',
+                r'\b0414\s+\d{3,7}\b',
+                r'\b0424\s+\d{3,7}\b'
+            ]
+            
             telefono_encontrado = False
-            for pattern in telefono_patterns:
+            logger.info(f"📱 MANDATO 5/X: Iniciando búsqueda directa de teléfonos venezolanos en texto: '{texto_completo[:200]}...'")
+            
+            # PRIMERA FASE: Búsqueda directa sin keywords
+            for pattern in telefono_directo_patterns:
                 matches = re.findall(pattern, texto_completo, re.IGNORECASE)
-                for match in matches:
-                    telefono_str = re.sub(r'[^\d+]', '', match.strip())  # Limpiar caracteres no numéricos
-                    
-                    # VALIDACIÓN BINARIA OBLIGATORIA: AMBAS condiciones DEBEN cumplirse
-                    es_formato_internacional = telefono_str.startswith('+58') and len(telefono_str) == 13
-                    es_formato_nacional = len(telefono_str) == 11 and any(telefono_str.startswith(prefijo) for prefijo in prefijos_validos)
-                    
-                    if es_formato_internacional:
-                        # Convertir formato internacional a nacional
-                        telefono_nacional = '0' + telefono_str[3:]
-                        if any(telefono_nacional.startswith(prefijo) for prefijo in prefijos_validos):
-                            extraccion_empresa['datosbeneficiario']['telefono'] = telefono_nacional
-                            extraccion_empresa['campos_detectados'] += 1
-                            telefono_encontrado = True
-                            logger.info(f"📱 TELÉFONO VENEZOLANO VÁLIDO (internacional): {telefono_str} → {telefono_nacional}")
-                            break
-                    elif es_formato_nacional:
-                        # Verificar que NO es la referencia ya extraída
-                        if telefono_str != extraccion_empresa.get('referencia', ''):
-                            extraccion_empresa['datosbeneficiario']['telefono'] = telefono_str
-                            extraccion_empresa['campos_detectados'] += 1
-                            telefono_encontrado = True
-                            logger.info(f"📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): {telefono_str}")
-                            break
-                    else:
-                        # MANDATO CRÍTICO: RECHAZO ABSOLUTO - NO asignar a teléfono
-                        # BAJO NINGUNA CIRCUNSTANCIA debe ser asignado a datosbeneficiario.telefono
-                        logger.info(f"📱 NÚMERO RECHAZADO DEFINITIVAMENTE (no es teléfono venezolano): {telefono_str}")
-                        # Re-dirigir a referencia si cumple patrón y no se ha extraído
-                        if not extraccion_empresa.get('referencia') and len(telefono_str) >= 8:
-                            extraccion_empresa['referencia'] = telefono_str
-                            extraccion_empresa['campos_detectados'] += 1
-                            logger.info(f"📋 REDIRIGIDO A REFERENCIA: {telefono_str}")
-                    
+                if matches:
+                    for match in matches:
+                        telefono_str = re.sub(r'[^\d]', '', match.strip())  # Limpiar espacios y conservar solo dígitos
+                        
+                        # VALIDACIÓN: Debe tener exactamente 11 dígitos y prefijo válido
+                        if len(telefono_str) == 11 and any(telefono_str.startswith(prefijo) for prefijo in prefijos_validos):
+                            # Verificar que NO es la referencia ya extraída
+                            if telefono_str != extraccion_empresa.get('referencia', ''):
+                                extraccion_empresa['datosbeneficiario']['telefono'] = telefono_str
+                                extraccion_empresa['campos_detectados'] += 1
+                                telefono_encontrado = True
+                                logger.info(f"📱 MANDATO 5/X COMPLETADO: Teléfono extraído por búsqueda directa: '{match}' → {telefono_str}")
+                                break
+                        else:
+                            logger.warning(f"📱 MANDATO 5/X: Patrón encontrado pero no válido: '{match}' → {telefono_str} (longitud: {len(telefono_str)})")
+                
                 if telefono_encontrado:
                     break
+            
+            # SEGUNDA FASE: Búsqueda con keywords (solo si no encontró en fase directa)
+            if not telefono_encontrado:
+                logger.info(f"📱 MANDATO 5/X: Fase directa sin resultados, iniciando búsqueda con keywords")
+                
+                # MANDATO CRÍTICO #1: VALIDACIÓN BINARIA OBLIGATORIA DE TELÉFONOS VENEZOLANOS
+                # REASON: 48311146148 persiste - implementar RECHAZO ABSOLUTO siguiendo mandato
+                # IMPACT: PUNTO DE CONTROL ÚNICO para validación estricta de teléfonos
+                for pattern in telefono_patterns:
+                    matches = re.findall(pattern, texto_completo, re.IGNORECASE)
+                    for match in matches:
+                        telefono_str = re.sub(r'[^\d+]', '', match.strip())  # Limpiar caracteres no numéricos
+                        
+                        # VALIDACIÓN BINARIA OBLIGATORIA: AMBAS condiciones DEBEN cumplirse
+                        es_formato_internacional = telefono_str.startswith('+58') and len(telefono_str) == 13
+                        es_formato_nacional = len(telefono_str) == 11 and any(telefono_str.startswith(prefijo) for prefijo in prefijos_validos)
+                        
+                        if es_formato_internacional:
+                            # Convertir formato internacional a nacional
+                            telefono_nacional = '0' + telefono_str[3:]
+                            if any(telefono_nacional.startswith(prefijo) for prefijo in prefijos_validos):
+                                extraccion_empresa['datosbeneficiario']['telefono'] = telefono_nacional
+                                extraccion_empresa['campos_detectados'] += 1
+                                telefono_encontrado = True
+                                logger.info(f"📱 TELÉFONO VENEZOLANO VÁLIDO (internacional): {telefono_str} → {telefono_nacional}")
+                                break
+                        elif es_formato_nacional:
+                            # Verificar que NO es la referencia ya extraída
+                            if telefono_str != extraccion_empresa.get('referencia', ''):
+                                extraccion_empresa['datosbeneficiario']['telefono'] = telefono_str
+                                extraccion_empresa['campos_detectados'] += 1
+                                telefono_encontrado = True
+                                logger.info(f"📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): {telefono_str}")
+                                break
+                        else:
+                            # MANDATO CRÍTICO: RECHAZO ABSOLUTO - NO asignar a teléfono
+                            # BAJO NINGUNA CIRCUNSTANCIA debe ser asignado a datosbeneficiario.telefono
+                            logger.info(f"📱 NÚMERO RECHAZADO DEFINITIVAMENTE (no es teléfono venezolano): {telefono_str}")
+                            # Re-dirigir a referencia si cumple patrón y no se ha extraído
+                            if not extraccion_empresa.get('referencia') and len(telefono_str) >= 8:
+                                extraccion_empresa['referencia'] = telefono_str
+                                extraccion_empresa['campos_detectados'] += 1
+                                logger.info(f"📋 REDIRIGIDO A REFERENCIA: {telefono_str}")
+                        
+                    if telefono_encontrado:
+                        break
             
             # EXTRACCIÓN DE FECHA DE PAGO
             fecha_patterns = [

@@ -1,0 +1,89 @@
+Contexto del Mandato:
+Hemos completado las correcciones críticas de las fases anteriores, y el sistema está operando con una base sólida. Nuestra atención se centra ahora en la "Integridad Total" y en lograr una cobertura de extracción del 100% para los campos estándar, asegurando que todos los datos esperados sean capturados con la precisión ya lograda en los campos principales.
+
+OBJETIVO GENERAL DEL MANDATO 5/X:
+Capturar los campos que aún están ausentes o son ambiguos, consolidando su propósito y garantizando que se integren de forma coherente con la extracción existente.
+
+PROBLEMAS PENDIENTES IDENTIFICADOS (basado en la última ejecución exitosa con 20250709-J--21760390085035@lid_Luis_07-56_20250709_221748_182.png.json):
+
+Campo telefono Vacío: El original_text_ocr (0412 244) sugiere la presencia de un número telefónico que no se extrae.
+
+Campo banco_destino Vacío: Es un campo importante no capturado.
+
+Campo pago_fecha Vacío / Clarificación: Este campo está vacío mientras fecha_operacion sí se extrae. Necesitamos definir su propósito.
+
+ACCIONES REQUERIDAS PARA EL AGENTE REPLIT (Priorizadas):
+
+PRIORIDAD 1: EXTRACCIÓN DE telefono
+
+Análisis: Inspeccionar el original_text_ocr de la imagen 20250709-J--21760390085035@lid_Luis_07-56_20250709_221748_182.png para identificar el patrón del número de teléfono (0412 244).
+
+Acción:
+
+Abrir y modificar extraction_rules.json.
+
+Localizar o crear la regla para el campo telefono.
+
+Ajustar keywords: Incluir variaciones como "Telf.:", "Teléfono:", "Celular:", "Contacto:", o patrones que capturen el prefijo (04xx).
+
+Crear/Ajustar value_regex_patterns: Desarrollar un regex robusto para números de teléfono venezolanos (ej., 0\d{3}\s?\d{7} o 0\d{3}-\d{7}, adaptando si hay otros formatos en el documento).
+
+Ajustar search_window_relative_px y añadir exclusion_patterns si es necesario para evitar capturas erróneas de otros números.
+
+Verificación:
+
+Procesar la imagen de prueba: 20250709-J--21760390085035@lid_Luis_07-56_20250709_221748_182.png.
+
+Confirmar que el campo telefono se extrae correctamente (esperado: "0412 244"). Reportar el valor extraído.
+
+PRIORIDAD 2: EXTRACCIÓN DE banco_destino
+
+Análisis: Inspeccionar el original_text_ocr de la imagen 20250709-J--21760390085035@lid_Luis_07-56_20250709_221748_182.png para determinar si el nombre del banco destino o un código de banco está presente y es extraíble.
+
+Acción:
+
+Si el banco destino es visible y esperable en este documento:
+
+Abrir y modificar extraction_rules.json.
+
+Crear o ajustar la regla para el campo banco_destino.
+
+Definir keywords: Ej., "Banco Destino:", "Cta. Destino:", "Banco Beneficiario:", "Entidad:", o patrones para nombres de bancos conocidos en Venezuela (ej. "Mercantil", "Banesco", "Venezuela").
+
+Definir value_regex_patterns: Para nombres de bancos o códigos (ej., \b\d{4}\b para códigos de banco si aplica).
+
+Si no es visible en el OCR de la imagen de prueba:
+
+Documentar esta ausencia y justificar por qué no se puede extraer de este documento.
+
+Verificación:
+
+Procesar la imagen de prueba: 20250709-J--21760390085035@lid_Luis_07-56_20250709_221748_182.png.
+
+Reportar si banco_destino se extrae o confirmar su validada ausencia y la razón.
+
+PRIORIDAD 3: CLARIFICACIÓN Y POTENCIAL EXTRACCIÓN DE pago_fecha
+
+Análisis:
+
+Comparar pago_fecha y fecha_operacion en el contexto del original_text_ocr de la imagen de prueba.
+
+Determinar si pago_fecha representa una fecha distinta a fecha_operacion (20/06/ 2025) o si es redundante.
+
+Acción:
+
+Propuesta de Decisión (para tu aprobación): Basado en el original_text_ocr actual, 20/06/ 2025 parece ser la única fecha relevante. Proponemos que pago_fecha se considere redundante con fecha_operacion.
+
+Si es Redundante (y aprobado por ti): Considerar eliminar la extracción activa de pago_fecha para evitar campos duplicados y mantener el JSON final limpio. Podríamos unificar su lógica bajo fecha_operacion si en algún caso pudiera haber un alias.
+
+Si es Distinto (y hay otra fecha visible que deba capturar): Identificar la otra fecha y crear una regla específica en extraction_rules.json para pago_fecha.
+
+Verificación:
+
+Una vez que tú (el usuario) confirmes la decisión sobre la redundancia/distinción, proceder con la acción correspondiente y verificar el resultado en el JSON procesado.
+
+Recordatorio de Filosofía:
+Cada ajuste debe mantener la INTEGRIDAD TOTAL del JSON de salida, sin afectar la precisión de los campos ya correctamente extraídos y contribuyendo a la Perfección Continua del sistema.
+
+¡Comienza con la Prioridad 1 y reporta tus hallazgos antes de proceder con las siguientes!
+

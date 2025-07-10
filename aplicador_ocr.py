@@ -2025,6 +2025,11 @@ class AplicadorOCR:
                 field_name = field_config.get('field_name')
                 if not field_name:
                     continue
+                
+                # MANDATO 5/X: Logging específico para telefono
+                if field_name == 'telefono':
+                    logger.info(f"📱 MANDATO 5/X: Procesando campo telefono con {len(field_config.get('rules', []))} reglas refinadas")
+                
                 extracted_value = self._extract_field_by_refined_rules(
                     field_name, field_config, word_data, full_text, global_settings, document_regions
                 )
@@ -2032,9 +2037,15 @@ class AplicadorOCR:
                 if extracted_value:
                     extracted_fields[field_name] = extracted_value
                     logger.debug(f"✅ Campo {field_name} extraído: {extracted_value}")
+                    # MANDATO 5/X: Logging específico para telefono exitoso
+                    if field_name == 'telefono':
+                        logger.info(f"📱 MANDATO 5/X EXITOSO: Teléfono extraído correctamente: {extracted_value}")
                 else:
                     extracted_fields[field_name] = ""
                     logger.debug(f"❌ Campo {field_name} no encontrado")
+                    # MANDATO 5/X: Logging específico para telefono fallo
+                    if field_name == 'telefono':
+                        logger.warning(f"📱 MANDATO 5/X FALLIDO: Campo telefono vacío a pesar de reglas refinadas")
             
             logger.info(f"🎯 Extracción GRANULAR completada: {len([v for v in extracted_fields.values() if v])} campos encontrados")
             
@@ -2176,6 +2187,20 @@ class AplicadorOCR:
             
             # Filtrar palabras por región si está configurado
             prioritized_words = self._filter_words_by_region_priority(word_data, document_regions, region_priority)
+            
+            # MANDATO 5/X: Manejar reglas sin keywords (búsqueda directa de patrones)
+            if not keywords:
+                logger.debug(f"📱 {rule_id}: Búsqueda directa de patrones sin keywords (MANDATO 5/X)")
+                # Ir directamente al fallback de texto plano para búsqueda de patrones
+                extracted_value = self._extract_value_from_text_fallback(
+                    full_text, keywords, value_patterns, exclusion_patterns
+                )
+                if extracted_value:
+                    logger.info(f"📱 MANDATO 5/X COMPLETADO: {rule_id} extraído '{extracted_value}' con búsqueda directa")
+                    return extracted_value
+                else:
+                    logger.debug(f"❌ {rule_id}: No se encontraron patrones directos")
+                    return ""
             
             # Buscar keywords con validación de confianza
             keyword_matches = self._find_keywords_with_confidence(
@@ -2400,10 +2425,29 @@ class AplicadorOCR:
         import re
         
         try:
-            # Buscar keywords en el texto completo
+            # MANDATO 5/X: Búsqueda directa de patrones sin keywords (para teléfonos aislados)
+            if not keywords or keywords == [""]:
+                logger.debug("📱 MANDATO 5/X: Búsqueda directa de patrones sin keywords")
+                for pattern in value_patterns:
+                    try:
+                        matches = re.findall(pattern, full_text, re.IGNORECASE)
+                        if matches:
+                            extracted = matches[0] if isinstance(matches[0], str) else matches[0][0] if matches[0] else ""
+                            # Verificar exclusiones
+                            if not self._contains_exclusion_patterns(extracted, exclusion_patterns):
+                                logger.info(f"📱 MANDATO 5/X COMPLETADO: Teléfono extraído '{extracted}' con patrón directo '{pattern}'")
+                                return extracted.strip()
+                    except Exception as e:
+                        logger.warning(f"⚠️ Error en regex pattern directo '{pattern}': {e}")
+                        continue
+            
+            # Buscar keywords en el texto completo (método original)
             text_lower = full_text.lower()
             
             for keyword in keywords:
+                if not keyword:  # Skip empty keywords
+                    continue
+                    
                 keyword_lower = keyword.lower()
                 
                 # Buscar keyword en texto
@@ -2442,6 +2486,35 @@ class AplicadorOCR:
         IMPACT: Extracción precisa usando múltiples estrategias configurables
         """
         try:
+            # MANDATO 5/X: Corrección específica para teléfonos venezolanos en motor legacy
+            if field_name == "telefono":
+                logger.info(f"📱 MANDATO 5/X LEGACY: Activando búsqueda directa de teléfonos venezolanos")
+                telefono_patterns = [
+                    r'\b0412\s+\d{3,7}\b',
+                    r'\b0416\s+\d{3,7}\b', 
+                    r'\b0426\s+\d{3,7}\b',
+                    r'\b0414\s+\d{3,7}\b',
+                    r'\b0424\s+\d{3,7}\b'
+                ]
+                
+                import re
+                for pattern in telefono_patterns:
+                    try:
+                        matches = re.findall(pattern, full_text, re.IGNORECASE)
+                        if matches:
+                            extracted = matches[0].strip()
+                            # Verificar que no contenga exclusiones
+                            exclusions = ["Cuenta", "Referencia", "Monto", "Fecha", "C.I.", "RIF"]
+                            excluded = any(excl.lower() in extracted.lower() for excl in exclusions)
+                            if not excluded:
+                                logger.info(f"📱 MANDATO 5/X LEGACY COMPLETADO: Teléfono extraído '{extracted}' con patrón '{pattern}'")
+                                return extracted
+                    except Exception as e:
+                        logger.warning(f"⚠️ Error en patrón teléfono legacy '{pattern}': {e}")
+                        continue
+                
+                logger.warning(f"📱 MANDATO 5/X LEGACY: No se encontraron teléfonos venezolanos en texto")
+            
             patterns = field_config.get('patterns', [])
             proximity_keywords = field_config.get('proximity_keywords', [])
             fuzzy_enabled = field_config.get('fuzzy_matching', False)
