@@ -1,0 +1,61 @@
+🚀 INICIO DEL MANDATO 8: INTEGRACIÓN Y VISUALIZACIÓN DE DATOS EXTRAÍDOS EN EL FRONTEND
+FILOSOFÍA FUNDAMENTAL (Guía de Operación para el Frontend):
+INTEGRIDAD TOTAL: La representación visual de los datos en el frontend debe ser un reflejo exacto y sin ambigüedades de la información extraída por el backend. No se permitirá ninguna distorsión, omisión o adición de datos que comprometa la veracidad. Cero discrepancias entre el JSON de salida y lo que ve el usuario.
+
+PERFECCIÓN CONTINUA: La interfaz de usuario debe ser intuitiva, eficiente y adaptable. Buscaremos la excelencia en la presentación de datos, asegurando que la información crítica sea legible y accesible.
+
+ZERO-FAULT DETECTION: Anticipar y resolver cualquier problema de visualización, mapeo de datos o interacción que pueda surgir entre el backend y el frontend. La UX debe ser impecable.
+
+TRANSPARENCIA TOTAL: Los datos de confianza, los metadatos y las banderas de validación (ej. logica_oro_aplicada) deben ser visibles o accesibles, permitiendo al usuario entender el origen y la calidad de la extracción.
+
+OBJETIVO PRINCIPAL DEL MANDATO 8:
+Asegurar que todos los datos estructurados extraídos por el sistema OCR (especialmente los campos críticos optimizados en el Mandato 7) se consuman correctamente desde el JSON de salida del backend y se visualicen de manera clara, precisa y amigable en el frontend, garantizando una experiencia de usuario robusta y confiable.
+
+SUB-OBJETIVOS Y ESTRATEGIAS DETALLADAS:
+Consumo Robusto del JSON de Salida:
+
+Verificar que el frontend realiza peticiones correctas a los endpoints del backend (/api/extract_results) para obtener el JSON con los datos procesados.
+
+Asegurar un manejo eficiente de la respuesta JSON, incluyendo la gestión de posibles errores de la API.
+
+Confirmar que la estructura JSON compleja es parseada e interpretada correctamente por el frontend.
+
+Mapeo y Visualización de Campos Críticos:
+
+Validar la visualización de valor_referencia_operacion, fecha_operacion, monto_total, concepto_motivo y datos_beneficiario (incluyendo banco_origen y cedula_beneficiario) en sus respectivas secciones del dashboard o interfaz de visualización.
+
+Asegurar la consistencia del formato de los datos extraídos (ej. 210.00 para montos, DD/MM/YYYY para fechas) con la representación en el frontend.
+
+Implementar o verificar que existen áreas designadas y claras para cada uno de estos campos en la interfaz de usuario.
+
+Experiencia de Usuario (UX) Mejorada:
+
+Visualización de Confianza: Mostrar o indicar visualmente la confianza_promedio de la extracción general y, si es posible, la confianza individual de cada campo crítico.
+
+Manejo de Campos Faltantes: Definir cómo el frontend debe representar un campo que no pudo ser extraído (null o "" en el JSON), evitando errores de visualización o espacios vacíos confusos.
+
+Acceso a Datos Brutos y Contexto: Si no está implementado, considerar la posibilidad de que el usuario pueda ver el original_text_ocr y/o la imagen original para contextualizar la extracción.
+
+Diseño Responsivo: Asegurar que la visualización sea efectiva en diferentes tamaños de pantalla (aunque esto es más una mejora general de UI).
+
+Integración y Adaptación del Frontend:
+
+Si el frontend existente ya está diseñado para un enlace dinámico con el backend y solo necesita un mapeo de datos:
+
+Procederemos a verificar que los datos se visualizan correctamente, realizando pruebas exhaustivas con los JSON de salida del Mandato 7.
+
+Se informará cualquier ajuste menor necesario en el frontend (ej. etiquetas, formatos de display).
+
+Si el frontend NO está completamente diseñado para consumir o visualizar dinámicamente los nuevos campos o la estructura de JSON tal como la estamos generando:
+
+Identificaremos y detallaremos las modificaciones necesarias en el código del frontend (ej. añadir componentes de UI, lógica de parsing en JS, etc.) para que los datos puedan ser consumidos y mostrados.
+
+Este paso implicaría un plan de desarrollo específico para la adaptación del frontend.
+
+RESULTADOS ESPERADOS (EVIDENCIA):
+Confirmación Operacional: Informe detallado confirmando la correcta comunicación entre backend y frontend y la visualización de datos.
+
+Capturas/Descripciones de UI: Descripciones precisas de cómo se visualizan los datos en el dashboard, incluyendo la verificación de todos los campos críticos.
+
+Lista de Modificaciones (si aplica): Un log de cualquier cambio necesario realizado en el código del frontend para lograr la visualización o las adaptaciones de integración.
+

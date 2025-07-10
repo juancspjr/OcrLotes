@@ -999,6 +999,7 @@ def get_result_data(filename):
                 texto_completo = source.strip()
                 logger.debug(f"Texto encontrado en fuente: {len(texto_completo)} caracteres")
                 break
+                break
         
         # Extraer coordenadas desde múltiples ubicaciones
         coordenadas = []
@@ -1014,9 +1015,10 @@ def get_result_data(filename):
                 coordenadas = source
                 break
         
-        # Extraer palabras individuales
-        palabras_individuales = []
+        # MANDATO 8: Extraer palabras detectadas para calcular confidence_avg
+        palabras_detectadas = []
         palabras_sources = [
+            datos_extraidos.get('palabras_detectadas', []),
             datos_extraidos.get('palabras_individuales', []),
             result_data.get('ocr_data', {}).get('palabras_individuales', []),
             result_data.get('palabras_individuales', []),
@@ -1025,8 +1027,23 @@ def get_result_data(filename):
         
         for source in palabras_sources:
             if source and isinstance(source, list) and len(source) > 0:
-                palabras_individuales = source
+                palabras_detectadas = source
                 break
+        
+        # MANDATO 8: Calcular confidence_avg real desde palabras detectadas
+        confidence_avg = 0
+        if palabras_detectadas:
+            confidences = []
+            for word in palabras_detectadas:
+                if isinstance(word, dict):
+                    conf = word.get('confianza', word.get('confidence', 0))
+                    if conf > 0:
+                        confidences.append(conf)
+            if confidences:
+                confidence_avg = sum(confidences) / len(confidences)
+        
+        # Extraer palabras individuales (mantener compatibilidad)
+        palabras_individuales = palabras_detectadas
         
         # Extraer datos financieros
         datos_financieros = datos_extraidos.get('datos_financieros', {})
@@ -1046,7 +1063,8 @@ def get_result_data(filename):
             'estadisticas': {
                 'tiempo_procesamiento': f"{result_data.get('tiempo_procesamiento', 0):.2f}s",
                 'total_palabras': estadisticas.get('total_palabras', len(palabras_individuales)),
-                'confianza_promedio': f"{calidad_extraccion.get('confianza_promedio', 0):.1f}%",
+                'confianza_promedio': f"{calidad_extraccion.get('confianza_promedio', confidence_avg):.1f}%",
+                'confidence_avg': round(confidence_avg, 2),  # MANDATO 8: Campo específico para frontend
                 'calidad_categoria': calidad_extraccion.get('categoria', 'N/A'),
                 'palabras_alta_confianza': estadisticas.get('palabras_alta_confianza', 0),
                 'palabras_baja_confianza': estadisticas.get('palabras_baja_confianza', 0)
