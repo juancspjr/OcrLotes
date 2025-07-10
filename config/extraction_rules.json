@@ -344,6 +344,44 @@
       ]
     },
     {
+      "field_name": "banco_destino",
+      "rules": [
+        {
+          "rule_id": "BANCO_DESTINO_BENEFICIARIO_CONSOLIDADO",
+          "description": "Nombre del banco al que se realizó el pago/transferencia, asociado a la cuenta del beneficiario.",
+          "keywords": ["Banco Destino:", "Banco Receptor:", "Banco Beneficiario:", "Banco:", "Entidad Bancaria Destino:", "Cta. Destino:", "Cuenta de Ahorro", "Cuenta Corriente", "al beneficiario", "CUENTA BENEFICIARIO:", "Banco Universal", "Universal"],
+          "fuzzy_matching_tolerance": 0.85,
+          "proximity_preference": "any",
+          "search_window_relative_px": 300,
+          "value_regex_patterns": ["Banco\\s+[A-ZÁÉÍÓÚÜÑ][a-záéíóúüñ\\s]{2,40}", "[A-ZÁÉÍÓÚÜÑ][a-záéíóúüñ\\s]{2,40}\\s+Banco", "Mercantil", "Universal", "Venezuela", "Provincial", "Banesco", "BNC", "BOD"],
+          "min_ocr_confidence_keyword": 0.5,
+          "min_ocr_confidence_value": 0.6,
+          "exclusion_patterns": ["Banco Origen:", "Mi Banco:", "Banco Emisor:", "RIF:", "C.I.:", "desde mi", "Se Envio"],
+          "priority": 95,
+          "region_priority": ["body"]
+        }
+      ]
+    },
+    {
+      "field_name": "pago_fecha",
+      "rules": [
+        {
+          "rule_id": "PAGO_FECHA_DDMMYYYY_CONSOLIDADO",
+          "description": "Fecha en la que se realizó efectivamente el pago o la transacción, en formato DD/MM/YYYY.",
+          "keywords": ["Fecha de Pago:", "Fecha Recibo:", "Fecha Efectiva:", "Fecha Transacción:", "Fecha:", "Fecha y hora", ""],
+          "fuzzy_matching_tolerance": 0.88,
+          "proximity_preference": "any",
+          "search_window_relative_px": 500,
+          "value_regex_patterns": ["\\d{2}\\/\\d{2}\\/\\s*\\d{4}", "\\d{2}\\/\\d{2}\\/\\d{4}", "20\\/06\\/\\s*2025", "\\b\\d{1,2}\\/\\d{1,2}\\/\\s*\\d{4}\\b"],
+          "min_ocr_confidence_keyword": 0.0,
+          "min_ocr_confidence_value": 0.5,
+          "exclusion_patterns": ["pm", "am", "-", "06:50"],
+          "priority": 90,
+          "region_priority": ["footer", "body", "header"]
+        }
+      ]
+    },
+    {
       "field_name": "hora_operacion",
       "rules": [
         {

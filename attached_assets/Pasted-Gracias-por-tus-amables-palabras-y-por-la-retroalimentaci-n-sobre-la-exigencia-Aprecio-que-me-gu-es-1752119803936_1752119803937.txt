@@ -1,0 +1,109 @@
+Gracias por tus amables palabras y por la retroalimentación sobre la exigencia. Aprecio que me guíes para mejorar continuamente y aplicar la filosofía de Integridad Total en cada paso. Tienes toda la razón, la exigencia debe ser constante para ambos, y la coherencia en la aplicación de los principios es clave para el éxito del proyecto.
+
+Aquí te presento el Mandato 5/X - Fase 2 & 3 en formato Markdown, enfocado en la mejora de la extracción de banco_destino y pago_fecha, siguiendo nuestra filosofía:
+
+MANDATO 5/X: Optimización de Extracción de Campos Críticos (Fases 2 y 3)
+FECHA DE EMISIÓN: 10 de Julio de 2025
+FILOSOFÍA APLICADA: Integridad Total, Perfección Continua y Zero-Fault Detection.
+ESTADO ACTUAL: ✅ Pendiente de Implementación de Fases 2 y 3.
+
+OBJETIVO GENERAL DEL MANDATO
+Asegurar la extracción precisa y confiable de los campos banco_destino y pago_fecha, garantizando la completitud y coherencia de los datos estructurados en el JSON final, vital para la auditoría y análisis financiero.
+
+FASE 2: EXTRACCIÓN DE banco_destino
+1. PROBLEMA IDENTIFICADO (REITERACIÓN)
+Campo: banco_destino
+
+Estado Actual: Vacío en el JSON de salida (e.g., "banco_destino": "").
+
+Observación: Aunque el original_text_ocr contiene la información del banco de destino (ej., "Banco Mercantil" en el contexto del beneficiario), el sistema actual no lo extrae consistentemente como banco_destino, sino que a veces lo confunde o lo omite, o lo extrae únicamente como banco_origen cuando son el mismo banco.
+
+Impacto: Pérdida de información crucial para la trazabilidad y conciliación de transacciones, violando el principio de Integridad Total de los datos.
+
+2. CAUSA RAÍZ
+Ausencia de una regla de extracción específica y suficientemente robusta en extraction_rules.json que distinga el banco de destino del banco de origen y lo capture en su contexto apropiado (ej., después de "beneficiario" o cuentas de destino).
+
+3. ACCIONES PROPUESTAS (REITERACIÓN Y EXIGENCIA)
+IMPLEMENTACIÓN DE REGLA CRÍTICA:
+
+Acción: El Agente Replit DEBE añadir la siguiente regla al array extraction_rules dentro del archivo config/extraction_rules.json.
+
+Justificación (Perfección Continua): Esta regla ha sido diseñada para identificar el banco_destino de forma inteligente, utilizando palabras clave de contexto (keywords), patrones de expresión regular (value_regex_patterns) y exclusion_patterns para evitar falsos positivos y asegurar la separación lógica de banco_origen.
+
+JSON
+
+{
+  "field_name": "banco_destino",
+  "rules": [
+    {
+      "rule_id": "BANCO_DESTINO_BENEFICIARIO_CONSOLIDADO",
+      "description": "Nombre del banco al que se realizó el pago/transferencia, asociado a la cuenta del beneficiario.",
+      "keywords": ["Banco Destino:", "Banco Receptor:", "Banco Beneficiario:", "Banco:", "Entidad Bancaria Destino:", "Cta. Destino:", "Cuenta de Ahorro", "Cuenta Corriente", "al beneficiario", "CUENTA BENEFICIARIO:"],
+      "fuzzy_matching_tolerance": 0.85,
+      "proximity_preference": "horizontal_right",
+      "search_window_relative_px": 300,
+      "value_regex_patterns": ["(Banco|Bco)\\s*[A-ZÁÉÍÓÚÜÑ\\s]{3,50}", "^[A-ZÁÉÍÓÚÜÑ\\s]{3,50}\\s*(Banco|Bco)$"],
+      "min_ocr_confidence_keyword": 0.7,
+      "min_ocr_confidence_value": 0.75,
+      "exclusion_patterns": ["Banco Origen:", "Mi Banco:", "Banco Emisor:", "RIF:", "C.I.:"],
+      "priority": 95,
+      "region_priority": ["body"]
+    }
+  ]
+}
+4. RESULTADO ESPERADO (Zero-Fault Detection)
+banco_destino será extraído correctamente del original_text_ocr en el JSON de salida, reflejando el banco al que se destinó la transacción.
+
+Se validará que no haya conflicto o duplicidad errónea con el banco_origen.
+
+FASE 3: EXTRACCIÓN DE pago_fecha
+1. PROBLEMA IDENTIFICADO
+Campo: pago_fecha
+
+Estado Actual: Vacío en el JSON de salida (e.g., "pago_fecha": "").
+
+Observación: Existe la fecha_operacion que ya se extrae ("fecha_operacion": "20/06/2025"), pero en algunos documentos puede haber una fecha de pago explícita o una fecha adicional que sea relevante. Para este caso, el original_text_ocr contiene "20/06/ 2025" dos veces, una para la operación y otra al final del texto. Necesitamos una regla que priorice la "fecha de pago" si existe una diferenciación.
+
+2. CAUSA RAÍZ
+Ausencia de una regla de extracción específica para pago_fecha en extraction_rules.json que capture fechas en un contexto de "pago" o "transacción final", o que diferencie entre fecha de operación y fecha de pago si ambas están presentes.
+
+3. ACCIONES PROPUESTAS
+DEFINICIÓN DE LA REGLA pago_fecha:
+
+Acción: El Agente Replit DEBE añadir la siguiente regla al array extraction_rules dentro del archivo config/extraction_rules.json.
+
+Justificación (Integridad Total): Esta regla se centrará en patrones de fecha específicos (value_regex_patterns) y palabras clave (keywords) que usualmente acompañan a la fecha de pago, como "Fecha de Pago", "Fecha del recibo" o simplemente la última fecha encontrada en el documento que sea una fecha válida.
+
+JSON
+
+{
+  "field_name": "pago_fecha",
+  "rules": [
+    {
+      "rule_id": "PAGO_FECHA_DDMMYYYY_CONSOLIDADO",
+      "description": "Fecha en la que se realizó efectivamente el pago o la transacción, en formato DD/MM/YYYY.",
+      "keywords": ["Fecha de Pago:", "Fecha Recibo:", "Fecha Efectiva:", "Fecha Transacción:", "Fecha:", "Fecha y hora"],
+      "fuzzy_matching_tolerance": 0.88,
+      "proximity_preference": "horizontal_right",
+      "search_window_relative_px": 200,
+      "value_regex_patterns": ["^\\d{2}\\/\\d{2}\\/\\d{4}$", "\\b\\d{2}\\/\\d{2}\\/\\d{4}\\b"],
+      "min_ocr_confidence_keyword": 0.75,
+      "min_ocr_confidence_value": 0.8,
+      "exclusion_patterns": ["Hora:", "Referencia:", "Monto:", "Operación:", "Nro. Operación"],
+      "priority": 90,
+      "region_priority": ["footer", "body"]
+    }
+  ]
+}
+4. RESULTADO ESPERADO (Perfección Continua)
+pago_fecha será extraído correctamente en el formato DD/MM/YYYY en el JSON de salida.
+
+Se priorizará la fecha de pago específica si existe y se diferenciará de fecha_operacion cuando sea necesario, enriqueciendo la granularidad de los datos.
+
+PRÓXIMOS PASOS CRÍTICOS (FILOSOFÍA: PERFECCIÓN CONTINUA)
+Confirmación de Implementación: El Agente Replit DEBE confirmar la adición de ambas reglas (banco_destino y pago_fecha) en config/extraction_rules.json.
+
+Nueva Ejecución de Prueba: Se requerirá el procesamiento de la misma imagen de ejemplo (o una similar que contenga ambos campos) para validar que la extracción de banco_destino y pago_fecha sea exitosa y coherente.
+
+Análisis Post-Ejecución: Se realizará un análisis detallado del JSON resultante para confirmar la correcta extracción de los nuevos campos y la no introducción de regresiones.
+

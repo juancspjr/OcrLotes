@@ -1,0 +1,30 @@
+{
+  "filename_original": "test_fecha_mandato3.png",
+  "filename_final": "test_fecha_mandato3_20250710_040004_820.png",
+  "request_id": "test_fecha_mandato3.png",
+  "upload_timestamp": "2025-07-10T04:00:04.820341",
+  "file_size": 40639,
+  "numerosorteo": "",
+  "idWhatsapp": "",
+  "nombre": "",
+  "horamin": "",
+  "fechasorteo": "20250710",
+  "texto_mensaje_whatsapp": "Archivo sin formato WhatsApp válido: test_fecha_mandato3_20250710_040004_820.png",
+  "caption": "Archivo sin formato WhatsApp válido: test_fecha_mandato3_20250710_040004_820.png",
+  "otro_valor": "subir_con_metadata",
+  "form_data_used": false,
+  "whatsapp_metadata": {
+    "numerosorteo": "",
+    "fechasorteo": "",
+    "idWhatsapp": "",
+    "nombre": "",
+    "horamin": "",
+    "extension": "png",
+    "sorteo_fecha": "",
+    "sorteo_conteo": "",
+    "sender_id": "",
+    "sender_name": "",
+    "hora_min": "",
+    "texto_mensaje_whatsapp": "Archivo sin formato WhatsApp válido: test_fecha_mandato3_20250710_040004_820.png"
+  }
+}
