@@ -298,6 +298,49 @@ PREPROCESSING_CONFIG = {
     'sharpening_kernel': [[-1, -1, -1], [-1, 9, -1], [-1, -1, -1]],
     
     # FIX: Nuevas técnicas avanzadas de mejora más allá del upscaling
+    'enable_advanced_enhancement': True,
+    'super_resolution_factor': 1.5,
+    'intelligent_cropping': True,
+    'adaptive_brightness_enhancement': True,
+    'text_region_detection': True,
+    'multi_scale_processing': True
+}
+
+# MANDATO 4: Configuración de Geometría Dinámica para Procesamiento Espacial OCR
+# REASON: Habilitar procesamiento espacial inteligente con líneas lógicas
+# IMPACT: Mejora significativa en extracción de datos mediante análisis geométrico
+DYNAMIC_GEOMETRY_CONFIG = {
+    'enabled': True,  # Habilitar procesamiento espacial
+    'line_grouping_tolerance': 15,  # Píxeles de tolerancia para agrupación de líneas
+    'vertical_alignment_threshold': 10,  # Umbral para alineación vertical
+    'horizontal_spacing_threshold': 50,  # Umbral para espaciado horizontal
+    'confidence_threshold': 0.7,  # Confianza mínima para procesamiento espacial
+    'min_words_per_line': 2,  # Mínimo de palabras por línea lógica
+    'max_line_height_variation': 0.3,  # Variación máxima de altura de línea
+    'search_radius_multiplier': 2.0,  # Multiplicador de radio de búsqueda
+    'proximity_weight': 0.6,  # Peso de proximidad espacial
+    'semantic_weight': 0.4,  # Peso de relevancia semántica
+    'region_analysis': {
+        'enabled': True,
+        'header_percentage': 0.3,  # Porcentaje superior para header
+        'footer_percentage': 0.2,  # Porcentaje inferior para footer
+        'body_percentage': 0.5     # Porcentaje medio para body
+    },
+    'spatial_search': {
+        'enabled': True,
+        'max_search_distance': 200,  # Distancia máxima de búsqueda en píxeles
+        'preferred_directions': ['right', 'below', 'left', 'above'],  # Direcciones preferidas
+        'direction_weights': {
+            'right': 1.0,
+            'below': 0.8,
+            'left': 0.6,
+            'above': 0.4
+        }
+    }
+}
+
+# Configuración avanzada para técnicas especiales
+ADVANCED_TECHNIQUES_CONFIG = {
     'advanced_techniques': {
         'clahe_enabled': True,  # Histogram equalization adaptativo
         'clahe_clip_limit': 2.0,

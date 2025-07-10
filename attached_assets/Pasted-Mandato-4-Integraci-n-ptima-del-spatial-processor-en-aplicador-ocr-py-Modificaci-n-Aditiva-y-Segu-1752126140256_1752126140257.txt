@@ -1,0 +1,157 @@
+Mandato 4: Integración Óptima del spatial_processor en aplicador_ocr.py (Modificación Aditiva y Segura)
+Principio Rector: Inmunidad al Error y Atomicidad. Cada modificación será un injerto funcional, preservando la robustez y la capacidad de rollback. Evitaremos la reescritura innecesaria, enfocándonos en la adición estratégica.
+
+Instrucciones de Alto Nivel para el Agente Replit:
+
+Backup Obligatorio: Antes de tocar aplicador_ocr.py, crea una copia de seguridad detallada y fechada.
+
+Importación Controlada: Añade el import de spatial_processor en el lugar adecuado.
+
+Generación de Líneas Lógicas: Introduce el llamado a spatial_processor.get_logical_lines justo después de obtener las coordenadas, con robustez para errores y disponibilidad de coordenadas.
+
+Flujo de Reglas Dual: Modifica el bucle de aplicación de reglas para priorizar la búsqueda espacial si la regla lo permite, pero siempre retroceder a la lógica lineal existente si la búsqueda espacial no es exitosa o aplicable.
+
+Detalles Precisos y Optimización para el Agente Replit:
+
+Validación Inicial y Backup (aplicador_ocr.py):
+
+Acción Requerida: Antes de proceder con cualquier modificación, el Agente Replit debe verificar la existencia y accesibilidad de aplicador_ocr.py.
+
+Punto de Control de Integridad Total: Crea una copia de seguridad timestamped del archivo aplicador_ocr.py. El nombre del archivo de backup debe ser aplicador_ocr.py.backup_PRE_SPATIAL_INTEGRATION_YYYYMMDD_HHMMSS. Esto permite una reversión instantánea si surge algún imprevisto, adhiriéndonos al principio de Zero-Fault Detection.
+
+Inyección de Importación (aplicador_ocr.py):
+
+Acción Requerida: Localiza la sección de importaciones al principio de aplicador_ocr.py.
+
+Ubicación Específica: Inserta import spatial_processor justo después de import config. Esto mantiene la organización lógica de los módulos internos del proyecto.
+
+Validación Post-Acción: Verifica que la línea de importación se haya añadido correctamente y que no haya afectado ninguna importación existente.
+
+Preparación de Datos Espaciales (_procesar_documento_con_reglas_empresariales en aplicador_ocr.py):
+
+Acción Requerida: Navega a la función _procesar_documento_con_reglas_empresariales.
+
+Punto de Inserción CRÍTICO: Localiza el bloque de código donde se asegura que word_coordinates esté disponible y sea válido (generalmente después de la llamada al OCR o la recuperación de caché, y después de cualquier procesamiento inicial de coordenadas). Por ejemplo, donde coordinates_available sea True o word_coordinates no esté vacío.
+
+Lógica de Inserción (Código Objetivo del Agente Replit):
+
+Python
+
+# --- INICIO Lógica de Oro Espacial Simplificada: Generación de Líneas Lógicas ---
+logical_lines = [] # Inicializa una lista vacía para almacenar las líneas lógicas
+
+# Evalúa si la configuración espacial está habilitada y si hay coordenadas válidas para procesar.
+# Esto asegura que la lógica no se ejecute innecesariamente y que tenga datos.
+if self.config.get('dynamic_geometry_config', {}).get('enabled', False) and word_coordinates:
+    try:
+        # Logging detallado para trazabilidad y depuración (Zero-Fault Detection)
+        self.logger.debug("Mandato 4: Generando líneas lógicas con spatial_processor.get_logical_lines...")
+
+        # LLAMADA DIRECTA al nuevo módulo. Se le pasan las palabras y la configuración geométrica.
+        logical_lines = spatial_processor.get_logical_lines(
+            words_with_coordinates, # Datos de entrada: lista de palabras con geometría
+            self.config.get('dynamic_geometry_config', {}) # Configuración de tolerancias
+        )
+
+        self.logger.info(f"Mandato 4: Detectadas {len(logical_lines)} líneas lógicas para procesamiento espacial.")
+    except Exception as e:
+        # Manejo de errores robusto (Inmunidad al Error). Si falla, loguea y el sistema continúa
+        # con la lógica lineal preexistente, sin afectar el flujo principal.
+        self.logger.error(f"Mandato 4: ERROR CRÍTICO al generar líneas lógicas: {e}", exc_info=True)
+        logical_lines = [] # Asegura que la lista esté vacía para que el fallback actúe
+else:
+    self.logger.info("Mandato 4: Configuración de geometría dinámica deshabilitada o no hay coordenadas. Omitiendo generación de líneas lógicas.")
+# --- FIN Lógica de Oro Espacial Simplificada ---
+Validación Post-Acción: Confirma que el bloque se insertó sin alterar el código circundante y que las variables (self.config, word_coordinates) son accesibles en ese ámbito.
+
+Refinamiento del Bucle de Aplicación de Reglas (_procesar_documento_con_reglas_empresariales en aplicador_ocr.py):
+
+Acción Requerida: Localiza el bucle for rule_config in field_rules: donde se iteran y aplican las reglas de extracción.
+
+Estrategia de Atomicidad y Perfección Continua: La idea es intentar primero la extracción espacial. Si es exitosa y valida con el regex del valor, ese valor se usa. Si no es exitosa (o la regla no tiene configuración espacial, o logical_lines está vacío), entonces se ejecuta la lógica de búsqueda lineal existente. Esto minimiza la sobrecarga cuando la lógica espacial no es necesaria o falla.
+
+Inyección de Lógica (Código Objetivo del Agente Replit - solo la parte modificada del bucle):
+
+Python
+
+# ... (Código existente antes del bucle de reglas) ...
+
+for field_name, rules_for_field in self.extraction_rules_config.get('extraction_rules', {}).items():
+    field_value = None  # Inicializa el valor del campo para cada iteración de la regla
+
+    # Ordenar las reglas por prioridad (descendente) antes de aplicarlas
+    sorted_rules = sorted(rules_for_field.get('rules', []), key=lambda x: x.get('priority', 0), reverse=True)
+
+    for rule_config in sorted_rules:
+        rule_id = rule_config.get('rule_id', 'UNKNOWN_RULE')
+        # ... (otras variables de la regla, como keywords, value_regex_patterns, etc. - ya existentes) ...
+
+        # --- INICIO Lógica de Oro Espacial: Intento de Extracción ---
+        spatial_search_config = rule_config.get('spatial_search_config')
+
+        # Condición para intentar la búsqueda espacial:
+        # 1. La regla debe tener una configuración espacial habilitada.
+        # 2. Deben haberse generado líneas lógicas válidas.
+        if spatial_search_config and spatial_search_config.get('enabled', False) and logical_lines:
+            self.logger.debug(f"Mandato 4: Intentando extracción espacial para '{field_name}' usando regla '{rule_id}'.")
+
+            # Iterar sobre las palabras clave de la regla para encontrar sus geometrías
+            for keyword_text in rule_config.get('keywords', []):
+                # Encontrar todas las ocurrencias de la keyword en 'word_coordinates' para obtener su geometría exacta.
+                # CRÍTICO: Usar un acceso seguro a 'texto' y 'geometry'.
+                keyword_matches_with_geometry = [
+                    w for w in word_coordinates if keyword_text.lower() in w.get('texto', '').lower() and w.get('geometry') # Asegura que la geometría exista
+                ]
+
+                for match_word in keyword_matches_with_geometry:
+                    try:
+                        # LLAMADA DIRECTA al procesador espacial para encontrar el valor
+                        potential_spatial_value = spatial_processor.find_value_spatially(
+                            logical_lines,
+                            match_word['geometry'], # Pasamos la geometría de la palabra clave encontrada
+                            spatial_search_config,
+                            self.config.get('dynamic_geometry_config', {})
+                        )
+
+                        # Si se encontró un valor espacial, validarlo con los patrones regex de la regla
+                        if potential_spatial_value:
+                            self.logger.debug(f"Mandato 4: Valor espacial '{potential_spatial_value}' encontrado para '{field_name}'. Validando con regex.")
+                            for pattern_str in rule_config.get('value_regex_patterns', []):
+                                if re.match(pattern_str, potential_spatial_value):
+                                    field_value = potential_spatial_value # Valor espacial validado es el definitivo
+                                    self.logger.info(f"Mandato 4: Campo '{field_name}' extraído con ÉXITO espacialmente: '{field_value}' (Regla: {rule_id}).")
+                                    break # Sale del bucle de patrones
+                            if field_value:
+                                break # Sale del bucle de keyword_matches si ya se encontró un valor válido
+                    except Exception as e:
+                        self.logger.error(f"Mandato 4: ERROR en find_value_spatially para '{field_name}' (keyword: '{keyword_text}'): {e}", exc_info=True)
+                        # Continúa con la siguiente keyword o recurre a la lógica lineal
+                if field_value:
+                    break # Sale del bucle de keywords si ya se encontró un valor válido
+        # --- FIN Lógica de Oro Espacial: Intento de Extracción ---
+
+        # --- Fallback a Lógica de Búsqueda Lineal Existente (Principio de Inmunidad al Error) ---
+        # Este bloque SOLO se ejecutará si field_value NO fue encontrado por la lógica espacial.
+        if field_value is None:
+            self.logger.debug(f"Mandato 4: Búsqueda espacial no exitosa o no aplicable para '{field_name}'. Recurriendo a la lógica de búsqueda lineal existente.")
+            # El Agente Replit DEBE asegurar que el código existente para la extracción lineal
+            # de este campo se mantenga AQUÍ, EXACTAMENTE COMO ESTÁ.
+            # Este código ya maneja `original_text_ocr`, `structured_text_ocr`, `proximity_preference`, etc.
+            # NO MODIFICAR el código que se encuentra en este ELSE/IF.
+
+            # Ej. (pseudo-código existente):
+            # found_keyword_linear = self._find_keyword_in_text(original_text_ocr, keywords, fuzzy_matching_tolerance)
+            # if found_keyword_linear:
+            #     value_candidate = self._extract_value_linearly(...)
+            #     if value_candidate and re.match(pattern_str, value_candidate):
+            #         field_value = value_candidate
+            #         self.logger.info(f"Campo '{field_name}' extraído linealmente: '{field_value}' (Regla: {rule_id}).")
+            #         break # Rompe el bucle de reglas para este campo si se encontró
+
+        if field_value: # Si se encontró un valor (ya sea espacial o lineal)
+            extracted_fields[field_name] = field_value
+            # ... (El resto de la lógica existente para post-procesamiento del campo) ...
+            break # Importante: Salir del bucle de reglas para este campo una vez que se encuentra un valor válido.
+    # ... (resto del código del bucle de field_name) ...
+Validación Post-Acción: Verifica cuidadosamente que la lógica existente del for de reglas no ha sido eliminada ni alterada, solo encapsulada en una condición if field_value is None: para que actúe como fallback.
+

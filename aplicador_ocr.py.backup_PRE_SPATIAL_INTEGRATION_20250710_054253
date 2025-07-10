@@ -14,7 +14,6 @@ from pathlib import Path
 import numpy as np
 from PIL import Image
 import config
-import spatial_processor
 from onnxtr.io import DocumentFile
 from onnxtr.models import ocr_predictor
 from fuzzywuzzy import fuzz
@@ -306,13 +305,6 @@ class AplicadorOCR:
         # REASON: Permitir definición externa de patrones de extracción sin redespliegue
         # IMPACT: Sistema adaptable a nuevos formatos de recibos mediante configuración
         self._load_extraction_rules()
-        
-        # MANDATO 4: Configuración de Geometría Dinámica para Procesamiento Espacial
-        # REASON: Habilitar procesamiento espacial inteligente con líneas lógicas
-        # IMPACT: Mejora significativa en extracción de datos mediante análisis geométrico
-        self.config = {
-            'dynamic_geometry_config': getattr(config, 'DYNAMIC_GEOMETRY_CONFIG', {})
-        }
     
     def _load_extraction_rules(self):
         """
@@ -835,35 +827,6 @@ class AplicadorOCR:
                 if hasattr(self, '_last_ocr_result') and self._last_ocr_result:
                     word_data_granular = extract_word_coordinates(self._last_ocr_result)
                     logger.info(f"🎯 MANDATO: Coordenadas extraídas del OCR: {len(word_data_granular)} palabras con coordenadas")
-                
-                # --- INICIO Lógica de Oro Espacial Simplificada: Generación de Líneas Lógicas ---
-                logical_lines = [] # Inicializa una lista vacía para almacenar las líneas lógicas
-
-                # Evalúa si la configuración espacial está habilitada y si hay coordenadas válidas para procesar.
-                # Esto asegura que la lógica no se ejecute innecesariamente y que tenga datos.
-                if self.config.get('dynamic_geometry_config', {}).get('enabled', False) and word_data_granular:
-                    try:
-                        # Logging detallado para trazabilidad y depuración (Zero-Fault Detection)
-                        logger.debug("Mandato 4: Generando líneas lógicas con spatial_processor.get_logical_lines...")
-
-                        # LLAMADA DIRECTA al nuevo módulo. Se le pasan las palabras y la configuración geométrica.
-                        logical_lines = spatial_processor.get_logical_lines(
-                            word_data_granular, # Datos de entrada: lista de palabras con geometría
-                            self.config.get('dynamic_geometry_config', {}) # Configuración de tolerancias
-                        )
-
-                        logger.info(f"Mandato 4: Detectadas {len(logical_lines)} líneas lógicas para procesamiento espacial.")
-                    except Exception as e:
-                        # Manejo de errores robusto (Inmunidad al Error). Si falla, loguea y el sistema continúa
-                        # con la lógica lineal preexistente, sin afectar el flujo principal.
-                        logger.error(f"Mandato 4: ERROR CRÍTICO al generar líneas lógicas: {e}", exc_info=True)
-                        logical_lines = [] # Asegura que la lista esté vacía para que el fallback actúe
-                else:
-                    logger.info("Mandato 4: Configuración de geometría dinámica deshabilitada o no hay coordenadas. Omitiendo generación de líneas lógicas.")
-                
-                # Almacenar líneas lógicas como variable de instancia para uso en reglas
-                self._current_logical_lines = logical_lines
-                # --- FIN Lógica de Oro Espacial Simplificada ---
                 
                 # PASO 2: EVALUAR COORDENADAS DISPONIBLES
                 coordenadas_validas = len([w for w in word_data_granular if w.get('coordinates') and w['coordinates'] != [0, 0, 0, 0]])
@@ -2250,58 +2213,6 @@ class AplicadorOCR:
             
             # Para cada keyword encontrada, buscar valores cercanos
             for keyword_match in keyword_matches:
-                # --- INICIO Lógica de Oro Espacial: Intento de Extracción ---
-                spatial_search_config = rule.get('spatial_search_config')
-                
-                # Condición para intentar la búsqueda espacial:
-                # 1. La regla debe tener una configuración espacial habilitada.
-                # 2. Deben haberse generado líneas lógicas válidas.
-                # 3. Las coordenadas del keyword deben ser válidas.
-                if (spatial_search_config and 
-                    spatial_search_config.get('enabled', False) and 
-                    hasattr(self, '_current_logical_lines') and 
-                    self._current_logical_lines and
-                    keyword_match.get('coordinates') and 
-                    keyword_match['coordinates'] != [0, 0, 0, 0]):
-                    
-                    logger.debug(f"Mandato 4: Intentando extracción espacial para '{field_name}' usando regla '{rule_id}'.")
-                    
-                    try:
-                        # LLAMADA DIRECTA al procesador espacial para encontrar el valor
-                        potential_spatial_value = spatial_processor.find_value_spatially(
-                            self._current_logical_lines,
-                            keyword_match['coordinates'], # Pasamos la geometría de la palabra clave encontrada
-                            spatial_search_config,
-                            self.config.get('dynamic_geometry_config', {})
-                        )
-                        
-                        # Si se encontró un valor espacial, validarlo con los patrones regex de la regla
-                        if potential_spatial_value:
-                            logger.debug(f"Mandato 4: Valor espacial '{potential_spatial_value}' encontrado para '{field_name}'. Validando con regex.")
-                            
-                            # Validar con patrones de valor
-                            if not value_patterns:
-                                # Si no hay patrones específicos, usar el valor encontrado
-                                logger.info(f"Mandato 4: Campo '{field_name}' extraído con ÉXITO espacialmente: '{potential_spatial_value}' (Regla: {rule_id}).")
-                                return potential_spatial_value
-                            else:
-                                # Validar contra patrones regex
-                                for pattern_str in value_patterns:
-                                    if re.match(pattern_str, potential_spatial_value):
-                                        logger.info(f"Mandato 4: Campo '{field_name}' extraído con ÉXITO espacialmente: '{potential_spatial_value}' (Regla: {rule_id}).")
-                                        return potential_spatial_value
-                                        
-                                logger.debug(f"Mandato 4: Valor espacial '{potential_spatial_value}' no coincide con patrones regex")
-                                
-                    except Exception as e:
-                        logger.error(f"Mandato 4: ERROR en find_value_spatially para '{field_name}' (keyword: '{keyword_match.get('text', 'UNKNOWN')}'): {e}", exc_info=True)
-                        # Continúa con la extracción lineal como fallback
-                # --- FIN Lógica de Oro Espacial: Intento de Extracción ---
-                
-                # --- Fallback a Lógica de Búsqueda Lineal Existente (Principio de Inmunidad al Error) ---
-                # Este bloque se ejecutará si la búsqueda espacial no fue exitosa o no es aplicable
-                logger.debug(f"Mandato 4: Búsqueda espacial no exitosa o no aplicable para '{field_name}'. Recurriendo a la lógica de búsqueda lineal existente.")
-                
                 extracted_value = self._extract_value_near_keyword_refined(
                     keyword_match, prioritized_words, value_patterns, proximity_pref,
                     search_window_px, min_conf_value, exclusion_patterns

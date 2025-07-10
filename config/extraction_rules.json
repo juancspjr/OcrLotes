@@ -22,7 +22,13 @@
           "min_ocr_confidence_value": 0.8,
           "exclusion_patterns": ["Cuenta:", "Fecha:", "Hora:", "Monto:", "C.I.", "RIF"],
           "priority": 120,
-          "region_priority": ["header", "body"]
+          "region_priority": ["header", "body"],
+          "spatial_search_config": {
+            "enabled": true,
+            "preferred_directions": ["right", "below"],
+            "max_distance": 150,
+            "confidence_threshold": 0.8
+          }
         }
       ]
     },
@@ -44,7 +50,13 @@
           "min_ocr_confidence_value": 0.88,
           "exclusion_patterns": ["TASA:", "CAMBIO:", "IVA:", "SUBTOTAL:", "RETENCION:", "PAGADO EN USD", "PAGADO EN EUROS"],
           "priority": 110,
-          "region_priority": ["footer", "body"]
+          "region_priority": ["footer", "body"],
+          "spatial_search_config": {
+            "enabled": true,
+            "preferred_directions": ["right", "left", "below"],
+            "max_distance": 120,
+            "confidence_threshold": 0.85
+          }
         }
       ]
     },
