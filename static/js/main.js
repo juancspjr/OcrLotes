@@ -271,6 +271,12 @@ class OCRDashboard {
         if (exportAllBtn) {
             exportAllBtn.addEventListener('click', () => this.handleExportAll());
         }
+
+        // Botón de limpieza de resultados
+        const cleanResultsBtn = document.getElementById('cleanResultsBtn');
+        if (cleanResultsBtn) {
+            cleanResultsBtn.addEventListener('click', () => this.handleCleanResults());
+        }
     }
 
     /**
@@ -540,6 +546,33 @@ class OCRDashboard {
 
         } catch (error) {
             this.showNotification(`❌ Error exportando datos: ${error.getUserMessage()}`, 'error');
+        } finally {
+            this.setGlobalLoading(false);
+        }
+    }
+
+    /**
+     * LIMPIEZA DE RESULTADOS PROCESADOS
+     */
+    async handleCleanResults() {
+        try {
+            const confirmed = confirm('¿Limpiar todos los resultados procesados? Esta acción no se puede deshacer.');
+            if (!confirmed) return;
+
+            this.setGlobalLoading(true);
+            const result = await window.apiClient.cleanSystem();
+            
+            if (result.status === 'success') {
+                // Refresh de todos los módulos
+                this.handleGlobalRefresh();
+                
+                this.showNotification(`🧹 Sistema limpiado exitosamente (${result.results_preserved || 0} archivos preservados)`, 'success');
+            } else {
+                this.showNotification('❌ Error limpiando sistema', 'error');
+            }
+
+        } catch (error) {
+            this.showNotification(`❌ Error limpiando resultados: ${error.getUserMessage()}`, 'error');
         } finally {
             this.setGlobalLoading(false);
         }

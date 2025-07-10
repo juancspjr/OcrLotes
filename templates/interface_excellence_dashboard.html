@@ -157,6 +157,51 @@
                         </div>
                     </div>
 
+                    <!-- Parámetros Esenciales del Lote -->
+                    <div class="ocr-card mb-4">
+                        <div class="ocr-card-header">
+                            <h6 class="ocr-card-title">
+                                <i class="fas fa-tags me-2"></i>
+                                Parámetros Esenciales del Lote
+                            </h6>
+                            <p class="ocr-card-subtitle">
+                                Información para identificación y seguimiento
+                            </p>
+                        </div>
+                        <div class="mb-3">
+                            <label for="codigoSorteo" class="form-label">Código Sorteo</label>
+                            <input type="text" class="form-control" id="codigoSorteo" 
+                                   placeholder="Ej: SORTEO2025" maxlength="50">
+                        </div>
+                        <div class="mb-3">
+                            <label for="idWhatsapp" class="form-label">ID WhatsApp</label>
+                            <input type="text" class="form-control" id="idWhatsapp" 
+                                   placeholder="Ej: 58412XXXXXXX@lid" maxlength="50">
+                        </div>
+                        <div class="mb-3">
+                            <label for="nombreUsuario" class="form-label">Nombre Usuario</label>
+                            <input type="text" class="form-control" id="nombreUsuario" 
+                                   placeholder="Ej: Juan Pérez" maxlength="100">
+                        </div>
+                        <div class="mb-3">
+                            <label for="captionTexto" class="form-label">Caption (Texto del Mensaje)</label>
+                            <textarea class="form-control" id="captionTexto" rows="2" 
+                                      placeholder="Texto del mensaje multimedia" maxlength="500"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="horaExacta" class="form-label">Hora Exacta</label>
+                            <input type="time" class="form-control" id="horaExacta" step="1">
+                        </div>
+                        <div class="mb-3">
+                            <label for="apiKey" class="form-label">API Key</label>
+                            <input type="password" class="form-control" id="apiKey" 
+                                   placeholder="Clave de autorización" maxlength="200">
+                            <small class="form-text text-muted">
+                                Para servicios externos (n8n), la API Key se gestiona automáticamente
+                            </small>
+                        </div>
+                    </div>
+
                     <!-- Acciones Rápidas -->
                     <div class="ocr-card">
                         <div class="ocr-card-header">
@@ -174,6 +219,9 @@
                             </button>
                             <button type="button" id="exportAllBtn" class="btn btn-outline-info">
                                 <i class="fas fa-file-export me-2"></i>Exportar Todo
+                            </button>
+                            <button type="button" id="cleanResultsBtn" class="btn btn-outline-danger">
+                                <i class="fas fa-trash me-2"></i>Limpiar Resultados
                             </button>
                         </div>
                     </div>

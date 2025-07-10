@@ -44,7 +44,7 @@ class APIClient {
 
     /**
      * CONTRATO: POST /api/ocr/process_batch
-     * Procesamiento por lotes con request_id tracking
+     * Procesamiento por lotes con request_id tracking y parámetros esenciales
      */
     async processBatch(options = {}) {
         const payload = {
@@ -52,9 +52,23 @@ class APIClient {
             batch_size: options.batch_size || 5
         };
 
-        return this._makeRequest('POST', '/api/ocr/process_batch', JSON.stringify(payload), {
+        // Agregar parámetros esenciales al payload
+        if (options.codigo_sorteo) payload.codigo_sorteo = options.codigo_sorteo;
+        if (options.id_whatsapp) payload.id_whatsapp = options.id_whatsapp;
+        if (options.nombre_usuario) payload.nombre_usuario = options.nombre_usuario;
+        if (options.caption) payload.caption = options.caption;
+        if (options.hora_exacta) payload.hora_exacta = options.hora_exacta;
+
+        // Preparar headers con API Key si está disponible
+        const headers = {
             'Content-Type': 'application/json'
-        });
+        };
+        
+        if (options.api_key) {
+            headers['Authorization'] = `Bearer ${options.api_key}`;
+        }
+
+        return this._makeRequest('POST', '/api/ocr/process_batch', JSON.stringify(payload), headers);
     }
 
     /**

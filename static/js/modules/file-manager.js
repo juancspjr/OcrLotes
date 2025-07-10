@@ -279,7 +279,7 @@ class FileManager {
     }
 
     /**
-     * PROCESAMIENTO DE LOTE
+     * PROCESAMIENTO DE LOTE CON PARÁMETROS ESENCIALES
      */
     async processBatch(options = {}) {
         const uploadedFiles = Array.from(this.files.values()).filter(f => f.status === 'uploaded');
@@ -311,10 +311,14 @@ class FileManager {
                 this.updateFileListDisplay();
             }, 500);
 
-            // Llamar al backend
+            // Obtener parámetros esenciales del formulario
+            const essentialParams = this.getEssentialParameters();
+
+            // Llamar al backend con parámetros esenciales
             const result = await window.apiClient.processBatch({
                 profile: options.profile || 'ultra_rapido',
-                batch_size: options.batch_size || uploadedFiles.length
+                batch_size: options.batch_size || uploadedFiles.length,
+                ...essentialParams
             });
 
             clearInterval(progressInterval);
@@ -569,6 +573,31 @@ class FileManager {
         window.dispatchEvent(new CustomEvent('batchCompleted', {
             detail: result
         }));
+    }
+
+    /**
+     * OBTENER PARÁMETROS ESENCIALES DEL FORMULARIO
+     */
+    getEssentialParameters() {
+        const params = {};
+        
+        // Obtener valores de los campos
+        const codigoSorteo = document.getElementById('codigoSorteo')?.value.trim();
+        const idWhatsapp = document.getElementById('idWhatsapp')?.value.trim();
+        const nombreUsuario = document.getElementById('nombreUsuario')?.value.trim();
+        const captionTexto = document.getElementById('captionTexto')?.value.trim();
+        const horaExacta = document.getElementById('horaExacta')?.value.trim();
+        const apiKey = document.getElementById('apiKey')?.value.trim();
+        
+        // Incluir solo parámetros no vacíos
+        if (codigoSorteo) params.codigo_sorteo = codigoSorteo;
+        if (idWhatsapp) params.id_whatsapp = idWhatsapp;
+        if (nombreUsuario) params.nombre_usuario = nombreUsuario;
+        if (captionTexto) params.caption = captionTexto;
+        if (horaExacta) params.hora_exacta = horaExacta;
+        if (apiKey) params.api_key = apiKey;
+        
+        return params;
     }
 
     /**
