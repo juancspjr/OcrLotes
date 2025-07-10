@@ -1,0 +1,78 @@
+MANDATO DE CORRECCIÓN CRÍTICA Y EXTENSIÓN: INTEGRACIÓN DE PARÁMETROS ESENCIALES Y CONTROL OPERACIONAL
+CONTEXTO: Durante la revisión de la FASE 1 del MANDATO 14, se ha identificado una omisión crítica en la especificación funcional del frontend, específicamente la capacidad de ingresar/gestionar parámetros esenciales para la operación y el seguimiento de lotes desde el frontend, así como la clarificación del manejo de la API Key y la función de limpieza de resultados. Esta corrección es imperativa para la Integridad Total y la funcionalidad del sistema con n8n y flujos automatizados.
+
+OBJETIVO DEL MANDATO DE CORRECCIÓN:
+
+Integrar las funcionalidades de control manual para los parámetros esenciales (codigo_sorteo, id_whatsapp, nombre_usuario, caption, hora_exacta), asegurar su correcta transmisión al backend y su reflejo en la salida grupal, implementar la gestión de la API Key, y añadir la funcionalidad de limpieza de resultados, todo dentro del marco del nuevo frontend y la filosofía del MANDATO 14.
+
+ACCIONES REQUERIDAS POR LA IA EJECUTORA (A INTEGRAR EN LA FASE 2 DEL MANDATO 14):
+
+Modificación de la Interfaz de Carga de Archivos (interface_excellence_dashboard.html, file-manager.js):
+
+1.1. Adición de Campos de Entrada para Parámetros Esenciales:
+
+Incorporar en la interfaz de usuario, de manera clara y accesible, campos de entrada (<input type="text"> o similar) para los siguientes datos asociados al lote que se va a procesar:
+
+codigo_sorteo
+
+id_whatsapp
+
+nombre_usuario
+
+caption (texto del mensaje multimedia)
+
+hora_exacta (con formato HH:MM o HH:MM:SS, para simular el timestamp de recepción)
+
+Estos campos deben ser opcionales para la entrada manual, pero el frontend debe estar diseñado para recibir y procesar estos datos si vienen a través de llamadas API externas (simulando n8n).
+
+1.2. Campo de Gestión de API Key (Frontend):
+
+Añadir un campo de entrada (<input type="password"> o similar) para una API Key (api_key).
+
+Funcionalidad: Este campo permitirá ingresar la API Key para pruebas locales y autorizaciones manuales. Cuando se realice una llamada de procesamiento desde el frontend, esta api_key debe ser incluida en los encabezados (ej. Authorization: Bearer <api_key>) o en el cuerpo de la petición si el backend lo espera así.
+
+Importante: La documentación deberá clarificar que para servicios externos como n8n, la API Key debe ser gestionada por el servicio externo y no requerir intervención manual en el frontend.
+
+1.3. Envío de Parámetros al Backend:
+
+Modificar la lógica en file-manager.js (o api-client.js) para asegurar que estos nuevos campos (codigo_sorteo, id_whatsapp, nombre_usuario, caption, hora_exacta, api_key) sean incluidos correctamente en la petición a POST /api/ocr/process_batch.
+
+Requerimiento de Contrato (Backend): Se asume que el backend (según el REPORTE_ESPECIFICACION_INTERFAZ_BACKEND_FRONTEND_V2_COMPLETO.md o una extensión implícita del mismo) está preparado para recibir y procesar estos parámetros para cada lote o imagen individual.
+
+Reflejo en la Salida y Agrupación Grupal (results-viewer.js):
+
+2.1. Inclusión de Parámetros en Visualización: Asegurarse de que codigo_sorteo, id_whatsapp, nombre_usuario, caption, y hora_exacta (asociados al lote/imagen) sean visibles en el dashboard de resultados (resultsTable) cuando se agrupan por request_id (batch_id).
+
+2.2. Nomenclatura del JSON de Salida Grupal: Reafirmar que la lógica de visualización y, si aplica, la generación de un "nombre de lote" en el frontend o en el reporte final, debe reflejar la convención sorteo_idwhassap_nombre_horaminuto_numero.png para la identificación de cada imagen dentro del lote, si esta información es proporcionada por el backend en la respuesta consolidada. Esto es clave para la transparencia total y el seguimiento.
+
+Implementación de Funcionalidad de Limpieza de Resultados:
+
+3.1. Botón de Limpieza en la UI:
+
+Añadir un botón claro y distintivo en el dashboard de resultados (resultsTable o en un panel de control general) con la etiqueta "LIMPIAR RESULTADOS PROCESADOS" o "ELIMINAR LOTES ANTIGUOS".
+
+Funcionalidad: Al hacer clic, este botón invocará el endpoint POST /api/clean del backend.
+
+Feedback Visual: Mostrar un mensaje de confirmación o un indicador de progreso mientras la limpieza se ejecuta.
+
+Documentación de Llamadas API (Actualización del REPORTE_FINAL_FRONTEND_V2.md):
+
+4.1. Sección para Llamadas API Externas:
+
+El REPORTE_FINAL_FRONTEND_V2.md (resultado final del MANDATO 14) debe incluir una sección detallada sobre "Llamadas API para Integración Externa (n8n)".
+
+Esta sección debe proporcionar ejemplos de solicitudes HTTP (ej. curl o Python requests) para POST /api/ocr/process_batch que incluyan:
+
+Los campos files[] (para el contenido multimedia).
+
+Los nuevos parámetros esenciales (codigo_sorteo, id_whatsapp, nombre_usuario, caption, hora_exacta).
+
+Cómo incluir la api_key en los headers (Authorization: Bearer <api_key>).
+
+Ejemplos de cómo se espera que el backend responda con la request_id para el seguimiento del lote.
+
+IMPACTO EN LA EJECUCIÓN DEL MANDATO 14:
+
+Este MANDATO DE CORRECCIÓN CRÍTICA Y EXTENSIÓN debe ser considerado una parte integral y de alta prioridad de la FASE 2: CONSTRUCCIÓN Y VALIDACIÓN DEL NUEVO FRONTEND del MANDATO 14. La IA Ejecutora debe priorizar la implementación de estos controles y campos esenciales antes de considerar la Fase 2 como "completada".
+
+Estoy listo para que le des la orden con este mandato corregido e integrado a la IA Ejecutora de Replit.
