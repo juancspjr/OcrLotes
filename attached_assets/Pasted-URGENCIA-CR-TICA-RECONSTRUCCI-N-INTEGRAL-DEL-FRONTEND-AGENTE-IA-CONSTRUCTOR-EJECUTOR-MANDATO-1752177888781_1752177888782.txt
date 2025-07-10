@@ -1,0 +1,50 @@
+URGENCIA: CRÍTICA - RECONSTRUCCIÓN INTEGRAL DEL FRONTEND
+
+AGENTE IA - CONSTRUCTOR EJECUTOR:
+
+MANDATO DE EJECUCIÓN:
+
+Debes proceder inmediatamente a la ejecución completa del "MANDATO 14: RECONSTRUCCIÓN INTEGRAL DEL FRONTEND Y MONITOREO AVANZADO POR LOTES".
+
+OBJETIVO PRINCIPAL DE LA EJECUCIÓN:
+
+Construir un nuevo frontend para el Sistema OCR Empresarial desde cero, siguiendo las especificaciones detalladas en el MANDATO 14 y utilizando el REPORTE_ESPECIFICACION_INTERFAZ_BACKEND_FRONTEND_V2_COMPLETO.md como la fuente definitiva y única para la interacción con el backend existente, incluyendo la implementación de la "salida grupal unificada" por lote y el sistema de monitoreo avanzado de recursos por lote.
+
+FILOSOFÍA FUNDAMENTAL INQUEBRANTABLE - DIRECTRIZ ABSOLUTA:
+
+Cada línea de código, cada decisión de diseño y cada paso de la implementación debe adherirse estrictamente a los siguientes pilares, considerándolos reglas de vida o muerte:
+
+INTEGRIDAD TOTAL: La reconstrucción debe ser impecable, sin deuda técnica. Implementa un código limpio, modular y robusto que refleje los más altos estándares de calidad. Cero errores de integración con el backend.
+
+PERFECCIÓN CONTINUA: El frontend debe ser fluido, reactivo y visualmente excelente. El monitoreo avanzado de recursos por lotes con visualización gráfica debe ser implementado con precisión milimétrica y activado desde el despliegue inicial.
+
+TRANSPARENCIA TOTAL: Cada componente, función y su interacción con el backend debe ser claramente estructurado y autocomentado. La generación del REPORTE_FINAL_FRONTEND_V2.md al concluir debe ser exhaustiva y detallar el proceso y los resultados.
+
+OPTIMIZACIÓN SOSTENIBLE: Prioriza el uso de Vanilla JavaScript puro, HTML/CSS (con Bootstrap 5 y Font Awesome) para asegurar una huella de recursos mínima y el máximo rendimiento. Evita la sobrecarga de dependencias innecesarias.
+
+PAUTAS DE EJECUCIÓN:
+
+Revisión del Mandato: Lee y asimila completamente todas las FASES (Fase 1: Planificación y Diseño, y Fase 2: Construcción y Validación) y SUB-OBJETIVOS del MANDATO 14. No omitas ningún detalle.
+
+Referencia al Backend: Utiliza exclusivamente el REPORTE_ESPECIFICACION_INTERFAZ_BACKEND_FRONTEND_V2_COMPLETO.md para entender y replicar las interacciones con el backend, incluyendo la necesidad del request_id en las respuestas de extract_results para la agrupación de lotes.
+
+Desarrollo Modular: Construye el frontend siguiendo la estructura modular especificada (main.js, file-manager.js, api-client.js, results-viewer.js, monitoring-dashboard.js, style.css, interface_excellence_dashboard.html).
+
+Implementación del Monitoreo: Asegura que los gráficos de "Pulso de Información" y el log de lotes funcionen exactamente como se describen, actualizándose con las métricas por lote del backend.
+
+Pruebas Rigurosas: Ejecuta todas las "Pruebas Exhaustivas y Validación" especificadas en la Fase 2 del Mandato 14.
+
+MANEJO DE CÓDIGO LEGADO (PREEXISTENTE):
+
+Dado que el MANDATO 14 es una "reconstrucción integral desde cero", el código HTML, CSS y JavaScript del frontend existente (ej. dashboard.html, static/js/, static/css/ o cualquier archivo frontend previo) NO DEBE ser modificado ni integrado en el nuevo desarrollo.
+
+Acción: Antes de iniciar la reconstrucción, asegúrate de que los archivos del frontend legado se mantengan en su ubicación actual (o se muevan a una carpeta de legacy_frontend/ si es posible para una clara separación), pero bajo ninguna circunstancia deben ser utilizados o alterados como base para el nuevo trabajo. El nuevo frontend se construirá en archivos nuevos y dedicados (interface_excellence_dashboard.html, los nuevos archivos .js y .css en static/).
+
+FORMATO DE REPORTE DE PROGRESO Y FINALIZACIÓN:
+
+Proporciona actualizaciones de progreso regulares durante la ejecución de las fases.
+
+Al finalizar el Mandato 14, genera el REPORTE_FINAL_FRONTEND_V2.md tal como se describe en el apartado de "RESULTADOS ESPERADOS DEL MANDATO 14". Este reporte debe confirmar la implementación de todas las funcionalidades, incluyendo la "salida grupal" y el monitoreo avanzado.
+
+COMIENZA LA EJECUCIÓN AHORA.
+

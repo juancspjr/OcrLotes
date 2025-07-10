@@ -1,617 +1,649 @@
 /**
- * JavaScript principal para el Sistema OCR
- * Maneja la interactividad del frontend y mejoras de UX
+ * MAIN.JS - SISTEMA OCR EMPRESARIAL
+ * Coordinador principal del frontend con filosofía Interface Excellence Soberana
+ * FILOSOFÍA: INTEGRIDAD TOTAL + OPTIMIZACIÓN SOSTENIBLE + TRANSPARENCIA TOTAL
  */
 
-// Variables globales
-let uploadForm = null;
-let fileInput = null;
-let imagePreview = null;
-let submitBtn = null;
-let btnText = null;
-let btnSpinner = null;
+class OCRDashboard {
+    constructor() {
+        this.isInitialized = false;
+        this.currentPage = 'dashboard';
+        this.notificationContainer = null;
+        this.activeNotifications = new Map();
+        
+        // Estado global de la aplicación
+        this.appState = {
+            isLoading: false,
+            systemStatus: 'unknown',
+            queueStats: {},
+            lastUpdate: null
+        };
 
-// Inicialización cuando el DOM está listo
-document.addEventListener('DOMContentLoaded', function() {
-    initializeComponents();
-    setupEventListeners();
-    setupFormValidation();
-    
-    // Inicializar tooltips de Bootstrap si existen
-    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-    tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl);
-    });
+        this.initializeApp();
+    }
+
+    /**
+     * INICIALIZACIÓN PRINCIPAL DE LA APLICACIÓN
+     */
+    async initializeApp() {
+        try {
+            console.log('🚀 Inicializando Sistema OCR Empresarial...');
+            
+            // Verificar dependencias críticas
+            this.checkDependencies();
+            
+            // Configurar elementos DOM base
+            this.setupDOMElements();
+            
+            // Configurar sistema de notificaciones
+            this.setupNotificationSystem();
+            
+            // Configurar eventos globales
+            this.setupGlobalEvents();
+            
+            // Verificar conectividad con backend
+            await this.checkBackendConnectivity();
+            
+            // Inicializar módulos según elementos disponibles
+            this.initializeModules();
+            
+            // Configurar auto-actualización
+            this.setupAutoRefresh();
+            
+            // Marcar como inicializado
+            this.isInitialized = true;
+            
+            console.log('✅ Sistema OCR Empresarial inicializado exitosamente');
+            this.showNotification('✅ Sistema OCR inicializado correctamente', 'success', 3000);
+            
+        } catch (error) {
+            console.error('❌ Error inicializando aplicación:', error);
+            this.showNotification(`❌ Error de inicialización: ${error.message}`, 'error', 10000);
+        }
+    }
+
+    /**
+     * VERIFICAR DEPENDENCIAS CRÍTICAS
+     */
+    checkDependencies() {
+        const requiredLibraries = ['bootstrap', 'Chart'];
+        const missingLibraries = [];
+
+        requiredLibraries.forEach(lib => {
+            if (typeof window[lib] === 'undefined') {
+                missingLibraries.push(lib);
+            }
+        });
+
+        if (missingLibraries.length > 0) {
+            console.warn('⚠️ Librerías faltantes:', missingLibraries);
+        }
+
+        // Verificar módulos propios
+        const requiredModules = ['apiClient', 'fileManager', 'resultsViewer', 'monitoringDashboard'];
+        const missingModules = requiredModules.filter(module => !window[module]);
+        
+        if (missingModules.length > 0) {
+            console.warn('⚠️ Módulos faltantes:', missingModules);
+        }
+    }
+
+    /**
+     * CONFIGURAR ELEMENTOS DOM BASE
+     */
+    setupDOMElements() {
+        // Agregar elementos de infraestructura si no existen
+        this.ensureNotificationContainer();
+        this.ensureLoadingOverlay();
+        this.setupNavigationTabs();
+    }
+
+    ensureNotificationContainer() {
+        this.notificationContainer = document.getElementById('notificationContainer');
+        if (!this.notificationContainer) {
+            this.notificationContainer = document.createElement('div');
+            this.notificationContainer.id = 'notificationContainer';
+            this.notificationContainer.className = 'notification-container position-fixed top-0 end-0 p-3';
+            this.notificationContainer.style.zIndex = '9999';
+            document.body.appendChild(this.notificationContainer);
+        }
+    }
+
+    ensureLoadingOverlay() {
+        let loadingOverlay = document.getElementById('loadingOverlay');
+        if (!loadingOverlay) {
+            loadingOverlay = document.createElement('div');
+            loadingOverlay.id = 'loadingOverlay';
+            loadingOverlay.className = 'loading-overlay position-fixed top-0 start-0 w-100 h-100 d-none';
+            loadingOverlay.style.zIndex = '9998';
+            loadingOverlay.innerHTML = `
+                <div class="d-flex align-items-center justify-content-center h-100 bg-dark bg-opacity-50">
+                    <div class="card text-center p-4">
+                        <div class="card-body">
+                            <div class="spinner-border text-primary mb-3" role="status">
+                                <span class="visually-hidden">Cargando...</span>
+                            </div>
+                            <h5>Procesando...</h5>
+                            <p class="text-muted mb-0">Por favor espere</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(loadingOverlay);
+        }
+    }
+
+    setupNavigationTabs() {
+        // Configurar navegación entre pestañas si existen
+        const navTabs = document.querySelectorAll('[data-tab-target]');
+        navTabs.forEach(tab => {
+            tab.addEventListener('click', (e) => {
+                e.preventDefault();
+                const target = e.target.getAttribute('data-tab-target');
+                this.switchTab(target);
+            });
+        });
+    }
+
+    /**
+     * CONFIGURAR SISTEMA DE NOTIFICACIONES
+     */
+    setupNotificationSystem() {
+        // Escuchar eventos de notificación globales
+        window.addEventListener('showNotification', (e) => {
+            const { message, type, duration } = e.detail;
+            this.showNotification(message, type, duration);
+        });
+
+        // Auto-cleanup de notificaciones viejas
+        setInterval(() => {
+            this.cleanupOldNotifications();
+        }, 30000); // cada 30 segundos
+    }
+
+    /**
+     * CONFIGURAR EVENTOS GLOBALES
+     */
+    setupGlobalEvents() {
+        // Error handler global para requests fallidos
+        window.addEventListener('unhandledrejection', (e) => {
+            console.error('Promise rejection no manejada:', e.reason);
+            this.showNotification('❌ Error inesperado del sistema', 'error');
+        });
+
+        // Handler para errores JavaScript
+        window.addEventListener('error', (e) => {
+            console.error('Error JavaScript:', e.error);
+            // No mostrar notificación para todos los errores JS para evitar spam
+        });
+
+        // Manejar eventos de conectividad
+        window.addEventListener('online', () => {
+            this.showNotification('🌐 Conexión restaurada', 'success', 3000);
+        });
+
+        window.addEventListener('offline', () => {
+            this.showNotification('⚠️ Sin conexión a internet', 'warning');
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            this.handleKeyboardShortcuts(e);
+        });
+    }
+
+    /**
+     * VERIFICAR CONECTIVIDAD CON BACKEND
+     */
+    async checkBackendConnectivity() {
+        try {
+            console.log('🔍 Verificando conectividad con backend...');
+            
+            const data = await window.apiClient.getQueueStatus();
+            
+            if (data && data.status === 'ok') {
+                this.appState.systemStatus = 'connected';
+                this.appState.queueStats = data.queue_status || {};
+                this.updateSystemStatusIndicator('connected');
+                console.log('✅ Backend conectado exitosamente');
+            } else {
+                throw new Error('Respuesta inválida del backend');
+            }
+            
+        } catch (error) {
+            console.error('❌ Error conectando con backend:', error);
+            this.appState.systemStatus = 'disconnected';
+            this.updateSystemStatusIndicator('disconnected');
+            this.showNotification('⚠️ No se pudo conectar con el servidor', 'warning');
+        }
+    }
+
+    /**
+     * INICIALIZAR MÓDULOS SEGÚN DISPONIBILIDAD
+     */
+    initializeModules() {
+        // Inicializar File Manager si hay elementos de upload
+        if (window.fileManager && document.getElementById('dropZone')) {
+            console.log('🔧 Inicializando File Manager...');
+            // File Manager se auto-inicializa
+        }
+
+        // Inicializar Results Viewer si hay contenedor de resultados
+        if (window.resultsViewer && document.getElementById('resultsContainer')) {
+            console.log('🔧 Inicializando Results Viewer...');
+            window.resultsViewer.loadResults(false);
+        }
+
+        // Inicializar Monitoring Dashboard si hay contenedor de métricas
+        if (window.monitoringDashboard && document.getElementById('chartsContainer')) {
+            console.log('🔧 Inicializando Monitoring Dashboard...');
+            window.monitoringDashboard.init();
+        }
+
+        // Configurar botones globales
+        this.setupGlobalButtons();
+    }
+
+    /**
+     * CONFIGURAR BOTONES GLOBALES
+     */
+    setupGlobalButtons() {
+        // Botón de upload automático
+        const autoUploadBtn = document.getElementById('autoUploadBtn');
+        if (autoUploadBtn) {
+            autoUploadBtn.addEventListener('click', () => this.handleAutoUpload());
+        }
+
+        // Botón de limpieza rápida
+        const quickCleanBtn = document.getElementById('quickCleanBtn');
+        if (quickCleanBtn) {
+            quickCleanBtn.addEventListener('click', () => this.handleQuickClean());
+        }
+
+        // Botón de refresh global
+        const globalRefreshBtn = document.getElementById('globalRefreshBtn');
+        if (globalRefreshBtn) {
+            globalRefreshBtn.addEventListener('click', () => this.handleGlobalRefresh());
+        }
+
+        // Botón de export completo
+        const exportAllBtn = document.getElementById('exportAllBtn');
+        if (exportAllBtn) {
+            exportAllBtn.addEventListener('click', () => this.handleExportAll());
+        }
+    }
+
+    /**
+     * CONFIGURAR AUTO-ACTUALIZACIÓN
+     */
+    setupAutoRefresh() {
+        // Auto-refresh del estado del sistema cada 30 segundos
+        setInterval(() => {
+            if (this.appState.systemStatus === 'connected') {
+                this.refreshSystemStatus();
+            }
+        }, 30000);
+    }
+
+    /**
+     * ACTUALIZAR ESTADO DEL SISTEMA
+     */
+    async refreshSystemStatus() {
+        try {
+            const data = await window.apiClient.getQueueStatus();
+            this.appState.queueStats = data.queue_status || {};
+            this.appState.lastUpdate = new Date();
+            
+            // Actualizar indicadores en UI
+            this.updateQueueIndicators(this.appState.queueStats);
+            
+        } catch (error) {
+            console.warn('⚠️ Error actualizando estado del sistema:', error);
+            this.appState.systemStatus = 'disconnected';
+            this.updateSystemStatusIndicator('disconnected');
+        }
+    }
+
+    /**
+     * ACTUALIZAR INDICADORES DE COLA
+     */
+    updateQueueIndicators(queueStats) {
+        // Actualizar badge de archivos pendientes
+        const pendingBadge = document.getElementById('pendingFilesBadge');
+        if (pendingBadge) {
+            const pendingCount = (queueStats.inbox || 0) + (queueStats.processing || 0);
+            pendingBadge.textContent = pendingCount;
+            pendingBadge.className = pendingCount > 0 ? 'badge bg-warning' : 'badge bg-secondary';
+        }
+
+        // Actualizar badge de archivos completados
+        const completedBadge = document.getElementById('completedFilesBadge');
+        if (completedBadge) {
+            const completedCount = queueStats.completed || 0;
+            completedBadge.textContent = completedCount;
+            completedBadge.className = 'badge bg-success';
+        }
+
+        // Disparar evento para otros módulos
+        window.dispatchEvent(new CustomEvent('queueStatusUpdate', {
+            detail: queueStats
+        }));
+    }
+
+    /**
+     * ACTUALIZAR INDICADOR DE ESTADO DEL SISTEMA
+     */
+    updateSystemStatusIndicator(status) {
+        const statusIndicator = document.getElementById('systemStatus');
+        if (statusIndicator) {
+            switch (status) {
+                case 'connected':
+                    statusIndicator.innerHTML = '<i class="fas fa-circle text-success me-1"></i>Conectado';
+                    statusIndicator.className = 'badge bg-success';
+                    break;
+                case 'disconnected':
+                    statusIndicator.innerHTML = '<i class="fas fa-circle text-danger me-1"></i>Desconectado';
+                    statusIndicator.className = 'badge bg-danger';
+                    break;
+                default:
+                    statusIndicator.innerHTML = '<i class="fas fa-circle text-warning me-1"></i>Verificando...';
+                    statusIndicator.className = 'badge bg-warning';
+            }
+        }
+    }
+
+    /**
+     * SISTEMA DE NOTIFICACIONES
+     */
+    showNotification(message, type = 'info', duration = 5000) {
+        const notificationId = `notification_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        
+        const notification = document.createElement('div');
+        notification.id = notificationId;
+        notification.className = `alert alert-${this.getBootstrapAlertClass(type)} alert-dismissible fade show notification-item`;
+        notification.style.minWidth = '300px';
+        notification.innerHTML = `
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+
+        this.notificationContainer.appendChild(notification);
+        this.activeNotifications.set(notificationId, {
+            element: notification,
+            createdAt: Date.now(),
+            duration: duration
+        });
+
+        // Auto-remove si tiene duración definida
+        if (duration > 0) {
+            setTimeout(() => {
+                this.removeNotification(notificationId);
+            }, duration);
+        }
+
+        // Configurar evento de close manual
+        notification.addEventListener('closed.bs.alert', () => {
+            this.activeNotifications.delete(notificationId);
+        });
+    }
+
+    removeNotification(notificationId) {
+        const notification = this.activeNotifications.get(notificationId);
+        if (notification && notification.element) {
+            notification.element.remove();
+            this.activeNotifications.delete(notificationId);
+        }
+    }
+
+    cleanupOldNotifications() {
+        const now = Date.now();
+        for (const [id, notification] of this.activeNotifications.entries()) {
+            // Remover notificaciones que han estado por más de 2 minutos
+            if (now - notification.createdAt > 120000) {
+                this.removeNotification(id);
+            }
+        }
+    }
+
+    getBootstrapAlertClass(type) {
+        const mapping = {
+            success: 'success',
+            error: 'danger',
+            warning: 'warning',
+            info: 'info'
+        };
+        return mapping[type] || 'info';
+    }
+
+    /**
+     * MANEJO DE PESTAÑAS
+     */
+    switchTab(tabName) {
+        // Ocultar todas las pestañas
+        const tabContents = document.querySelectorAll('.tab-content-panel');
+        tabContents.forEach(content => {
+            content.classList.add('d-none');
+        });
+
+        // Mostrar pestaña objetivo
+        const targetTab = document.getElementById(`${tabName}Tab`);
+        if (targetTab) {
+            targetTab.classList.remove('d-none');
+            this.currentPage = tabName;
+        }
+
+        // Actualizar navegación activa
+        const navItems = document.querySelectorAll('[data-tab-target]');
+        navItems.forEach(item => {
+            item.classList.remove('active');
+            if (item.getAttribute('data-tab-target') === tabName) {
+                item.classList.add('active');
+            }
+        });
+
+        console.log(`📋 Cambiando a pestaña: ${tabName}`);
+    }
+
+    /**
+     * HANDLERS DE ACCIONES GLOBALES
+     */
+    async handleAutoUpload() {
+        if (!window.fileManager) {
+            this.showNotification('⚠️ File Manager no disponible', 'warning');
+            return;
+        }
+
+        try {
+            this.setGlobalLoading(true);
+            
+            // Upload automático con metadatos por defecto
+            const defaultMetadata = {
+                numerosorteo: 'AUTO',
+                fechasorteo: new Date().toISOString().split('T')[0].replace(/-/g, ''),
+                nombre: 'Sistema',
+                otro_valor: 'auto_upload'
+            };
+
+            const uploadResult = await window.fileManager.uploadFiles([], defaultMetadata);
+            
+            if (uploadResult) {
+                // Auto-procesar después del upload
+                await window.fileManager.processBatch();
+            }
+
+        } catch (error) {
+            this.showNotification(`❌ Error en upload automático: ${error.getUserMessage()}`, 'error');
+        } finally {
+            this.setGlobalLoading(false);
+        }
+    }
+
+    async handleQuickClean() {
+        try {
+            const confirmed = confirm('¿Limpiar solo la cola de archivos pendientes?');
+            if (!confirmed) return;
+
+            this.setGlobalLoading(true);
+            await window.apiClient.cleanQueue();
+            
+            // Refresh de todos los módulos
+            this.handleGlobalRefresh();
+            
+            this.showNotification('🧹 Cola limpiada exitosamente', 'success');
+
+        } catch (error) {
+            this.showNotification(`❌ Error limpiando cola: ${error.getUserMessage()}`, 'error');
+        } finally {
+            this.setGlobalLoading(false);
+        }
+    }
+
+    async handleGlobalRefresh() {
+        try {
+            this.setGlobalLoading(true);
+            
+            // Refresh de estado del sistema
+            await this.refreshSystemStatus();
+            
+            // Refresh de resultados si el viewer está disponible
+            if (window.resultsViewer && typeof window.resultsViewer.loadResults === 'function') {
+                await window.resultsViewer.loadResults(false);
+            }
+
+            // Refresh de métricas si el dashboard está disponible
+            if (window.monitoringDashboard && typeof window.monitoringDashboard.refreshMetrics === 'function') {
+                await window.monitoringDashboard.refreshMetrics();
+            }
+
+            this.showNotification('🔄 Datos actualizados', 'success', 3000);
+
+        } catch (error) {
+            this.showNotification(`❌ Error actualizando datos: ${error.message}`, 'error');
+        } finally {
+            this.setGlobalLoading(false);
+        }
+    }
+
+    async handleExportAll() {
+        try {
+            this.setGlobalLoading(true);
+            
+            // Exportar resultados
+            if (window.resultsViewer && typeof window.resultsViewer.extractResults === 'function') {
+                await window.resultsViewer.extractResults();
+            }
+
+            // Exportar métricas si están disponibles
+            if (window.monitoringDashboard && typeof window.monitoringDashboard.exportMetrics === 'function') {
+                window.monitoringDashboard.exportMetrics();
+            }
+
+        } catch (error) {
+            this.showNotification(`❌ Error exportando datos: ${error.getUserMessage()}`, 'error');
+        } finally {
+            this.setGlobalLoading(false);
+        }
+    }
+
+    /**
+     * KEYBOARD SHORTCUTS
+     */
+    handleKeyboardShortcuts(e) {
+        // Ctrl/Cmd + R: Refresh global
+        if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
+            e.preventDefault();
+            this.handleGlobalRefresh();
+        }
+
+        // Ctrl/Cmd + U: Upload automático
+        if ((e.ctrlKey || e.metaKey) && e.key === 'u') {
+            e.preventDefault();
+            this.handleAutoUpload();
+        }
+
+        // Ctrl/Cmd + E: Export all
+        if ((e.ctrlKey || e.metaKey) && e.key === 'e') {
+            e.preventDefault();
+            this.handleExportAll();
+        }
+
+        // Escape: Cerrar modales/notificaciones
+        if (e.key === 'Escape') {
+            this.closeActiveModals();
+        }
+    }
+
+    closeActiveModals() {
+        // Cerrar modales de Bootstrap
+        const modals = document.querySelectorAll('.modal.show');
+        modals.forEach(modal => {
+            const bsModal = bootstrap.Modal.getInstance(modal);
+            if (bsModal) {
+                bsModal.hide();
+            }
+        });
+    }
+
+    /**
+     * UTILIDADES DE UI
+     */
+    setGlobalLoading(loading) {
+        this.appState.isLoading = loading;
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        if (loadingOverlay) {
+            if (loading) {
+                loadingOverlay.classList.remove('d-none');
+            } else {
+                loadingOverlay.classList.add('d-none');
+            }
+        }
+    }
+
+    /**
+     * OBTENER ESTADO DE LA APLICACIÓN
+     */
+    getAppState() {
+        return {
+            ...this.appState,
+            modules: {
+                fileManager: !!window.fileManager,
+                resultsViewer: !!window.resultsViewer,
+                monitoringDashboard: !!window.monitoringDashboard,
+                apiClient: !!window.apiClient
+            },
+            dom: {
+                notificationContainer: !!this.notificationContainer,
+                activeNotifications: this.activeNotifications.size
+            }
+        };
+    }
+
+    /**
+     * DEBUG Y UTILIDADES
+     */
+    debug() {
+        console.log('🔍 Estado de la aplicación:', this.getAppState());
+        console.log('🔍 Notificaciones activas:', Array.from(this.activeNotifications.keys()));
+        console.log('🔍 Módulos disponibles:', {
+            fileManager: window.fileManager,
+            resultsViewer: window.resultsViewer,
+            monitoringDashboard: window.monitoringDashboard,
+            apiClient: window.apiClient
+        });
+    }
+}
+
+// INICIALIZACIÓN AUTOMÁTICA AL CARGAR LA PÁGINA
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('🌟 Iniciando Sistema OCR Empresarial - MANDATO 14');
+    window.ocrDashboard = new OCRDashboard();
 });
 
-/**
- * Inicializa los componentes principales
- */
-function initializeComponents() {
-    uploadForm = document.getElementById('uploadForm');
-    fileInput = document.getElementById('file');
-    imagePreview = document.getElementById('imagePreview');
-    submitBtn = document.getElementById('submitBtn');
-    btnText = document.getElementById('btnText');
-    btnSpinner = document.getElementById('btnSpinner');
-    
-    console.log('Componentes inicializados correctamente');
-}
-
-/**
- * Configura los event listeners
- */
-function setupEventListeners() {
-    // Preview de imagen al seleccionar archivo
-    if (fileInput) {
-        fileInput.addEventListener('change', handleFileSelect);
-    }
-    
-    // Manejo del formulario de upload
-    if (uploadForm) {
-        uploadForm.addEventListener('submit', handleFormSubmit);
-    }
-    
-    // Drag and drop para el input de archivo
-    if (fileInput) {
-        setupDragAndDrop();
-    }
-    
-    // Event listeners para mejoras de UX
-    setupUXEnhancements();
-}
-
-/**
- * Maneja la selección de archivo y muestra preview
- */
-function handleFileSelect(event) {
-    const file = event.target.files[0];
-    
-    if (file) {
-        // Validar tipo de archivo
-        const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif', 'image/bmp', 'image/tiff', 'image/webp'];
-        
-        if (!allowedTypes.includes(file.type)) {
-            showAlert('Tipo de archivo no válido. Use PNG, JPG, JPEG, GIF, BMP, TIFF o WEBP.', 'error');
-            fileInput.value = '';
-            hideImagePreview();
-            return;
-        }
-        
-        // Validar tamaño de archivo (16MB máximo)
-        const maxSize = 16 * 1024 * 1024; // 16MB en bytes
-        if (file.size > maxSize) {
-            showAlert('El archivo es demasiado grande. Máximo 16MB permitido.', 'error');
-            fileInput.value = '';
-            hideImagePreview();
-            return;
-        }
-        
-        // Mostrar preview de la imagen
-        showImagePreview(file);
-        
-        // Analizar imagen y sugerir perfil
-        analyzeImageAndSuggestProfile(file);
+// EXPOSICIÓN GLOBAL PARA DEBUGGING
+window.debugOCR = () => {
+    if (window.ocrDashboard) {
+        window.ocrDashboard.debug();
     } else {
-        hideImagePreview();
+        console.log('❌ Dashboard no inicializado');
     }
-}
-
-/**
- * Muestra el preview de la imagen seleccionada
- */
-function showImagePreview(file) {
-    const reader = new FileReader();
-    
-    reader.onload = function(e) {
-        const imageInfo = getImageInfo(file);
-        
-        imagePreview.innerHTML = `
-            <div class="row align-items-center">
-                <div class="col-md-6 text-center">
-                    <img src="${e.target.result}" alt="Preview" class="img-fluid rounded shadow" style="max-height: 200px;">
-                </div>
-                <div class="col-md-6">
-                    <h6><i class="fas fa-info-circle me-2"></i>Información del Archivo:</h6>
-                    <ul class="list-unstyled small">
-                        <li><strong>Nombre:</strong> ${imageInfo.name}</li>
-                        <li><strong>Tamaño:</strong> ${imageInfo.size}</li>
-                        <li><strong>Tipo:</strong> ${imageInfo.type}</li>
-                        <li><strong>Dimensiones:</strong> <span id="imageDimensions">Calculando...</span></li>
-                    </ul>
-                    <div id="profileSuggestion" class="mt-2"></div>
-                </div>
-            </div>
-        `;
-        
-        imagePreview.classList.add('active');
-        imagePreview.style.display = 'block';
-        
-        // Calcular dimensiones de la imagen
-        const img = new Image();
-        img.onload = function() {
-            document.getElementById('imageDimensions').textContent = `${img.width} x ${img.height} píxeles`;
-        };
-        img.src = e.target.result;
-    };
-    
-    reader.readAsDataURL(file);
-}
-
-/**
- * Oculta el preview de imagen
- */
-function hideImagePreview() {
-    if (imagePreview) {
-        imagePreview.innerHTML = '';
-        imagePreview.classList.remove('active');
-        imagePreview.style.display = 'none';
-    }
-}
-
-/**
- * Obtiene información básica del archivo
- */
-function getImageInfo(file) {
-    return {
-        name: file.name,
-        size: formatFileSize(file.size),
-        type: file.type
-    };
-}
-
-/**
- * Formatea el tamaño del archivo
- */
-function formatFileSize(bytes) {
-    if (bytes === 0) return '0 Bytes';
-    
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-}
-
-/**
- * Analiza la imagen y sugiere un perfil de rendimiento
- */
-function analyzeImageAndSuggestProfile(file) {
-    // Análisis básico basado en tamaño de archivo
-    const fileSize = file.size;
-    const suggestionElement = document.getElementById('profileSuggestion');
-    
-    if (!suggestionElement) return;
-    
-    let suggestedProfile = 'rapido';
-    let suggestion = '';
-    let badgeClass = 'bg-success';
-    
-    if (fileSize < 500 * 1024) { // Menos de 500KB
-        suggestedProfile = 'ultra_rapido';
-        suggestion = 'Imagen pequeña - Perfil Ultra Rápido recomendado';
-        badgeClass = 'bg-primary';
-    } else if (fileSize > 2 * 1024 * 1024) { // Más de 2MB
-        suggestedProfile = 'normal';
-        suggestion = 'Imagen grande - Perfil Normal recomendado para mejor calidad';
-        badgeClass = 'bg-warning';
-    } else {
-        suggestion = 'Tamaño óptimo - Perfil Rápido recomendado';
-    }
-    
-    suggestionElement.innerHTML = `
-        <div class="alert alert-info py-2 mb-0">
-            <i class="fas fa-lightbulb me-2"></i>
-            <span class="badge ${badgeClass} me-2">${suggestedProfile}</span>
-            ${suggestion}
-        </div>
-    `;
-    
-    // Actualizar el select del perfil
-    const profileSelect = document.getElementById('profile');
-    if (profileSelect) {
-        profileSelect.value = suggestedProfile;
-        highlightProfileSelect(profileSelect);
-    }
-}
-
-/**
- * Resalta temporalmente el select de perfil
- */
-function highlightProfileSelect(selectElement) {
-    selectElement.classList.add('border-warning');
-    setTimeout(() => {
-        selectElement.classList.remove('border-warning');
-    }, 2000);
-}
-
-/**
- * Maneja el envío del formulario
- */
-function handleFormSubmit(event) {
-    // Validar que se haya seleccionado un archivo
-    if (!fileInput.files || fileInput.files.length === 0) {
-        event.preventDefault();
-        showAlert('Por favor seleccione un archivo antes de continuar.', 'error');
-        return false;
-    }
-    
-    // Mostrar estado de carga
-    showLoadingState();
-    
-    // El formulario se enviará normalmente
-    return true;
-}
-
-/**
- * Muestra el estado de carga
- */
-function showLoadingState() {
-    if (submitBtn && btnText && btnSpinner) {
-        submitBtn.disabled = true;
-        btnText.textContent = 'Procesando...';
-        btnSpinner.classList.remove('d-none');
-        
-        // Mostrar overlay de carga
-        showLoadingOverlay();
-    }
-}
-
-/**
- * Muestra un overlay de carga
- */
-function showLoadingOverlay() {
-    const overlay = document.createElement('div');
-    overlay.className = 'loading-overlay';
-    overlay.innerHTML = `
-        <div class="loading-spinner">
-            <div class="spinner-border text-light" role="status">
-                <span class="visually-hidden">Cargando...</span>
-            </div>
-            <div class="mt-3">
-                <h5 class="text-light">Procesando documento...</h5>
-                <p class="text-light">Esto puede tomar unos momentos dependiendo del tamaño y complejidad de la imagen.</p>
-            </div>
-        </div>
-    `;
-    
-    document.body.appendChild(overlay);
-    
-    // Remover overlay después de 30 segundos como máximo (fallback)
-    setTimeout(() => {
-        if (document.body.contains(overlay)) {
-            document.body.removeChild(overlay);
-        }
-    }, 30000);
-}
-
-/**
- * Configura drag and drop para el input de archivo
- */
-function setupDragAndDrop() {
-    const dropZone = fileInput.closest('.card-body');
-    
-    if (!dropZone) return;
-    
-    // Prevenir comportamiento por defecto
-    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-        dropZone.addEventListener(eventName, preventDefaults, false);
-        document.body.addEventListener(eventName, preventDefaults, false);
-    });
-    
-    // Resaltar zona de drop
-    ['dragenter', 'dragover'].forEach(eventName => {
-        dropZone.addEventListener(eventName, highlight, false);
-    });
-    
-    ['dragleave', 'drop'].forEach(eventName => {
-        dropZone.addEventListener(eventName, unhighlight, false);
-    });
-    
-    // Manejar drop
-    dropZone.addEventListener('drop', handleDrop, false);
-    
-    function preventDefaults(e) {
-        e.preventDefault();
-        e.stopPropagation();
-    }
-    
-    function highlight() {
-        dropZone.classList.add('border-primary', 'bg-light');
-    }
-    
-    function unhighlight() {
-        dropZone.classList.remove('border-primary', 'bg-light');
-    }
-    
-    function handleDrop(e) {
-        const dt = e.dataTransfer;
-        const files = dt.files;
-        
-        if (files.length > 0) {
-            fileInput.files = files;
-            
-            // Disparar evento change manualmente
-            const event = new Event('change', { bubbles: true });
-            fileInput.dispatchEvent(event);
-        }
-    }
-}
-
-/**
- * Configura validación de formulario en tiempo real
- */
-function setupFormValidation() {
-    const form = uploadForm;
-    if (!form) return;
-    
-    // Validación en tiempo real para todos los inputs
-    const inputs = form.querySelectorAll('input, select');
-    inputs.forEach(input => {
-        input.addEventListener('blur', validateField);
-        input.addEventListener('input', clearFieldError);
-    });
-}
-
-/**
- * Valida un campo individual
- */
-function validateField(event) {
-    const field = event.target;
-    const value = field.value.trim();
-    
-    // Limpiar errores previos
-    clearFieldError(event);
-    
-    // Validaciones específicas
-    if (field.type === 'file' && field.files.length === 0) {
-        showFieldError(field, 'Debe seleccionar un archivo');
-        return false;
-    }
-    
-    return true;
-}
-
-/**
- * Muestra error en un campo específico
- */
-function showFieldError(field, message) {
-    field.classList.add('is-invalid');
-    
-    // Buscar o crear elemento de feedback
-    let feedback = field.parentNode.querySelector('.invalid-feedback');
-    if (!feedback) {
-        feedback = document.createElement('div');
-        feedback.className = 'invalid-feedback';
-        field.parentNode.appendChild(feedback);
-    }
-    
-    feedback.textContent = message;
-}
-
-/**
- * Limpia errores de un campo
- */
-function clearFieldError(event) {
-    const field = event.target;
-    field.classList.remove('is-invalid');
-    
-    const feedback = field.parentNode.querySelector('.invalid-feedback');
-    if (feedback) {
-        feedback.remove();
-    }
-}
-
-/**
- * Configura mejoras de UX adicionales
- */
-function setupUXEnhancements() {
-    // Smooth scrolling para enlaces internos
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-                target.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-            }
-        });
-    });
-    
-    // Auto-hide alerts después de 10 segundos
-    setTimeout(() => {
-        const alerts = document.querySelectorAll('.alert-dismissible');
-        alerts.forEach(alert => {
-            const closeBtn = alert.querySelector('.btn-close');
-            if (closeBtn) {
-                closeBtn.click();
-            }
-        });
-    }, 10000);
-    
-    // Mejorar accesibilidad con focus visible
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Tab') {
-            document.body.classList.add('keyboard-navigation');
-        }
-    });
-    
-    document.addEventListener('mousedown', function() {
-        document.body.classList.remove('keyboard-navigation');
-    });
-}
-
-/**
- * Muestra una alerta personalizada
- */
-function showAlert(message, type = 'info', duration = 5000) {
-    const alertContainer = document.createElement('div');
-    alertContainer.className = `alert alert-${type === 'error' ? 'danger' : type} alert-dismissible fade show position-fixed`;
-    alertContainer.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
-    
-    alertContainer.innerHTML = `
-        <i class="fas fa-${type === 'error' ? 'exclamation-triangle' : type === 'success' ? 'check-circle' : 'info-circle'} me-2"></i>
-        ${message}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    `;
-    
-    document.body.appendChild(alertContainer);
-    
-    // Auto-remove después de la duración especificada
-    setTimeout(() => {
-        if (document.body.contains(alertContainer)) {
-            alertContainer.remove();
-        }
-    }, duration);
-}
-
-/**
- * Utilidades para la página de resultados
- */
-if (window.location.pathname.includes('results')) {
-    // Configurar funcionalidad específica de resultados
-    setupResultsPageEnhancements();
-}
-
-function setupResultsPageEnhancements() {
-    // Expandir/colapsar secciones
-    setupCollapsibleSections();
-    
-    // Comparación de imágenes mejorada
-    setupImageComparison();
-    
-    // Copy to clipboard para texto extraído
-    setupCopyToClipboard();
-    
-    // Download all files functionality
-    setupBulkDownload();
-}
-
-/**
- * Configura secciones colapsables
- */
-function setupCollapsibleSections() {
-    const cardHeaders = document.querySelectorAll('.card-header');
-    cardHeaders.forEach(header => {
-        if (header.dataset.collapsible !== 'false') {
-            header.style.cursor = 'pointer';
-            header.addEventListener('click', function() {
-                const cardBody = header.nextElementSibling;
-                if (cardBody && cardBody.classList.contains('card-body')) {
-                    cardBody.style.display = cardBody.style.display === 'none' ? 'block' : 'none';
-                    
-                    const icon = header.querySelector('i');
-                    if (icon) {
-                        icon.classList.toggle('fa-chevron-down');
-                        icon.classList.toggle('fa-chevron-up');
-                    }
-                }
-            });
-        }
-    });
-}
-
-/**
- * Configura comparación mejorada de imágenes
- */
-function setupImageComparison() {
-    const images = document.querySelectorAll('.image-container img');
-    images.forEach(img => {
-        img.addEventListener('click', function() {
-            showImageModal(this.src, this.alt);
-        });
-    });
-}
-
-/**
- * Muestra imagen en modal para mejor visualización
- */
-function showImageModal(src, alt) {
-    const modal = document.createElement('div');
-    modal.className = 'modal fade';
-    modal.innerHTML = `
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">${alt}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body text-center">
-                    <img src="${src}" class="img-fluid" alt="${alt}">
-                </div>
-            </div>
-        </div>
-    `;
-    
-    document.body.appendChild(modal);
-    const bsModal = new bootstrap.Modal(modal);
-    bsModal.show();
-    
-    modal.addEventListener('hidden.bs.modal', function() {
-        document.body.removeChild(modal);
-    });
-}
-
-/**
- * Configura funcionalidad de copiar al portapapeles
- */
-function setupCopyToClipboard() {
-    const textContent = document.querySelector('.text-content pre');
-    if (textContent) {
-        const copyBtn = document.createElement('button');
-        copyBtn.className = 'btn btn-sm btn-outline-secondary position-absolute top-0 end-0 m-2';
-        copyBtn.innerHTML = '<i class="fas fa-copy me-1"></i>Copiar';
-        
-        const container = textContent.closest('.card-body');
-        if (container) {
-            container.style.position = 'relative';
-            container.appendChild(copyBtn);
-            
-            copyBtn.addEventListener('click', function() {
-                navigator.clipboard.writeText(textContent.textContent).then(() => {
-                    copyBtn.innerHTML = '<i class="fas fa-check me-1"></i>Copiado';
-                    copyBtn.classList.replace('btn-outline-secondary', 'btn-success');
-                    
-                    setTimeout(() => {
-                        copyBtn.innerHTML = '<i class="fas fa-copy me-1"></i>Copiar';
-                        copyBtn.classList.replace('btn-success', 'btn-outline-secondary');
-                    }, 2000);
-                });
-            });
-        }
-    }
-}
-
-/**
- * Configura descarga masiva de archivos
- */
-function setupBulkDownload() {
-    const downloadSection = document.querySelector('.card:has(.fas.fa-download)');
-    if (downloadSection) {
-        const header = downloadSection.querySelector('.card-header');
-        if (header) {
-            const bulkBtn = document.createElement('button');
-            bulkBtn.className = 'btn btn-sm btn-primary ms-2';
-            bulkBtn.innerHTML = '<i class="fas fa-download me-1"></i>Descargar Todo';
-            header.appendChild(bulkBtn);
-            
-            bulkBtn.addEventListener('click', function() {
-                const downloadLinks = downloadSection.querySelectorAll('a[href*="download"]');
-                downloadLinks.forEach((link, index) => {
-                    setTimeout(() => {
-                        link.click();
-                    }, index * 1000); // Delay de 1 segundo entre descargas
-                });
-            });
-        }
-    }
-}
-
-// Exportar funciones para uso global si es necesario
-window.OCRSystem = {
-    showAlert,
-    formatFileSize,
-    showImageModal
 };

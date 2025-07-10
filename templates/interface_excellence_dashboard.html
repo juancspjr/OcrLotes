@@ -4,1045 +4,344 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema OCR Empresarial - Interface Excellence</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        /* FIX: Enhanced filename visibility and external environment styling */
-        /* REASON: Following Interface Excellence philosophy for improved user experience */
-        /* IMPACT: Better file tracking and professional appearance */
-        
-        :root {
-            --primary-color: #2563eb;
-            --secondary-color: #64748b;
-            --success-color: #059669;
-            --warning-color: #d97706;
-            --danger-color: #dc2626;
-            --background-color: #f8fafc;
-            --surface-color: #ffffff;
-            --border-color: #e2e8f0;
-        }
-
-        body {
-            background-color: var(--background-color);
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        }
-
-        .enterprise-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 1.5rem 0;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-
-        .interface-excellence-card {
-            background: var(--surface-color);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-        }
-
-        .interface-excellence-card:hover {
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            transform: translateY(-2px);
-        }
-
-        /* INTERFACE: Enhanced filename display with full visibility */
-        .filename-display {
-            background: #f1f5f9;
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            padding: 12px 16px;
-            margin: 8px 0;
-            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-            font-size: 14px;
-            font-weight: 500;
-            color: #1e293b;
-            word-break: break-all;
-            position: relative;
-            transition: all 0.2s ease;
-        }
-
-        .filename-display:hover {
-            border-color: var(--primary-color);
-            background: #e0f2fe;
-        }
-
-        .filename-display .filename-label {
-            position: absolute;
-            top: -8px;
-            left: 12px;
-            background: var(--surface-color);
-            padding: 2px 8px;
-            font-size: 11px;
-            color: var(--secondary-color);
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .filename-display .copy-btn {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 4px;
-            width: 24px;
-            height: 24px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.2s ease;
-        }
-
-        .filename-display:hover .copy-btn {
-            opacity: 1;
-        }
-
-        /* VISUAL_CHANGE: File status indicators with enhanced visibility */
-        .file-status-indicator {
-            display: inline-flex;
-            align-items: center;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-left: 8px;
-        }
-
-        .status-pending {
-            background: #fef3c7;
-            color: #92400e;
-            border: 1px solid #f59e0b;
-        }
-
-        .status-processing {
-            background: #dbeafe;
-            color: #1e40af;
-            border: 1px solid #3b82f6;
-            animation: pulse 2s infinite;
-        }
-
-        .status-completed {
-            background: #d1fae5;
-            color: #065f46;
-            border: 1px solid #10b981;
-        }
-
-        .status-error {
-            background: #fee2e2;
-            color: #991b1b;
-            border: 1px solid #ef4444;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-        }
-
-        /* INTERFACE: Enhanced file list with metadata visibility */
-        .enhanced-file-item {
-            background: var(--surface-color);
-            border: 2px solid var(--border-color);
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 12px;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        .enhanced-file-item:hover {
-            border-color: var(--primary-color);
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
-        }
-
-        .enhanced-file-item.selected {
-            border-color: var(--primary-color);
-            background: linear-gradient(135deg, #eff6ff 0%, #f0f9ff 100%);
-        }
-
-        /* MANDATO 8: Estilos para visualización de datos extraídos */
-        .result-viewer-content {
-            background: var(--surface-color);
-            border-radius: 12px;
-            padding: 20px;
-            border: 1px solid var(--border-color);
-        }
-
-        .result-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid var(--border-color);
-        }
-
-        .confidence-badge {
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 14px;
-        }
-
-        .confidence-excellent {
-            background: #d1fae5;
-            color: #065f46;
-            border: 1px solid #10b981;
-        }
-
-        .confidence-good {
-            background: #dbeafe;
-            color: #1e40af;
-            border: 1px solid #3b82f6;
-        }
-
-        .confidence-fair {
-            background: #fef3c7;
-            color: #92400e;
-            border: 1px solid #f59e0b;
-        }
-
-        .confidence-poor {
-            background: #fee2e2;
-            color: #991b1b;
-            border: 1px solid #ef4444;
-        }
-
-        .result-section {
-            margin-bottom: 25px;
-            background: #f8fafc;
-            border-radius: 8px;
-            padding: 16px;
-            border-left: 4px solid var(--primary-color);
-        }
-
-        .result-section h5 {
-            color: var(--primary-color);
-            margin-bottom: 15px;
-            font-weight: 600;
-        }
-
-        .fields-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 12px;
-        }
-
-        .field-item {
-            background: var(--surface-color);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 12px;
-            transition: all 0.2s ease;
-        }
-
-        .field-item:hover {
-            border-color: var(--primary-color);
-            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.1);
-        }
-
-        .field-label {
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--secondary-color);
-            text-transform: uppercase;
-            margin-bottom: 6px;
-            letter-spacing: 0.5px;
-        }
-
-        .field-value {
-            font-size: 14px;
-            font-weight: 500;
-            color: #1e293b;
-            word-break: break-word;
-        }
-
-        .amount-value {
-            color: var(--success-color);
-            font-weight: 700;
-            font-size: 16px;
-        }
-
-        .mandato8-metadata-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 10px;
-        }
-
-        .mandato8-metadata-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 12px;
-            background: var(--surface-color);
-            border-radius: 6px;
-            border: 1px solid var(--border-color);
-        }
-
-        .mandato8-metadata-label {
-            font-size: 12px;
-            color: var(--secondary-color);
-            font-weight: 500;
-        }
-
-        .mandato8-metadata-value {
-            font-size: 13px;
-            font-weight: 600;
-            color: #1e293b;
-        }
-
-        .text-sections {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-
-        .text-section h6 {
-            color: var(--primary-color);
-            font-size: 14px;
-            margin-bottom: 8px;
-            font-weight: 600;
-        }
-
-        .text-content {
-            background: var(--surface-color);
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 12px;
-            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-            font-size: 13px;
-            line-height: 1.4;
-            color: #374151;
-            max-height: 150px;
-            overflow-y: auto;
-        }
-
-        .original-text {
-            border-left: 4px solid #94a3b8;
-        }
-
-        .structured-text {
-            border-left: 4px solid var(--success-color);
-        }
-
-        .file-info-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 12px;
-        }
-
-        .info-item {
-            display: flex;
-            flex-direction: column;
-            padding: 10px;
-            background: var(--surface-color);
-            border-radius: 6px;
-            border: 1px solid var(--border-color);
-        }
-
-        .info-label {
-            font-size: 11px;
-            color: var(--secondary-color);
-            font-weight: 600;
-            text-transform: uppercase;
-            margin-bottom: 4px;
-        }
-
-        .info-value {
-            font-size: 13px;
-            font-weight: 500;
-            color: #1e293b;
-        }
-
-        .file-metadata {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 12px;
-            margin-top: 12px;
-            padding-top: 12px;
-            border-top: 1px solid var(--border-color);
-        }
-
-        .metadata-item {
-            text-align: center;
-        }
-
-        .metadata-label {
-            font-size: 11px;
-            color: var(--secondary-color);
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 4px;
-        }
-
-        .metadata-value {
-            font-size: 13px;
-            color: #1e293b;
-            font-weight: 500;
-        }
-
-        /* INTERFACE: Enhanced upload zone with validation */
-        .excellence-upload-zone {
-            border: 3px dashed var(--border-color);
-            border-radius: 16px;
-            padding: 3rem 2rem;
-            text-align: center;
-            transition: all 0.3s ease;
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .excellence-upload-zone:hover {
-            border-color: var(--primary-color);
-            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
-        }
-
-        .excellence-upload-zone.dragover {
-            border-color: var(--success-color);
-            background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
-            transform: scale(1.02);
-        }
-
-        .upload-icon {
-            font-size: 3rem;
-            color: var(--primary-color);
-            margin-bottom: 1rem;
-            transition: transform 0.3s ease;
-        }
-
-        .excellence-upload-zone:hover .upload-icon {
-            transform: scale(1.1);
-        }
-
-        /* INTERFACE: Navigation with enhanced visual feedback */
-        .excellence-nav {
-            background: var(--surface-color);
-            border-radius: 12px;
-            padding: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            margin-bottom: 2rem;
-        }
-
-        .excellence-nav .nav-link {
-            color: var(--secondary-color);
-            border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-weight: 500;
-            transition: all 0.2s ease;
-            position: relative;
-        }
-
-        .excellence-nav .nav-link:hover {
-            background: #f1f5f9;
-            color: var(--primary-color);
-        }
-
-        .excellence-nav .nav-link.active {
-            background: var(--primary-color);
-            color: white;
-            box-shadow: 0 2px 4px rgba(37, 99, 235, 0.3);
-        }
-
-        /* INTERFACE: Buttons with enhanced feedback */
-        .excellence-btn {
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .excellence-btn:before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: left 0.5s;
-        }
-
-        .excellence-btn:hover:before {
-            left: 100%;
-        }
-
-        /* VISUAL_CHANGE: Real-time monitoring indicators */
-        .live-indicator {
-            position: relative;
-            display: inline-flex;
-            align-items: center;
-        }
-
-        .live-indicator:before {
-            content: '';
-            position: absolute;
-            left: -12px;
-            width: 8px;
-            height: 8px;
-            background: var(--success-color);
-            border-radius: 50%;
-            animation: blink 1.5s infinite;
-        }
-
-        @keyframes blink {
-            0%, 50% { opacity: 1; }
-            51%, 100% { opacity: 0.3; }
-        }
-
-        /* INTERFACE: Result viewer with enhanced formatting */
-        .excellence-result-viewer {
-            background: #1e293b;
-            color: #e2e8f0;
-            border-radius: 12px;
-            padding: 20px;
-            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-            font-size: 14px;
-            line-height: 1.6;
-            max-height: 500px;
-            overflow-y: auto;
-            position: relative;
-        }
-
-        .excellence-result-viewer::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .excellence-result-viewer::-webkit-scrollbar-track {
-            background: #334155;
-            border-radius: 4px;
-        }
-
-        .excellence-result-viewer::-webkit-scrollbar-thumb {
-            background: #64748b;
-            border-radius: 4px;
-        }
-
-        .json-key {
-            color: #60a5fa;
-        }
-
-        .json-string {
-            color: #34d399;
-        }
-
-        .json-number {
-            color: #fbbf24;
-        }
-
-        .coordinate-highlight {
-            background: rgba(251, 191, 36, 0.2);
-            padding: 2px 4px;
-            border-radius: 4px;
-            border: 1px solid #fbbf24;
-        }
-
-        /* INTERFACE: Progress indicators */
-        .excellence-progress {
-            height: 8px;
-            background: #e2e8f0;
-            border-radius: 4px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .excellence-progress-bar {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary-color), var(--success-color));
-            border-radius: 4px;
-            transition: width 0.3s ease;
-            position: relative;
-        }
-
-        .excellence-progress-bar:after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            right: 0;
-            background-image: linear-gradient(
-                -45deg,
-                rgba(255, 255, 255, .2) 25%,
-                transparent 25%,
-                transparent 50%,
-                rgba(255, 255, 255, .2) 50%,
-                rgba(255, 255, 255, .2) 75%,
-                transparent 75%,
-                transparent
-            );
-            background-size: 50px 50px;
-            animation: move 2s linear infinite;
-        }
-
-        @keyframes move {
-            0% { background-position: 0 0; }
-            100% { background-position: 50px 50px; }
-        }
-
-        /* INTERFACE: Responsive design */
-        @media (max-width: 768px) {
-            .file-metadata {
-                grid-template-columns: 1fr;
-                gap: 8px;
-            }
-            
-            .excellence-upload-zone {
-                padding: 2rem 1rem;
-            }
-            
-            .upload-icon {
-                font-size: 2rem;
-            }
-        }
-    </style>
+    
+    <!-- Chart.js para gráficos de monitoreo -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- CSS personalizado Interface Excellence -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/new/interface-excellence.css') }}">
 </head>
 <body>
-    <!-- FIX: Enterprise header with branding -->
-    <div class="enterprise-header">
-        <div class="container">
+    <!-- HEADER DEL SISTEMA -->
+    <header class="ocr-header">
+        <div class="container-fluid">
             <div class="row align-items-center">
                 <div class="col-md-6">
-                    <h1 class="mb-0">
-                        <i class="fas fa-microscope me-3"></i>
+                    <h1>
+                        <i class="fas fa-eye text-white"></i>
                         Sistema OCR Empresarial
                     </h1>
-                    <p class="mb-0 opacity-75">Interface Excellence Dashboard</p>
+                    <p class="mb-0 text-white-50">Interface Excellence Soberana - MANDATO 14</p>
                 </div>
-                <div class="col-md-6 text-end">
-                    <div class="live-indicator">
-                        <span class="me-2">Sistema Activo</span>
-                        <span class="badge bg-success">
-                            <i class="fas fa-check-circle me-1"></i>Operacional
+                <div class="col-md-6">
+                    <div class="system-status-indicator text-end">
+                        <span id="systemStatus" class="badge bg-warning">
+                            <i class="fas fa-circle text-warning me-1"></i>Verificando...
                         </span>
+                        <span id="workerStatus" class="badge bg-secondary ms-2">
+                            <i class="fas fa-cog me-1"></i>Worker
+                        </span>
+                        <span id="pendingFilesBadge" class="badge bg-secondary ms-2">0</span>
+                        <small class="text-white-50 ms-1">pendientes</small>
+                        <span id="completedFilesBadge" class="badge bg-success ms-2">0</span>
+                        <small class="text-white-50 ms-1">completados</small>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    </header>
 
-    <div class="container mt-4">
-        <!-- INTERFACE: Enhanced navigation -->
-        <ul class="nav nav-tabs excellence-nav" id="mainTabs" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="upload-tab" data-bs-toggle="tab" data-bs-target="#upload-panel" type="button" role="tab">
-                    <i class="fas fa-cloud-upload-alt me-2"></i>Subir Archivos
-                </button>
+    <!-- NAVEGACIÓN DE PESTAÑAS -->
+    <div class="container-fluid mt-4">
+        <ul class="nav nav-tabs nav-tabs-custom" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" data-tab-target="upload" href="#uploadTab" role="tab">
+                    <i class="fas fa-cloud-upload-alt me-2"></i>Cargar Archivos
+                </a>
             </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="queue-tab" data-bs-toggle="tab" data-bs-target="#queue-panel" type="button" role="tab">
-                    <i class="fas fa-list-ul me-2"></i>Cola de Procesamiento
-                </button>
+            <li class="nav-item">
+                <a class="nav-link" data-tab-target="results" href="#resultsTab" role="tab">
+                    <i class="fas fa-file-alt me-2"></i>Resultados
+                </a>
             </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="processed-tab" data-bs-toggle="tab" data-bs-target="#processed-panel" type="button" role="tab">
-                    <i class="fas fa-check-circle me-2"></i>Archivos Procesados
-                </button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="monitor-tab" data-bs-toggle="tab" data-bs-target="#monitor-panel" type="button" role="tab">
-                    <i class="fas fa-chart-line me-2"></i>Monitoreo en Tiempo Real
-                </button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="api-tab" data-bs-toggle="tab" data-bs-target="#api-panel" type="button" role="tab">
-                    <i class="fas fa-code me-2"></i>APIs & Documentación
-                </button>
+            <li class="nav-item">
+                <a class="nav-link" data-tab-target="monitoring" href="#monitoringTab" role="tab">
+                    <i class="fas fa-chart-line me-2"></i>Monitoreo
+                </a>
             </li>
         </ul>
+    </div>
 
-        <div class="tab-content" id="mainTabsContent">
-            <!-- INTERFACE: Enhanced upload panel -->
-            <div class="tab-pane fade show active" id="upload-panel" role="tabpanel">
-                <div class="row mt-4">
-                    <div class="col-md-8">
-                        <div class="interface-excellence-card">
-                            <div class="card-header bg-primary text-white">
-                                <h5 class="mb-0">
-                                    <i class="fas fa-upload me-2"></i>Subida de Archivos
-                                </h5>
+    <!-- CONTENIDO PRINCIPAL -->
+    <div class="container-fluid">
+        <!-- PESTAÑA: CARGAR ARCHIVOS -->
+        <div id="uploadTab" class="tab-content-panel">
+            <div class="row">
+                <!-- ZONA DE DRAG & DROP -->
+                <div class="col-lg-8">
+                    <div class="ocr-card mb-4">
+                        <div class="ocr-card-header">
+                            <h5 class="ocr-card-title">
+                                <i class="fas fa-file-upload me-2"></i>
+                                Subir Archivos OCR
+                            </h5>
+                            <p class="ocr-card-subtitle">
+                                Arrastra archivos PNG/JPG aquí o usa el botón para seleccionar
+                            </p>
+                        </div>
+                        
+                        <!-- Drop Zone -->
+                        <div id="dropZone" class="drop-zone">
+                            <div class="drop-zone-icon">
+                                <i class="fas fa-cloud-upload-alt"></i>
                             </div>
-                            <div class="card-body">
-                                <form id="uploadForm" enctype="multipart/form-data">
-                                    <div class="excellence-upload-zone" id="uploadZone">
-                                        <div class="upload-icon">
-                                            <i class="fas fa-cloud-upload-alt"></i>
-                                        </div>
-                                        <h4>Arrastrar archivos aquí</h4>
-                                        <p class="text-muted mb-3">o hacer clic para seleccionar</p>
-                                        <input type="file" class="form-control d-none" id="fileInput" name="files" multiple accept="image/*">
-                                        <button type="button" class="btn btn-primary excellence-btn" id="selectFilesBtn">
-                                            <i class="fas fa-folder-open me-2"></i>Seleccionar Archivos
-                                        </button>
-                                    </div>
-                                </form>
-                                
-                                <!-- VISUAL_CHANGE: Enhanced file preview with metadata -->
-                                <div id="filePreview" class="mt-4" style="display: none;">
-                                    <h6>Archivos Seleccionados:</h6>
-                                    <div id="selectedFilesList"></div>
+                            <div class="drop-zone-text">
+                                Arrastra archivos aquí
+                            </div>
+                            <div class="drop-zone-subtext">
+                                o haz clic para seleccionar archivos (PNG, JPG, máx 16MB)
+                            </div>
+                            <input type="file" id="fileInput" multiple accept="image/png,image/jpg,image/jpeg" class="d-none">
+                        </div>
+                        
+                        <!-- Botones de Acción -->
+                        <div class="mt-3 d-flex gap-2">
+                            <button type="button" id="selectFilesBtn" class="btn btn-ocr-primary">
+                                <i class="fas fa-folder-open me-2"></i>Seleccionar Archivos
+                            </button>
+                            <button type="button" id="processBatchBtn" class="btn btn-success" disabled>
+                                <i class="fas fa-cog me-2"></i>Procesar Lote
+                            </button>
+                            <button type="button" id="quickCleanBtn" class="btn btn-outline-warning">
+                                <i class="fas fa-broom me-2"></i>Limpiar Cola
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- LISTA DE ARCHIVOS EN COLA -->
+                    <div class="ocr-card">
+                        <div class="ocr-card-header">
+                            <h6 class="ocr-card-title">
+                                <i class="fas fa-list me-2"></i>
+                                Cola de Procesamiento
+                            </h6>
+                        </div>
+                        <div id="fileListDisplay">
+                            <!-- El contenido se genera dinámicamente por file-manager.js -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PANEL DE CONTROL LATERAL -->
+                <div class="col-lg-4">
+                    <!-- Métricas Rápidas -->
+                    <div class="ocr-card mb-4">
+                        <div class="ocr-card-header">
+                            <h6 class="ocr-card-title">
+                                <i class="fas fa-tachometer-alt me-2"></i>
+                                Estado del Sistema
+                            </h6>
+                        </div>
+                        <div class="metrics-grid">
+                            <div class="metric-item text-center">
+                                <div id="systemCpuValue" class="metric-value">--%</div>
+                                <div class="metric-label">CPU</div>
+                            </div>
+                            <div class="metric-item text-center">
+                                <div id="systemMemoryValue" class="metric-value">-- MB</div>
+                                <div class="metric-label">Memoria</div>
+                            </div>
+                            <div class="metric-item text-center">
+                                <div id="systemDiskValue" class="metric-value">--%</div>
+                                <div class="metric-label">Disco</div>
+                            </div>
+                        </div>
+                        <div id="queueStatusValue" class="mt-3">
+                            <!-- Estado de cola se actualiza dinámicamente -->
+                        </div>
+                    </div>
+
+                    <!-- Acciones Rápidas -->
+                    <div class="ocr-card">
+                        <div class="ocr-card-header">
+                            <h6 class="ocr-card-title">
+                                <i class="fas fa-bolt me-2"></i>
+                                Acciones Rápidas
+                            </h6>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button type="button" id="globalRefreshBtn" class="btn btn-outline-primary">
+                                <i class="fas fa-sync-alt me-2"></i>Actualizar Todo
+                            </button>
+                            <button type="button" id="extractResultsBtn" class="btn btn-outline-success">
+                                <i class="fas fa-download me-2"></i>Extraer Resultados
+                            </button>
+                            <button type="button" id="exportAllBtn" class="btn btn-outline-info">
+                                <i class="fas fa-file-export me-2"></i>Exportar Todo
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PESTAÑA: RESULTADOS -->
+        <div id="resultsTab" class="tab-content-panel d-none">
+            <div class="row">
+                <div class="col-12">
+                    <!-- FILTROS Y CONTROLES DE VISTA -->
+                    <div class="filters-container mb-4">
+                        <div class="row align-items-center">
+                            <div class="col-md-4">
+                                <input type="text" id="resultsSearch" class="form-control" 
+                                       placeholder="Buscar por nombre de archivo...">
+                            </div>
+                            <div class="col-md-2">
+                                <select id="confidenceFilter" class="form-select">
+                                    <option value="all">Todas las confianzas</option>
+                                    <option value="high">Alta (>90%)</option>
+                                    <option value="medium">Media (70-90%)</option>
+                                    <option value="low">Baja (<70%)</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <select id="batchSelector" class="form-select">
+                                    <option value="">Todos los lotes</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 text-end">
+                                <div class="btn-group" role="group">
+                                    <input type="radio" class="btn-check" name="viewType" id="viewList" value="list" checked>
+                                    <label class="btn btn-outline-primary" for="viewList">
+                                        <i class="fas fa-list"></i>
+                                    </label>
                                     
-                                    <!-- FIX: WhatsApp Metadata Editor with Manual Entry and Random Generation -->
-                                    <!-- REASON: Usuario requiere entrada manual y generación aleatoria de metadatos WhatsApp -->
-                                    <!-- IMPACT: Funcionalidad completa de gestión de metadatos con edición manual -->
-                                    <!-- INTERFACE: Formulario anidado con validación rigurosa de componentes -->
-                                    <!-- VISUAL_CHANGE: Campos editables visibles con generación aleatoria -->
-                                    <div class="whatsapp-metadata-editor mt-4" id="whatsappMetadataEditor">
-                                        <div class="card border-success">
-                                            <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
-                                                <h6 class="mb-0">
-                                                    <i class="fab fa-whatsapp me-2"></i>Metadatos WhatsApp
-                                                </h6>
-                                                <div class="metadata-controls">
-                                                    <button type="button" class="btn btn-light btn-sm me-2" id="generateRandomBtn">
-                                                        <i class="fas fa-dice me-1"></i>Generar Aleatorio
-                                                    </button>
-                                                    <button type="button" class="btn btn-outline-light btn-sm" id="clearFieldsBtn">
-                                                        <i class="fas fa-eraser me-1"></i>Limpiar
-                                                    </button>
-                                                </div>
-                                            </div>
-                                            <div class="card-body">
-                                                <div class="row">
-                                                    <div class="col-md-6">
-                                                        <div class="mb-3">
-                                                            <label for="numerosorteo" class="form-label">
-                                                                <i class="fas fa-hashtag me-1"></i>Código Sorteo
-                                                            </label>
-                                                            <input type="text" class="form-control" id="numerosorteo" name="numerosorteo" placeholder="A" maxlength="1">
-                                                            <div class="form-text">Letra única (A-Z)</div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <div class="mb-3">
-                                                            <label for="fechasorteo" class="form-label">
-                                                                <i class="fas fa-calendar me-1"></i>Fecha Sorteo
-                                                            </label>
-                                                            <input type="text" class="form-control" id="fechasorteo" name="fechasorteo" placeholder="20250620">
-                                                            <div class="form-text">Formato: YYYYMMDD</div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                
-                                                <div class="row">
-                                                    <div class="col-md-6">
-                                                        <div class="mb-3">
-                                                            <label for="idWhatsapp" class="form-label">
-                                                                <i class="fab fa-whatsapp me-1"></i>ID WhatsApp
-                                                            </label>
-                                                            <input type="text" class="form-control" id="idWhatsapp" name="idWhatsapp" placeholder="214056942235719@lid">
-                                                            <div class="form-text">Formato: número@lid</div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <div class="mb-3">
-                                                            <label for="nombre" class="form-label">
-                                                                <i class="fas fa-user me-1"></i>Nombre Usuario
-                                                            </label>
-                                                            <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Juanc">
-                                                            <div class="form-text">Nombre del usuario</div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                
-                                                <div class="row">
-                                                    <div class="col-md-6">
-                                                        <div class="mb-3">
-                                                            <label for="horamin" class="form-label">
-                                                                <i class="fas fa-clock me-1"></i>Hora:Minuto
-                                                            </label>
-                                                            <input type="text" class="form-control" id="horamin" name="horamin" placeholder="17-30">
-                                                            <div class="form-text">Formato: HH-MM</div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <div class="mb-3">
-                                                            <label for="caption" class="form-label">
-                                                                <i class="fas fa-comment me-1"></i>Caption/Mensaje
-                                                            </label>
-                                                            <input type="text" class="form-control" id="caption" name="caption" placeholder="Pago móvil realizado exitosamente">
-                                                            <div class="form-text">Texto del mensaje WhatsApp</div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                
-                                                <div class="filename-preview-section">
-                                                    <label class="form-label">
-                                                        <i class="fas fa-file-signature me-1"></i>Vista Previa del Nombre:
-                                                    </label>
-                                                    <div class="filename-display">
-                                                        <div class="filename-label">Nombre de Archivo Generado</div>
-                                                        <span id="filenamePreview">20250620-A--214056942235719@lid_Juanc_17-30.png</span>
-                                                        <button type="button" class="copy-btn" onclick="copyFilenamePreview()">
-                                                            <i class="fas fa-copy"></i>
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <input type="radio" class="btn-check" name="viewType" id="viewBatch" value="batch">
+                                    <label class="btn btn-outline-primary" for="viewBatch">
+                                        <i class="fas fa-layer-group"></i>
+                                    </label>
                                     
-                                    <div class="mt-3">
-                                        <button type="button" class="btn btn-success excellence-btn" id="uploadBtn">
-                                            <i class="fas fa-upload me-2"></i>Subir Archivos
-                                        </button>
-                                        <button type="button" class="btn btn-secondary ms-2" id="clearFilesBtn">
-                                            <i class="fas fa-times me-2"></i>Limpiar Selección
-                                        </button>
-                                    </div>
+                                    <input type="radio" class="btn-check" name="viewType" id="viewDetails" value="details">
+                                    <label class="btn btn-outline-primary" for="viewDetails">
+                                        <i class="fas fa-th-large"></i>
+                                    </label>
                                 </div>
-
-                                <!-- INTERFACE: Enhanced progress indicator -->
-                                <div id="uploadProgress" class="mt-4" style="display: none;">
-                                    <div class="d-flex justify-content-between mb-2">
-                                        <span id="progressText">Subiendo archivos...</span>
-                                        <span id="progressPercent">0%</span>
-                                    </div>
-                                    <div class="excellence-progress">
-                                        <div class="excellence-progress-bar" id="progressBar" style="width: 0%"></div>
-                                    </div>
-                                </div>
+                                <button type="button" id="refreshResultsBtn" class="btn btn-outline-secondary ms-2">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-4">
-                        <div class="interface-excellence-card">
-                            <div class="card-header bg-info text-white">
-                                <h6 class="mb-0">
-                                    <i class="fas fa-info-circle me-2"></i>Estado del Sistema
-                                </h6>
+
+                    <!-- CONTENEDOR DE RESULTADOS -->
+                    <div id="resultsContainer">
+                        <!-- El contenido se genera dinámicamente por results-viewer.js -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PESTAÑA: MONITOREO AVANZADO -->
+        <div id="monitoringTab" class="tab-content-panel d-none">
+            <div class="row">
+                <!-- CONTROLES DE MONITOREO -->
+                <div class="col-12 mb-4">
+                    <div class="ocr-card">
+                        <div class="ocr-card-header d-flex justify-content-between align-items-center">
+                            <h5 class="ocr-card-title mb-0">
+                                <i class="fas fa-chart-line me-2"></i>
+                                Monitoreo Avanzado por Lotes
+                            </h5>
+                            <div class="btn-group">
+                                <button type="button" id="togglePollingBtn" class="btn btn-success">
+                                    <i class="fas fa-play me-1"></i>Iniciar Monitoreo
+                                </button>
+                                <button type="button" id="refreshMetricsBtn" class="btn btn-outline-primary">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                                <button type="button" id="clearLogBtn" class="btn btn-outline-warning">
+                                    <i class="fas fa-trash"></i>
+                                </button>
                             </div>
-                            <div class="card-body">
-                                <div class="metadata-item mb-3">
-                                    <div class="metadata-label">Motor OCR</div>
-                                    <div class="metadata-value">
-                                        <span class="file-status-indicator status-completed" id="ocrStatus">
-                                            <i class="fas fa-check me-1"></i>Activo
-                                        </span>
-                                    </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GRÁFICOS DE MÉTRICAS -->
+                <div id="chartsContainer" class="col-12">
+                    <div class="row">
+                        <!-- Gráfico de CPU -->
+                        <div class="col-lg-6 mb-4">
+                            <div class="chart-container">
+                                <div class="chart-header">
+                                    <h6 class="chart-title">
+                                        <i class="fas fa-microchip me-2 text-danger"></i>
+                                        Uso de CPU por Lote
+                                    </h6>
                                 </div>
-                                <div class="metadata-item mb-3">
-                                    <div class="metadata-label">Worker Asíncrono</div>
-                                    <div class="metadata-value">
-                                        <span class="file-status-indicator status-completed" id="workerStatus">
-                                            <i class="fas fa-check me-1"></i>Operacional
-                                        </span>
-                                    </div>
+                                <div class="chart-canvas">
+                                    <canvas id="cpuChart"></canvas>
                                 </div>
-                                <div class="metadata-item mb-3">
-                                    <div class="metadata-label">Archivos en Cola</div>
-                                    <div class="metadata-value">
-                                        <span class="badge bg-warning" id="inboxCount">0</span>
-                                    </div>
+                            </div>
+                        </div>
+
+                        <!-- Gráfico de Memoria -->
+                        <div class="col-lg-6 mb-4">
+                            <div class="chart-container">
+                                <div class="chart-header">
+                                    <h6 class="chart-title">
+                                        <i class="fas fa-memory me-2 text-info"></i>
+                                        Uso de Memoria por Lote
+                                    </h6>
                                 </div>
-                                <div class="metadata-item">
-                                    <div class="metadata-label">Archivos Procesados</div>
-                                    <div class="metadata-value">
-                                        <span class="badge bg-success" id="processedCount">0</span>
-                                    </div>
+                                <div class="chart-canvas">
+                                    <canvas id="memoryChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Gráfico de Tiempo de Procesamiento -->
+                        <div class="col-lg-6 mb-4">
+                            <div class="chart-container">
+                                <div class="chart-header">
+                                    <h6 class="chart-title">
+                                        <i class="fas fa-clock me-2 text-warning"></i>
+                                        Tiempo de Procesamiento
+                                    </h6>
+                                </div>
+                                <div class="chart-canvas">
+                                    <canvas id="processingTimeChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Gráfico de Confianza -->
+                        <div class="col-lg-6 mb-4">
+                            <div class="chart-container">
+                                <div class="chart-header">
+                                    <h6 class="chart-title">
+                                        <i class="fas fa-percentage me-2 text-success"></i>
+                                        Confianza Promedio OCR
+                                    </h6>
+                                </div>
+                                <div class="chart-canvas">
+                                    <canvas id="confidenceChart"></canvas>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- INTERFACE: Enhanced queue panel -->
-            <div class="tab-pane fade" id="queue-panel" role="tabpanel">
-                <div class="row mt-4">
-                    <div class="col-md-12">
-                        <div class="interface-excellence-card">
-                            <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
-                                <h5 class="mb-0">
-                                    <i class="fas fa-list-ul me-2"></i>Archivos en Cola de Procesamiento
-                                </h5>
-                                <div>
-                                    <button class="btn btn-success excellence-btn me-2" id="processAllBtn">
-                                        <i class="fas fa-play me-2"></i>Procesar Todo el Lote
-                                    </button>
-                                    <button class="btn btn-outline-danger excellence-btn" id="clearQueueBtn">
-                                        <i class="fas fa-trash me-2"></i>Limpiar Cola
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <div id="queueList">
-                                    <div class="text-center text-muted py-5">
-                                        <i class="fas fa-inbox fa-4x mb-3" style="color: #e2e8f0;"></i>
-                                        <h5>No hay archivos en cola</h5>
-                                        <p>Los archivos aparecerán aquí después de ser subidos</p>
-                                    </div>
-                                </div>
-                            </div>
+                <!-- LOG DE LOTES -->
+                <div class="col-12">
+                    <div class="ocr-card">
+                        <div class="ocr-card-header">
+                            <h6 class="ocr-card-title">
+                                <i class="fas fa-terminal me-2"></i>
+                                Log de Procesamiento por Lotes
+                            </h6>
                         </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- INTERFACE: Enhanced processed files panel -->
-            <div class="tab-pane fade" id="processed-panel" role="tabpanel">
-                <div class="row mt-4">
-                    <div class="col-md-6">
-                        <div class="interface-excellence-card">
-                            <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
-                                <h5 class="mb-0">
-                                    <i class="fas fa-check-circle me-2"></i>Archivos Procesados
-                                </h5>
-                                <div>
-                                    <button class="btn btn-light btn-sm me-2 excellence-btn" id="extractJsonBtn">
-                                        <i class="fas fa-download me-1"></i>Extraer JSON
-                                    </button>
-                                    <button class="btn btn-outline-light btn-sm excellence-btn" id="cleanSystemBtn">
-                                        <i class="fas fa-broom me-1"></i>Limpiar
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <div id="processedFilesList">
-                                    <div class="text-center text-muted py-5">
-                                        <i class="fas fa-file-alt fa-4x mb-3" style="color: #e2e8f0;"></i>
-                                        <h5>No hay archivos procesados</h5>
-                                        <p>Los resultados aparecerán aquí después del procesamiento</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="interface-excellence-card">
-                            <div class="card-header bg-primary text-white">
-                                <h5 class="mb-0">
-                                    <i class="fas fa-eye me-2"></i>Visor de Resultados
-                                </h5>
-                            </div>
-                            <div class="card-body p-0">
-                                <div id="resultViewer" class="excellence-result-viewer">
-                                    <div class="text-center text-muted py-5">
-                                        <i class="fas fa-mouse-pointer fa-3x mb-3"></i>
-                                        <p>Selecciona un archivo procesado para ver sus resultados</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- INTERFACE: Enhanced monitoring panel -->
-            <div class="tab-pane fade" id="monitor-panel" role="tabpanel">
-                <div class="row mt-4">
-                    <div class="col-md-12">
-                        <div class="interface-excellence-card">
-                            <div class="card-header bg-dark text-white">
-                                <h5 class="mb-0">
-                                    <i class="fas fa-chart-line me-2"></i>Monitoreo en Tiempo Real
-                                </h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="row mb-4">
-                                    <div class="col-md-3">
-                                        <div class="interface-excellence-card text-center p-3">
-                                            <h3 class="text-warning" id="liveInboxCount">0</h3>
-                                            <p class="mb-0 text-muted">En Cola</p>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="interface-excellence-card text-center p-3">
-                                            <h3 class="text-primary" id="liveProcessingCount">0</h3>
-                                            <p class="mb-0 text-muted">Procesando</p>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="interface-excellence-card text-center p-3">
-                                            <h3 class="text-success" id="liveProcessedCount">0</h3>
-                                            <p class="mb-0 text-muted">Completados</p>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="interface-excellence-card text-center p-3">
-                                            <h3 class="text-danger" id="liveErrorsCount">0</h3>
-                                            <p class="mb-0 text-muted">Errores</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="interface-excellence-card">
-                                    <div class="card-header">
-                                        <h6 class="mb-0">
-                                            <i class="fas fa-terminal me-2"></i>Log de Actividad en Tiempo Real
-                                        </h6>
-                                    </div>
-                                    <div class="card-body p-0">
-                                        <div id="activityLog" class="excellence-result-viewer" style="height: 300px;">
-                                            <div class="text-success">
-                                                <i class="fas fa-check-circle me-2"></i>Sistema iniciado. Esperando actividad...
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- INTERFACE: Enhanced API panel -->
-            <div class="tab-pane fade" id="api-panel" role="tabpanel">
-                <div class="row mt-4">
-                    <div class="col-md-12">
-                        <div class="interface-excellence-card">
-                            <div class="card-header bg-secondary text-white">
-                                <h5 class="mb-0">
-                                    <i class="fas fa-key me-2"></i>Gestión de API Keys & Documentación
-                                </h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <h6>Generar Nueva API Key</h6>
-                                        <div class="mb-3">
-                                            <label class="form-label">Nombre de la API Key</label>
-                                            <input type="text" class="form-control" id="apiKeyName" placeholder="Mi aplicación web">
-                                        </div>
-                                        <button class="btn btn-primary excellence-btn" id="generateApiKeyBtn">
-                                            <i class="fas fa-key me-2"></i>Generar API Key
-                                        </button>
-                                        
-                                        <div class="alert alert-info mt-3" id="apiKeyResult" style="display: none;">
-                                            <div class="filename-display">
-                                                <div class="filename-label">API Key Generada</div>
-                                                <span id="generatedApiKey"></span>
-                                                <button class="copy-btn" onclick="copyToClipboard('generatedApiKey')">
-                                                    <i class="fas fa-copy"></i>
-                                                </button>
-                                            </div>
-                                            <small class="text-muted">⚠️ Esta API key solo se muestra una vez. Guárdala en un lugar seguro.</small>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <h6>Documentación de API</h6>
-                                        <div class="list-group">
-                                            <a href="/api/documentation" class="list-group-item list-group-item-action" target="_blank">
-                                                <i class="fas fa-book me-2"></i>Documentación Completa
-                                            </a>
-                                            <a href="#" class="list-group-item list-group-item-action" onclick="showEndpointExamples()">
-                                                <i class="fas fa-code me-2"></i>Ejemplos de Código
-                                            </a>
-                                        </div>
-                                    </div>
+                        <div id="batchLogContainer">
+                            <div id="batchLog" class="batch-log">
+                                <div class="log-entry text-center text-muted p-3">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    Esperando eventos de procesamiento...
                                 </div>
                             </div>
                         </div>
@@ -1052,1277 +351,106 @@
         </div>
     </div>
 
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- FOOTER -->
+    <footer class="mt-5 py-4 bg-light border-top">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="text-muted mb-0">
+                        <i class="fas fa-robot me-1"></i>
+                        Sistema OCR Empresarial - MANDATO 14 Interface Excellence
+                    </p>
+                    <small class="text-muted">
+                        FILOSOFÍA: INTEGRIDAD TOTAL + PERFECCIÓN CONTINUA + TRANSPARENCIA TOTAL
+                    </small>
+                </div>
+                <div class="col-md-6 text-end">
+                    <small class="text-muted">
+                        <i class="fas fa-keyboard me-1"></i>
+                        Atajos: Ctrl+R (Actualizar), Ctrl+U (Upload), Ctrl+E (Exportar)
+                    </small>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- SCRIPTS -->
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Módulos del Sistema OCR (orden importante) -->
+    <script src="{{ url_for('static', filename='js/modules/api-client.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/modules/file-manager.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/modules/results-viewer.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/modules/monitoring-dashboard.js') }}"></script>
+    
+    <!-- Coordinador Principal -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+    <!-- Inicialización -->
     <script>
-        // FIX: Enhanced JavaScript with Interface Excellence philosophy
-        // REASON: Improved user interaction and real-time feedback
-        // IMPACT: Better user experience and error detection
-        
-        class InterfaceExcellenceManager {
-            constructor() {
-                this.init();
-                this.setupEventListeners();
-                this.startMonitoring();
-            }
-
-            init() {
-                // INTERFACE: Initialize all components
-                this.validateAllComponents();
-                this.updateSystemStatus();
-                
-                // FIX: Cargar archivos procesados automáticamente al inicializar
-                // REASON: Usuario necesita ver archivos procesados inmediatamente
-                // IMPACT: Interfaz muestra datos inmediatamente sin requerir acción del usuario
-                this.loadQueueFiles();
-                this.loadProcessedFiles();
-                this.updateCounts();
-            }
-
-            setupEventListeners() {
-                // VISUAL_CHANGE: Enhanced file selection
-                document.getElementById('selectFilesBtn').addEventListener('click', () => {
-                    document.getElementById('fileInput').click();
-                });
-                
-                // FIX: Upload zone click handler para facilitar selección
-                // REASON: Usuario necesita poder hacer click en toda la zona de upload
-                // IMPACT: Mejor UX al hacer toda la zona clickeable
-                document.getElementById('uploadZone').addEventListener('click', (e) => {
-                    if (e.target.id !== 'selectFilesBtn' && !e.target.closest('#selectFilesBtn')) {
-                        document.getElementById('fileInput').click();
-                    }
-                });
-
-                document.getElementById('fileInput').addEventListener('change', (e) => {
-                    this.handleFileSelection(e.target.files);
-                });
-                
-                // FIX: WhatsApp Metadata Generator and Real-time Preview
-                // REASON: Usuario requiere generación aleatoria y edición manual con preview
-                // IMPACT: Funcionalidad completa de gestión de metadatos interactiva
-                // INTERFACE: Conexiones reactivas verificadas entre componentes
-                // VISUAL_CHANGE: Preview en tiempo real de nombres de archivo
-                document.getElementById('generateRandomBtn').addEventListener('click', () => {
-                    this.generateRandomWhatsAppData();
-                });
-                
-                document.getElementById('clearFieldsBtn').addEventListener('click', () => {
-                    this.clearWhatsAppFields();
-                });
-                
-                // Real-time preview updates
-                ['numerosorteo', 'fechasorteo', 'idWhatsapp', 'nombre', 'horamin'].forEach(fieldId => {
-                    document.getElementById(fieldId).addEventListener('input', () => {
-                        this.updateFilenamePreview();
-                    });
-                });
-
-                // INTERFACE: Drag and drop functionality
-                const uploadZone = document.getElementById('uploadZone');
-                uploadZone.addEventListener('dragover', (e) => {
+        // Event listeners adicionales para navegación
+        document.addEventListener('DOMContentLoaded', function() {
+            // Configurar navegación entre pestañas
+            const navLinks = document.querySelectorAll('[data-tab-target]');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
                     e.preventDefault();
-                    uploadZone.classList.add('dragover');
-                });
-
-                uploadZone.addEventListener('dragleave', () => {
-                    uploadZone.classList.remove('dragover');
-                });
-
-                uploadZone.addEventListener('drop', (e) => {
-                    e.preventDefault();
-                    uploadZone.classList.remove('dragover');
-                    this.handleFileSelection(e.dataTransfer.files);
-                });
-
-                // INTERFACE: Button event listeners
-                document.getElementById('uploadBtn').addEventListener('click', () => {
-                    this.uploadFiles();
-                });
-
-                document.getElementById('clearFilesBtn').addEventListener('click', () => {
-                    this.clearFileSelection();
-                });
-
-                document.getElementById('processAllBtn').addEventListener('click', () => {
-                    this.processAllFiles();
-                });
-
-                document.getElementById('extractJsonBtn').addEventListener('click', () => {
-                    this.extractResults();
-                });
-
-                document.getElementById('cleanSystemBtn').addEventListener('click', () => {
-                    this.cleanSystem();
-                });
-
-                document.getElementById('clearQueueBtn').addEventListener('click', () => {
-                    this.clearQueue();
-                });
-
-                document.getElementById('generateApiKeyBtn').addEventListener('click', () => {
-                    this.generateApiKey();
-                });
-            }
-
-            // INTERFACE: Enhanced file selection with metadata display
-            handleFileSelection(files) {
-                const fileArray = Array.from(files);
-                const previewContainer = document.getElementById('filePreview');
-                const filesList = document.getElementById('selectedFilesList');
-                
-                if (fileArray.length === 0) return;
-
-                // VISUAL_CHANGE: Show file preview with enhanced metadata
-                previewContainer.style.display = 'block';
-                filesList.innerHTML = '';
-
-                fileArray.forEach((file, index) => {
-                    const fileItem = document.createElement('div');
-                    fileItem.className = 'enhanced-file-item';
-                    fileItem.innerHTML = `
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div class="flex-grow-1">
-                                <div class="filename-display">
-                                    <div class="filename-label">Archivo ${index + 1}</div>
-                                    ${file.name}
-                                    <button class="copy-btn" onclick="copyToClipboard('filename-${index}')">
-                                        <i class="fas fa-copy"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <span class="file-status-indicator status-pending">
-                                <i class="fas fa-clock me-1"></i>Pendiente
-                            </span>
-                        </div>
-                        <div class="file-metadata">
-                            <div class="metadata-item">
-                                <div class="metadata-label">Tamaño</div>
-                                <div class="metadata-value">${this.formatFileSize(file.size)}</div>
-                            </div>
-                            <div class="metadata-item">
-                                <div class="metadata-label">Tipo</div>
-                                <div class="metadata-value">${file.type}</div>
-                            </div>
-                            <div class="metadata-item">
-                                <div class="metadata-label">Última Modificación</div>
-                                <div class="metadata-value">${new Date(file.lastModified).toLocaleDateString()}</div>
-                            </div>
-                        </div>
-                    `;
-                    filesList.appendChild(fileItem);
-                });
-
-                this.logActivity(`📁 ${fileArray.length} archivo(s) seleccionado(s) para subida`);
-            }
-
-            // INTERFACE: Enhanced file upload with progress tracking
-            async uploadFiles() {
-                const fileInput = document.getElementById('fileInput');
-                const files = fileInput.files;
-                
-                if (files.length === 0) {
-                    this.showAlert('Por favor selecciona archivos para subir', 'warning');
-                    return;
-                }
-
-                const progressContainer = document.getElementById('uploadProgress');
-                const progressBar = document.getElementById('progressBar');
-                const progressText = document.getElementById('progressText');
-                const progressPercent = document.getElementById('progressPercent');
-
-                // VISUAL_CHANGE: Show progress with enhanced animation
-                progressContainer.style.display = 'block';
-                
-                const formData = new FormData();
-                Array.from(files).forEach(file => {
-                    formData.append('files', file);
-                });
-                
-                // FIX: Envío de metadatos WhatsApp personalizados desde el formulario
-                // REASON: Usuario requiere que los metadatos del formulario se envíen al backend
-                // IMPACT: Sistema utiliza metadatos personalizados en lugar de automáticos
-                // INTERFACE: Validación de campos de metadatos con manejo de errores
-                formData.append('numerosorteo', document.getElementById('numerosorteo').value || '');
-                formData.append('fechasorteo', document.getElementById('fechasorteo').value || '');
-                formData.append('idWhatsapp', document.getElementById('idWhatsapp').value || '');
-                formData.append('nombre', document.getElementById('nombre').value || '');
-                formData.append('horamin', document.getElementById('horamin').value || '');
-                formData.append('caption', document.getElementById('caption').value || '');
-
-                try {
-                    this.logActivity(`🚀 Iniciando subida de ${files.length} archivo(s)...`);
+                    const target = this.getAttribute('data-tab-target');
                     
-                    const xhr = new XMLHttpRequest();
+                    // Cambiar pestaña activa
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
                     
-                    xhr.upload.onprogress = (e) => {
-                        if (e.lengthComputable) {
-                            const percent = Math.round((e.loaded / e.total) * 100);
-                            progressBar.style.width = percent + '%';
-                            progressPercent.textContent = percent + '%';
-                            progressText.textContent = `Subiendo... ${percent}%`;
-                        }
-                    };
-
-                    xhr.onload = () => {
-                        if (xhr.status === 200) {
-                            const result = JSON.parse(xhr.responseText);
-                            this.logActivity(`✅ ${result.uploaded_count || files.length} archivo(s) subido(s) exitosamente`);
-                            this.showAlert('Archivos subidos exitosamente', 'success');
-                            this.clearFileSelection();
-                            this.updateCounts();
-                            this.loadQueueFiles();
-                        } else {
-                            throw new Error('Error en la subida');
-                        }
-                        progressContainer.style.display = 'none';
-                    };
-
-                    xhr.onerror = () => {
-                        this.logActivity(`❌ Error en la subida de archivos`);
-                        this.showAlert('Error al subir archivos', 'danger');
-                        progressContainer.style.display = 'none';
-                    };
-
-                    xhr.open('POST', '/api/ocr/process_image');
-                    xhr.send(formData);
-
-                } catch (error) {
-                    this.logActivity(`❌ Error: ${error.message}`);
-                    this.showAlert('Error al subir archivos: ' + error.message, 'danger');
-                    progressContainer.style.display = 'none';
-                }
-            }
-
-            // FIX: WhatsApp Metadata Management Functions
-            // REASON: Usuario requiere generación aleatoria y preview en tiempo real
-            // IMPACT: Sistema completo de gestión de metadatos WhatsApp
-            // INTERFACE: Validación rigurosa de componentes y conexiones verificadas
-            generateRandomWhatsAppData() {
-                // Generar datos aleatorios siguiendo formato WhatsApp
-                const codigos = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
-                const nombres = ['Juan', 'Maria', 'Carlos', 'Ana', 'Luis', 'Carmen', 'Jose', 'Elena', 'Miguel', 'Sofia'];
-                
-                // Fecha actual como base
-                const fechaActual = new Date();
-                const fecha = fechaActual.getFullYear().toString() + 
-                            String(fechaActual.getMonth() + 1).padStart(2, '0') + 
-                            String(fechaActual.getDate()).padStart(2, '0');
-                
-                // Generar ID WhatsApp aleatorio
-                const numeroWhatsapp = '21' + Math.floor(Math.random() * 10000000000000).toString();
-                const idWhatsapp = numeroWhatsapp + '@lid';
-                
-                // Generar hora aleatoria
-                const hora = String(Math.floor(Math.random() * 24)).padStart(2, '0');
-                const minuto = String(Math.floor(Math.random() * 60)).padStart(2, '0');
-                const horamin = hora + '-' + minuto;
-                
-                // Llenar campos
-                document.getElementById('numerosorteo').value = codigos[Math.floor(Math.random() * codigos.length)];
-                document.getElementById('fechasorteo').value = fecha;
-                document.getElementById('idWhatsapp').value = idWhatsapp;
-                document.getElementById('nombre').value = nombres[Math.floor(Math.random() * nombres.length)];
-                document.getElementById('horamin').value = horamin;
-                document.getElementById('caption').value = 'Pago móvil realizado exitosamente';
-                
-                // Actualizar preview
-                this.updateFilenamePreview();
-                
-                this.logActivity('🎲 Datos WhatsApp generados aleatoriamente');
-            }
-            
-            clearWhatsAppFields() {
-                // Limpiar todos los campos
-                ['numerosorteo', 'fechasorteo', 'idWhatsapp', 'nombre', 'horamin', 'caption'].forEach(fieldId => {
-                    document.getElementById(fieldId).value = '';
-                });
-                
-                // Actualizar preview
-                this.updateFilenamePreview();
-                
-                this.logActivity('🧹 Campos WhatsApp limpiados');
-            }
-            
-            updateFilenamePreview() {
-                // Obtener valores de los campos
-                const fecha = document.getElementById('fechasorteo').value || '20250620';
-                const codigo = document.getElementById('numerosorteo').value || 'A';
-                const idWhatsapp = document.getElementById('idWhatsapp').value || '214056942235719@lid';
-                const nombre = document.getElementById('nombre').value || 'Usuario';
-                const horamin = document.getElementById('horamin').value || '00-00';
-                
-                // Generar nombre de archivo
-                const filename = `${fecha}-${codigo}--${idWhatsapp}_${nombre}_${horamin}.png`;
-                
-                // Actualizar preview
-                document.getElementById('filenamePreview').textContent = filename;
-            }
-            
-            formatFileSize(bytes) {
-                if (bytes === 0) return '0 Bytes';
-                const k = 1024;
-                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-                const i = Math.floor(Math.log(bytes) / Math.log(k));
-                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-            }
-
-            // MANDATO 8: Helper para clases de confianza
-            getConfidenceClass(confidence) {
-                const conf = confidence * 100;
-                if (conf >= 90) return 'confidence-excellent';
-                if (conf >= 80) return 'confidence-good';
-                if (conf >= 70) return 'confidence-fair';
-                return 'confidence-poor';
-            }
-
-            // INTERFACE: Enhanced queue loading with WhatsApp metadata
-            async loadQueueFiles() {
-                try {
-                    const response = await fetch('/api/ocr/queue/status');
-                    const data = await response.json();
-                    
-                    const queueList = document.getElementById('queueList');
-                    
-                    if (data.inbox_files && data.inbox_files.length > 0) {
-                        queueList.innerHTML = '';
-                        data.inbox_files.forEach((fileInfo, index) => {
-                            const fileItem = document.createElement('div');
-                            fileItem.className = 'enhanced-file-item';
-                            
-                            // Extraer componentes del nombre de archivo WhatsApp
-                            const filename = fileInfo.filename || fileInfo;
-                            const whatsappData = fileInfo.whatsapp_metadata || {};
-                            
-                            fileItem.innerHTML = `
-                                <div class="d-flex justify-content-between align-items-start">
-                                    <div class="flex-grow-1">
-                                        <div class="filename-display">
-                                            <div class="filename-label">Archivo WhatsApp ${index + 1}</div>
-                                            <span id="queue-file-${index}">${filename}</span>
-                                            <button class="copy-btn" onclick="copyToClipboard('queue-file-${index}')">
-                                                <i class="fas fa-copy"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <span class="file-status-indicator status-pending">
-                                        <i class="fas fa-hourglass-half me-1"></i>En Cola
-                                    </span>
-                                </div>
-                                <div class="file-metadata">
-                                    <div class="metadata-item">
-                                        <div class="metadata-label">Código Sorteo</div>
-                                        <div class="metadata-value">${fileInfo.numerosorteo || whatsappData.numerosorteo || 'A'}</div>
-                                    </div>
-                                    <div class="metadata-item">
-                                        <div class="metadata-label">ID WhatsApp</div>
-                                        <div class="metadata-value">${fileInfo.idWhatsapp || whatsappData.idWhatsapp || 'unknown@lid'}</div>
-                                    </div>
-                                    <div class="metadata-item">
-                                        <div class="metadata-label">Nombre</div>
-                                        <div class="metadata-value">${fileInfo.nombre || whatsappData.nombre || 'Unknown'}</div>
-                                    </div>
-                                    <div class="metadata-item">
-                                        <div class="metadata-label">Hora:Minuto</div>
-                                        <div class="metadata-value">${fileInfo.horamin || whatsappData.horamin || '00-00'}</div>
-                                    </div>
-                                    <div class="metadata-item">
-                                        <div class="metadata-label">Caption</div>
-                                        <div class="metadata-value">${fileInfo.caption || 'Sin caption'}</div>
-                                    </div>
-                                    <div class="metadata-item">
-                                        <div class="metadata-label">Tamaño</div>
-                                        <div class="metadata-value">${this.formatFileSize(fileInfo.size || 0)}</div>
-                                    </div>
-                                </div>
-                            `;
-                            queueList.appendChild(fileItem);
-                        });
-                        
-                        this.logActivity(`📂 ${data.inbox_files.length} archivo(s) en cola con metadatos WhatsApp`);
-                    } else {
-                        queueList.innerHTML = `
-                            <div class="text-center text-muted py-5">
-                                <i class="fas fa-inbox fa-4x mb-3" style="color: #e2e8f0;"></i>
-                                <h5>No hay archivos en cola</h5>
-                                <p>Los archivos aparecerán aquí después de ser subidos</p>
-                            </div>
-                        `;
-                    }
-                } catch (error) {
-                    this.logActivity(`❌ Error al cargar cola: ${error.message}`);
-                }
-            }
-
-            // INTERFACE: Enhanced processed files loading
-            async loadProcessedFiles() {
-                try {
-                    const response = await fetch('/api/ocr/processed_files');
-                    const data = await response.json();
-                    
-                    const processedList = document.getElementById('processedFilesList');
-                    
-                    if (data.files && data.files.length > 0) {
-                        processedList.innerHTML = '';
-                        data.files.forEach((file, index) => {
-                            // FIX: Extraer nombre original del archivo JSON
-                            // REASON: Backend devuelve archivos .json, necesitamos mostrar nombre original
-                            // IMPACT: Archivos procesados visibles correctamente en interfaz
-                            const originalName = file.filename.replace(/^BATCH_.*?_[0-9a-f]{3}_/, '').replace('.json', '');
-                            
-                            const fileItem = document.createElement('div');
-                            fileItem.className = 'enhanced-file-item';
-                            fileItem.style.cursor = 'pointer';
-                            fileItem.onclick = () => this.loadFileResult(originalName, fileItem);
-                            
-                            fileItem.innerHTML = `
-                                <div class="d-flex justify-content-between align-items-start">
-                                    <div class="flex-grow-1">
-                                        <div class="filename-display">
-                                            <div class="filename-label">Archivo Procesado ${index + 1}</div>
-                                            <span id="processed-file-${index}">${originalName}</span>
-                                            <button class="copy-btn" onclick="copyToClipboard('processed-file-${index}')">
-                                                <i class="fas fa-copy"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <span class="file-status-indicator status-completed">
-                                        <i class="fas fa-check-circle me-1"></i>Completado
-                                    </span>
-                                </div>
-                                <div class="file-metadata">
-                                    <div class="metadata-item">
-                                        <div class="metadata-label">Archivo JSON</div>
-                                        <div class="metadata-value">${file.size_readable}</div>
-                                    </div>
-                                    <div class="metadata-item">
-                                        <div class="metadata-label">Procesado</div>
-                                        <div class="metadata-value">${file.modified_readable}</div>
-                                    </div>
-                                    <div class="metadata-item">
-                                        <div class="metadata-label">Coordenadas</div>
-                                        <div class="metadata-value">${file.has_coordinates ? '✅ Sí' : '❌ No'}</div>
-                                    </div>
-                                </div>
-                            `;
-                            processedList.appendChild(fileItem);
-                        });
-                        
-                        this.logActivity(`✅ ${data.files.length} archivos procesados cargados`);
-                    } else {
-                        processedList.innerHTML = `
-                            <div class="text-center text-muted py-5">
-                                <i class="fas fa-file-alt fa-4x mb-3" style="color: #e2e8f0;"></i>
-                                <h5>No hay archivos procesados</h5>
-                                <p>Los resultados aparecerán aquí después del procesamiento</p>
-                            </div>
-                        `;
-                        this.logActivity(`ℹ️ No hay archivos procesados disponibles`);
-                    }
-                } catch (error) {
-                    this.logActivity(`❌ Error al cargar archivos procesados: ${error.message}`);
-                    console.error('Error loadProcessedFiles:', error);
-                }
-            }
-
-            // INTERFACE: Enhanced result viewer
-            async loadFileResult(filename, fileElement) {
-                try {
-                    // VISUAL_CHANGE: Highlight selected file
-                    document.querySelectorAll('.enhanced-file-item').forEach(item => {
-                        item.classList.remove('selected');
+                    // Mostrar contenido correspondiente
+                    document.querySelectorAll('.tab-content-panel').forEach(panel => {
+                        panel.classList.add('d-none');
                     });
-                    fileElement.classList.add('selected');
-
-                    // FIX: Usar endpoint correcto para datos de archivos procesados
-                    // REASON: El endpoint anterior no funciona para archivos procesados
-                    // IMPACT: Visualizador de resultados funcional mostrando datos reales
-                    const response = await fetch(`/api/ocr/result_data/${encodeURIComponent(filename)}`);
-                    const result = await response.json();
+                    document.getElementById(target + 'Tab').classList.remove('d-none');
                     
-                    const resultViewer = document.getElementById('resultViewer');
-                    
-                    // MANDATO 8: Visualización de datos extraídos empresariales
-                    if (result.status === 'success' && result.data) {
-                        const data = result.data;
-                        
-                        resultViewer.innerHTML = `
-                            <div class="result-viewer-content">
-                                <div class="result-header">
-                                    <h4><i class="fas fa-file-alt me-2"></i>Resultados OCR: ${filename}</h4>
-                                    <div class="confidence-badge ${this.getConfidenceClass(data.processing_metadata?.ocr_confidence_avg || 0)}">
-                                        Confianza: ${Math.round((data.processing_metadata?.ocr_confidence_avg || 0) * 100)}%
-                                    </div>
-                                </div>
-
-                                <div class="result-sections">
-                                    <!-- MANDATO 8: Campos Críticos Extraídos -->
-                                    <div class="result-section">
-                                        <h5><i class="fas fa-database me-2"></i>Campos Críticos Extraídos</h5>
-                                        <div class="fields-grid">
-                                            <div class="field-item">
-                                                <div class="field-label">Referencia/Operación</div>
-                                                <div class="field-value">${data.extracted_fields?.referencia || data.extracted_fields?.valor_referencia_operacion || 'No detectado'}</div>
-                                            </div>
-                                            <div class="field-item">
-                                                <div class="field-label">Monto Total</div>
-                                                <div class="field-value ${data.extracted_fields?.monto ? 'amount-value' : ''}">${data.extracted_fields?.monto || data.extracted_fields?.monto_total || 'No detectado'}</div>
-                                            </div>
-                                            <div class="field-item">
-                                                <div class="field-label">Banco Origen</div>
-                                                <div class="field-value">${data.extracted_fields?.bancoorigen || data.extracted_fields?.banco_emisor_pagador || 'No detectado'}</div>
-                                            </div>
-                                            <div class="field-item">
-                                                <div class="field-label">Banco Destino</div>
-                                                <div class="field-value">${data.extracted_fields?.banco_destino || data.extracted_fields?.banco_receptor_beneficiario || 'No detectado'}</div>
-                                            </div>
-                                            <div class="field-item">
-                                                <div class="field-label">Fecha Operación</div>
-                                                <div class="field-value">${data.extracted_fields?.pago_fecha || data.extracted_fields?.fecha_operacion || 'No detectado'}</div>
-                                            </div>
-                                            <div class="field-item">
-                                                <div class="field-label">Cédula/RIF</div>
-                                                <div class="field-value">${data.extracted_fields?.cedula || 'No detectado'}</div>
-                                            </div>
-                                            <div class="field-item">
-                                                <div class="field-label">Teléfono</div>
-                                                <div class="field-value">${data.extracted_fields?.telefono || 'No detectado'}</div>
-                                            </div>
-                                            <div class="field-item">
-                                                <div class="field-label">Concepto</div>
-                                                <div class="field-value">${data.extracted_fields?.concepto || data.extracted_fields?.concepto_motivo || 'No detectado'}</div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- MANDATO 8: Metadatos de Procesamiento -->
-                                    <div class="result-section">
-                                        <h5><i class="fas fa-info-circle me-2"></i>Metadatos de Procesamiento</h5>
-                                        <div class="mandato8-metadata-grid">
-                                            <div class="mandato8-metadata-item">
-                                                <div class="mandato8-metadata-label">Lógica de Oro Aplicada</div>
-                                                <div class="mandato8-metadata-value">
-                                                    ${data.processing_metadata?.logica_oro_aplicada ? 
-                                                        '<span class="badge bg-success"><i class="fas fa-check me-1"></i>Sí</span>' : 
-                                                        '<span class="badge bg-warning"><i class="fas fa-times me-1"></i>No</span>'}
-                                                </div>
-                                            </div>
-                                            <div class="mandato8-metadata-item">
-                                                <div class="mandato8-metadata-label">Coordenadas Disponibles</div>
-                                                <div class="mandato8-metadata-value">${data.processing_metadata?.coordinates_available || 0}</div>
-                                            </div>
-                                            <div class="mandato8-metadata-item">
-                                                <div class="mandato8-metadata-label">Total Palabras</div>
-                                                <div class="mandato8-metadata-value">${data.processing_metadata?.total_words_detected || 0}</div>
-                                            </div>
-                                            <div class="mandato8-metadata-item">
-                                                <div class="mandato8-metadata-label">Tiempo Procesamiento</div>
-                                                <div class="mandato8-metadata-value">${data.processing_metadata?.processing_time_ms || 0}ms</div>
-                                            </div>
-                                            <div class="mandato8-metadata-item">
-                                                <div class="mandato8-metadata-label">Método OCR</div>
-                                                <div class="mandato8-metadata-value">${data.processing_metadata?.ocr_method || 'N/A'}</div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- MANDATO 8: Texto Extraído -->
-                                    <div class="result-section">
-                                        <h5><i class="fas fa-font me-2"></i>Texto OCR Extraído</h5>
-                                        <div class="text-sections">
-                                            <div class="text-section">
-                                                <h6>Texto Original OCR</h6>
-                                                <div class="text-content original-text">
-                                                    <pre>${data.original_text_ocr || 'Sin texto extraído'}</pre>
-                                                </div>
-                                            </div>
-                                            <div class="text-section">
-                                                <h6>Texto Estructurado (Lógica de Oro)</h6>
-                                                <div class="text-content structured-text">
-                                                    <pre>${data.structured_text_ocr || data.original_text_ocr || 'Sin estructura aplicada'}</pre>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-                        
-                        this.logActivity(`✅ Resultado empresarial cargado para: ${filename}`);
-                    } else if (result.status === 'success' && result.archivo_info) {
-                        const data = result;
-                        
-                        // MANDATO 8: Determinar clase de confianza
-                        const confidenceValue = data.estadisticas.confidence_avg || 0;
-                        let confidenceClass = this.getConfidenceClass(confidenceValue);
-                        let confidenceText = this.getConfidenceText(confidenceValue);
-                        
-                        resultViewer.innerHTML = `
-                            <div class="result-viewer-content">
-                                <div class="result-header">
-                                    <h4><i class="fas fa-file-alt me-2"></i>Resultados: ${filename}</h4>
-                                    <div class="confidence-badge ${confidenceClass}">
-                                        <i class="fas fa-chart-line me-1"></i>
-                                        Confianza: ${confidenceText} (${Math.round(confidenceValue * 100)}%)
-                                    </div>
-                                </div>
-
-                                <!-- MANDATO 8: Información del Archivo -->
-                                <div class="result-section">
-                                    <h5><i class="fas fa-info-circle me-2"></i>Información del Archivo</h5>
-                                    <div class="file-info-grid">
-                                        <div class="info-item">
-                                            <div class="info-label">Nombre Original</div>
-                                            <div class="info-value">${data.archivo_info.nombre_original}</div>
-                                        </div>
-                                        <div class="info-item">
-                                            <div class="info-label">Formato</div>
-                                            <div class="info-value">${data.archivo_info.formato}</div>
-                                        </div>
-                                        <div class="info-item">
-                                            <div class="info-label">Tamaño</div>
-                                            <div class="info-value">${data.archivo_info.tamaño}</div>
-                                        </div>
-                                        <div class="info-item">
-                                            <div class="info-label">Fecha Procesamiento</div>
-                                            <div class="info-value">${data.archivo_info.fecha_procesamiento}</div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- MANDATO 8: Estadísticas Mejoradas -->
-                                <div class="result-section">
-                                    <h5><i class="fas fa-chart-bar me-2"></i>Estadísticas de Procesamiento</h5>
-                                    <div class="mandato8-metadata-grid">
-                                        <div class="mandato8-metadata-item">
-                                            <div class="mandato8-metadata-label">Tiempo Procesamiento</div>
-                                            <div class="mandato8-metadata-value">${data.estadisticas.tiempo_procesamiento}</div>
-                                        </div>
-                                        <div class="mandato8-metadata-item">
-                                            <div class="mandato8-metadata-label">Total Palabras</div>
-                                            <div class="mandato8-metadata-value">${data.estadisticas.total_palabras}</div>
-                                        </div>
-                                        <div class="mandato8-metadata-item">
-                                            <div class="mandato8-metadata-label">Calidad</div>
-                                            <div class="mandato8-metadata-value">${data.estadisticas.calidad_categoria}</div>
-                                        </div>
-                                        <div class="mandato8-metadata-item">
-                                            <div class="mandato8-metadata-label">Alta Confianza</div>
-                                            <div class="mandato8-metadata-value">${data.estadisticas.palabras_alta_confianza}</div>
-                                        </div>
-                                        <div class="mandato8-metadata-item">
-                                            <div class="mandato8-metadata-label">Baja Confianza</div>
-                                            <div class="mandato8-metadata-value">${data.estadisticas.palabras_baja_confianza}</div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- MANDATO 8: Texto Extraído con Secciones -->
-                                <div class="result-section">
-                                    <h5><i class="fas fa-font me-2"></i>Texto Extraído (${data.texto_extraido.longitud_texto} caracteres)</h5>
-                                    <div class="text-content original-text">
-                                        <pre>${data.texto_extraido.texto_completo || 'Sin texto extraído'}</pre>
-                                    </div>
-                                </div>
-
-                                <!-- MANDATO 8: Datos Financieros -->
-                                ${data.datos_financieros.disponibles ? `
-                                <div class="result-section">
-                                    <h5><i class="fas fa-dollar-sign me-2"></i>Datos Financieros Extraídos</h5>
-                                    <div class="fields-grid">
-                                        ${Object.entries(data.datos_financieros.datos).map(([key, value]) => `
-                                            <div class="field-item">
-                                                <div class="field-label">${key}</div>
-                                                <div class="field-value ${key.includes('monto') ? 'amount-value' : ''}">${value || 'No detectado'}</div>
-                                            </div>
-                                        `).join('')}
-                                    </div>
-                                </div>
-                                ` : ''}
-
-                                <!-- MANDATO 8: Coordenadas y Palabras -->
-                                <div class="result-section">
-                                    <h5><i class="fas fa-map-marker-alt me-2"></i>Análisis Espacial</h5>
-                                    <div class="mandato8-metadata-grid">
-                                        <div class="mandato8-metadata-item">
-                                            <div class="mandato8-metadata-label">Coordenadas Disponibles</div>
-                                            <div class="mandato8-metadata-value">${data.coordenadas.disponibles ? 'Sí' : 'No'}</div>
-                                        </div>
-                                        <div class="mandato8-metadata-item">
-                                            <div class="mandato8-metadata-label">Total Coordenadas</div>
-                                            <div class="mandato8-metadata-value">${data.coordenadas.total}</div>
-                                        </div>
-                                        <div class="mandato8-metadata-item">
-                                            <div class="mandato8-metadata-label">Palabras con Coordenadas</div>
-                                            <div class="mandato8-metadata-value">${data.palabras_individuales.con_coordenadas}</div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- MANDATO 8: Calidad de Extracción -->
-                                <div class="result-section">
-                                    <h5><i class="fas fa-star me-2"></i>Calidad de Extracción</h5>
-                                    <div class="mandato8-metadata-grid">
-                                        <div class="mandato8-metadata-item">
-                                            <div class="mandato8-metadata-label">Score de Calidad</div>
-                                            <div class="mandato8-metadata-value">${data.calidad_extraccion.score}</div>
-                                        </div>
-                                        <div class="mandato8-metadata-item">
-                                            <div class="mandato8-metadata-label">Categoría</div>
-                                            <div class="mandato8-metadata-value">${data.calidad_extraccion.categoria}</div>
-                                        </div>
-                                    </div>
-                                    ${data.calidad_extraccion.recomendaciones.length > 0 ? `
-                                        <div class="mt-3">
-                                            <h6>Recomendaciones:</h6>
-                                            <ul class="list-unstyled">
-                                                ${data.calidad_extraccion.recomendaciones.map(rec => `<li><i class="fas fa-lightbulb me-2 text-warning"></i>${rec}</li>`).join('')}
-                                            </ul>
-                                        </div>
-                                    ` : ''}
-                                </div>
-                            </div>
-                        `;
-                                    <div class="result-section">
-                                        <h5><i class="fas fa-file-text me-2"></i>Texto Extraído</h5>
-                                        <div class="text-sections">
-                                            <div class="text-section">
-                                                <h6>Texto Original OCR</h6>
-                                                <div class="text-content original-text">${data.original_text_ocr || 'No disponible'}</div>
-                                            </div>
-                                            <div class="text-section">
-                                                <h6>Texto Estructurado (Lógica de Oro)</h6>
-                                                <div class="text-content structured-text">${data.structured_text_ocr || 'No disponible'}</div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- MANDATO 8: Datos de Archivo -->
-                                    <div class="result-section">
-                                        <h5><i class="fas fa-file me-2"></i>Información del Archivo</h5>
-                                        <div class="file-info-grid">
-                                            <div class="info-item">
-                                                <div class="info-label">Archivo Original</div>
-                                                <div class="info-value">${data['Información del Archivo']?.nombre_original || filename}</div>
-                                            </div>
-                                            <div class="info-item">
-                                                <div class="info-label">Tamaño</div>
-                                                <div class="info-value">${this.formatFileSize(data['Información del Archivo']?.tamaño || 0)}</div>
-                                            </div>
-                                            <div class="info-item">
-                                                <div class="info-label">Fecha Procesamiento</div>
-                                                <div class="info-value">${new Date(data.fecha_procesamiento || data['Información del Archivo']?.fecha_procesamiento).toLocaleString()}</div>
-                                            </div>
-                                            <div class="info-item">
-                                                <div class="info-label">Formato</div>
-                                                <div class="info-value">${data['Información del Archivo']?.formato || 'N/A'}</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-                    } else {
-                        resultViewer.innerHTML = `
-                            <div class="text-center text-muted py-5">
-                                <i class="fas fa-exclamation-triangle fa-3x mb-3 text-warning"></i>
-                                <h5>Error al cargar resultados</h5>
-                                <p>No se pudieron cargar los datos del archivo: ${filename}</p>
-                                <small>Respuesta del servidor: ${JSON.stringify(result, null, 2)}</small>
-                            </div>
-                        `;
+                    // Trigger eventos específicos por pestaña
+                    if (target === 'results' && window.resultsViewer) {
+                        window.resultsViewer.loadResults(false);
                     }
-                    
-                    this.logActivity(`✅ Resultados cargados para: ${filename}`);
-                } catch (error) {
-                    this.logActivity(`❌ Error al cargar resultado: ${error.message}`);
-                    document.getElementById('resultViewer').innerHTML = `
-                        <div class="text-center text-danger py-4">
-                            <i class="fas fa-times-circle fa-2x mb-3"></i>
-                            <p>Error al cargar el resultado: ${error.message}</p>
-                        </div>
-                    `;
-                }
-            }
-
-            // MANDATO 8: Función auxiliar para determinar clases de confianza
-            getConfidenceClass(confidenceValue) {
-                if (confidenceValue >= 0.9) {
-                    return 'confidence-excellent';
-                } else if (confidenceValue >= 0.8) {
-                    return 'confidence-good';
-                } else if (confidenceValue >= 0.6) {
-                    return 'confidence-fair';
-                } else {
-                    return 'confidence-poor';
-                }
-            }
-
-            // MANDATO 8: Función auxiliar para texto de confianza
-            getConfidenceText(confidenceValue) {
-                if (confidenceValue >= 0.9) {
-                    return 'Excelente';
-                } else if (confidenceValue >= 0.8) {
-                    return 'Buena';
-                } else if (confidenceValue >= 0.6) {
-                    return 'Regular';
-                } else {
-                    return 'Baja';
-                }
-            }
-
-            // MANDATO 8: Función auxiliar para formatear tamaño de archivo
-            formatFileSize(bytes) {
-                if (bytes === 0) return '0 B';
-                const k = 1024;
-                const sizes = ['B', 'KB', 'MB', 'GB'];
-                const i = Math.floor(Math.log(bytes) / Math.log(k));
-                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-            }
-
-            // INTERFACE: Enhanced JSON formatting with syntax highlighting
-            formatJsonWithSyntaxHighlighting(obj) {
-                const json = JSON.stringify(obj, null, 2);
-                return json
-                    .replace(/&/g, '&amp;')
-                    .replace(/</g, '&lt;')
-                    .replace(/>/g, '&gt;')
-                    .replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, (match) => {
-                        let cls = 'json-number';
-                        if (/^"/.test(match)) {
-                            if (/:$/.test(match)) {
-                                cls = 'json-key';
-                            } else {
-                                cls = 'json-string';
-                            }
-                        } else if (/true|false/.test(match)) {
-                            cls = 'json-boolean';
-                        } else if (/null/.test(match)) {
-                            cls = 'json-null';
-                        }
-                        return '<span class="' + cls + '">' + match + '</span>';
-                    })
-                    .replace(/(\[[\d,\s]+\])/g, '<span class="coordinate-highlight">$1</span>');
-            }
-
-            // INTERFACE: Process all files with enhanced feedback
-            async processAllFiles() {
-                try {
-                    this.logActivity(`⚙️ Iniciando procesamiento de lote...`);
-                    const response = await fetch('/api/ocr/process_batch', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            profile: 'ultra_rapido',
-                            batch_size: 10
-                        })
-                    });
-                    
-                    const result = await response.json();
-                    this.logActivity(`✅ Procesamiento iniciado. Request ID: ${result.request_id}`);
-                    this.showAlert('Procesamiento iniciado exitosamente', 'success');
-                    
-                    // Monitor processing progress
-                    this.monitorProcessing(result.request_id);
-                } catch (error) {
-                    this.logActivity(`❌ Error en procesamiento: ${error.message}`);
-                    this.showAlert('Error al iniciar procesamiento: ' + error.message, 'danger');
-                }
-            }
-
-            // INTERFACE: Monitor processing with real-time updates
-            async monitorProcessing(requestId) {
-                const checkProgress = async () => {
-                    try {
-                        const response = await fetch(`/api/ocr/result/${requestId}`);
-                        const result = await response.json();
-                        
-                        if (result.status === 'completed') {
-                            this.logActivity(`🎉 Procesamiento completado para lote: ${requestId}`);
-                            this.updateCounts();
-                            this.loadQueueFiles();
-                            this.loadProcessedFiles();
-                            return;
-                        } else if (result.status === 'processing') {
-                            this.logActivity(`⏳ Procesando lote: ${requestId}...`);
-                            setTimeout(checkProgress, 2000);
-                        } else if (result.status === 'error') {
-                            this.logActivity(`❌ Error en procesamiento del lote: ${requestId}`);
-                        }
-                    } catch (error) {
-                        this.logActivity(`❌ Error al verificar progreso: ${error.message}`);
-                    }
-                };
-                
-                setTimeout(checkProgress, 1000);
-            }
-
-            // INTERFACE: Enhanced API key generation
-            async generateApiKey() {
-                const nameInput = document.getElementById('apiKeyName');
-                const name = nameInput.value.trim();
-                
-                if (!name) {
-                    this.showAlert('Por favor ingresa un nombre para la API Key', 'warning');
-                    return;
-                }
-
-                try {
-                    const response = await fetch('/api/generate_key', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ name: name })
-                    });
-                    
-                    const result = await response.json();
-                    
-                    if (result.api_key) {
-                        document.getElementById('generatedApiKey').textContent = result.api_key;
-                        document.getElementById('apiKeyResult').style.display = 'block';
-                        nameInput.value = '';
-                        this.logActivity(`🔑 Nueva API key generada: ${name}`);
-                        this.showAlert('API Key generada exitosamente', 'success');
-                    } else {
-                        throw new Error('No se pudo generar la API Key');
-                    }
-                } catch (error) {
-                    this.logActivity(`❌ Error al generar API Key: ${error.message}`);
-                    this.showAlert('Error al generar API Key: ' + error.message, 'danger');
-                }
-            }
-
-            // INTERFACE: Enhanced system monitoring
-            async updateCounts() {
-                try {
-                    const response = await fetch('/api/ocr/queue/status');
-                    const data = await response.json();
-                    
-                    // Update UI counters
-                    document.getElementById('inboxCount').textContent = data.inbox_count || 0;
-                    document.getElementById('processedCount').textContent = data.processed_count || 0;
-                    document.getElementById('liveInboxCount').textContent = data.inbox_count || 0;
-                    document.getElementById('liveProcessingCount').textContent = data.processing_count || 0;
-                    document.getElementById('liveProcessedCount').textContent = data.processed_count || 0;
-                    document.getElementById('liveErrorsCount').textContent = data.error_count || 0;
-                } catch (error) {
-                    this.logActivity(`❌ Error al actualizar contadores: ${error.message}`);
-                }
-            }
-
-            // INTERFACE: Real-time monitoring system
-            startMonitoring() {
-                // Update every 5 seconds
-                setInterval(() => {
-                    this.updateCounts();
-                    this.updateSystemStatus();
-                }, 5000);
-                
-                // Load data on tab switch
-                document.querySelectorAll('[data-bs-toggle="tab"]').forEach(tab => {
-                    tab.addEventListener('shown.bs.tab', (e) => {
-                        const target = e.target.getAttribute('data-bs-target');
-                        if (target === '#queue-panel') {
-                            this.loadQueueFiles();
-                        } else if (target === '#processed-panel') {
-                            this.loadProcessedFiles();
-                        }
-                    });
-                });
-            }
-
-            // INTERFACE: System status validation
-            async updateSystemStatus() {
-                try {
-                    const response = await fetch('/api/ocr/queue/status');
-                    const data = await response.json();
-                    
-                    // Update status indicators
-                    const ocrStatus = document.getElementById('ocrStatus');
-                    const workerStatus = document.getElementById('workerStatus');
-                    
-                    if (data.system_status) {
-                        ocrStatus.className = 'file-status-indicator status-completed';
-                        ocrStatus.innerHTML = '<i class="fas fa-check me-1"></i>Activo';
-                        
-                        workerStatus.className = 'file-status-indicator status-completed';
-                        workerStatus.innerHTML = '<i class="fas fa-check me-1"></i>Operacional';
-                    } else {
-                        ocrStatus.className = 'file-status-indicator status-error';
-                        ocrStatus.innerHTML = '<i class="fas fa-times me-1"></i>Error';
-                        
-                        workerStatus.className = 'file-status-indicator status-error';
-                        workerStatus.innerHTML = '<i class="fas fa-times me-1"></i>Error';
-                    }
-                } catch (error) {
-                    // Silently handle errors for status updates
-                }
-            }
-
-            // INTERFACE: Enhanced utility functions
-            clearFileSelection() {
-                document.getElementById('fileInput').value = '';
-                document.getElementById('filePreview').style.display = 'none';
-                document.getElementById('selectedFilesList').innerHTML = '';
-                this.logActivity(`🗑️ Selección de archivos limpiada`);
-            }
-
-            async extractResults() {
-                try {
-                    this.logActivity(`📥 Extrayendo resultados JSON...`);
-                    const response = await fetch('/api/extract_results');
-                    
-                    if (response.ok) {
-                        const blob = await response.blob();
-                        const url = window.URL.createObjectURL(blob);
-                        const a = document.createElement('a');
-                        a.href = url;
-                        a.download = `ocr_results_${new Date().toISOString().slice(0,10)}.json`;
-                        document.body.appendChild(a);
-                        a.click();
-                        window.URL.revokeObjectURL(url);
-                        document.body.removeChild(a);
-                        
-                        this.logActivity(`✅ Resultados JSON extraídos exitosamente`);
-                        this.showAlert('Resultados extraídos exitosamente', 'success');
-                    } else {
-                        throw new Error('No se pudieron extraer los resultados');
-                    }
-                } catch (error) {
-                    this.logActivity(`❌ Error al extraer resultados: ${error.message}`);
-                    this.showAlert('Error al extraer resultados: ' + error.message, 'danger');
-                }
-            }
-
-            async cleanSystem() {
-                if (!confirm('¿Estás seguro de que quieres limpiar todo el sistema? Esta acción no se puede deshacer.')) {
-                    return;
-                }
-
-                try {
-                    this.logActivity(`🧹 Iniciando limpieza del sistema...`);
-                    const response = await fetch('/api/clean', {
-                        method: 'POST'
-                    });
-                    
-                    const result = await response.json();
-                    this.logActivity(`✅ Sistema limpiado: ${result.message}`);
-                    this.showAlert('Sistema limpiado exitosamente', 'success');
-                    
-                    // Refresh all data
-                    this.updateCounts();
-                    this.loadQueueFiles();
-                    this.loadProcessedFiles();
-                    
-                    // Clear result viewer
-                    document.getElementById('resultViewer').innerHTML = `
-                        <div class="text-center text-muted py-5">
-                            <i class="fas fa-mouse-pointer fa-3x mb-3"></i>
-                            <p>Sistema limpiado. Selecciona un archivo procesado para ver sus resultados</p>
-                        </div>
-                    `;
-                } catch (error) {
-                    this.logActivity(`❌ Error al limpiar sistema: ${error.message}`);
-                    this.showAlert('Error al limpiar sistema: ' + error.message, 'danger');
-                }
-            }
-
-            async clearQueue() {
-                if (!confirm('¿Estás seguro de que quieres limpiar la cola de archivos? Esto eliminará todos los archivos pendientes.')) {
-                    return;
-                }
-
-                try {
-                    this.logActivity(`🗑️ Limpiando cola de archivos...`);
-                    const response = await fetch('/api/clean_queue', {
-                        method: 'POST'
-                    });
-                    
-                    const result = await response.json();
-                    this.logActivity(`✅ Cola limpiada: ${result.message}`);
-                    this.showAlert('Cola limpiada exitosamente', 'success');
-                    
-                    // Refresh queue and counts
-                    this.updateCounts();
-                    this.loadQueueFiles();
-                } catch (error) {
-                    this.logActivity(`❌ Error al limpiar cola: ${error.message}`);
-                    this.showAlert('Error al limpiar cola: ' + error.message, 'danger');
-                }
-            }
-
-            // INTERFACE: Enhanced activity logging
-            logActivity(message) {
-                const activityLog = document.getElementById('activityLog');
-                const timestamp = new Date().toLocaleTimeString();
-                const logEntry = document.createElement('div');
-                logEntry.className = 'mb-1';
-                logEntry.innerHTML = `<span class="text-secondary">[${timestamp}]</span> ${message}`;
-                
-                activityLog.insertBefore(logEntry, activityLog.firstChild);
-                
-                // Keep only last 50 entries
-                while (activityLog.children.length > 50) {
-                    activityLog.removeChild(activityLog.lastChild);
-                }
-            }
-
-            // INTERFACE: Enhanced alert system
-            showAlert(message, type = 'info') {
-                const alert = document.createElement('div');
-                alert.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
-                alert.style.cssText = 'top: 20px; right: 20px; z-index: 9999; max-width: 400px;';
-                alert.innerHTML = `
-                    ${message}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                `;
-                
-                document.body.appendChild(alert);
-                
-                // Auto-remove after 5 seconds
-                setTimeout(() => {
-                    if (alert.parentNode) {
-                        alert.parentNode.removeChild(alert);
-                    }
-                }, 5000);
-            }
-
-            // INTERFACE: Format file size helper
-            formatFileSize(bytes) {
-                if (bytes === 0) return '0 Bytes';
-                const k = 1024;
-                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-                const i = Math.floor(Math.log(bytes) / Math.log(k));
-                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-            }
-
-            // INTERFACE: Component validation
-            validateAllComponents() {
-                const requiredElements = [
-                    'uploadZone', 'fileInput', 'uploadBtn', 'processAllBtn',
-                    'queueList', 'processedFilesList', 'resultViewer',
-                    'activityLog', 'generateApiKeyBtn'
-                ];
-                
-                requiredElements.forEach(id => {
-                    const element = document.getElementById(id);
-                    if (!element) {
-                        console.error(`Required component missing: ${id}`);
+                    if (target === 'monitoring' && window.monitoringDashboard) {
+                        window.monitoringDashboard.refreshMetrics();
                     }
                 });
-            }
-
-            // FIX: Implementar listeners reactivos para preview automático
-            // REASON: Usuario reporta que preview no se actualiza automáticamente
-            // IMPACT: Preview se actualiza en tiempo real al cambiar cualquier campo
-            // INTERFACE: Validación de campos con binding reactivo
-            setupReactivePreview() {
-                const metadataFields = ['numerosorteo', 'fechasorteo', 'idWhatsapp', 'nombre', 'horamin', 'caption'];
-                
-                metadataFields.forEach(fieldId => {
-                    const field = document.getElementById(fieldId);
-                    if (field) {
-                        field.addEventListener('input', () => {
-                            this.updateFilenamePreview();
-                        });
-                        field.addEventListener('change', () => {
-                            this.updateFilenamePreview();
-                        });
-                    }
-                });
-            }
-        }
-
-        // INTERFACE: Global utility functions
-        function copyToClipboard(elementId) {
-            const element = document.getElementById(elementId);
-            if (element) {
-                const text = element.textContent || element.value;
-                navigator.clipboard.writeText(text).then(() => {
-                    // Show temporary success indicator
-                    const icon = element.parentElement?.querySelector('.copy-btn i');
-                    if (icon) {
-                        icon.className = 'fas fa-check';
-                        setTimeout(() => {
-                            icon.className = 'fas fa-copy';
-                        }, 1000);
-                    }
-                }).catch(err => {
-                    console.error('Error copying to clipboard:', err);
-                });
-            }
-        }
-
-        // FIX: Implementar función copyFilenamePreview específica
-        // REASON: Usuario reporta que botón de copia no funciona
-        // IMPACT: Función de copia completamente funcional con feedback visual
-        // INTERFACE: Validación de elemento y manejo de errores
-        function copyFilenamePreview() {
-            const previewElement = document.getElementById('filenamePreview');
-            if (previewElement) {
-                const filename = previewElement.textContent;
-                navigator.clipboard.writeText(filename).then(() => {
-                    // Visual feedback
-                    const copyBtn = previewElement.parentElement?.querySelector('.copy-btn i');
-                    if (copyBtn) {
-                        copyBtn.className = 'fas fa-check';
-                        setTimeout(() => {
-                            copyBtn.className = 'fas fa-copy';
-                        }, 1000);
-                    }
-                    
-                    // Log activity
-                    if (window.manager) {
-                        window.manager.logActivity(`📋 Nombre de archivo copiado: ${filename}`);
-                    }
-                }).catch(err => {
-                    console.error('Error copying filename:', err);
-                    if (window.manager) {
-                        window.manager.logActivity(`❌ Error al copiar nombre de archivo`);
-                    }
-                });
-            }
-        }
-
-        function showEndpointExamples() {
-            // Open API documentation in new tab
-            window.open('/api/documentation', '_blank');
-        }
-        
-        // FIX: Global function for filename preview copy
-        // REASON: Usuario necesita copiar nombres generados fácilmente
-        // IMPACT: Funcionalidad completa de copia de preview
-        function copyFilenamePreview() {
-            const filenameText = document.getElementById('filenamePreview').textContent;
-            navigator.clipboard.writeText(filenameText).then(() => {
-                // Visual feedback
-                const button = event.target.closest('.copy-btn');
-                const originalIcon = button.innerHTML;
-                button.innerHTML = '<i class="fas fa-check" style="color: green;"></i>';
-                setTimeout(() => {
-                    button.innerHTML = originalIcon;
-                }, 1000);
-            }).catch(() => {
-                // Fallback for older browsers
-                const textArea = document.createElement('textarea');
-                textArea.value = filenameText;
-                document.body.appendChild(textArea);
-                textArea.select();
-                document.execCommand('copy');
-                document.body.removeChild(textArea);
             });
-        }
 
-        // INTERFACE: Initialize the application
-        document.addEventListener('DOMContentLoaded', () => {
-            window.interfaceManager = new InterfaceExcellenceManager();
-            // FIX: Configurar preview reactivo automáticamente
-            // REASON: Usuario requiere preview que se actualice al cambiar campos
-            // IMPACT: Preview funciona inmediatamente sin necesidad de botones
-            window.interfaceManager.setupReactivePreview();
+            // Configurar eventos de view toggle para resultados
+            const viewToggleInputs = document.querySelectorAll('input[name="viewType"]');
+            viewToggleInputs.forEach(input => {
+                input.addEventListener('change', function() {
+                    if (window.resultsViewer) {
+                        window.resultsViewer.currentView = this.value;
+                        window.resultsViewer.renderResults();
+                    }
+                });
+            });
+
+            // Configurar filtros de resultados
+            const confidenceFilter = document.getElementById('confidenceFilter');
+            if (confidenceFilter) {
+                confidenceFilter.addEventListener('change', function() {
+                    if (window.resultsViewer) {
+                        window.resultsViewer.filterConfig.confidence = this.value;
+                        window.resultsViewer.renderResults();
+                    }
+                });
+            }
+
+            const searchInput = document.getElementById('resultsSearch');
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    if (window.resultsViewer) {
+                        window.resultsViewer.filterConfig.search = this.value;
+                        window.resultsViewer.renderResults();
+                    }
+                });
+            }
+
+            console.log('🎯 Interface Excellence Dashboard inicializado - MANDATO 14');
         });
     </script>
 </body>

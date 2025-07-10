@@ -108,9 +108,9 @@ except Exception as e:
 @app.route('/')
 def index():
     """
-    FIX: Página principal con Interface Excellence Dashboard
-    REASON: Following Interface Excellence philosophy for enhanced filename visibility and professional appearance
-    IMPACT: Better user experience with enhanced file tracking and external environment styling
+    MANDATO 14: Página principal con Interface Excellence Dashboard reconstruido
+    REASON: RECONSTRUCCIÓN INTEGRAL DEL FRONTEND siguiendo filosofía INTEGRIDAD TOTAL
+    IMPACT: Frontend completamente nuevo con arquitectura modular y monitoreo avanzado por lotes
     INTERFACE: Comprehensive validation and enhanced UI components with real-time feedback
     VISUAL_CHANGE: Enhanced filename display with metadata and copy functionality
     """

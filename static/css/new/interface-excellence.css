@@ -1,0 +1,741 @@
+/**
+ * INTERFACE EXCELLENCE CSS - SISTEMA OCR EMPRESARIAL
+ * Estilos para Interface Excellence Soberana según Mandato 14
+ * FILOSOFÍA: PERFECCIÓN CONTINUA + OPTIMIZACIÓN SOSTENIBLE + TRANSPARENCIA TOTAL
+ */
+
+/* ============================================================================
+   VARIABLES CSS PERSONALIZADAS - DESIGN SYSTEM
+   ============================================================================ */
+:root {
+  /* Colores primarios del sistema */
+  --ocr-primary: #2563eb;
+  --ocr-primary-hover: #1d4ed8;
+  --ocr-primary-light: #dbeafe;
+  
+  /* Colores de estado */
+  --ocr-success: #059669;
+  --ocr-success-light: #d1fae5;
+  --ocr-warning: #d97706;
+  --ocr-warning-light: #fef3c7;
+  --ocr-danger: #dc2626;
+  --ocr-danger-light: #fecaca;
+  --ocr-info: #0891b2;
+  --ocr-info-light: #cffafe;
+  
+  /* Colores neutros */
+  --ocr-gray-50: #f8fafc;
+  --ocr-gray-100: #f1f5f9;
+  --ocr-gray-200: #e2e8f0;
+  --ocr-gray-300: #cbd5e1;
+  --ocr-gray-400: #94a3b8;
+  --ocr-gray-500: #64748b;
+  --ocr-gray-600: #475569;
+  --ocr-gray-700: #334155;
+  --ocr-gray-800: #1e293b;
+  --ocr-gray-900: #0f172a;
+  
+  /* Espaciado consistente */
+  --ocr-spacing-xs: 0.25rem;
+  --ocr-spacing-sm: 0.5rem;
+  --ocr-spacing-md: 1rem;
+  --ocr-spacing-lg: 1.5rem;
+  --ocr-spacing-xl: 2rem;
+  
+  /* Radiuses de bordes */
+  --ocr-radius-sm: 0.375rem;
+  --ocr-radius-md: 0.5rem;
+  --ocr-radius-lg: 0.75rem;
+  
+  /* Sombras */
+  --ocr-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --ocr-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --ocr-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  
+  /* Transiciones */
+  --ocr-transition: all 0.15s ease-in-out;
+  --ocr-transition-slow: all 0.3s ease-in-out;
+  
+  /* Fuentes */
+  --ocr-font-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+}
+
+/* ============================================================================
+   ESTILOS BASE Y LAYOUT PRINCIPAL
+   ============================================================================ */
+body {
+  background-color: var(--ocr-gray-50);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.6;
+  color: var(--ocr-gray-800);
+}
+
+.main-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.content-wrapper {
+  flex: 1;
+  padding: var(--ocr-spacing-lg);
+}
+
+/* ============================================================================
+   HEADER Y NAVEGACIÓN
+   ============================================================================ */
+.ocr-header {
+  background: linear-gradient(135deg, var(--ocr-primary) 0%, var(--ocr-primary-hover) 100%);
+  color: white;
+  padding: var(--ocr-spacing-lg) 0;
+  box-shadow: var(--ocr-shadow-md);
+}
+
+.ocr-header h1 {
+  font-size: 1.875rem;
+  font-weight: 700;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--ocr-spacing-sm);
+}
+
+.system-status-indicator {
+  display: flex;
+  align-items: center;
+  gap: var(--ocr-spacing-md);
+  font-size: 0.875rem;
+}
+
+.nav-tabs-custom {
+  border-bottom: 2px solid var(--ocr-gray-200);
+  margin-bottom: var(--ocr-spacing-xl);
+}
+
+.nav-tabs-custom .nav-link {
+  border: none;
+  border-radius: var(--ocr-radius-md) var(--ocr-radius-md) 0 0;
+  color: var(--ocr-gray-600);
+  font-weight: 500;
+  padding: var(--ocr-spacing-md) var(--ocr-spacing-lg);
+  transition: var(--ocr-transition);
+}
+
+.nav-tabs-custom .nav-link:hover {
+  color: var(--ocr-primary);
+  background-color: var(--ocr-gray-100);
+}
+
+.nav-tabs-custom .nav-link.active {
+  color: var(--ocr-primary);
+  background-color: white;
+  border-bottom: 2px solid var(--ocr-primary);
+}
+
+/* ============================================================================
+   COMPONENTES DE DRAG & DROP
+   ============================================================================ */
+.drop-zone {
+  border: 2px dashed var(--ocr-gray-300);
+  border-radius: var(--ocr-radius-lg);
+  padding: var(--ocr-spacing-xl);
+  text-align: center;
+  background-color: white;
+  transition: var(--ocr-transition);
+  cursor: pointer;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.drop-zone:hover {
+  border-color: var(--ocr-primary);
+  background-color: var(--ocr-primary-light);
+}
+
+.drop-zone.drag-over {
+  border-color: var(--ocr-success);
+  background-color: var(--ocr-success-light);
+  transform: scale(1.02);
+}
+
+.drop-zone-icon {
+  font-size: 3rem;
+  color: var(--ocr-gray-400);
+  margin-bottom: var(--ocr-spacing-md);
+}
+
+.drop-zone.drag-over .drop-zone-icon {
+  color: var(--ocr-success);
+}
+
+.drop-zone-text {
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: var(--ocr-gray-700);
+  margin-bottom: var(--ocr-spacing-sm);
+}
+
+.drop-zone-subtext {
+  color: var(--ocr-gray-500);
+  font-size: 0.875rem;
+}
+
+/* ============================================================================
+   LISTA DE ARCHIVOS Y ESTADOS
+   ============================================================================ */
+.file-list {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.file-item {
+  background: white;
+  border: 1px solid var(--ocr-gray-200);
+  border-radius: var(--ocr-radius-md);
+  padding: var(--ocr-spacing-md);
+  margin-bottom: var(--ocr-spacing-sm);
+  transition: var(--ocr-transition);
+}
+
+.file-item:hover {
+  border-color: var(--ocr-primary);
+  box-shadow: var(--ocr-shadow-sm);
+}
+
+.file-info {
+  flex: 1;
+}
+
+.file-name {
+  font-weight: 600;
+  color: var(--ocr-gray-800);
+  margin-bottom: var(--ocr-spacing-xs);
+}
+
+.file-meta {
+  color: var(--ocr-gray-500);
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: var(--ocr-spacing-sm);
+}
+
+.file-actions {
+  display: flex;
+  gap: var(--ocr-spacing-xs);
+}
+
+.empty-state {
+  text-align: center;
+  padding: var(--ocr-spacing-xl);
+  color: var(--ocr-gray-500);
+}
+
+.empty-state i {
+  display: block;
+  margin: 0 auto var(--ocr-spacing-md);
+}
+
+/* ============================================================================
+   BADGES DE CONFIANZA Y ESTADO
+   ============================================================================ */
+.badge-confidence-high {
+  background-color: var(--ocr-success) !important;
+  color: white;
+}
+
+.badge-confidence-medium {
+  background-color: var(--ocr-warning) !important;
+  color: white;
+}
+
+.badge-confidence-low {
+  background-color: var(--ocr-danger) !important;
+  color: white;
+}
+
+.status-badge {
+  font-size: 0.7rem;
+  padding: 0.25em 0.5em;
+  border-radius: var(--ocr-radius-sm);
+}
+
+/* Estados de archivo */
+.status-pending { background-color: var(--ocr-gray-500); }
+.status-uploading { background-color: var(--ocr-info); }
+.status-uploaded { background-color: var(--ocr-primary); }
+.status-processing { background-color: var(--ocr-warning); }
+.status-completed { background-color: var(--ocr-success); }
+.status-error { background-color: var(--ocr-danger); }
+
+/* ============================================================================
+   CARDS Y PANELES
+   ============================================================================ */
+.ocr-card {
+  background: white;
+  border: 1px solid var(--ocr-gray-200);
+  border-radius: var(--ocr-radius-lg);
+  padding: var(--ocr-spacing-lg);
+  box-shadow: var(--ocr-shadow-sm);
+  transition: var(--ocr-transition);
+}
+
+.ocr-card:hover {
+  box-shadow: var(--ocr-shadow-md);
+  transform: translateY(-2px);
+}
+
+.ocr-card-header {
+  border-bottom: 1px solid var(--ocr-gray-200);
+  padding-bottom: var(--ocr-spacing-md);
+  margin-bottom: var(--ocr-spacing-md);
+}
+
+.ocr-card-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--ocr-gray-800);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--ocr-spacing-sm);
+}
+
+.ocr-card-subtitle {
+  color: var(--ocr-gray-600);
+  font-size: 0.875rem;
+  margin-top: var(--ocr-spacing-xs);
+}
+
+/* ============================================================================
+   MÉTRICAS Y ESTADÍSTICAS
+   ============================================================================ */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--ocr-spacing-lg);
+  margin-bottom: var(--ocr-spacing-xl);
+}
+
+.metric-item {
+  background: white;
+  border-radius: var(--ocr-radius-lg);
+  padding: var(--ocr-spacing-lg);
+  text-align: center;
+  border: 1px solid var(--ocr-gray-200);
+  transition: var(--ocr-transition);
+}
+
+.metric-item:hover {
+  box-shadow: var(--ocr-shadow-md);
+}
+
+.metric-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--ocr-primary);
+  margin-bottom: var(--ocr-spacing-xs);
+}
+
+.metric-label {
+  color: var(--ocr-gray-600);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.metric-trend {
+  font-size: 0.75rem;
+  margin-top: var(--ocr-spacing-xs);
+}
+
+.metric-trend.positive { color: var(--ocr-success); }
+.metric-trend.negative { color: var(--ocr-danger); }
+
+/* ============================================================================
+   TABLAS Y LISTAS
+   ============================================================================ */
+.results-table {
+  background: white;
+  border-radius: var(--ocr-radius-lg);
+  overflow: hidden;
+  box-shadow: var(--ocr-shadow-sm);
+}
+
+.results-table thead {
+  background-color: var(--ocr-gray-50);
+}
+
+.results-table th {
+  border: none;
+  color: var(--ocr-gray-700);
+  font-weight: 600;
+  padding: var(--ocr-spacing-md);
+}
+
+.results-table td {
+  border: none;
+  border-bottom: 1px solid var(--ocr-gray-100);
+  padding: var(--ocr-spacing-md);
+  vertical-align: middle;
+}
+
+.results-table tbody tr:hover {
+  background-color: var(--ocr-gray-50);
+}
+
+/* ============================================================================
+   GRÁFICOS Y VISUALIZACIONES
+   ============================================================================ */
+.chart-container {
+  background: white;
+  border-radius: var(--ocr-radius-lg);
+  padding: var(--ocr-spacing-lg);
+  box-shadow: var(--ocr-shadow-sm);
+  margin-bottom: var(--ocr-spacing-lg);
+}
+
+.chart-header {
+  border-bottom: 1px solid var(--ocr-gray-200);
+  padding-bottom: var(--ocr-spacing-md);
+  margin-bottom: var(--ocr-spacing-lg);
+}
+
+.chart-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--ocr-gray-800);
+  margin: 0;
+}
+
+.chart-canvas {
+  height: 300px;
+  width: 100%;
+}
+
+/* ============================================================================
+   LOG Y CONSOLA
+   ============================================================================ */
+.batch-log {
+  background: var(--ocr-gray-900);
+  color: var(--ocr-gray-100);
+  border-radius: var(--ocr-radius-lg);
+  padding: var(--ocr-spacing-lg);
+  max-height: 400px;
+  overflow-y: auto;
+  font-family: var(--ocr-font-mono);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.log-entry {
+  margin-bottom: var(--ocr-spacing-sm);
+  padding: var(--ocr-spacing-sm);
+  border-radius: var(--ocr-radius-sm);
+  border-left: 3px solid transparent;
+}
+
+.log-entry.log-success {
+  border-left-color: var(--ocr-success);
+  background-color: rgba(5, 150, 105, 0.1);
+}
+
+.log-entry.log-error {
+  border-left-color: var(--ocr-danger);
+  background-color: rgba(220, 38, 38, 0.1);
+}
+
+.log-entry.log-warning {
+  border-left-color: var(--ocr-warning);
+  background-color: rgba(217, 119, 6, 0.1);
+}
+
+.log-entry.log-info {
+  border-left-color: var(--ocr-info);
+  background-color: rgba(8, 145, 178, 0.1);
+}
+
+.log-time {
+  color: var(--ocr-gray-400);
+  font-size: 0.75rem;
+}
+
+/* ============================================================================
+   BOTONES PERSONALIZADOS
+   ============================================================================ */
+.btn-ocr-primary {
+  background-color: var(--ocr-primary);
+  border-color: var(--ocr-primary);
+  color: white;
+  font-weight: 500;
+  border-radius: var(--ocr-radius-md);
+  padding: var(--ocr-spacing-sm) var(--ocr-spacing-lg);
+  transition: var(--ocr-transition);
+}
+
+.btn-ocr-primary:hover {
+  background-color: var(--ocr-primary-hover);
+  border-color: var(--ocr-primary-hover);
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: var(--ocr-shadow-md);
+}
+
+.btn-group-custom {
+  gap: var(--ocr-spacing-xs);
+}
+
+.btn-group-custom .btn {
+  border-radius: var(--ocr-radius-md);
+}
+
+/* ============================================================================
+   FILTROS Y CONTROLES
+   ============================================================================ */
+.filters-container {
+  background: white;
+  border-radius: var(--ocr-radius-lg);
+  padding: var(--ocr-spacing-lg);
+  margin-bottom: var(--ocr-spacing-lg);
+  box-shadow: var(--ocr-shadow-sm);
+}
+
+.filter-item {
+  margin-bottom: var(--ocr-spacing-md);
+}
+
+.filter-item:last-child {
+  margin-bottom: 0;
+}
+
+.filter-label {
+  font-weight: 500;
+  color: var(--ocr-gray-700);
+  margin-bottom: var(--ocr-spacing-xs);
+  display: block;
+}
+
+/* ============================================================================
+   NOTIFICACIONES
+   ============================================================================ */
+.notification-container {
+  z-index: 9999;
+  top: var(--ocr-spacing-lg);
+  right: var(--ocr-spacing-lg);
+  max-width: 400px;
+}
+
+.notification-item {
+  margin-bottom: var(--ocr-spacing-sm);
+  border: none;
+  border-radius: var(--ocr-radius-lg);
+  box-shadow: var(--ocr-shadow-lg);
+  animation: slideInRight 0.3s ease-out;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* ============================================================================
+   LOADING Y SPINNERS
+   ============================================================================ */
+.loading-overlay {
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+}
+
+.loading-spinner {
+  border: 3px solid var(--ocr-gray-300);
+  border-top: 3px solid var(--ocr-primary);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: 0 auto var(--ocr-spacing-md);
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ============================================================================
+   PROGRESS BARS
+   ============================================================================ */
+.progress-custom {
+  height: 6px;
+  border-radius: var(--ocr-radius-sm);
+  background-color: var(--ocr-gray-200);
+  overflow: hidden;
+}
+
+.progress-bar-custom {
+  border-radius: var(--ocr-radius-sm);
+  transition: width 0.3s ease;
+}
+
+/* ============================================================================
+   MODAL PERSONALIZADOS
+   ============================================================================ */
+.modal-content-custom {
+  border: none;
+  border-radius: var(--ocr-radius-lg);
+  box-shadow: var(--ocr-shadow-lg);
+}
+
+.modal-header-custom {
+  border-bottom: 1px solid var(--ocr-gray-200);
+  padding: var(--ocr-spacing-lg);
+}
+
+.modal-body-custom {
+  padding: var(--ocr-spacing-lg);
+}
+
+.modal-footer-custom {
+  border-top: 1px solid var(--ocr-gray-200);
+  padding: var(--ocr-spacing-lg);
+}
+
+/* ============================================================================
+   RESPONSIVE DESIGN
+   ============================================================================ */
+@media (max-width: 768px) {
+  .content-wrapper {
+    padding: var(--ocr-spacing-md);
+  }
+  
+  .metrics-grid {
+    grid-template-columns: 1fr;
+    gap: var(--ocr-spacing-md);
+  }
+  
+  .ocr-header h1 {
+    font-size: 1.5rem;
+  }
+  
+  .chart-canvas {
+    height: 250px;
+  }
+  
+  .notification-container {
+    left: var(--ocr-spacing-md);
+    right: var(--ocr-spacing-md);
+    top: var(--ocr-spacing-md);
+    max-width: none;
+  }
+}
+
+@media (max-width: 576px) {
+  .file-item {
+    padding: var(--ocr-spacing-sm);
+  }
+  
+  .metric-value {
+    font-size: 1.5rem;
+  }
+  
+  .batch-log {
+    font-size: 0.75rem;
+    max-height: 300px;
+  }
+}
+
+/* ============================================================================
+   UTILIDADES
+   ============================================================================ */
+.text-ocr-primary { color: var(--ocr-primary) !important; }
+.text-ocr-success { color: var(--ocr-success) !important; }
+.text-ocr-warning { color: var(--ocr-warning) !important; }
+.text-ocr-danger { color: var(--ocr-danger) !important; }
+
+.bg-ocr-primary { background-color: var(--ocr-primary) !important; }
+.bg-ocr-primary-light { background-color: var(--ocr-primary-light) !important; }
+
+.border-ocr-primary { border-color: var(--ocr-primary) !important; }
+
+.shadow-ocr-sm { box-shadow: var(--ocr-shadow-sm) !important; }
+.shadow-ocr-md { box-shadow: var(--ocr-shadow-md) !important; }
+.shadow-ocr-lg { box-shadow: var(--ocr-shadow-lg) !important; }
+
+.rounded-ocr { border-radius: var(--ocr-radius-md) !important; }
+.rounded-ocr-lg { border-radius: var(--ocr-radius-lg) !important; }
+
+/* ============================================================================
+   ANIMACIONES Y TRANSICIONES
+   ============================================================================ */
+.fade-in {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.slide-up {
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.hover-lift {
+  transition: var(--ocr-transition);
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--ocr-shadow-md);
+}
+
+/* ============================================================================
+   DARK MODE SUPPORT (PREPARADO PARA FUTURO)
+   ============================================================================ */
+@media (prefers-color-scheme: dark) {
+  /* Variables para modo oscuro - preparado para implementación futura */
+  :root {
+    --ocr-dark-bg: #0f172a;
+    --ocr-dark-surface: #1e293b;
+    --ocr-dark-text: #f1f5f9;
+  }
+  
+  /* El modo oscuro se implementará en una futura iteración */
+}
+
+/* ============================================================================
+   PRINT STYLES
+   ============================================================================ */
+@media print {
+  .notification-container,
+  .loading-overlay,
+  .btn,
+  .nav-tabs-custom {
+    display: none !important;
+  }
+  
+  .ocr-card,
+  .chart-container {
+    break-inside: avoid;
+    box-shadow: none;
+    border: 1px solid var(--ocr-gray-300);
+  }
+}
