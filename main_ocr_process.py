@@ -1042,11 +1042,12 @@ class OrquestadorOCR:
                 'filename': os.path.basename(image_path) if image_path else 'unknown'
             }
 
-    def process_queue_batch(self, max_files=5, profile='ultra_rapido'):
+    def process_queue_batch(self, max_files=5, profile='ultra_rapido', request_id=None):
         """
-        FIX: Método para procesamiento por lotes desde API
+        FIX: Método para procesamiento por lotes desde API con tracking request_id
         REASON: Error 'OrquestadorOCR' object has no attribute 'process_queue_batch'
-        IMPACT: Permite procesamiento por lotes desde interfaz web sin errores
+        IMPACT: Permite procesamiento por lotes desde interfaz web sin errores + persistencia tracking
+        MANDATO CRÍTICO: Acepta request_id para persistencia de parámetros de seguimiento
         """
         try:
             from config import get_async_directories
@@ -1064,6 +1065,7 @@ class OrquestadorOCR:
                     'status': 'no_files',
                     'estado': 'sin_archivos', 
                     'message': 'No hay archivos para procesar',
+                    'request_id': request_id,  # MANDATO CRÍTICO: Incluir request_id en respuesta
                     'batch_info': {
                         'processed_count': 0,
                         'error_count': 0,
@@ -1105,6 +1107,7 @@ class OrquestadorOCR:
                 'status': 'exitoso',
                 'estado': 'exitoso',
                 'message': f'Lote procesado: {processed_count} éxitos, {error_count} errores',
+                'request_id': request_id,  # MANDATO CRÍTICO: Incluir request_id en respuesta
                 'batch_info': {
                     'processed_count': processed_count,
                     'error_count': error_count,

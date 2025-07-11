@@ -536,7 +536,8 @@ def api_process_batch():
         # Procesar lote con tracking del request_id
         resultado = orquestador.process_queue_batch(
             max_files=batch_size,
-            profile=profile
+            profile=profile,
+            request_id=request_id  # MANDATO CRÍTICO: Pasar request_id para persistencia
         )
         
         # Añadir request_id al resultado
@@ -1655,12 +1656,22 @@ def api_extract_results():
                     elif any(term in texto_completo for term in ['Bs', 'bolivares', 'Banco']):
                         caption = 'Transacción Financiera'
                 
+                # MANDATO CRÍTICO BACKEND #1: Extracción de parámetros de seguimiento desde metadata/filename
+                # REASON: Frontend necesita parámetros de entrada (codigo_sorteo, id_whatsapp, etc.) en respuesta
+                # IMPACT: Sistema completo de seguimiento para correlación frontend-backend
+                tracking_params = _extract_tracking_parameters(nombre_archivo, metadata, result_data)
+                
                 # MANDATO CRÍTICO #2: Inclusión obligatoria de texto_total_ocr y concepto redefinido
-                # REASON: Campo texto_total_ocr AUSENTE violaba mandato estructural
+                # REASON: Campo texto_total_ocr AUSENTE violaba mandato estructural  
                 # IMPACT: Campo texto_total_ocr incluido con texto completo + concepto conciso separado
                 archivo_consolidado = {
                     'nombre_archivo': nombre_archivo,
+                    'codigo_sorteo': tracking_params.get('codigo_sorteo', ''),  # MANDATO: Parámetro de seguimiento
+                    'id_whatsapp': tracking_params.get('id_whatsapp', ''),      # MANDATO: Parámetro de seguimiento
+                    'nombre_usuario': tracking_params.get('nombre_usuario', ''), # MANDATO: Parámetro de seguimiento
                     'caption': caption,
+                    'hora_exacta': tracking_params.get('hora_exacta', ''),      # MANDATO: Parámetro de seguimiento
+                    'numero_llegada': tracking_params.get('numero_llegada', 0), # MANDATO: Parámetro de seguimiento NUEVO
                     'otro': campos_empresariales.get('otro', ''),
                     'referencia': campos_empresariales.get('referencia', ''),
                     'bancoorigen': campos_empresariales.get('bancoorigen', ''),
@@ -2874,6 +2885,118 @@ def _extract_onnxtr_enterprise_fields(palabras_detectadas, texto_completo):
             campos_extraidos['caption'] = 'Transacción Financiera'
     
     return campos_extraidos
+
+def _extract_tracking_parameters(nombre_archivo, metadata, result_data):
+    """
+    MANDATO CRÍTICO BACKEND: Extracción de parámetros de seguimiento desde filename y metadata
+    REASON: Frontend necesita correlacionar archivos procesados con parámetros de entrada
+    IMPACT: Sistema completo de seguimiento y trazabilidad frontend-backend
+    
+    Args:
+        nombre_archivo: Nombre del archivo original
+        metadata: Metadatos disponibles en result_data
+        result_data: Datos completos del resultado JSON
+        
+    Returns:
+        dict: Parámetros de seguimiento (codigo_sorteo, id_whatsapp, nombre_usuario, etc.)
+    """
+    import re
+    
+    # Inicializar parámetros de seguimiento con valores por defecto
+    tracking_params = {
+        'codigo_sorteo': '',      # Letra o número de sorteo (A-Z, 01-99)
+        'id_whatsapp': '',        # ID de WhatsApp con @lid
+        'nombre_usuario': '',     # Nombre del usuario
+        'hora_exacta': '',        # Hora en formato HH-MM
+        'numero_llegada': 0       # Orden de llegada en el lote (NUEVO MANDATO)
+    }
+    
+    try:
+        # FUENTE 1: Extraer desde metadata si está disponible
+        if isinstance(metadata, dict):
+            tracking_params['codigo_sorteo'] = metadata.get('numerosorteo', '') or metadata.get('codigo_sorteo', '')
+            tracking_params['id_whatsapp'] = metadata.get('idWhatsapp', '') or metadata.get('id_whatsapp', '')
+            tracking_params['nombre_usuario'] = metadata.get('nombre', '') or metadata.get('nombre_usuario', '')
+            tracking_params['hora_exacta'] = metadata.get('horamin', '') or metadata.get('hora_exacta', '')
+        
+        # FUENTE 2: Extraer desde filename usando patrones WhatsApp empresariales
+        if nombre_archivo and not all(tracking_params.values()):
+            # Patrones para formato WhatsApp: 20250711-A--123456@lid_Juan_14-30.png
+            patterns = [
+                r'^(?:\d{8}-)?([A-Z\d]{1,2})--(\d+@lid)_([^_]+)_(\d{2}-\d{2})',  # Con/sin fecha inicial
+                r'^([A-Z\d]{1,2})-(\d+@lid)_([^_]+)_(\d{2}-\d{2})',              # Formato alternativo
+                r'BATCH_\d+_\d+_[a-f0-9]+_(?:\d{8}-)?([A-Z\d]{1,2})--(\d+@lid)_([^_]+)_(\d{2}-\d{2})'  # Formato BATCH
+            ]
+            
+            for pattern in patterns:
+                match = re.search(pattern, nombre_archivo)
+                if match:
+                    groups = match.groups()
+                    if len(groups) >= 4:
+                        # Solo actualizar si el campo está vacío
+                        if not tracking_params['codigo_sorteo']:
+                            tracking_params['codigo_sorteo'] = groups[0]
+                        if not tracking_params['id_whatsapp']:
+                            tracking_params['id_whatsapp'] = groups[1]
+                        if not tracking_params['nombre_usuario']:
+                            tracking_params['nombre_usuario'] = groups[2]
+                        if not tracking_params['hora_exacta']:
+                            tracking_params['hora_exacta'] = groups[3]
+                    break
+        
+        # FUENTE 3: Extraer desde result_data si hay información adicional
+        if isinstance(result_data, dict):
+            # Buscar en diferentes ubicaciones posibles
+            metadata_sources = [
+                result_data.get('metadata', {}),
+                result_data.get('archivo_info', {}),
+                result_data.get('imagen_info', {}),
+                result_data.get('datos_extraidos', {}).get('metadata', {})
+            ]
+            
+            for source in metadata_sources:
+                if isinstance(source, dict):
+                    # Solo actualizar campos vacíos
+                    if not tracking_params['codigo_sorteo']:
+                        tracking_params['codigo_sorteo'] = source.get('numerosorteo', '') or source.get('codigo_sorteo', '')
+                    if not tracking_params['id_whatsapp']:
+                        tracking_params['id_whatsapp'] = source.get('idWhatsapp', '') or source.get('id_whatsapp', '')
+                    if not tracking_params['nombre_usuario']:
+                        tracking_params['nombre_usuario'] = source.get('nombre', '') or source.get('nombre_usuario', '')
+                    if not tracking_params['hora_exacta']:
+                        tracking_params['hora_exacta'] = source.get('horamin', '') or source.get('hora_exacta', '')
+        
+        # MANDATO CRÍTICO: Generar numero_llegada basado en timestamp o posición en filename
+        # REASON: Frontend necesita orden de llegada para correlación con interfaz
+        if nombre_archivo:
+            # Extraer timestamp del filename si está disponible
+            timestamp_match = re.search(r'BATCH_(\d{8})_(\d{6})_([a-f0-9]+)_', nombre_archivo)
+            if timestamp_match:
+                # Usar últimos 2 dígitos del hash como numero_llegada único
+                hash_suffix = timestamp_match.group(3)
+                tracking_params['numero_llegada'] = int(hash_suffix[-2:], 16) % 100  # 0-99
+            else:
+                # Fallback: usar hash del nombre del archivo
+                import hashlib
+                hash_obj = hashlib.md5(nombre_archivo.encode())
+                tracking_params['numero_llegada'] = int(hash_obj.hexdigest()[-2:], 16) % 100
+        
+        # Validación y limpieza de parámetros
+        if tracking_params['codigo_sorteo']:
+            tracking_params['codigo_sorteo'] = tracking_params['codigo_sorteo'].strip().upper()
+        if tracking_params['id_whatsapp'] and not tracking_params['id_whatsapp'].endswith('@lid'):
+            # Agregar @lid si falta
+            if '@' not in tracking_params['id_whatsapp']:
+                tracking_params['id_whatsapp'] += '@lid'
+        if tracking_params['nombre_usuario']:
+            tracking_params['nombre_usuario'] = tracking_params['nombre_usuario'].strip().title()
+        
+        logger.debug(f"🎯 Parámetros de seguimiento extraídos: {tracking_params}")
+        
+    except Exception as e:
+        logger.error(f"Error extrayendo parámetros de seguimiento de {nombre_archivo}: {e}")
+    
+    return tracking_params
 
 def _save_last_batch_request_id(request_id):
     """
