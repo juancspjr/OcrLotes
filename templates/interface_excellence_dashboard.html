@@ -3,520 +3,560 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema OCR Empresarial - Interface Excellence</title>
+    <title>Sistema OCR Empresarial - INTEGRIDAD TOTAL</title>
     
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <!-- Font Awesome Icons -->
+    <!-- Bootstrap 5 CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome 6 CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Chart.js para gráficos de monitoreo -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
-    <!-- CSS personalizado Interface Excellence -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/new/interface-excellence.css') }}">
+    <!-- CSS Personalizado -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/file-manager.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/results-viewer.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/api-docs.css') }}">
 </head>
-<body>
-    <!-- HEADER DEL SISTEMA -->
-    <header class="ocr-header">
-        <div class="container-fluid">
-            <div class="row align-items-center">
-                <div class="col-md-6">
-                    <h1>
-                        <i class="fas fa-eye text-white"></i>
-                        Sistema OCR Empresarial
-                    </h1>
-                    <p class="mb-0 text-white-50">Interface Excellence Soberana - MANDATO 14</p>
-                </div>
-                <div class="col-md-6">
-                    <div class="system-status-indicator text-end">
-                        <span id="systemStatus" class="badge bg-warning">
-                            <i class="fas fa-circle text-warning me-1"></i>Verificando...
-                        </span>
-                        <span id="workerStatus" class="badge bg-secondary ms-2">
-                            <i class="fas fa-cog me-1"></i>Worker
-                        </span>
-                        <span id="pendingFilesBadge" class="badge bg-secondary ms-2">0</span>
-                        <small class="text-white-50 ms-1">pendientes</small>
-                        <span id="completedFilesBadge" class="badge bg-success ms-2">0</span>
-                        <small class="text-white-50 ms-1">completados</small>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </header>
+<body class="bg-light">
 
-    <!-- NAVEGACIÓN DE PESTAÑAS -->
-    <div class="container-fluid mt-4">
-        <ul class="nav nav-tabs nav-tabs-custom" role="tablist">
-            <li class="nav-item">
-                <a class="nav-link active" data-tab-target="upload" href="#uploadTab" role="tab">
-                    <i class="fas fa-cloud-upload-alt me-2"></i>Cargar Archivos
-                </a>
+    <!-- Header Principal -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold" href="#">
+                <i class="fas fa-eye me-2"></i>Sistema OCR Empresarial
+            </a>
+            <span class="badge bg-success">INTEGRIDAD TOTAL</span>
+        </div>
+    </nav>
+
+    <!-- Navegación de Pestañas -->
+    <div class="container-fluid mt-3">
+        <ul class="nav nav-tabs nav-fill bg-white rounded-top shadow-sm" id="mainTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="upload-tab" data-bs-toggle="tab" data-bs-target="#uploadSection" 
+                        type="button" role="tab" aria-controls="uploadSection" aria-selected="true">
+                    <i class="fas fa-upload me-2"></i>Subir y Configurar
+                </button>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" data-tab-target="results" href="#resultsTab" role="tab">
-                    <i class="fas fa-file-alt me-2"></i>Resultados
-                </a>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="results-tab" data-bs-toggle="tab" data-bs-target="#resultsSection" 
+                        type="button" role="tab" aria-controls="resultsSection" aria-selected="false">
+                    <i class="fas fa-chart-line me-2"></i>Resultados
+                </button>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" data-tab-target="monitoring" href="#monitoringTab" role="tab">
-                    <i class="fas fa-chart-line me-2"></i>Monitoreo
-                </a>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="monitoring-tab" data-bs-toggle="tab" data-bs-target="#monitoringSection" 
+                        type="button" role="tab" aria-controls="monitoringSection" aria-selected="false">
+                    <i class="fas fa-tachometer-alt me-2"></i>Monitoreo
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="apidocs-tab" data-bs-toggle="tab" data-bs-target="#apiDocsSection" 
+                        type="button" role="tab" aria-controls="apiDocsSection" aria-selected="false">
+                    <i class="fas fa-code me-2"></i>API y Documentación
+                </button>
             </li>
         </ul>
-    </div>
 
-    <!-- CONTENIDO PRINCIPAL -->
-    <div class="container-fluid">
-        <!-- PESTAÑA: CARGAR ARCHIVOS -->
-        <div id="uploadTab" class="tab-content-panel">
-            <div class="row">
-                <!-- ZONA DE DRAG & DROP -->
-                <div class="col-lg-8">
-                    <div class="ocr-card mb-4">
-                        <div class="ocr-card-header">
-                            <h5 class="ocr-card-title">
-                                <i class="fas fa-file-upload me-2"></i>
-                                Subir Archivos OCR
-                            </h5>
-                            <p class="ocr-card-subtitle">
-                                Arrastra archivos PNG/JPG aquí o usa el botón para seleccionar
-                            </p>
+        <div class="tab-content border border-top-0 rounded-bottom shadow-sm bg-white" id="mainTabContent">
+            
+            <!-- SECCIÓN 1: SUBIR Y CONFIGURAR -->
+            <div class="tab-pane fade show active" id="uploadSection" role="tabpanel" aria-labelledby="upload-tab">
+                <div class="p-4">
+                    
+                    <!-- Información de Lote -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-header bg-info text-white">
+                                    <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Información de Lote</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row g-3">
+                                        <div class="col-6">
+                                            <div class="d-flex align-items-center">
+                                                <i class="fas fa-file-alt text-primary me-2"></i>
+                                                <div>
+                                                    <div class="fw-bold">Archivos en Cola</div>
+                                                    <div class="text-muted" id="filesInQueueCount">0</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="d-flex align-items-center">
+                                                <i class="fas fa-clock text-warning me-2"></i>
+                                                <div>
+                                                    <div class="fw-bold">Estado</div>
+                                                    <div class="text-muted" id="batchStatus">Listo para cargar</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="d-flex align-items-center">
+                                                <i class="fas fa-fingerprint text-success me-2"></i>
+                                                <div>
+                                                    <div class="fw-bold">ID de Lote</div>
+                                                    <div class="text-muted small" id="currentBatchId">No generado</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         
-                        <!-- Drop Zone -->
-                        <div id="dropZone" class="drop-zone">
-                            <div class="drop-zone-icon">
-                                <i class="fas fa-cloud-upload-alt"></i>
+                        <!-- Configuración de Lote -->
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-header bg-warning text-dark">
+                                    <h5 class="mb-0"><i class="fas fa-cogs me-2"></i>Configuración de Lote</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row g-3">
+                                        <div class="col-12">
+                                            <label for="batchProfile" class="form-label fw-bold">Perfil de Procesamiento</label>
+                                            <select class="form-select" id="batchProfile">
+                                                <option value="ultra_rapido" selected>Ultra Rápido</option>
+                                                <option value="balanced">Balanceado</option>
+                                                <option value="high_confidence">Alta Confianza</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-12">
+                                            <button type="button" class="btn btn-outline-primary w-100" id="generateBatchParamsBtn">
+                                                <i class="fas fa-magic me-2"></i>Generar Parámetros Aleatorios
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="drop-zone-text">
-                                Arrastra archivos aquí
+                        </div>
+                    </div>
+
+                    <!-- Área de Subida -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="mb-0"><i class="fas fa-cloud-upload-alt me-2"></i>Cargar Archivos</h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="dropArea" class="border-2 border-dashed border-secondary rounded-3 p-5 text-center">
+                                <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
+                                <h4 class="text-muted">Arrastra y suelta tus archivos aquí</h4>
+                                <p class="text-muted mb-3">o haz clic para seleccionar archivos</p>
+                                <input type="file" id="fileInput" multiple accept="image/*" class="d-none">
+                                <button type="button" class="btn btn-primary" onclick="document.getElementById('fileInput').click()">
+                                    <i class="fas fa-folder-open me-2"></i>Seleccionar Archivos
+                                </button>
                             </div>
-                            <div class="drop-zone-subtext">
-                                o haz clic para seleccionar archivos (PNG, JPG, máx 16MB)
+                        </div>
+                    </div>
+
+                    <!-- Archivos en Cola -->
+                    <div class="card">
+                        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0"><i class="fas fa-list me-2"></i>Archivos en Cola</h5>
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-sm btn-outline-light" id="expandAllBtn">
+                                    <i class="fas fa-expand-alt me-1"></i>Expandir Todo
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-light" id="collapseAllBtn">
+                                    <i class="fas fa-compress-alt me-1"></i>Colapsar Todo
+                                </button>
                             </div>
-                            <input type="file" id="fileInput" multiple accept="image/png,image/jpg,image/jpeg" class="d-none">
+                        </div>
+                        <div class="card-body p-0">
+                            <div id="fileListDisplay" class="table-responsive">
+                                <table class="table table-hover mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th width="40px">#</th>
+                                            <th>Nombre del Archivo</th>
+                                            <th width="120px">Estado</th>
+                                            <th width="100px">Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="fileListTableBody">
+                                        <tr id="emptyFileListMessage">
+                                            <td colspan="4" class="text-center text-muted py-5">
+                                                <i class="fas fa-inbox fa-2x mb-2"></i><br>
+                                                No hay archivos en cola
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-light">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="text-muted">
+                                    <small id="fileCountStatus">0 archivos listos para procesar</small>
+                                </div>
+                                <button type="button" class="btn btn-success" id="processBatchBtn" disabled>
+                                    <i class="fas fa-play me-2"></i>Procesar Lote
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- SECCIÓN 2: RESULTADOS -->
+            <div class="tab-pane fade" id="resultsSection" role="tabpanel" aria-labelledby="results-tab">
+                <div class="p-4">
+                    
+                    <!-- Controles de Resultados -->
+                    <div class="row mb-4">
+                        <div class="col-md-8">
+                            <div class="card">
+                                <div class="card-header bg-info text-white">
+                                    <h5 class="mb-0"><i class="fas fa-filter me-2"></i>Filtros y Navegación</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label for="batchSelector" class="form-label fw-bold">Seleccionar Lote</label>
+                                            <select class="form-select" id="batchSelector">
+                                                <option value="current">Último Lote Procesado</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="statusFilter" class="form-label fw-bold">Filtrar por Estado</label>
+                                            <select class="form-select" id="statusFilter">
+                                                <option value="all">Todos los Estados</option>
+                                                <option value="success">Solo Exitosos</option>
+                                                <option value="error">Solo con Errores</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-header bg-warning text-dark">
+                                    <h5 class="mb-0"><i class="fas fa-tools me-2"></i>Acciones</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-grid gap-2">
+                                        <button type="button" class="btn btn-primary" id="extractResultsBtn">
+                                            <i class="fas fa-download me-2"></i>Extraer JSON
+                                        </button>
+                                        <button type="button" class="btn btn-outline-danger" id="cleanResultsBtn">
+                                            <i class="fas fa-trash me-2"></i>Limpiar Resultados
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tabla de Resultados -->
+                    <div class="card">
+                        <div class="card-header bg-dark text-white">
+                            <h5 class="mb-0"><i class="fas fa-table me-2"></i>Resultados del Procesamiento</h5>
+                        </div>
+                        <div class="card-body p-0">
+                            <div id="resultsTableContainer" class="table-responsive">
+                                <table class="table table-hover mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th width="40px">#</th>
+                                            <th>Archivo</th>
+                                            <th>Código</th>
+                                            <th>Usuario</th>
+                                            <th>Monto</th>
+                                            <th>Banco</th>
+                                            <th>Estado</th>
+                                            <th width="100px">Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="resultsTableBody">
+                                        <tr id="emptyResultsMessage">
+                                            <td colspan="8" class="text-center text-muted py-5">
+                                                <i class="fas fa-search fa-2x mb-2"></i><br>
+                                                No hay resultados para mostrar
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- SECCIÓN 3: MONITOREO -->
+            <div class="tab-pane fade" id="monitoringSection" role="tabpanel" aria-labelledby="monitoring-tab">
+                <div class="p-4">
+                    
+                    <div class="row mb-4">
+                        <!-- Métricas Generales -->
+                        <div class="col-md-8">
+                            <div class="card">
+                                <div class="card-header bg-success text-white">
+                                    <h5 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Métricas del Sistema</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row g-3">
+                                        <div class="col-md-3">
+                                            <div class="text-center">
+                                                <i class="fas fa-file-alt fa-2x text-primary mb-2"></i>
+                                                <div class="fw-bold">Total Procesados</div>
+                                                <div class="h4 text-primary" id="totalProcessed">0</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="text-center">
+                                                <i class="fas fa-check-circle fa-2x text-success mb-2"></i>
+                                                <div class="fw-bold">Exitosos</div>
+                                                <div class="h4 text-success" id="totalSuccess">0</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="text-center">
+                                                <i class="fas fa-exclamation-triangle fa-2x text-warning mb-2"></i>
+                                                <div class="fw-bold">Con Errores</div>
+                                                <div class="h4 text-warning" id="totalErrors">0</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="text-center">
+                                                <i class="fas fa-percentage fa-2x text-info mb-2"></i>
+                                                <div class="fw-bold">Tasa de Éxito</div>
+                                                <div class="h4 text-info" id="successRate">0%</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         
-                        <!-- Botones de Acción -->
-                        <div class="mt-3 d-flex gap-2 flex-wrap">
-                            <button type="button" id="selectFilesBtn" class="btn btn-ocr-primary">
-                                <i class="fas fa-folder-open me-2"></i>Seleccionar Archivos
-                            </button>
-                            <button type="button" id="generateBatchParamsBtn" class="btn btn-outline-primary">
-                                <i class="fas fa-magic me-2"></i>Generar Parámetros Aleatorios
-                            </button>
-                            <button type="button" id="processBatchBtn" class="btn btn-success" disabled>
-                                <i class="fas fa-cog me-2"></i>Procesar Lote
-                            </button>
-                            <button type="button" id="quickCleanBtn" class="btn btn-outline-warning">
-                                <i class="fas fa-broom me-2"></i>Limpiar Cola
-                            </button>
+                        <!-- Estado del Sistema -->
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-header bg-info text-white">
+                                    <h5 class="mb-0"><i class="fas fa-heartbeat me-2"></i>Estado del Sistema</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="flex-grow-1">
+                                            <div class="fw-bold">Worker OCR</div>
+                                            <div class="text-muted small">Procesamiento asíncrono</div>
+                                        </div>
+                                        <span class="badge bg-success" id="workerStatus">Activo</span>
+                                    </div>
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="flex-grow-1">
+                                            <div class="fw-bold">Base de Datos</div>
+                                            <div class="text-muted small">PostgreSQL</div>
+                                        </div>
+                                        <span class="badge bg-success" id="dbStatus">Conectado</span>
+                                    </div>
+                                    <div class="d-flex align-items-center">
+                                        <div class="flex-grow-1">
+                                            <div class="fw-bold">API Backend</div>
+                                            <div class="text-muted small">Endpoints REST</div>
+                                        </div>
+                                        <span class="badge bg-success" id="apiStatus">Operativo</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- LISTA DE ARCHIVOS EN COLA CON PARÁMETROS INDIVIDUALES -->
-                    <div class="ocr-card">
-                        <div class="ocr-card-header d-flex justify-content-between align-items-center">
-                            <h6 class="ocr-card-title mb-0">
-                                <i class="fas fa-list me-2"></i>
-                                Cola de Procesamiento
-                                <span id="fileCountBadge" class="badge bg-primary ms-2">0</span>
-                            </h6>
-                            <div class="btn-group btn-group-sm">
-                                <button type="button" id="expandAllBtn" class="btn btn-outline-secondary">
-                                    <i class="fas fa-expand-arrows-alt"></i> Expandir Todo
-                                </button>
-                                <button type="button" id="collapseAllBtn" class="btn btn-outline-secondary">
-                                    <i class="fas fa-compress-arrows-alt"></i> Colapsar Todo
-                                </button>
-                            </div>
+                    <!-- Historial de Lotes -->
+                    <div class="card">
+                        <div class="card-header bg-dark text-white">
+                            <h5 class="mb-0"><i class="fas fa-history me-2"></i>Historial de Lotes</h5>
                         </div>
-                        <div id="fileListDisplay" class="file-list-container">
-                            <!-- El contenido se genera dinámicamente por file-manager.js -->
-                            <div class="empty-queue-message text-center p-4 text-muted" id="emptyQueueMessage">
-                                <i class="fas fa-inbox fa-3x mb-3"></i>
-                                <h6>Cola vacía</h6>
-                                <p>Arrastra archivos aquí o usa el botón "Seleccionar Archivos" para comenzar</p>
+                        <div class="card-body p-0">
+                            <div id="batchHistoryContainer" class="table-responsive">
+                                <table class="table table-hover mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>ID de Lote</th>
+                                            <th>Fecha</th>
+                                            <th>Archivos</th>
+                                            <th>Exitosos</th>
+                                            <th>Errores</th>
+                                            <th>Tiempo</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="batchHistoryBody">
+                                        <tr>
+                                            <td colspan="7" class="text-center text-muted py-4">
+                                                <i class="fas fa-clock fa-2x mb-2"></i><br>
+                                                No hay historial disponible
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- PANEL DE CONTROL LATERAL -->
-                <div class="col-lg-4">
-                    <!-- Métricas Rápidas -->
-                    <div class="ocr-card mb-4">
-                        <div class="ocr-card-header">
-                            <h6 class="ocr-card-title">
-                                <i class="fas fa-tachometer-alt me-2"></i>
-                                Estado del Sistema
-                            </h6>
-                        </div>
-                        <div class="metrics-grid">
-                            <div class="metric-item text-center">
-                                <div id="systemCpuValue" class="metric-value">--%</div>
-                                <div class="metric-label">CPU</div>
-                            </div>
-                            <div class="metric-item text-center">
-                                <div id="systemMemoryValue" class="metric-value">-- MB</div>
-                                <div class="metric-label">Memoria</div>
-                            </div>
-                            <div class="metric-item text-center">
-                                <div id="systemDiskValue" class="metric-value">--%</div>
-                                <div class="metric-label">Disco</div>
-                            </div>
-                        </div>
-                        <div id="queueStatusValue" class="mt-3">
-                            <!-- Estado de cola se actualiza dinámicamente -->
                         </div>
                     </div>
 
-                    <!-- Parámetros Esenciales del Lote -->
-                    <div class="ocr-card mb-4">
-                        <div class="ocr-card-header">
-                            <h6 class="ocr-card-title">
-                                <i class="fas fa-tags me-2"></i>
-                                Parámetros Esenciales del Lote
-                            </h6>
-                            <p class="ocr-card-subtitle">
-                                Información para identificación y seguimiento
-                            </p>
-                        </div>
-                        <div class="mb-3">
-                            <label for="codigoSorteo" class="form-label">Código Sorteo</label>
-                            <input type="text" class="form-control" id="codigoSorteo" 
-                                   placeholder="Ej: SORTEO2025" maxlength="50">
-                        </div>
-                        <div class="mb-3">
-                            <label for="idWhatsapp" class="form-label">ID WhatsApp</label>
-                            <input type="text" class="form-control" id="idWhatsapp" 
-                                   placeholder="Ej: 58412XXXXXXX@lid" maxlength="50">
-                        </div>
-                        <div class="mb-3">
-                            <label for="nombreUsuario" class="form-label">Nombre Usuario</label>
-                            <input type="text" class="form-control" id="nombreUsuario" 
-                                   placeholder="Ej: Juan Pérez" maxlength="100">
-                        </div>
-                        <div class="mb-3">
-                            <label for="captionTexto" class="form-label">Caption (Texto del Mensaje)</label>
-                            <textarea class="form-control" id="captionTexto" rows="2" 
-                                      placeholder="Texto del mensaje multimedia" maxlength="500"></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label for="horaExacta" class="form-label">Hora Exacta</label>
-                            <input type="time" class="form-control" id="horaExacta" step="1">
-                        </div>
-                        <div class="mb-3">
-                            <label for="apiKey" class="form-label">API Key</label>
-                            <input type="password" class="form-control" id="apiKey" 
-                                   placeholder="Clave de autorización" maxlength="200">
-                            <small class="form-text text-muted">
-                                Para servicios externos (n8n), la API Key se gestiona automáticamente
-                            </small>
-                        </div>
-                    </div>
-
-                    <!-- Acciones Rápidas -->
-                    <div class="ocr-card">
-                        <div class="ocr-card-header">
-                            <h6 class="ocr-card-title">
-                                <i class="fas fa-bolt me-2"></i>
-                                Acciones Rápidas
-                            </h6>
-                        </div>
-                        <div class="d-grid gap-2">
-                            <button type="button" id="globalRefreshBtn" class="btn btn-outline-primary">
-                                <i class="fas fa-sync-alt me-2"></i>Actualizar Todo
-                            </button>
-                            <button type="button" id="extractResultsBtn" class="btn btn-outline-success">
-                                <i class="fas fa-download me-2"></i>Extraer Resultados
-                            </button>
-                            <button type="button" id="exportAllBtn" class="btn btn-outline-info">
-                                <i class="fas fa-file-export me-2"></i>Exportar Todo
-                            </button>
-                            <button type="button" id="cleanResultsBtn" class="btn btn-outline-danger">
-                                <i class="fas fa-trash me-2"></i>Limpiar Resultados
-                            </button>
-                        </div>
-                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- PESTAÑA: RESULTADOS -->
-        <div id="resultsTab" class="tab-content-panel d-none">
-            <div class="row">
-                <div class="col-12">
-                    <!-- FILTROS Y CONTROLES DE VISTA -->
-                    <div class="filters-container mb-4">
-                        <div class="row align-items-center">
-                            <div class="col-md-4">
-                                <input type="text" id="resultsSearch" class="form-control" 
-                                       placeholder="Buscar por nombre de archivo...">
-                            </div>
-                            <div class="col-md-2">
-                                <select id="confidenceFilter" class="form-select">
-                                    <option value="all">Todas las confianzas</option>
-                                    <option value="high">Alta (>90%)</option>
-                                    <option value="medium">Media (70-90%)</option>
-                                    <option value="low">Baja (<70%)</option>
-                                </select>
-                            </div>
-                            <div class="col-md-2">
-                                <select id="batchSelector" class="form-select">
-                                    <option value="">Todos los lotes</option>
-                                </select>
-                            </div>
-                            <div class="col-md-4 text-end">
-                                <div class="btn-group" role="group">
-                                    <input type="radio" class="btn-check" name="viewType" id="viewList" value="list" checked>
-                                    <label class="btn btn-outline-primary" for="viewList">
-                                        <i class="fas fa-list"></i>
-                                    </label>
-                                    
-                                    <input type="radio" class="btn-check" name="viewType" id="viewBatch" value="batch">
-                                    <label class="btn btn-outline-primary" for="viewBatch">
-                                        <i class="fas fa-layer-group"></i>
-                                    </label>
-                                    
-                                    <input type="radio" class="btn-check" name="viewType" id="viewDetails" value="details">
-                                    <label class="btn btn-outline-primary" for="viewDetails">
-                                        <i class="fas fa-th-large"></i>
-                                    </label>
+            <!-- SECCIÓN 4: API Y DOCUMENTACIÓN -->
+            <div class="tab-pane fade" id="apiDocsSection" role="tabpanel" aria-labelledby="apidocs-tab">
+                <div class="p-4">
+                    
+                    <!-- Gestión de API Keys -->
+                    <div class="row mb-4">
+                        <div class="col-md-8">
+                            <div class="card">
+                                <div class="card-header bg-warning text-dark">
+                                    <h5 class="mb-0"><i class="fas fa-key me-2"></i>Gestión de API Key</h5>
                                 </div>
-                                <button type="button" id="refreshResultsBtn" class="btn btn-outline-secondary ms-2">
-                                    <i class="fas fa-sync-alt"></i>
-                                </button>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label for="currentApiKey" class="form-label fw-bold">API Key Actual</label>
+                                        <div class="input-group">
+                                            <input type="password" class="form-control font-monospace" id="currentApiKey" readonly>
+                                            <button class="btn btn-outline-secondary" type="button" id="toggleApiKeyVisibility">
+                                                <i class="fas fa-eye" id="toggleApiKeyIcon"></i>
+                                            </button>
+                                            <button class="btn btn-outline-primary" type="button" id="copyApiKeyBtn">
+                                                <i class="fas fa-copy"></i>
+                                            </button>
+                                        </div>
+                                        <div class="form-text">La API Key es opcional para uso local, pero obligatoria para servicios externos como N8N.</div>
+                                    </div>
+                                    <button type="button" class="btn btn-primary" id="generateApiKeyBtn">
+                                        <i class="fas fa-refresh me-2"></i>Generar Nueva API Key
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-header bg-info text-white">
+                                    <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Información</h5>
+                                </div>
+                                <div class="card-body">
+                                    <p class="mb-2"><strong>Versión del Sistema:</strong> 2.0</p>
+                                    <p class="mb-2"><strong>Base URL:</strong> <code id="baseUrl">http://localhost:5000</code></p>
+                                    <p class="mb-0"><strong>Arquitectura:</strong> Flask + PostgreSQL + OnnxTR</p>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- CONTENEDOR DE RESULTADOS -->
-                    <div id="resultsContainer">
-                        <!-- El contenido se genera dinámicamente por results-viewer.js -->
+                    <!-- Documentación de Endpoints -->
+                    <div class="card">
+                        <div class="card-header bg-dark text-white">
+                            <h5 class="mb-0"><i class="fas fa-code me-2"></i>Endpoints para N8N</h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="apiDocumentation">
+                                <!-- La documentación se cargará dinámicamente aquí -->
+                            </div>
+                        </div>
                     </div>
+
                 </div>
             </div>
+
         </div>
+    </div>
 
-        <!-- PESTAÑA: MONITOREO AVANZADO -->
-        <div id="monitoringTab" class="tab-content-panel d-none">
-            <div class="row">
-                <!-- CONTROLES DE MONITOREO -->
-                <div class="col-12 mb-4">
-                    <div class="ocr-card">
-                        <div class="ocr-card-header d-flex justify-content-between align-items-center">
-                            <h5 class="ocr-card-title mb-0">
-                                <i class="fas fa-chart-line me-2"></i>
-                                Monitoreo Avanzado por Lotes
-                            </h5>
-                            <div class="btn-group">
-                                <button type="button" id="togglePollingBtn" class="btn btn-success">
-                                    <i class="fas fa-play me-1"></i>Iniciar Monitoreo
-                                </button>
-                                <button type="button" id="refreshMetricsBtn" class="btn btn-outline-primary">
-                                    <i class="fas fa-sync-alt"></i>
-                                </button>
-                                <button type="button" id="clearLogBtn" class="btn btn-outline-warning">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+    <!-- Modal de Parámetros de Lote -->
+    <div class="modal fade" id="batchParamsModal" tabindex="-1" aria-labelledby="batchParamsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="batchParamsModalLabel">
+                        <i class="fas fa-magic me-2"></i>Generar Parámetros para Todo el Lote
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-
-                <!-- GRÁFICOS DE MÉTRICAS -->
-                <div id="chartsContainer" class="col-12">
-                    <div class="row">
-                        <!-- Gráfico de CPU -->
-                        <div class="col-lg-6 mb-4">
-                            <div class="chart-container">
-                                <div class="chart-header">
-                                    <h6 class="chart-title">
-                                        <i class="fas fa-microchip me-2 text-danger"></i>
-                                        Uso de CPU por Lote
-                                    </h6>
-                                </div>
-                                <div class="chart-canvas">
-                                    <canvas id="cpuChart"></canvas>
-                                </div>
+                <div class="modal-body">
+                    <form id="batchParamsForm">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="batchCodigoSorteo" class="form-label fw-bold">Código de Sorteo</label>
+                                <select class="form-select" id="batchCodigoSorteo">
+                                    <option value="">Generar automáticamente</option>
+                                    <option value="A">A</option>
+                                    <option value="B">B</option>
+                                    <option value="C">C</option>
+                                    <option value="D">D</option>
+                                    <option value="E">E</option>
+                                    <option value="F">F</option>
+                                    <option value="G">G</option>
+                                    <option value="H">H</option>
+                                    <option value="I">I</option>
+                                    <option value="J">J</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="batchIdWhatsapp" class="form-label fw-bold">ID WhatsApp Base</label>
+                                <input type="text" class="form-control" id="batchIdWhatsapp" placeholder="Ej: 123456789@lid">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="batchNombreUsuario" class="form-label fw-bold">Nombre de Usuario</label>
+                                <input type="text" class="form-control" id="batchNombreUsuario" placeholder="Ej: Juan">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="batchHoraExacta" class="form-label fw-bold">Hora Base</label>
+                                <input type="text" class="form-control" id="batchHoraExacta" placeholder="Ej: 14-30">
+                            </div>
+                            <div class="col-12">
+                                <label for="batchCaption" class="form-label fw-bold">Caption Base</label>
+                                <input type="text" class="form-control" id="batchCaption" placeholder="Ej: Pago Móvil">
                             </div>
                         </div>
-
-                        <!-- Gráfico de Memoria -->
-                        <div class="col-lg-6 mb-4">
-                            <div class="chart-container">
-                                <div class="chart-header">
-                                    <h6 class="chart-title">
-                                        <i class="fas fa-memory me-2 text-info"></i>
-                                        Uso de Memoria por Lote
-                                    </h6>
-                                </div>
-                                <div class="chart-canvas">
-                                    <canvas id="memoryChart"></canvas>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Gráfico de Tiempo de Procesamiento -->
-                        <div class="col-lg-6 mb-4">
-                            <div class="chart-container">
-                                <div class="chart-header">
-                                    <h6 class="chart-title">
-                                        <i class="fas fa-clock me-2 text-warning"></i>
-                                        Tiempo de Procesamiento
-                                    </h6>
-                                </div>
-                                <div class="chart-canvas">
-                                    <canvas id="processingTimeChart"></canvas>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Gráfico de Confianza -->
-                        <div class="col-lg-6 mb-4">
-                            <div class="chart-container">
-                                <div class="chart-header">
-                                    <h6 class="chart-title">
-                                        <i class="fas fa-percentage me-2 text-success"></i>
-                                        Confianza Promedio OCR
-                                    </h6>
-                                </div>
-                                <div class="chart-canvas">
-                                    <canvas id="confidenceChart"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    </form>
                 </div>
-
-                <!-- LOG DE LOTES -->
-                <div class="col-12">
-                    <div class="ocr-card">
-                        <div class="ocr-card-header">
-                            <h6 class="ocr-card-title">
-                                <i class="fas fa-terminal me-2"></i>
-                                Log de Procesamiento por Lotes
-                            </h6>
-                        </div>
-                        <div id="batchLogContainer">
-                            <div id="batchLog" class="batch-log">
-                                <div class="log-entry text-center text-muted p-3">
-                                    <i class="fas fa-info-circle me-2"></i>
-                                    Esperando eventos de procesamiento...
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="applyBatchParamsBtn">
+                        <i class="fas fa-check me-2"></i>Aplicar Parámetros
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- FOOTER -->
-    <footer class="mt-5 py-4 bg-light border-top">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-6">
-                    <p class="text-muted mb-0">
-                        <i class="fas fa-robot me-1"></i>
-                        Sistema OCR Empresarial - MANDATO 14 Interface Excellence
-                    </p>
-                    <small class="text-muted">
-                        FILOSOFÍA: INTEGRIDAD TOTAL + PERFECCIÓN CONTINUA + TRANSPARENCIA TOTAL
-                    </small>
-                </div>
-                <div class="col-md-6 text-end">
-                    <small class="text-muted">
-                        <i class="fas fa-keyboard me-1"></i>
-                        Atajos: Ctrl+R (Actualizar), Ctrl+U (Upload), Ctrl+E (Exportar)
-                    </small>
-                </div>
-            </div>
-        </div>
-    </footer>
+    <!-- Toast Container for Notifications -->
+    <div class="toast-container position-fixed top-0 end-0 p-3" id="toastContainer"></div>
 
-    <!-- SCRIPTS -->
     <!-- Bootstrap 5 JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
-    <!-- Módulos del Sistema OCR (orden importante) -->
+    <!-- Módulos JavaScript -->
     <script src="{{ url_for('static', filename='js/modules/api-client.js') }}"></script>
     <script src="{{ url_for('static', filename='js/modules/file-manager.js') }}"></script>
     <script src="{{ url_for('static', filename='js/modules/results-viewer.js') }}"></script>
     <script src="{{ url_for('static', filename='js/modules/monitoring-dashboard.js') }}"></script>
-    
-    <!-- Coordinador Principal -->
+    <script src="{{ url_for('static', filename='js/modules/api-docs.js') }}"></script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 
-    <!-- Inicialización -->
     <script>
-        // Event listeners adicionales para navegación
+        // Inicialización del Sistema OCR Empresarial
+        console.log('🌟 Iniciando Sistema OCR Empresarial - MANDATO 14');
+        
         document.addEventListener('DOMContentLoaded', function() {
-            // Configurar navegación entre pestañas
-            const navLinks = document.querySelectorAll('[data-tab-target]');
-            navLinks.forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const target = this.getAttribute('data-tab-target');
-                    
-                    // Cambiar pestaña activa
-                    navLinks.forEach(l => l.classList.remove('active'));
-                    this.classList.add('active');
-                    
-                    // Mostrar contenido correspondiente
-                    document.querySelectorAll('.tab-content-panel').forEach(panel => {
-                        panel.classList.add('d-none');
-                    });
-                    document.getElementById(target + 'Tab').classList.remove('d-none');
-                    
-                    // Trigger eventos específicos por pestaña
-                    if (target === 'results' && window.resultsViewer) {
-                        window.resultsViewer.loadResults(false);
+            console.log('🚀 Inicializando Sistema OCR Empresarial...');
+            
+            // Verificar conectividad con backend
+            console.log('🔍 Verificando conectividad con backend...');
+            
+            // Inicializar el sistema principal
+            if (typeof window.OCRSystem !== 'undefined') {
+                window.OCRSystem.init();
+                console.log('🎯 Interface Excellence Dashboard inicializado - MANDATO 14');
+            } else {
+                console.warn('⚠️ OCRSystem no está disponible, esperando carga...');
+                setTimeout(() => {
+                    if (typeof window.OCRSystem !== 'undefined') {
+                        window.OCRSystem.init();
                     }
-                    if (target === 'monitoring' && window.monitoringDashboard) {
-                        window.monitoringDashboard.refreshMetrics();
-                    }
-                });
-            });
-
-            // Configurar eventos de view toggle para resultados
-            const viewToggleInputs = document.querySelectorAll('input[name="viewType"]');
-            viewToggleInputs.forEach(input => {
-                input.addEventListener('change', function() {
-                    if (window.resultsViewer) {
-                        window.resultsViewer.currentView = this.value;
-                        window.resultsViewer.renderResults();
-                    }
-                });
-            });
-
-            // Configurar filtros de resultados
-            const confidenceFilter = document.getElementById('confidenceFilter');
-            if (confidenceFilter) {
-                confidenceFilter.addEventListener('change', function() {
-                    if (window.resultsViewer) {
-                        window.resultsViewer.filterConfig.confidence = this.value;
-                        window.resultsViewer.renderResults();
-                    }
-                });
+                }, 1000);
             }
-
-            const searchInput = document.getElementById('resultsSearch');
-            if (searchInput) {
-                searchInput.addEventListener('input', function() {
-                    if (window.resultsViewer) {
-                        window.resultsViewer.filterConfig.search = this.value;
-                        window.resultsViewer.renderResults();
-                    }
-                });
-            }
-
-            console.log('🎯 Interface Excellence Dashboard inicializado - MANDATO 14');
         });
     </script>
+
 </body>
 </html>

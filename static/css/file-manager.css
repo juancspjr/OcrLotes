@@ -1,0 +1,402 @@
+/* FILE MANAGER STYLES - SISTEMA OCR EMPRESARIAL */
+/* FILOSOFÍA: INTEGRIDAD TOTAL + INTERFACE EXCELLENCE */
+
+/* Área de drop de archivos */
+#dropArea {
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+#dropArea:hover {
+    border-color: var(--ocr-primary) !important;
+    background: linear-gradient(135deg, #f0f4ff 0%, #e6f2ff 100%);
+    transform: scale(1.02);
+}
+
+#dropArea.drag-over {
+    border-color: var(--ocr-success) !important;
+    background: linear-gradient(135deg, #f0fff4 0%, #dcfce7 100%);
+    box-shadow: 0 0 20px rgba(34, 197, 94, 0.3);
+}
+
+#dropArea.drag-over::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(34, 197, 94, 0.1);
+    border-radius: inherit;
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 0.8; }
+}
+
+/* Lista de archivos */
+.file-item {
+    transition: all 0.3s ease;
+    border-left: 4px solid transparent;
+}
+
+.file-item:hover {
+    background: rgba(13, 110, 253, 0.05);
+    border-left-color: var(--ocr-primary);
+}
+
+.file-item.expanded {
+    background: rgba(13, 110, 253, 0.1);
+    border-left-color: var(--ocr-primary);
+}
+
+/* Fila de parámetros expandida */
+.file-params-row {
+    background: #f8f9fa;
+    border-top: 1px solid #dee2e6;
+    display: none;
+    animation: slideDown 0.3s ease-out;
+}
+
+.file-params-row.show {
+    display: table-row;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.file-params-content {
+    padding: 1.5rem;
+    background: white;
+    border-radius: 0.5rem;
+    margin: 0.5rem;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+    border: 2px dashed #e9ecef;
+}
+
+/* Formulario de parámetros */
+.params-form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.param-group {
+    position: relative;
+}
+
+.param-group label {
+    font-weight: 600;
+    color: var(--ocr-dark);
+    margin-bottom: 0.25rem;
+    display: block;
+    font-size: 0.875rem;
+}
+
+.param-group input,
+.param-group select {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 2px solid #e9ecef;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+    background: white;
+}
+
+.param-group input:focus,
+.param-group select:focus {
+    border-color: var(--ocr-primary);
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.1);
+    outline: none;
+}
+
+.param-group input.auto-generated {
+    background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+    border-color: var(--ocr-warning);
+    font-weight: 500;
+}
+
+.param-group input.user-modified {
+    background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+    border-color: var(--ocr-info);
+    font-weight: 500;
+}
+
+/* Botones de acción en parámetros */
+.param-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #dee2e6;
+}
+
+.param-actions .btn-group {
+    gap: 0.5rem;
+}
+
+.param-actions .btn {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+/* Estados de archivo */
+.file-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.file-status.ready {
+    background: #d1ecf1;
+    color: #0c5460;
+}
+
+.file-status.configured {
+    background: #d4edda;
+    color: #155724;
+}
+
+.file-status.error {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.file-status.processing {
+    background: #fff3cd;
+    color: #856404;
+    animation: pulse 1s infinite;
+}
+
+/* Número de llegada */
+.numero-llegada {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    background: var(--ocr-primary);
+    color: white;
+    border-radius: 50%;
+    font-weight: 600;
+    font-size: 0.875rem;
+    margin-right: 0.5rem;
+}
+
+/* Indicador de expansión */
+.expand-indicator {
+    transition: transform 0.2s ease;
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: 0.25rem;
+}
+
+.expand-indicator:hover {
+    background: rgba(13, 110, 253, 0.1);
+}
+
+.expand-indicator.expanded {
+    transform: rotate(90deg);
+    background: rgba(13, 110, 253, 0.2);
+}
+
+/* Progreso de subida */
+.upload-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: #e9ecef;
+    border-radius: 0 0 0.375rem 0.375rem;
+    overflow: hidden;
+}
+
+.upload-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--ocr-primary), var(--ocr-info));
+    transition: width 0.3s ease;
+    border-radius: inherit;
+}
+
+/* Modal de parámetros de lote */
+.batch-params-modal .modal-content {
+    border: none;
+    border-radius: 0.75rem;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+}
+
+.batch-params-modal .modal-header {
+    border: none;
+    border-radius: 0.75rem 0.75rem 0 0;
+}
+
+.batch-params-modal .modal-body {
+    padding: 2rem;
+}
+
+.batch-params-modal .form-label {
+    font-weight: 600;
+    color: var(--ocr-dark);
+    margin-bottom: 0.5rem;
+}
+
+.batch-params-modal .form-control,
+.batch-params-modal .form-select {
+    border: 2px solid #e9ecef;
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    transition: all 0.2s ease;
+}
+
+.batch-params-modal .form-control:focus,
+.batch-params-modal .form-select:focus {
+    border-color: var(--ocr-primary);
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.1);
+}
+
+/* Tooltips para ayuda */
+.param-tooltip {
+    position: relative;
+    cursor: help;
+}
+
+.param-tooltip::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #333;
+    color: white;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+    z-index: 1000;
+}
+
+.param-tooltip:hover::after {
+    opacity: 1;
+    visibility: visible;
+    bottom: calc(100% + 5px);
+}
+
+/* Validación visual */
+.param-group.invalid input {
+    border-color: var(--ocr-danger);
+    background: #fff5f5;
+}
+
+.param-group.invalid .invalid-feedback {
+    display: block;
+    color: var(--ocr-danger);
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+}
+
+.param-group.valid input {
+    border-color: var(--ocr-success);
+    background: #f0fff4;
+}
+
+/* Contador de caracteres */
+.char-counter {
+    font-size: 0.75rem;
+    color: var(--ocr-secondary);
+    text-align: right;
+    margin-top: 0.25rem;
+}
+
+.char-counter.warning {
+    color: var(--ocr-warning);
+}
+
+.char-counter.error {
+    color: var(--ocr-danger);
+}
+
+/* Responsive específico */
+@media (max-width: 768px) {
+    .params-form {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+    
+    .param-actions {
+        flex-direction: column;
+        gap: 0.75rem;
+        align-items: stretch;
+    }
+    
+    .param-actions .btn-group {
+        display: flex;
+        gap: 0.5rem;
+    }
+    
+    .file-params-content {
+        padding: 1rem;
+        margin: 0.25rem;
+    }
+    
+    .numero-llegada {
+        width: 1.5rem;
+        height: 1.5rem;
+        font-size: 0.75rem;
+    }
+}
+
+/* Estados de carga del sistema */
+.file-manager-loading {
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.file-manager-loading .card-body::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.8);
+    z-index: 1000;
+}
+
+.file-manager-loading .card-body::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 30px;
+    height: 30px;
+    margin: -15px 0 0 -15px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid var(--ocr-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    z-index: 1001;
+}

@@ -1,265 +1,413 @@
 /**
- * API CLIENT - SISTEMA OCR EMPRESARIAL
- * Módulo para manejo de todas las interacciones con el backend
- * FILOSOFÍA: INTEGRIDAD TOTAL + TRANSPARENCIA TOTAL
+ * API CLIENT MODULE - SISTEMA OCR EMPRESARIAL
+ * FILOSOFÍA: INTEGRIDAD TOTAL + INTERFACE EXCELLENCE
+ * 
+ * Módulo encargado de gestionar todas las comunicaciones con el backend
+ * siguiendo el patrón de cliente API robusto con manejo de errores.
  */
 
-class APIClient {
-    constructor() {
-        this.baseURL = '';
-        this.timeout = 30000;
-        this.requests = new Map(); // Tracking de requests activos
-    }
+window.OCRSystem = window.OCRSystem || {};
 
-    /**
-     * CONTRATO: POST /api/ocr/process_image
-     * Upload de archivos múltiples con metadatos WhatsApp
-     */
-    async uploadFiles(files, metadata = {}) {
-        const formData = new FormData();
-        
-        // Agregar archivos con nombre correcto según contrato backend
-        Array.from(files).forEach(file => {
-            formData.append('files', file);
-        });
-        
-        // Agregar metadatos WhatsApp según especificación
-        const defaultMetadata = {
-            numerosorteo: '',
-            fechasorteo: '',
-            idWhatsapp: '',
-            nombre: '',
-            horamin: '',
-            caption: '',
-            otro_valor: ''
-        };
-        
-        const finalMetadata = { ...defaultMetadata, ...metadata };
-        Object.entries(finalMetadata).forEach(([key, value]) => {
-            if (value) formData.append(key, value);
-        });
+(function() {
+    'use strict';
 
-        return this._makeRequest('POST', '/api/ocr/process_image', formData);
-    }
-
-    /**
-     * CONTRATO: POST /api/ocr/process_batch
-     * Procesamiento por lotes con request_id tracking y parámetros esenciales
-     */
-    async processBatch(options = {}) {
-        const payload = {
-            profile: options.profile || 'ultra_rapido',
-            batch_size: options.batch_size || 5
-        };
-
-        // Agregar parámetros esenciales al payload
-        if (options.codigo_sorteo) payload.codigo_sorteo = options.codigo_sorteo;
-        if (options.id_whatsapp) payload.id_whatsapp = options.id_whatsapp;
-        if (options.nombre_usuario) payload.nombre_usuario = options.nombre_usuario;
-        if (options.caption) payload.caption = options.caption;
-        if (options.hora_exacta) payload.hora_exacta = options.hora_exacta;
-
-        // Preparar headers con API Key si está disponible
-        const headers = {
-            'Content-Type': 'application/json'
-        };
-        
-        if (options.api_key) {
-            headers['Authorization'] = `Bearer ${options.api_key}`;
+    class APIClient {
+        constructor(baseUrl) {
+            this.baseUrl = baseUrl;
+            this.defaultHeaders = {
+                'Content-Type': 'application/json'
+            };
+            this.timeout = 30000; // 30 segundos
         }
 
-        return this._makeRequest('POST', '/api/ocr/process_batch', JSON.stringify(payload), headers);
-    }
+        /**
+         * Realizar petición HTTP genérica
+         */
+        async request(endpoint, options = {}) {
+            const url = `${this.baseUrl}${endpoint}`;
+            const config = {
+                method: 'GET',
+                headers: { ...this.defaultHeaders },
+                ...options
+            };
 
-    /**
-     * CONTRATO: GET /api/ocr/queue/status
-     * Estado actual de cola y sistema
-     */
-    async getQueueStatus() {
-        return this._makeRequest('GET', '/api/ocr/queue/status');
-    }
-
-    /**
-     * CONTRATO: GET /api/ocr/processed_files
-     * Lista de archivos procesados con metadatos
-     */
-    async getProcessedFiles() {
-        return this._makeRequest('GET', '/api/ocr/processed_files');
-    }
-
-    /**
-     * CONTRATO: GET /api/ocr/result_data/<filename>
-     * Datos estructurados para visualizador
-     */
-    async getResultData(filename) {
-        // Sanitizar filename para URL
-        const cleanFilename = encodeURIComponent(filename);
-        return this._makeRequest('GET', `/api/ocr/result_data/${cleanFilename}`);
-    }
-
-    /**
-     * CONTRATO: GET /api/extract_results
-     * JSON consolidado empresarial con request_id para agrupación
-     */
-    async extractResults() {
-        return this._makeRequest('GET', '/api/extract_results');
-    }
-
-    /**
-     * CONTRATO: POST /api/clean
-     * Limpieza completa del sistema con retención 24h
-     */
-    async cleanSystem() {
-        return this._makeRequest('POST', '/api/clean', '{}', {
-            'Content-Type': 'application/json'
-        });
-    }
-
-    /**
-     * CONTRATO: POST /api/clean_queue
-     * Limpieza solo de cola (inbox)
-     */
-    async cleanQueue() {
-        return this._makeRequest('POST', '/api/clean_queue', '{}', {
-            'Content-Type': 'application/json'
-        });
-    }
-
-    /**
-     * MÉTRICAS DE MONITOREO (EXTENSIÓN REQUERIDA)
-     * Endpoint para métricas por lote según Mandato 14
-     */
-    async getBatchMetrics(batchId = null) {
-        const url = batchId ? `/api/metrics/batch/${batchId}` : '/api/metrics/batch';
-        return this._makeRequest('GET', url);
-    }
-
-    /**
-     * MÉTODO INTERNO: Manejo unificado de requests
-     * Implementa manejo de errores según especificación backend
-     */
-    async _makeRequest(method, url, body = null, headers = {}) {
-        const requestId = this._generateRequestId();
-        const fullURL = this.baseURL + url;
-        
-        const requestConfig = {
-            method: method,
-            headers: {
-                ...headers
-            },
-            timeout: this.timeout
-        };
-
-        if (body && !(body instanceof FormData)) {
-            requestConfig.body = body;
-        } else if (body instanceof FormData) {
-            requestConfig.body = body;
-            // No agregar Content-Type para FormData - el navegador lo maneja
-        }
-
-        try {
-            this.requests.set(requestId, { url: fullURL, method, timestamp: Date.now() });
-            
-            const response = await fetch(fullURL, requestConfig);
-            const data = await response.json();
-
-            // Manejo de errores según especificación backend
-            if (!response.ok || data.status === 'error') {
-                throw new APIError(
-                    data.mensaje || data.message || 'Error desconocido',
-                    response.status,
-                    data.error_code || 'UNKNOWN_ERROR',
-                    data
-                );
+            // Agregar API key si está disponible
+            const apiKey = this.getApiKey();
+            if (apiKey) {
+                config.headers['X-API-Key'] = apiKey;
             }
 
-            this.requests.delete(requestId);
-            return data;
+            try {
+                console.log(`🌐 API Request: ${config.method} ${endpoint}`);
+                
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), this.timeout);
+                
+                const response = await fetch(url, {
+                    ...config,
+                    signal: controller.signal
+                });
+                
+                clearTimeout(timeoutId);
 
-        } catch (error) {
-            this.requests.delete(requestId);
-            
-            if (error instanceof APIError) {
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const contentType = response.headers.get('content-type');
+                if (contentType && contentType.includes('application/json')) {
+                    const data = await response.json();
+                    console.log(`✅ API Response: ${config.method} ${endpoint}`, data);
+                    return data;
+                } else {
+                    return response;
+                }
+
+            } catch (error) {
+                console.error(`❌ API Error: ${config.method} ${endpoint}`, error);
+                
+                if (error.name === 'AbortError') {
+                    throw new Error('La petición ha excedido el tiempo límite');
+                }
+                
                 throw error;
             }
+        }
+
+        /**
+         * Subir archivos con parámetros
+         */
+        async uploadFiles(files, parameters = {}) {
+            const formData = new FormData();
             
-            // Error de red o timeout
-            throw new APIError(
-                'Error de conexión con el servidor',
-                0,
-                'NETWORK_ERROR',
-                { originalError: error.message }
-            );
+            // Agregar archivos
+            files.forEach((file, index) => {
+                formData.append('files', file.file);
+                
+                // Agregar parámetros específicos del archivo
+                const fileParams = file.parameters || {};
+                Object.keys(fileParams).forEach(key => {
+                    formData.append(`${key}_${index}`, fileParams[key]);
+                });
+            });
+
+            // Agregar parámetros globales
+            Object.keys(parameters).forEach(key => {
+                formData.append(key, parameters[key]);
+            });
+
+            try {
+                const response = await fetch(`${this.baseUrl}/api/upload`, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        // No establecer Content-Type para FormData
+                        ...(this.getApiKey() ? { 'X-API-Key': this.getApiKey() } : {})
+                    }
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({ error: 'Error desconocido' }));
+                    throw new Error(errorData.error || `HTTP ${response.status}`);
+                }
+
+                return await response.json();
+            } catch (error) {
+                console.error('❌ Error subiendo archivos:', error);
+                throw error;
+            }
+        }
+
+        /**
+         * Procesar lote de archivos
+         */
+        async processBatch(files, profile = 'ultra_rapido') {
+            const formData = new FormData();
+            
+            // Agregar perfil de procesamiento
+            formData.append('profile', profile);
+            
+            // Agregar archivos con sus parámetros
+            files.forEach((fileData, index) => {
+                formData.append('files', fileData.file);
+                
+                // Agregar parámetros de seguimiento
+                const params = fileData.parameters || {};
+                formData.append(`codigo_sorteo_${index}`, params.codigo_sorteo || '');
+                formData.append(`id_whatsapp_${index}`, params.id_whatsapp || '');
+                formData.append(`nombre_usuario_${index}`, params.nombre_usuario || '');
+                formData.append(`caption_${index}`, params.caption || '');
+                formData.append(`hora_exacta_${index}`, params.hora_exacta || '');
+                formData.append(`numero_llegada_${index}`, params.numero_llegada || index + 1);
+            });
+
+            try {
+                const response = await fetch(`${this.baseUrl}/api/ocr/process_batch`, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        ...(this.getApiKey() ? { 'X-API-Key': this.getApiKey() } : {})
+                    }
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({ error: 'Error desconocido' }));
+                    throw new Error(errorData.error || `HTTP ${response.status}`);
+                }
+
+                const result = await response.json();
+                console.log('✅ Lote procesado exitosamente:', result);
+                return result;
+                
+            } catch (error) {
+                console.error('❌ Error procesando lote:', error);
+                throw error;
+            }
+        }
+
+        /**
+         * Obtener archivos procesados
+         */
+        async getProcessedFiles() {
+            return this.request('/api/ocr/processed_files');
+        }
+
+        /**
+         * Obtener resultados consolidados
+         */
+        async extractResults() {
+            return this.request('/api/extract_results');
+        }
+
+        /**
+         * Limpiar resultados del sistema
+         */
+        async cleanResults() {
+            return this.request('/api/clean', { method: 'POST' });
+        }
+
+        /**
+         * Obtener estado de la cola
+         */
+        async getQueueStatus() {
+            return this.request('/api/ocr/queue/status');
+        }
+
+        /**
+         * Obtener resultado específico por ID
+         */
+        async getResult(resultId) {
+            return this.request(`/api/ocr/result/${resultId}`);
+        }
+
+        /**
+         * Obtener datos de resultado por filename
+         */
+        async getResultData(filename) {
+            return this.request(`/api/ocr/result_data/${encodeURIComponent(filename)}`);
+        }
+
+        /**
+         * Obtener métricas del sistema
+         */
+        async getSystemMetrics() {
+            try {
+                // Combinar varias fuentes de métricas
+                const [processedFiles, queueStatus] = await Promise.all([
+                    this.getProcessedFiles(),
+                    this.getQueueStatus().catch(() => ({ queue_size: 0, status: 'unknown' }))
+                ]);
+
+                // Calcular métricas
+                const totalProcessed = processedFiles.length || 0;
+                const totalSuccess = processedFiles.filter(f => f.has_ocr_data).length || 0;
+                const totalErrors = totalProcessed - totalSuccess;
+                const successRate = totalProcessed > 0 ? (totalSuccess / totalProcessed * 100).toFixed(1) : 0;
+
+                return {
+                    totalProcessed,
+                    totalSuccess,
+                    totalErrors,
+                    successRate: `${successRate}%`,
+                    queueSize: queueStatus.queue_size || 0,
+                    systemStatus: queueStatus.status || 'unknown'
+                };
+            } catch (error) {
+                console.error('❌ Error obteniendo métricas:', error);
+                return {
+                    totalProcessed: 0,
+                    totalSuccess: 0,
+                    totalErrors: 0,
+                    successRate: '0%',
+                    queueSize: 0,
+                    systemStatus: 'error'
+                };
+            }
+        }
+
+        /**
+         * Obtener historial de lotes
+         */
+        async getBatchHistory() {
+            try {
+                const processedFiles = await this.getProcessedFiles();
+                
+                // Agrupar por request_id/lote
+                const batchMap = new Map();
+                
+                processedFiles.forEach(file => {
+                    // Extraer ID de lote del nombre del archivo
+                    const batchMatch = file.filename.match(/^BATCH_(\d{8}_\d{6}_[a-f0-9]+)/);
+                    const batchId = batchMatch ? batchMatch[1] : 'unknown';
+                    
+                    if (!batchMap.has(batchId)) {
+                        batchMap.set(batchId, {
+                            id: batchId,
+                            date: this.extractDateFromBatchId(batchId),
+                            files: [],
+                            totalFiles: 0,
+                            successCount: 0,
+                            errorCount: 0,
+                            avgProcessingTime: 0
+                        });
+                    }
+                    
+                    const batch = batchMap.get(batchId);
+                    batch.files.push(file);
+                    batch.totalFiles++;
+                    
+                    if (file.has_ocr_data) {
+                        batch.successCount++;
+                    } else {
+                        batch.errorCount++;
+                    }
+                });
+
+                // Convertir a array y ordenar por fecha
+                const batches = Array.from(batchMap.values()).sort((a, b) => 
+                    new Date(b.date) - new Date(a.date)
+                );
+
+                return batches;
+            } catch (error) {
+                console.error('❌ Error obteniendo historial de lotes:', error);
+                return [];
+            }
+        }
+
+        /**
+         * Generar nueva API Key
+         */
+        async generateApiKey() {
+            try {
+                const response = await this.request('/api/generate_api_key', { method: 'POST' });
+                if (response.api_key) {
+                    this.setApiKey(response.api_key);
+                }
+                return response;
+            } catch (error) {
+                console.error('❌ Error generando API Key:', error);
+                throw error;
+            }
+        }
+
+        /**
+         * Obtener API Key actual
+         */
+        async getCurrentApiKey() {
+            try {
+                return await this.request('/api/current_api_key');
+            } catch (error) {
+                console.error('❌ Error obteniendo API Key actual:', error);
+                throw error;
+            }
+        }
+
+        /**
+         * Extraer fecha del ID de lote
+         */
+        extractDateFromBatchId(batchId) {
+            try {
+                const match = batchId.match(/^(\d{8})_(\d{6})/);
+                if (match) {
+                    const [, dateStr, timeStr] = match;
+                    const year = dateStr.substring(0, 4);
+                    const month = dateStr.substring(4, 6);
+                    const day = dateStr.substring(6, 8);
+                    const hour = timeStr.substring(0, 2);
+                    const minute = timeStr.substring(2, 4);
+                    const second = timeStr.substring(4, 6);
+                    
+                    return new Date(`${year}-${month}-${day}T${hour}:${minute}:${second}`);
+                }
+            } catch (error) {
+                console.warn('⚠️ Error parseando fecha de lote:', error);
+            }
+            return new Date();
+        }
+
+        /**
+         * Gestión de API Key local
+         */
+        getApiKey() {
+            return localStorage.getItem('ocr_api_key');
+        }
+
+        setApiKey(apiKey) {
+            if (apiKey) {
+                localStorage.setItem('ocr_api_key', apiKey);
+            } else {
+                localStorage.removeItem('ocr_api_key');
+            }
+        }
+
+        /**
+         * Ping al servidor para verificar conectividad
+         */
+        async ping() {
+            try {
+                const start = Date.now();
+                await this.request('/api/ocr/processed_files');
+                const duration = Date.now() - start;
+                return { status: 'ok', latency: duration };
+            } catch (error) {
+                return { status: 'error', error: error.message };
+            }
+        }
+
+        /**
+         * Obtener información del sistema
+         */
+        async getSystemInfo() {
+            try {
+                // Información básica del sistema
+                const ping = await this.ping();
+                const metrics = await this.getSystemMetrics();
+                
+                return {
+                    version: '2.0',
+                    backend_status: ping.status,
+                    latency: ping.latency || null,
+                    ...metrics
+                };
+            } catch (error) {
+                console.error('❌ Error obteniendo información del sistema:', error);
+                return {
+                    version: '2.0',
+                    backend_status: 'error',
+                    latency: null,
+                    totalProcessed: 0,
+                    totalSuccess: 0,
+                    totalErrors: 0,
+                    successRate: '0%'
+                };
+            }
         }
     }
 
-    /**
-     * Generar ID único para tracking de requests
-     */
-    _generateRequestId() {
-        return `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    }
+    // Exportar el cliente API
+    window.OCRSystem.APIClient = APIClient;
 
-    /**
-     * Obtener requests activos (para debugging)
-     */
-    getActiveRequests() {
-        return Array.from(this.requests.entries());
-    }
+    console.log('🌐 API Client module loaded');
 
-    /**
-     * Cancelar todos los requests activos
-     */
-    cancelAllRequests() {
-        this.requests.clear();
-    }
-}
-
-/**
- * CLASE DE ERROR PERSONALIZADA
- * Manejo estructurado de errores según especificación backend
- */
-class APIError extends Error {
-    constructor(message, status, code, details = {}) {
-        super(message);
-        this.name = 'APIError';
-        this.status = status;
-        this.code = code;
-        this.details = details;
-        this.timestamp = new Date().toISOString();
-    }
-
-    /**
-     * Obtener mensaje de error para mostrar al usuario
-     */
-    getUserMessage() {
-        switch (this.code) {
-            case 'FILE_TOO_LARGE_413':
-                return 'El archivo es demasiado grande (máximo 16MB)';
-            case 'BAD_REQUEST_400':
-                return 'Solicitud incorrecta. Verifique los datos enviados';
-            case 'NOT_FOUND_404':
-                return 'Recurso no encontrado';
-            case 'BATCH_PROCESSING_ERROR':
-                return `Error en procesamiento: ${this.message}`;
-            case 'NETWORK_ERROR':
-                return 'Error de conexión. Verifique su internet';
-            default:
-                return this.message || 'Error desconocido del servidor';
-        }
-    }
-
-    /**
-     * Obtener clase CSS para el tipo de error
-     */
-    getErrorClass() {
-        if (this.status >= 500) return 'error-server';
-        if (this.status >= 400) return 'error-client';
-        if (this.code === 'NETWORK_ERROR') return 'error-network';
-        return 'error-unknown';
-    }
-}
-
-// Instancia global del cliente API
-window.apiClient = new APIClient();
-window.APIError = APIError;
+})();

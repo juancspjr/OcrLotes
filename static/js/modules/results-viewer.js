@@ -1,950 +1,666 @@
 /**
- * RESULTS VIEWER - SISTEMA OCR EMPRESARIAL
- * Módulo para visualización de resultados y agrupación por lotes
- * FILOSOFÍA: TRANSPARENCIA TOTAL + PERFECCIÓN CONTINUA
+ * RESULTS VIEWER MODULE - SISTEMA OCR EMPRESARIAL
+ * FILOSOFÍA: INTEGRIDAD TOTAL + INTERFACE EXCELLENCE
+ * 
+ * Módulo encargado de mostrar y gestionar los resultados del procesamiento OCR
+ * con capacidades avanzadas de filtrado, navegación y visualización.
  */
 
-class ResultsViewer {
-    constructor() {
-        this.currentFiles = [];
-        this.groupedByBatch = new Map();
-        this.currentView = 'list'; // list, batch, details
-        this.selectedBatch = null;
-        this.sortConfig = { field: 'modified_date', order: 'desc' };
-        this.filterConfig = { confidence: 'all', status: 'all' };
-        
-        this.initializeElements();
-        this.bindEvents();
-    }
+window.OCRSystem = window.OCRSystem || {};
 
-    /**
-     * INICIALIZACIÓN DE ELEMENTOS DOM
-     */
-    initializeElements() {
-        this.elements = {
-            resultsTable: document.getElementById('resultsTable'),
-            resultsContainer: document.getElementById('resultsContainer'),
-            viewToggle: document.getElementById('viewToggle'),
-            sortControls: document.getElementById('sortControls'),
-            filterControls: document.getElementById('filterControls'),
-            batchSelector: document.getElementById('batchSelector'),
-            refreshBtn: document.getElementById('refreshResultsBtn'),
-            extractBtn: document.getElementById('extractResultsBtn'),
-            fileDetailsModal: document.getElementById('fileDetailsModal'),
-            confidenceFilter: document.getElementById('confidenceFilter'),
-            searchInput: document.getElementById('resultsSearch')
-        };
-    }
+(function() {
+    'use strict';
 
-    /**
-     * BIND DE EVENTOS
-     */
-    bindEvents() {
-        // Refresh button
-        if (this.elements.refreshBtn) {
-            this.elements.refreshBtn.addEventListener('click', () => this.loadResults());
-        }
-
-        // Extract results button
-        if (this.elements.extractBtn) {
-            this.elements.extractBtn.addEventListener('click', () => this.extractResults());
-        }
-
-        // View toggle
-        if (this.elements.viewToggle) {
-            this.elements.viewToggle.addEventListener('change', (e) => {
-                this.currentView = e.target.value;
-                this.renderResults();
-            });
-        }
-
-        // Sort controls
-        if (this.elements.sortControls) {
-            this.elements.sortControls.addEventListener('change', (e) => {
-                if (e.target.name === 'sortField') {
-                    this.sortConfig.field = e.target.value;
-                    this.renderResults();
-                }
-                if (e.target.name === 'sortOrder') {
-                    this.sortConfig.order = e.target.value;
-                    this.renderResults();
-                }
-            });
-        }
-
-        // Filter controls
-        if (this.elements.confidenceFilter) {
-            this.elements.confidenceFilter.addEventListener('change', (e) => {
-                this.filterConfig.confidence = e.target.value;
-                this.renderResults();
-            });
-        }
-
-        // Search input
-        if (this.elements.searchInput) {
-            this.elements.searchInput.addEventListener('input', this.debounce((e) => {
-                this.filterConfig.search = e.target.value;
-                this.renderResults();
-            }, 300));
-        }
-
-        // Batch selector
-        if (this.elements.batchSelector) {
-            this.elements.batchSelector.addEventListener('change', (e) => {
-                this.selectedBatch = e.target.value || null;
-                this.renderResults();
-            });
-        }
-
-        // Listen for batch completed events
-        window.addEventListener('batchCompleted', (e) => {
-            this.handleBatchCompleted(e.detail);
-        });
-    }
-
-    /**
-     * CARGAR RESULTADOS DESDE BACKEND
-     */
-    async loadResults(showLoading = true) {
-        try {
-            if (showLoading) {
-                this.showLoadingState();
-            }
-
-            const data = await window.apiClient.getProcessedFiles();
+    class ResultsViewer {
+        constructor(config) {
+            this.config = config;
+            this.apiClient = config.apiClient;
+            this.results = [];
+            this.filteredResults = [];
+            this.currentBatch = null;
+            this.filters = {
+                status: 'all',
+                batch: 'current'
+            };
             
-            if (data.status === 'exitoso' && data.files) {
-                this.currentFiles = data.files;
-                this.processFilesForBatchView();
-                this.renderResults();
-                this.updateBatchSelector();
-                
-                this.showNotification(`✅ ${data.files.length} archivo(s) cargado(s)`, 'success');
-            } else {
-                this.currentFiles = [];
-                this.renderResults();
-                this.showNotification('⚠️ No se encontraron archivos procesados', 'warning');
-            }
-
-        } catch (error) {
-            console.error('Error cargando resultados:', error);
-            this.showErrorState(error.getUserMessage());
-            this.showNotification(`❌ Error cargando resultados: ${error.getUserMessage()}`, 'error');
-        }
-    }
-
-    /**
-     * PROCESAR ARCHIVOS PARA VISTA POR LOTES
-     * Extraer request_id/batch_id de nombres de archivo y agrupar
-     */
-    processFilesForBatchView() {
-        this.groupedByBatch.clear();
-        
-        this.currentFiles.forEach(file => {
-            // Extraer batch ID del filename (formato: BATCH_YYYYMMDD_HHMMSS_xxx_filename.ext.json)
-            const batchMatch = file.filename.match(/^BATCH_(\d{8}_\d{6}_[a-zA-Z0-9]+)/);
-            const batchId = batchMatch ? batchMatch[1] : 'unknown';
+            // Referencias DOM
+            this.resultsTable = document.getElementById(config.resultsTableId);
+            this.batchSelector = document.getElementById(config.batchSelectorId);
+            this.statusFilter = document.getElementById(config.statusFilterId);
             
-            if (!this.groupedByBatch.has(batchId)) {
-                this.groupedByBatch.set(batchId, {
-                    id: batchId,
-                    files: [],
-                    totalFiles: 0,
-                    avgConfidence: 0,
-                    completedAt: null,
-                    totalSize: 0
+            this.init();
+        }
+
+        init() {
+            this.setupEventListeners();
+            console.log('📊 Results Viewer inicializado');
+        }
+
+        /**
+         * Configurar event listeners
+         */
+        setupEventListeners() {
+            // Escuchar cambios en filtros si los elementos existen
+            if (this.statusFilter) {
+                this.statusFilter.addEventListener('change', () => {
+                    this.filters.status = this.statusFilter.value;
+                    this.applyFilters();
                 });
             }
             
-            const batch = this.groupedByBatch.get(batchId);
-            batch.files.push(file);
-            batch.totalFiles++;
-            batch.totalSize += file.size_bytes || 0;
-            
-            // Actualizar fecha más reciente
-            const fileDate = new Date(file.modified_date);
-            if (!batch.completedAt || fileDate > batch.completedAt) {
-                batch.completedAt = fileDate;
+            if (this.batchSelector) {
+                this.batchSelector.addEventListener('change', () => {
+                    this.filters.batch = this.batchSelector.value;
+                    this.loadBatch();
+                });
             }
-        });
-
-        // Calcular confianza promedio por lote
-        this.groupedByBatch.forEach(batch => {
-            const confidences = batch.files
-                .filter(f => f.confidence && f.confidence > 0)
-                .map(f => f.confidence);
-            
-            batch.avgConfidence = confidences.length > 0 
-                ? confidences.reduce((a, b) => a + b, 0) / confidences.length 
-                : 0;
-        });
-    }
-
-    /**
-     * RENDERIZAR RESULTADOS
-     */
-    renderResults() {
-        if (!this.elements.resultsContainer) return;
-
-        const filteredFiles = this.getFilteredFiles();
-        const sortedFiles = this.getSortedFiles(filteredFiles);
-
-        switch (this.currentView) {
-            case 'batch':
-                this.renderBatchView();
-                break;
-            case 'details':
-                this.renderDetailsView(sortedFiles);
-                break;
-            default:
-                this.renderListView(sortedFiles);
         }
 
-        this.updateResultsStats(sortedFiles);
-    }
-
-    /**
-     * VISTA LISTA (DEFAULT)
-     */
-    renderListView(files) {
-        if (files.length === 0) {
-            this.elements.resultsContainer.innerHTML = this.getEmptyState();
-            return;
-        }
-
-        const html = `
-            <div class="results-header d-flex justify-content-between align-items-center mb-4">
-                <h5 class="mb-0">Archivos Procesados (${files.length})</h5>
-                <div class="d-flex gap-2">
-                    ${this.renderViewControls()}
-                </div>
-            </div>
-            
-            ${this.renderFiltersAndSort()}
-            
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Archivo</th>
-                            <th>Confianza</th>
-                            <th>Palabras</th>
-                            <th>Tamaño</th>
-                            <th>Procesado</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${files.map(file => this.renderFileRow(file)).join('')}
-                    </tbody>
-                </table>
-            </div>
-        `;
-
-        this.elements.resultsContainer.innerHTML = html;
-    }
-
-    /**
-     * VISTA POR LOTES
-     */
-    renderBatchView() {
-        const batches = Array.from(this.groupedByBatch.values())
-            .sort((a, b) => new Date(b.completedAt) - new Date(a.completedAt));
-
-        if (batches.length === 0) {
-            this.elements.resultsContainer.innerHTML = this.getEmptyState();
-            return;
-        }
-
-        const html = `
-            <div class="results-header d-flex justify-content-between align-items-center mb-4">
-                <h5 class="mb-0">Resultados por Lote (${batches.length})</h5>
-                <div class="d-flex gap-2">
-                    ${this.renderViewControls()}
-                </div>
-            </div>
-
-            <div class="batch-grid">
-                ${batches.map(batch => this.renderBatchCard(batch)).join('')}
-            </div>
-        `;
-
-        this.elements.resultsContainer.innerHTML = html;
-    }
-
-    /**
-     * VISTA DE DETALLES
-     */
-    renderDetailsView(files) {
-        const html = `
-            <div class="results-header d-flex justify-content-between align-items-center mb-4">
-                <h5 class="mb-0">Vista Detallada (${files.length})</h5>
-                <div class="d-flex gap-2">
-                    ${this.renderViewControls()}
-                </div>
-            </div>
-
-            ${this.renderFiltersAndSort()}
-
-            <div class="details-grid">
-                ${files.map(file => this.renderFileCard(file)).join('')}
-            </div>
-        `;
-
-        this.elements.resultsContainer.innerHTML = html;
-    }
-
-    /**
-     * RENDERIZAR CONTROLES DE VISTA
-     */
-    renderViewControls() {
-        return `
-            <div class="btn-group" role="group">
-                <input type="radio" class="btn-check" name="viewType" id="viewList" value="list" ${this.currentView === 'list' ? 'checked' : ''}>
-                <label class="btn btn-outline-primary" for="viewList">
-                    <i class="fas fa-list me-1"></i>Lista
-                </label>
+        /**
+         * Refrescar datos de resultados
+         */
+        async refresh() {
+            try {
+                console.log('🔄 Refrescando resultados...');
                 
-                <input type="radio" class="btn-check" name="viewType" id="viewBatch" value="batch" ${this.currentView === 'batch' ? 'checked' : ''}>
-                <label class="btn btn-outline-primary" for="viewBatch">
-                    <i class="fas fa-layer-group me-1"></i>Lotes
-                </label>
+                // Mostrar indicador de carga
+                this.showLoading(true);
                 
-                <input type="radio" class="btn-check" name="viewType" id="viewDetails" value="details" ${this.currentView === 'details' ? 'checked' : ''}>
-                <label class="btn btn-outline-primary" for="viewDetails">
-                    <i class="fas fa-th-large me-1"></i>Detalles
-                </label>
-            </div>
-        `;
-    }
-
-    /**
-     * RENDERIZAR FILTROS Y ORDENAMIENTO
-     */
-    renderFiltersAndSort() {
-        return `
-            <div class="filters-sort-container bg-light rounded p-3 mb-4">
-                <div class="row g-3">
-                    <div class="col-md-4">
-                        <label class="form-label small">Buscar</label>
-                        <input type="text" class="form-control" id="searchInput" 
-                               placeholder="Buscar por nombre..." 
-                               value="${this.filterConfig.search || ''}">
-                    </div>
-                    <div class="col-md-2">
-                        <label class="form-label small">Confianza</label>
-                        <select class="form-select" id="confidenceFilterSelect">
-                            <option value="all" ${this.filterConfig.confidence === 'all' ? 'selected' : ''}>Todas</option>
-                            <option value="high" ${this.filterConfig.confidence === 'high' ? 'selected' : ''}>Alta (>90%)</option>
-                            <option value="medium" ${this.filterConfig.confidence === 'medium' ? 'selected' : ''}>Media (70-90%)</option>
-                            <option value="low" ${this.filterConfig.confidence === 'low' ? 'selected' : ''}>Baja (<70%)</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label small">Ordenar por</label>
-                        <select class="form-select" id="sortFieldSelect">
-                            <option value="modified_date" ${this.sortConfig.field === 'modified_date' ? 'selected' : ''}>Fecha</option>
-                            <option value="filename" ${this.sortConfig.field === 'filename' ? 'selected' : ''}>Nombre</option>
-                            <option value="confidence" ${this.sortConfig.field === 'confidence' ? 'selected' : ''}>Confianza</option>
-                            <option value="size_bytes" ${this.sortConfig.field === 'size_bytes' ? 'selected' : ''}>Tamaño</option>
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <label class="form-label small">Orden</label>
-                        <select class="form-select" id="sortOrderSelect">
-                            <option value="desc" ${this.sortConfig.order === 'desc' ? 'selected' : ''}>Desc</option>
-                            <option value="asc" ${this.sortConfig.order === 'asc' ? 'selected' : ''}>Asc</option>
-                        </select>
-                    </div>
-                    <div class="col-md-1 d-flex align-items-end">
-                        <button type="button" class="btn btn-outline-secondary" onclick="resultsViewer.clearFilters()">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-
-    /**
-     * RENDERIZAR FILA DE ARCHIVO
-     */
-    renderFileRow(file) {
-        const confidenceBadge = this.getConfidenceBadge(file.confidence);
-        const sizeFormatted = this.formatFileSize(file.size_bytes);
-        const dateFormatted = this.formatDate(file.modified_date);
-
-        return `
-            <tr data-filename="${file.filename}">
-                <td>
-                    <div class="d-flex align-items-center">
-                        <i class="fas fa-file-alt text-primary me-2"></i>
-                        <div>
-                            <div class="fw-medium">${this.escapeHtml(this.getDisplayFilename(file.filename))}</div>
-                            ${file.texto_preview ? `<small class="text-muted">${this.escapeHtml(file.texto_preview.substring(0, 50))}...</small>` : ''}
-                        </div>
-                    </div>
-                </td>
-                <td>${confidenceBadge}</td>
-                <td>
-                    <span class="badge bg-info">${file.word_count || 0}</span>
-                    ${file.has_coordinates ? '<i class="fas fa-map-marker-alt text-success ms-1" title="Con coordenadas"></i>' : ''}
-                </td>
-                <td>${sizeFormatted}</td>
-                <td>
-                    <small class="text-muted">${dateFormatted}</small>
-                </td>
-                <td>
-                    <div class="btn-group btn-group-sm">
-                        <button type="button" class="btn btn-outline-primary" 
-                                onclick="resultsViewer.viewFileDetails('${file.filename}')" 
-                                title="Ver detalles">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                        <button type="button" class="btn btn-outline-secondary" 
-                                onclick="resultsViewer.downloadFile('${file.filename}')" 
-                                title="Descargar JSON">
-                            <i class="fas fa-download"></i>
-                        </button>
-                        <button type="button" class="btn btn-outline-info" 
-                                onclick="resultsViewer.copyFilename('${file.filename}')" 
-                                title="Copiar nombre">
-                            <i class="fas fa-copy"></i>
-                        </button>
-                    </div>
-                </td>
-            </tr>
-        `;
-    }
-
-    /**
-     * RENDERIZAR TARJETA DE LOTE
-     */
-    renderBatchCard(batch) {
-        const confidenceBadge = this.getConfidenceBadge(batch.avgConfidence);
-        const dateFormatted = this.formatDate(batch.completedAt);
-        const sizeFormatted = this.formatFileSize(batch.totalSize);
-
-        return `
-            <div class="batch-card card mb-3" data-batch-id="${batch.id}">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h6 class="mb-0">
-                        <i class="fas fa-layer-group text-primary me-2"></i>
-                        Lote ${batch.id.split('_')[1] || batch.id}
-                    </h6>
-                    ${confidenceBadge}
-                </div>
-                <div class="card-body">
-                    <div class="row text-center">
-                        <div class="col-3">
-                            <div class="stat-item">
-                                <div class="stat-value">${batch.totalFiles}</div>
-                                <div class="stat-label small text-muted">Archivos</div>
-                            </div>
-                        </div>
-                        <div class="col-3">
-                            <div class="stat-item">
-                                <div class="stat-value">${sizeFormatted}</div>
-                                <div class="stat-label small text-muted">Tamaño</div>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="stat-item">
-                                <div class="stat-value small">${dateFormatted}</div>
-                                <div class="stat-label small text-muted">Completado</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mt-3">
-                        <button type="button" class="btn btn-primary btn-sm me-2" 
-                                onclick="resultsViewer.viewBatchFiles('${batch.id}')">
-                            <i class="fas fa-eye me-1"></i>Ver Archivos
-                        </button>
-                        <button type="button" class="btn btn-outline-secondary btn-sm" 
-                                onclick="resultsViewer.extractBatchResults('${batch.id}')">
-                            <i class="fas fa-download me-1"></i>Extraer
-                        </button>
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-
-    /**
-     * RENDERIZAR TARJETA DE ARCHIVO
-     */
-    renderFileCard(file) {
-        const confidenceBadge = this.getConfidenceBadge(file.confidence);
-        const sizeFormatted = this.formatFileSize(file.size_bytes);
-        const dateFormatted = this.formatDate(file.modified_date);
-
-        return `
-            <div class="file-card card mb-3" data-filename="${file.filename}">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h6 class="mb-0 text-truncate">${this.escapeHtml(this.getDisplayFilename(file.filename))}</h6>
-                    ${confidenceBadge}
-                </div>
-                <div class="card-body">
-                    ${file.texto_preview ? `
-                        <div class="preview-text mb-3">
-                            <small class="text-muted">${this.escapeHtml(file.texto_preview)}</small>
-                        </div>
-                    ` : ''}
-                    
-                    <div class="row text-center mb-3">
-                        <div class="col-4">
-                            <div class="stat-item">
-                                <div class="stat-value">${file.word_count || 0}</div>
-                                <div class="stat-label small text-muted">Palabras</div>
-                            </div>
-                        </div>
-                        <div class="col-4">
-                            <div class="stat-item">
-                                <div class="stat-value">${sizeFormatted}</div>
-                                <div class="stat-label small text-muted">Tamaño</div>
-                            </div>
-                        </div>
-                        <div class="col-4">
-                            <div class="stat-item">
-                                <div class="stat-value small">${dateFormatted}</div>
-                                <div class="stat-label small text-muted">Procesado</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="d-grid gap-2">
-                        <button type="button" class="btn btn-primary btn-sm" 
-                                onclick="resultsViewer.viewFileDetails('${file.filename}')">
-                            <i class="fas fa-eye me-1"></i>Ver Detalles
-                        </button>
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-
-    /**
-     * VER DETALLES DE ARCHIVO
-     */
-    async viewFileDetails(filename) {
-        try {
-            this.showNotification('Cargando detalles...', 'info', 2000);
-            
-            const cleanFilename = filename.replace('.json', '');
-            const data = await window.apiClient.getResultData(cleanFilename);
-            
-            this.showFileDetailsModal(data);
-            
-        } catch (error) {
-            console.error('Error cargando detalles:', error);
-            this.showNotification(`❌ Error cargando detalles: ${error.getUserMessage()}`, 'error');
+                // Cargar datos
+                await Promise.all([
+                    this.loadResults(),
+                    this.loadBatchHistory()
+                ]);
+                
+                // Aplicar filtros
+                this.applyFilters();
+                
+                // Actualizar visualización
+                this.updateDisplay();
+                
+                console.log('✅ Resultados refrescados exitosamente');
+                
+            } catch (error) {
+                console.error('❌ Error refrescando resultados:', error);
+                this.showError('Error cargando resultados: ' + error.message);
+            } finally {
+                this.showLoading(false);
+            }
         }
-    }
 
-    /**
-     * MOSTRAR MODAL DE DETALLES
-     */
-    showFileDetailsModal(data) {
-        const modalHtml = `
-            <div class="modal fade" id="fileDetailsModal" tabindex="-1">
-                <div class="modal-dialog modal-xl">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">
-                                <i class="fas fa-file-alt me-2"></i>
-                                ${this.escapeHtml(data.filename || 'Detalles del Archivo')}
-                            </h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        /**
+         * Cargar resultados desde el API
+         */
+        async loadResults() {
+            try {
+                const data = await this.apiClient.extractResults();
+                
+                if (data && data.archivos_procesados) {
+                    this.results = data.archivos_procesados.map((archivo, index) => ({
+                        id: index + 1,
+                        filename: archivo.nombre_archivo || 'unknown',
+                        codigo_sorteo: archivo.codigo_sorteo || '',
+                        id_whatsapp: archivo.id_whatsapp || '',
+                        nombre_usuario: archivo.nombre_usuario || '',
+                        caption: archivo.caption || '',
+                        hora_exacta: archivo.hora_exacta || '',
+                        numero_llegada: archivo.numero_llegada || index + 1,
+                        referencia: archivo.referencia || '',
+                        monto: archivo.monto || '',
+                        bancoorigen: archivo.bancoorigen || '',
+                        banco_destino: archivo.datosbeneficiario?.banco_destino || '',
+                        cedula: archivo.datosbeneficiario?.cedula || '',
+                        telefono: archivo.datosbeneficiario?.telefono || '',
+                        pago_fecha: archivo.pago_fecha || '',
+                        concepto: archivo.concepto || '',
+                        texto_total_ocr: archivo.texto_total_ocr || '',
+                        confidence: archivo.extraction_stats?.confidence || 0,
+                        total_words: archivo.extraction_stats?.total_words || 0,
+                        processing_time: archivo.extraction_stats?.processing_time || 0,
+                        status: this.determineStatus(archivo),
+                        raw_data: archivo
+                    }));
+                    
+                    console.log(`📊 Cargados ${this.results.length} resultados`);
+                } else {
+                    this.results = [];
+                    console.log('📊 No hay resultados disponibles');
+                }
+                
+            } catch (error) {
+                console.error('❌ Error cargando resultados:', error);
+                this.results = [];
+                throw error;
+            }
+        }
+
+        /**
+         * Determinar estado del resultado
+         */
+        determineStatus(archivo) {
+            // Verificar si tiene datos principales
+            const hasMainData = archivo.referencia || archivo.monto || archivo.bancoorigen;
+            const hasOCR = archivo.texto_total_ocr && archivo.texto_total_ocr.length > 0;
+            const confidence = archivo.extraction_stats?.confidence || 0;
+            
+            if (!hasOCR) {
+                return 'error';
+            }
+            
+            if (confidence < 0.7) {
+                return 'warning';
+            }
+            
+            if (hasMainData && confidence >= 0.8) {
+                return 'success';
+            }
+            
+            return 'warning';
+        }
+
+        /**
+         * Cargar historial de lotes
+         */
+        async loadBatchHistory() {
+            try {
+                const batches = await this.apiClient.getBatchHistory();
+                this.updateBatchSelector(batches);
+            } catch (error) {
+                console.warn('⚠️ Error cargando historial de lotes:', error);
+            }
+        }
+
+        /**
+         * Actualizar selector de lotes
+         */
+        updateBatchSelector(batches) {
+            if (!this.batchSelector) return;
+            
+            // Limpiar opciones existentes
+            this.batchSelector.innerHTML = '<option value="current">Último Lote Procesado</option>';
+            
+            // Agregar historial de lotes
+            batches.forEach(batch => {
+                const option = document.createElement('option');
+                option.value = batch.id;
+                option.textContent = `Lote ${batch.id} - ${new Date(batch.date).toLocaleDateString()} (${batch.totalFiles} archivos)`;
+                this.batchSelector.appendChild(option);
+            });
+        }
+
+        /**
+         * Cargar lote específico
+         */
+        async loadBatch() {
+            const batchId = this.filters.batch;
+            
+            if (batchId === 'current') {
+                // Cargar último lote
+                await this.loadResults();
+            } else {
+                // Cargar lote específico (implementar según necesidad)
+                console.log(`📋 Cargando lote específico: ${batchId}`);
+                // Por ahora, usar los mismos resultados
+                await this.loadResults();
+            }
+            
+            this.applyFilters();
+            this.updateDisplay();
+        }
+
+        /**
+         * Aplicar filtros a los resultados
+         */
+        applyFilters() {
+            this.filteredResults = this.results.filter(result => {
+                // Filtro por estado
+                if (this.filters.status !== 'all') {
+                    if (this.filters.status === 'success' && result.status !== 'success') {
+                        return false;
+                    }
+                    if (this.filters.status === 'error' && result.status !== 'error') {
+                        return false;
+                    }
+                }
+                
+                return true;
+            });
+            
+            console.log(`🔍 Filtros aplicados: ${this.filteredResults.length}/${this.results.length} resultados`);
+            this.updateDisplay();
+        }
+
+        /**
+         * Actualizar visualización de resultados
+         */
+        updateDisplay() {
+            if (!this.resultsTable) return;
+
+            if (this.filteredResults.length === 0) {
+                this.resultsTable.innerHTML = `
+                    <tr id="emptyResultsMessage">
+                        <td colspan="8" class="text-center text-muted py-5">
+                            <i class="fas fa-search fa-2x mb-2"></i><br>
+                            ${this.results.length === 0 ? 'No hay resultados para mostrar' : 'No hay resultados que coincidan con los filtros'}
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            const html = this.filteredResults.map(result => this.renderResultRow(result)).join('');
+            this.resultsTable.innerHTML = html;
+            
+            this.attachEventListeners();
+            this.updateSummary();
+        }
+
+        /**
+         * Renderizar fila de resultado
+         */
+        renderResultRow(result) {
+            const statusClass = this.getStatusClass(result.status);
+            const statusIcon = this.getStatusIcon(result.status);
+            const displayMonto = result.monto ? `${result.monto}` : '-';
+            
+            return `
+                <tr class="result-row" data-result-id="${result.id}">
+                    <td>${result.numero_llegada}</td>
+                    <td>
+                        <div class="result-filename" title="${result.filename}">
+                            ${this.truncateText(result.filename, 30)}
                         </div>
-                        <div class="modal-body">
-                            ${this.renderFileDetailsContent(data)}
+                        <small class="text-muted">${result.caption}</small>
+                    </td>
+                    <td>
+                        <div class="result-codigo" title="Código: ${result.codigo_sorteo}">
+                            ${result.codigo_sorteo || '?'}
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                            <button type="button" class="btn btn-primary" onclick="resultsViewer.copyFileData('${data.filename}')">
-                                <i class="fas fa-copy me-1"></i>Copiar Datos
+                    </td>
+                    <td>
+                        <div class="result-usuario" title="${result.nombre_usuario}">
+                            ${result.nombre_usuario || '-'}
+                        </div>
+                        <small class="text-muted">${result.hora_exacta}</small>
+                    </td>
+                    <td>
+                        <div class="result-monto">${displayMonto}</div>
+                    </td>
+                    <td>
+                        <div class="result-banco" title="${result.bancoorigen}">
+                            ${this.truncateText(result.bancoorigen, 20)}
+                        </div>
+                    </td>
+                    <td>
+                        <span class="result-status ${statusClass}">
+                            <i class="fas ${statusIcon}"></i>
+                            ${this.getStatusText(result.status)}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="result-actions">
+                            <button type="button" class="btn btn-sm btn-view view-result-btn" 
+                                    data-result-id="${result.id}" title="Ver detalles">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-download download-result-btn" 
+                                    data-result-id="${result.id}" title="Descargar JSON">
+                                <i class="fas fa-download"></i>
                             </button>
                         </div>
-                    </div>
-                </div>
-            </div>
-        `;
-
-        // Remover modal anterior si existe
-        const existingModal = document.getElementById('fileDetailsModal');
-        if (existingModal) {
-            existingModal.remove();
+                    </td>
+                </tr>
+            `;
         }
 
-        // Agregar nuevo modal
-        document.body.insertAdjacentHTML('beforeend', modalHtml);
-        
-        // Mostrar modal
-        const modal = new bootstrap.Modal(document.getElementById('fileDetailsModal'));
-        modal.show();
-    }
-
-    /**
-     * RENDERIZAR CONTENIDO DEL MODAL DE DETALLES
-     */
-    renderFileDetailsContent(data) {
-        const stats = data.estadisticas || {};
-        const confidenceBadge = this.getConfidenceBadge(stats.confidence_avg);
-
-        return `
-            <div class="row">
-                <!-- Información del archivo -->
-                <div class="col-md-4">
-                    <div class="card h-100">
-                        <div class="card-header">
-                            <h6 class="mb-0"><i class="fas fa-info-circle me-1"></i>Información</h6>
-                        </div>
-                        <div class="card-body">
-                            ${data.archivo_info ? `
-                                <p><strong>Original:</strong> ${this.escapeHtml(data.archivo_info.nombre_original || '')}</p>
-                                <p><strong>Formato:</strong> ${data.archivo_info.formato || ''}</p>
-                                <p><strong>Tamaño:</strong> ${data.archivo_info.tamaño || ''}</p>
-                                <p><strong>Procesado:</strong> ${this.formatDate(data.archivo_info.fecha_procesamiento)}</p>
-                            ` : ''}
-                            
-                            <div class="mt-3">
-                                <h6>Estadísticas OCR</h6>
-                                <p><strong>Confianza:</strong> ${confidenceBadge}</p>
-                                <p><strong>Palabras:</strong> ${stats.total_palabras || stats.total || 0}</p>
-                                <p><strong>Tiempo:</strong> ${stats.tiempo_procesamiento || 0}ms</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Texto extraído -->
-                <div class="col-md-8">
-                    <div class="card h-100">
-                        <div class="card-header">
-                            <h6 class="mb-0"><i class="fas fa-text-width me-1"></i>Texto Extraído</h6>
-                        </div>
-                        <div class="card-body">
-                            <div class="text-container bg-light p-3 rounded" style="max-height: 200px; overflow-y: auto;">
-                                <pre class="mb-0">${this.escapeHtml(data.texto_extraido || 'No disponible')}</pre>
-                            </div>
-                            
-                            ${data.datos_financieros ? `
-                                <div class="mt-3">
-                                    <h6>Datos Financieros</h6>
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <small><strong>Monto:</strong> ${data.datos_financieros.monto_encontrado || 'N/A'}</small>
-                                        </div>
-                                        <div class="col-6">
-                                            <small><strong>Referencia:</strong> ${data.datos_financieros.referencia || 'N/A'}</small>
-                                        </div>
-                                    </div>
-                                </div>
-                            ` : ''}
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            ${data.coordenadas && data.coordenadas.length > 0 ? `
-                <div class="row mt-3">
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-header">
-                                <h6 class="mb-0"><i class="fas fa-map-marker-alt me-1"></i>Coordenadas (${data.coordenadas.length})</h6>
-                            </div>
-                            <div class="card-body">
-                                <div style="max-height: 300px; overflow-y: auto;">
-                                    <table class="table table-sm">
-                                        <thead>
-                                            <tr>
-                                                <th>Texto</th>
-                                                <th>Confianza</th>
-                                                <th>Posición</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            ${data.coordenadas.slice(0, 50).map(coord => `
-                                                <tr>
-                                                    <td><code>${this.escapeHtml(coord.texto || '')}</code></td>
-                                                    <td>${this.getConfidenceBadge(coord.confianza)}</td>
-                                                    <td><small>${coord.x1},${coord.y1} → ${coord.x2},${coord.y2}</small></td>
-                                                </tr>
-                                            `).join('')}
-                                            ${data.coordenadas.length > 50 ? `
-                                                <tr>
-                                                    <td colspan="3" class="text-center text-muted">
-                                                        ... y ${data.coordenadas.length - 50} más
-                                                    </td>
-                                                </tr>
-                                            ` : ''}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            ` : ''}
-        `;
-    }
-
-    /**
-     * EXTRAER RESULTADOS
-     */
-    async extractResults() {
-        try {
-            this.showNotification('Extrayendo resultados...', 'info');
-            
-            const data = await window.apiClient.extractResults();
-            
-            // Crear y descargar JSON consolidado
-            const jsonBlob = new Blob([JSON.stringify(data, null, 2)], {
-                type: 'application/json'
+        /**
+         * Adjuntar event listeners a elementos dinámicos
+         */
+        attachEventListeners() {
+            // Botones de ver detalles
+            document.querySelectorAll('.view-result-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const resultId = parseInt(e.target.closest('.view-result-btn').getAttribute('data-result-id'));
+                    this.showResultDetails(resultId);
+                });
             });
-            
-            const url = URL.createObjectURL(jsonBlob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `resultados_consolidados_${new Date().toISOString().split('T')[0]}.json`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            
-            this.showNotification('✅ Resultados extraídos exitosamente', 'success');
-            
-        } catch (error) {
-            console.error('Error extrayendo resultados:', error);
-            this.showNotification(`❌ Error extrayendo resultados: ${error.getUserMessage()}`, 'error');
-        }
-    }
 
-    /**
-     * UTILIDADES
-     */
-    getFilteredFiles() {
-        let filtered = [...this.currentFiles];
-        
-        // Filtrar por búsqueda
-        if (this.filterConfig.search) {
-            const search = this.filterConfig.search.toLowerCase();
-            filtered = filtered.filter(file => 
-                file.filename.toLowerCase().includes(search) ||
-                (file.texto_preview && file.texto_preview.toLowerCase().includes(search))
-            );
+            // Botones de descarga
+            document.querySelectorAll('.download-result-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const resultId = parseInt(e.target.closest('.download-result-btn').getAttribute('data-result-id'));
+                    this.downloadResult(resultId);
+                });
+            });
         }
-        
-        // Filtrar por confianza
-        if (this.filterConfig.confidence !== 'all') {
-            filtered = filtered.filter(file => {
-                const confidence = file.confidence || 0;
-                switch (this.filterConfig.confidence) {
-                    case 'high': return confidence > 0.9;
-                    case 'medium': return confidence >= 0.7 && confidence <= 0.9;
-                    case 'low': return confidence < 0.7;
-                    default: return true;
+
+        /**
+         * Mostrar detalles de un resultado
+         */
+        showResultDetails(resultId) {
+            const result = this.filteredResults.find(r => r.id === resultId);
+            if (!result) return;
+
+            // Crear modal dinámicamente si no existe
+            let modal = document.getElementById('resultDetailModal');
+            if (!modal) {
+                modal = this.createDetailModal();
+                document.body.appendChild(modal);
+            }
+
+            // Poblar modal con datos
+            this.populateDetailModal(result);
+            
+            // Mostrar modal
+            const bsModal = new bootstrap.Modal(modal);
+            bsModal.show();
+        }
+
+        /**
+         * Crear modal de detalles
+         */
+        createDetailModal() {
+            const modalHTML = `
+                <div class="modal fade result-detail-modal" id="resultDetailModal" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">
+                                    <i class="fas fa-file-alt me-2"></i>Detalles del Resultado
+                                </h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body" id="resultDetailContent">
+                                <!-- El contenido se carga dinámicamente -->
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                <button type="button" class="btn btn-primary" id="downloadDetailBtn">
+                                    <i class="fas fa-download me-2"></i>Descargar JSON
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            const modalElement = document.createElement('div');
+            modalElement.innerHTML = modalHTML;
+            return modalElement.firstElementChild;
+        }
+
+        /**
+         * Poblar modal con datos del resultado
+         */
+        populateDetailModal(result) {
+            const content = document.getElementById('resultDetailContent');
+            if (!content) return;
+
+            content.innerHTML = `
+                <div class="detail-section">
+                    <h6><i class="fas fa-info-circle me-2"></i>Información del Archivo</h6>
+                    <div class="detail-field">
+                        <span class="label">Nombre del Archivo:</span>
+                        <span class="value">${result.filename}</span>
+                    </div>
+                    <div class="detail-field">
+                        <span class="label">Número de Llegada:</span>
+                        <span class="value">${result.numero_llegada}</span>
+                    </div>
+                    <div class="detail-field">
+                        <span class="label">Caption:</span>
+                        <span class="value">${result.caption}</span>
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <h6><i class="fas fa-user me-2"></i>Parámetros de Seguimiento</h6>
+                    <div class="detail-field">
+                        <span class="label">Código de Sorteo:</span>
+                        <span class="value">${result.codigo_sorteo}</span>
+                    </div>
+                    <div class="detail-field">
+                        <span class="label">ID WhatsApp:</span>
+                        <span class="value">${result.id_whatsapp}</span>
+                    </div>
+                    <div class="detail-field">
+                        <span class="label">Nombre de Usuario:</span>
+                        <span class="value">${result.nombre_usuario}</span>
+                    </div>
+                    <div class="detail-field">
+                        <span class="label">Hora Exacta:</span>
+                        <span class="value">${result.hora_exacta}</span>
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <h6><i class="fas fa-credit-card me-2"></i>Datos Extraídos</h6>
+                    <div class="detail-field">
+                        <span class="label">Referencia:</span>
+                        <span class="value">${result.referencia}</span>
+                    </div>
+                    <div class="detail-field">
+                        <span class="label">Monto:</span>
+                        <span class="value">${result.monto}</span>
+                    </div>
+                    <div class="detail-field">
+                        <span class="label">Banco Origen:</span>
+                        <span class="value">${result.bancoorigen}</span>
+                    </div>
+                    <div class="detail-field">
+                        <span class="label">Banco Destino:</span>
+                        <span class="value">${result.banco_destino}</span>
+                    </div>
+                    <div class="detail-field">
+                        <span class="label">Cédula:</span>
+                        <span class="value">${result.cedula}</span>
+                    </div>
+                    <div class="detail-field">
+                        <span class="label">Teléfono:</span>
+                        <span class="value">${result.telefono}</span>
+                    </div>
+                    <div class="detail-field">
+                        <span class="label">Fecha de Pago:</span>
+                        <span class="value">${result.pago_fecha}</span>
+                    </div>
+                    <div class="detail-field">
+                        <span class="label">Concepto:</span>
+                        <span class="value">${result.concepto}</span>
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <h6><i class="fas fa-chart-line me-2"></i>Estadísticas</h6>
+                    <div class="detail-field">
+                        <span class="label">Confianza OCR:</span>
+                        <span class="value">${(result.confidence * 100).toFixed(1)}%</span>
+                    </div>
+                    <div class="detail-field">
+                        <span class="label">Palabras Detectadas:</span>
+                        <span class="value">${result.total_words}</span>
+                    </div>
+                    <div class="detail-field">
+                        <span class="label">Tiempo de Procesamiento:</span>
+                        <span class="value">${result.processing_time.toFixed(3)}s</span>
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <h6><i class="fas fa-align-left me-2"></i>Texto OCR Completo</h6>
+                    <div class="border rounded p-3 bg-light" style="max-height: 200px; overflow-y: auto;">
+                        <pre class="mb-0" style="white-space: pre-wrap; font-size: 0.875rem;">${result.texto_total_ocr}</pre>
+                    </div>
+                </div>
+            `;
+
+            // Configurar botón de descarga
+            const downloadBtn = document.getElementById('downloadDetailBtn');
+            if (downloadBtn) {
+                downloadBtn.onclick = () => this.downloadResult(result.id);
+            }
+        }
+
+        /**
+         * Descargar resultado como JSON
+         */
+        downloadResult(resultId) {
+            const result = this.filteredResults.find(r => r.id === resultId);
+            if (!result) return;
+
+            try {
+                const blob = new Blob([JSON.stringify(result.raw_data, null, 2)], {
+                    type: 'application/json'
+                });
+
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `resultado_${result.filename.replace(/\.[^/.]+$/, "")}.json`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+
+                if (window.OCRSystem.Main) {
+                    window.OCRSystem.Main.showNotification(
+                        `Resultado descargado: ${result.filename}`,
+                        'success'
+                    );
                 }
-            });
-        }
-        
-        return filtered;
-    }
-
-    getSortedFiles(files) {
-        return files.sort((a, b) => {
-            let aVal = a[this.sortConfig.field];
-            let bVal = b[this.sortConfig.field];
-            
-            // Manejo especial para fechas
-            if (this.sortConfig.field === 'modified_date') {
-                aVal = new Date(aVal);
-                bVal = new Date(bVal);
+            } catch (error) {
+                console.error('❌ Error descargando resultado:', error);
+                if (window.OCRSystem.Main) {
+                    window.OCRSystem.Main.showNotification(
+                        'Error al descargar el resultado',
+                        'error'
+                    );
+                }
             }
+        }
+
+        /**
+         * Actualizar resumen de estadísticas
+         */
+        updateSummary() {
+            const stats = this.calculateStats();
             
-            if (this.sortConfig.order === 'asc') {
-                return aVal > bVal ? 1 : -1;
+            // Actualizar elementos de resumen si existen
+            const totalProcessed = document.getElementById('totalProcessed');
+            const totalSuccess = document.getElementById('totalSuccess');
+            const totalErrors = document.getElementById('totalErrors');
+            const successRate = document.getElementById('successRate');
+            
+            if (totalProcessed) totalProcessed.textContent = stats.total;
+            if (totalSuccess) totalSuccess.textContent = stats.success;
+            if (totalErrors) totalErrors.textContent = stats.errors;
+            if (successRate) successRate.textContent = stats.successRate;
+        }
+
+        /**
+         * Calcular estadísticas de resultados
+         */
+        calculateStats() {
+            const total = this.filteredResults.length;
+            const success = this.filteredResults.filter(r => r.status === 'success').length;
+            const errors = this.filteredResults.filter(r => r.status === 'error').length;
+            const successRate = total > 0 ? ((success / total) * 100).toFixed(1) + '%' : '0%';
+
+            return { total, success, errors, successRate };
+        }
+
+        /**
+         * Mostrar/ocultar indicador de carga
+         */
+        showLoading(show) {
+            // Implementar indicador de carga si es necesario
+            const loadingElement = document.querySelector('.results-loading');
+            if (loadingElement) {
+                loadingElement.style.display = show ? 'flex' : 'none';
+            }
+        }
+
+        /**
+         * Mostrar mensaje de error
+         */
+        showError(message) {
+            if (window.OCRSystem.Main) {
+                window.OCRSystem.Main.showNotification(message, 'error');
             } else {
-                return aVal < bVal ? 1 : -1;
+                console.error('❌', message);
             }
-        });
-    }
-
-    getConfidenceBadge(confidence) {
-        if (!confidence || confidence === 0) {
-            return '<span class="badge bg-secondary">N/A</span>';
         }
-        
-        const percent = (confidence * 100).toFixed(1);
-        let badgeClass = 'bg-secondary';
-        
-        if (confidence > 0.9) badgeClass = 'bg-success';
-        else if (confidence > 0.7) badgeClass = 'bg-warning';
-        else badgeClass = 'bg-danger';
-        
-        return `<span class="badge ${badgeClass}">${percent}%</span>`;
-    }
 
-    getDisplayFilename(filename) {
-        // Remover extensión .json y prefijo BATCH_ para mostrar
-        return filename.replace(/\.json$/, '').replace(/^BATCH_\d{8}_\d{6}_[a-zA-Z0-9]+_/, '');
-    }
-
-    formatFileSize(bytes) {
-        if (!bytes || bytes === 0) return '0 B';
-        const k = 1024;
-        const sizes = ['B', 'KB', 'MB', 'GB'];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-    }
-
-    formatDate(dateString) {
-        if (!dateString) return 'N/A';
-        const date = new Date(dateString);
-        return date.toLocaleString('es-ES', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-    }
-
-    escapeHtml(text) {
-        if (!text) return '';
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    }
-
-    debounce(func, wait) {
-        let timeout;
-        return function executedFunction(...args) {
-            const later = () => {
-                clearTimeout(timeout);
-                func(...args);
+        /**
+         * Obtener clase CSS para estado
+         */
+        getStatusClass(status) {
+            const classes = {
+                success: 'success',
+                warning: 'warning',
+                error: 'error'
             };
-            clearTimeout(timeout);
-            timeout = setTimeout(later, wait);
-        };
-    }
+            return classes[status] || 'error';
+        }
 
-    /**
-     * ESTADOS DE UI
-     */
-    showLoadingState() {
-        if (this.elements.resultsContainer) {
-            this.elements.resultsContainer.innerHTML = `
-                <div class="text-center py-5">
-                    <i class="fas fa-spinner fa-spin fa-2x text-primary mb-3"></i>
-                    <p class="text-muted">Cargando resultados...</p>
-                </div>
-            `;
+        /**
+         * Obtener icono para estado
+         */
+        getStatusIcon(status) {
+            const icons = {
+                success: 'fa-check-circle',
+                warning: 'fa-exclamation-triangle',
+                error: 'fa-times-circle'
+            };
+            return icons[status] || 'fa-times-circle';
+        }
+
+        /**
+         * Obtener texto para estado
+         */
+        getStatusText(status) {
+            const texts = {
+                success: 'Exitoso',
+                warning: 'Advertencia',
+                error: 'Error'
+            };
+            return texts[status] || 'Error';
+        }
+
+        /**
+         * Truncar texto
+         */
+        truncateText(text, maxLength) {
+            if (!text || text.length <= maxLength) return text || '-';
+            return text.substring(0, maxLength - 3) + '...';
+        }
+
+        /**
+         * Obtener resultados actuales
+         */
+        getResults() {
+            return [...this.filteredResults];
+        }
+
+        /**
+         * Obtener número de resultados
+         */
+        getResultCount() {
+            return this.filteredResults.length;
+        }
+
+        /**
+         * Limpiar resultados
+         */
+        clear() {
+            this.results = [];
+            this.filteredResults = [];
+            this.updateDisplay();
         }
     }
 
-    showErrorState(message) {
-        if (this.elements.resultsContainer) {
-            this.elements.resultsContainer.innerHTML = `
-                <div class="text-center py-5">
-                    <i class="fas fa-exclamation-triangle fa-2x text-danger mb-3"></i>
-                    <h5>Error cargando resultados</h5>
-                    <p class="text-muted">${this.escapeHtml(message)}</p>
-                    <button type="button" class="btn btn-primary" onclick="resultsViewer.loadResults()">
-                        <i class="fas fa-refresh me-1"></i>Reintentar
-                    </button>
-                </div>
-            `;
-        }
-    }
+    // Exportar el Results Viewer
+    window.OCRSystem.ResultsViewer = ResultsViewer;
 
-    getEmptyState() {
-        return `
-            <div class="text-center py-5">
-                <i class="fas fa-file-alt fa-3x text-muted mb-3"></i>
-                <h5>No hay resultados</h5>
-                <p class="text-muted">No se encontraron archivos procesados</p>
-                <button type="button" class="btn btn-primary" onclick="resultsViewer.loadResults()">
-                    <i class="fas fa-refresh me-1"></i>Actualizar
-                </button>
-            </div>
-        `;
-    }
+    console.log('📊 Results Viewer module loaded');
 
-    /**
-     * ACCIONES ADICIONALES
-     */
-    copyFilename(filename) {
-        navigator.clipboard.writeText(filename).then(() => {
-            this.showNotification('📋 Nombre copiado al portapapeles', 'success', 2000);
-        });
-    }
-
-    downloadFile(filename) {
-        window.open(`/api/ocr/download_json/${encodeURIComponent(filename)}`, '_blank');
-    }
-
-    clearFilters() {
-        this.filterConfig = { confidence: 'all', status: 'all' };
-        if (this.elements.searchInput) this.elements.searchInput.value = '';
-        this.renderResults();
-    }
-
-    updateResultsStats(files) {
-        // Disparar evento para actualizar estadísticas en el dashboard
-        window.dispatchEvent(new CustomEvent('resultsStatsUpdate', {
-            detail: {
-                totalFiles: files.length,
-                avgConfidence: files.length > 0 
-                    ? files.reduce((sum, f) => sum + (f.confidence || 0), 0) / files.length 
-                    : 0,
-                totalBatches: this.groupedByBatch.size
-            }
-        }));
-    }
-
-    updateBatchSelector() {
-        if (!this.elements.batchSelector) return;
-        
-        const batches = Array.from(this.groupedByBatch.keys()).sort().reverse();
-        const html = `
-            <option value="">Todos los lotes</option>
-            ${batches.map(batchId => `
-                <option value="${batchId}" ${this.selectedBatch === batchId ? 'selected' : ''}>
-                    Lote ${batchId.split('_')[1] || batchId}
-                </option>
-            `).join('')}
-        `;
-        
-        this.elements.batchSelector.innerHTML = html;
-    }
-
-    handleBatchCompleted(batchData) {
-        // Auto-reload cuando se completa un lote
-        setTimeout(() => {
-            this.loadResults(false);
-        }, 1000);
-    }
-
-    showNotification(message, type = 'info', duration = 5000) {
-        window.dispatchEvent(new CustomEvent('showNotification', {
-            detail: { message, type, duration }
-        }));
-    }
-
-    // Métodos para acciones específicas de lotes
-    viewBatchFiles(batchId) {
-        this.selectedBatch = batchId;
-        this.currentView = 'list';
-        this.renderResults();
-        this.updateBatchSelector();
-    }
-
-    async extractBatchResults(batchId) {
-        // Implementar extracción específica de lote
-        this.showNotification('Funcionalidad en desarrollo', 'info');
-    }
-}
-
-// Instancia global del results viewer
-window.resultsViewer = new ResultsViewer();
+})();

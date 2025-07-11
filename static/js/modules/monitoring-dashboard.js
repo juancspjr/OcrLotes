@@ -1,670 +1,394 @@
 /**
- * MONITORING DASHBOARD - SISTEMA OCR EMPRESARIAL
- * Módulo para monitoreo avanzado de recursos por lote con visualización gráfica
- * FILOSOFÍA: PERFECCIÓN CONTINUA + TRANSPARENCIA TOTAL + PULSO DE INFORMACIÓN
+ * MONITORING DASHBOARD MODULE - SISTEMA OCR EMPRESARIAL
+ * FILOSOFÍA: INTEGRIDAD TOTAL + INTERFACE EXCELLENCE
+ * 
+ * Módulo encargado del monitoreo avanzado del sistema con métricas,
+ * estado de componentes y análisis de rendimiento en tiempo real.
  */
 
-class MonitoringDashboard {
-    constructor() {
-        this.charts = {};
-        this.batchMetrics = [];
-        this.realTimeMetrics = null;
-        this.pollingInterval = null;
-        this.pollingFrequency = 5000; // 5 segundos
-        this.maxDataPoints = 50; // Máximo de lotes a mostrar en gráficos
-        this.isPolling = false;
-        
-        this.initializeElements();
-        this.bindEvents();
-        this.initializeCharts();
-    }
+window.OCRSystem = window.OCRSystem || {};
 
-    /**
-     * INICIALIZACIÓN DE ELEMENTOS DOM
-     */
-    initializeElements() {
-        this.elements = {
-            // Contenedores principales
-            metricsContainer: document.getElementById('metricsContainer'),
-            chartsContainer: document.getElementById('chartsContainer'),
-            batchLogContainer: document.getElementById('batchLogContainer'),
-            
-            // Gráficos específicos
-            cpuChart: document.getElementById('cpuChart'),
-            memoryChart: document.getElementById('memoryChart'),
-            processingTimeChart: document.getElementById('processingTimeChart'),
-            confidenceChart: document.getElementById('confidenceChart'),
-            
-            // Controles
-            togglePollingBtn: document.getElementById('togglePollingBtn'),
-            refreshMetricsBtn: document.getElementById('refreshMetricsBtn'),
-            clearLogBtn: document.getElementById('clearLogBtn'),
-            
-            // Métricas en tiempo real
-            systemCpuValue: document.getElementById('systemCpuValue'),
-            systemMemoryValue: document.getElementById('systemMemoryValue'),
-            systemDiskValue: document.getElementById('systemDiskValue'),
-            queueStatusValue: document.getElementById('queueStatusValue'),
-            
-            // Log de lotes
-            batchLog: document.getElementById('batchLog')
-        };
-    }
+(function() {
+    'use strict';
 
-    /**
-     * BIND DE EVENTOS
-     */
-    bindEvents() {
-        // Control de polling
-        if (this.elements.togglePollingBtn) {
-            this.elements.togglePollingBtn.addEventListener('click', () => {
-                this.togglePolling();
-            });
+    class MonitoringDashboard {
+        constructor(config) {
+            this.config = config;
+            this.apiClient = config.apiClient;
+            this.refreshInterval = null;
+            this.isAutoRefreshEnabled = true;
+            this.refreshRate = 10000; // 10 segundos
+            
+            this.init();
         }
 
-        // Refresh manual
-        if (this.elements.refreshMetricsBtn) {
-            this.elements.refreshMetricsBtn.addEventListener('click', () => {
-                this.refreshMetrics();
-            });
+        init() {
+            this.setupAutoRefresh();
+            console.log('📈 Monitoring Dashboard inicializado');
         }
 
-        // Limpiar log
-        if (this.elements.clearLogBtn) {
-            this.elements.clearLogBtn.addEventListener('click', () => {
-                this.clearBatchLog();
-            });
-        }
-
-        // Escuchar eventos de lotes completados
-        window.addEventListener('batchCompleted', (e) => {
-            this.handleBatchCompleted(e.detail);
-        });
-
-        // Escuchar eventos de estado de queue
-        window.addEventListener('queueStatusUpdate', (e) => {
-            this.updateQueueStatus(e.detail);
-        });
-    }
-
-    /**
-     * INICIALIZAR GRÁFICOS CHART.JS
-     */
-    initializeCharts() {
-        // Configuración común para todos los gráficos
-        const commonConfig = {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                x: {
-                    title: {
-                        display: true,
-                        text: 'Lotes'
+        /**
+         * Configurar actualización automática
+         */
+        setupAutoRefresh() {
+            if (this.isAutoRefreshEnabled) {
+                this.refreshInterval = setInterval(() => {
+                    // Solo actualizar si la pestaña de monitoreo está activa
+                    const monitoringTab = document.getElementById('monitoringSection');
+                    if (monitoringTab && monitoringTab.classList.contains('active')) {
+                        this.refresh();
                     }
-                },
-                y: {
-                    beginAtZero: true
-                }
-            },
-            plugins: {
-                legend: {
-                    display: true,
-                    position: 'top'
-                },
-                tooltip: {
-                    mode: 'index',
-                    intersect: false
-                }
-            },
-            interaction: {
-                mode: 'nearest',
-                intersect: false
+                }, this.refreshRate);
             }
-        };
-
-        // Gráfico de CPU
-        if (this.elements.cpuChart) {
-            this.charts.cpu = new Chart(this.elements.cpuChart, {
-                type: 'line',
-                data: {
-                    labels: [],
-                    datasets: [{
-                        label: 'CPU Usage (%)',
-                        data: [],
-                        borderColor: 'rgb(255, 99, 132)',
-                        backgroundColor: 'rgba(255, 99, 132, 0.1)',
-                        tension: 0.1,
-                        fill: true
-                    }]
-                },
-                options: {
-                    ...commonConfig,
-                    scales: {
-                        ...commonConfig.scales,
-                        y: {
-                            beginAtZero: true,
-                            max: 100,
-                            title: {
-                                display: true,
-                                text: 'CPU (%)'
-                            }
-                        }
-                    }
-                }
-            });
         }
 
-        // Gráfico de Memoria
-        if (this.elements.memoryChart) {
-            this.charts.memory = new Chart(this.elements.memoryChart, {
-                type: 'line',
-                data: {
-                    labels: [],
-                    datasets: [{
-                        label: 'Memory Usage (MB)',
-                        data: [],
-                        borderColor: 'rgb(54, 162, 235)',
-                        backgroundColor: 'rgba(54, 162, 235, 0.1)',
-                        tension: 0.1,
-                        fill: true
-                    }]
-                },
-                options: {
-                    ...commonConfig,
-                    scales: {
-                        ...commonConfig.scales,
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Memoria (MB)'
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        // Gráfico de Tiempo de Procesamiento
-        if (this.elements.processingTimeChart) {
-            this.charts.processingTime = new Chart(this.elements.processingTimeChart, {
-                type: 'bar',
-                data: {
-                    labels: [],
-                    datasets: [{
-                        label: 'Processing Time (s)',
-                        data: [],
-                        backgroundColor: 'rgba(75, 192, 192, 0.6)',
-                        borderColor: 'rgb(75, 192, 192)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    ...commonConfig,
-                    scales: {
-                        ...commonConfig.scales,
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Tiempo (segundos)'
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        // Gráfico de Confianza Promedio
-        if (this.elements.confidenceChart) {
-            this.charts.confidence = new Chart(this.elements.confidenceChart, {
-                type: 'line',
-                data: {
-                    labels: [],
-                    datasets: [{
-                        label: 'Avg Confidence (%)',
-                        data: [],
-                        borderColor: 'rgb(153, 102, 255)',
-                        backgroundColor: 'rgba(153, 102, 255, 0.1)',
-                        tension: 0.1,
-                        fill: true
-                    }]
-                },
-                options: {
-                    ...commonConfig,
-                    scales: {
-                        ...commonConfig.scales,
-                        y: {
-                            beginAtZero: true,
-                            max: 100,
-                            title: {
-                                display: true,
-                                text: 'Confianza (%)'
-                            }
-                        }
-                    }
-                }
-            });
-        }
-    }
-
-    /**
-     * INICIAR/DETENER POLLING DE MÉTRICAS
-     */
-    togglePolling() {
-        if (this.isPolling) {
-            this.stopPolling();
-        } else {
-            this.startPolling();
-        }
-    }
-
-    startPolling() {
-        if (this.isPolling) return;
-        
-        this.isPolling = true;
-        this.updatePollingButton();
-        
-        // Primera actualización inmediata
-        this.refreshMetrics();
-        
-        // Configurar polling
-        this.pollingInterval = setInterval(() => {
-            this.refreshMetrics();
-        }, this.pollingFrequency);
-        
-        this.logBatchEvent('🟢 Monitoreo en tiempo real activado', 'success');
-    }
-
-    stopPolling() {
-        if (!this.isPolling) return;
-        
-        this.isPolling = false;
-        this.updatePollingButton();
-        
-        if (this.pollingInterval) {
-            clearInterval(this.pollingInterval);
-            this.pollingInterval = null;
-        }
-        
-        this.logBatchEvent('🔴 Monitoreo en tiempo real desactivado', 'info');
-    }
-
-    updatePollingButton() {
-        if (!this.elements.togglePollingBtn) return;
-        
-        if (this.isPolling) {
-            this.elements.togglePollingBtn.innerHTML = '<i class="fas fa-pause me-1"></i>Detener Monitoreo';
-            this.elements.togglePollingBtn.className = 'btn btn-warning';
-        } else {
-            this.elements.togglePollingBtn.innerHTML = '<i class="fas fa-play me-1"></i>Iniciar Monitoreo';
-            this.elements.togglePollingBtn.className = 'btn btn-success';
-        }
-    }
-
-    /**
-     * ACTUALIZAR MÉTRICAS DEL SISTEMA
-     */
-    async refreshMetrics() {
-        try {
-            // Obtener estado de cola (que incluye métricas del sistema)
-            const queueData = await window.apiClient.getQueueStatus();
-            
-            if (queueData.system_info) {
-                this.updateSystemMetrics(queueData.system_info);
-            }
-            
-            if (queueData.queue_status) {
-                this.updateQueueStatus(queueData.queue_status);
-            }
-
-            // Intentar obtener métricas específicas de lotes
+        /**
+         * Refrescar todos los datos del dashboard
+         */
+        async refresh() {
             try {
-                const batchMetrics = await window.apiClient.getBatchMetrics();
-                if (batchMetrics && batchMetrics.length > 0) {
-                    this.updateBatchMetrics(batchMetrics);
-                }
+                console.log('📈 Refrescando dashboard de monitoreo...');
+                
+                await Promise.all([
+                    this.updateSystemMetrics(),
+                    this.updateSystemStatus(),
+                    this.updateBatchHistory()
+                ]);
+                
             } catch (error) {
-                // El endpoint de métricas de lotes puede no estar implementado aún
-                console.log('Métricas de lotes no disponibles:', error.message);
+                console.error('❌ Error refrescando dashboard:', error);
+                this.showError('Error actualizando métricas del sistema');
+            }
+        }
+
+        /**
+         * Actualizar métricas del sistema
+         */
+        async updateSystemMetrics() {
+            try {
+                const metrics = await this.apiClient.getSystemMetrics();
+                
+                // Actualizar contadores principales
+                this.updateElement('totalProcessed', metrics.totalProcessed || 0);
+                this.updateElement('totalSuccess', metrics.totalSuccess || 0);
+                this.updateElement('totalErrors', metrics.totalErrors || 0);
+                this.updateElement('successRate', metrics.successRate || '0%');
+                
+                // Actualizar indicadores visuales
+                this.updateSuccessRateIndicator(metrics.successRate);
+                
+            } catch (error) {
+                console.error('❌ Error obteniendo métricas:', error);
+                // Mostrar valores por defecto en caso de error
+                this.updateElement('totalProcessed', 0);
+                this.updateElement('totalSuccess', 0);
+                this.updateElement('totalErrors', 0);
+                this.updateElement('successRate', '0%');
+            }
+        }
+
+        /**
+         * Actualizar estado de componentes del sistema
+         */
+        async updateSystemStatus() {
+            try {
+                const systemInfo = await this.apiClient.getSystemInfo();
+                
+                // Estado del worker OCR
+                this.updateStatusBadge('workerStatus', 
+                    systemInfo.backend_status === 'ok' ? 'Activo' : 'Inactivo',
+                    systemInfo.backend_status === 'ok' ? 'success' : 'danger'
+                );
+                
+                // Estado de la base de datos
+                this.updateStatusBadge('dbStatus', 
+                    systemInfo.backend_status === 'ok' ? 'Conectado' : 'Desconectado',
+                    systemInfo.backend_status === 'ok' ? 'success' : 'danger'
+                );
+                
+                // Estado de la API
+                this.updateStatusBadge('apiStatus',
+                    systemInfo.backend_status === 'ok' ? 'Operativo' : 'Error',
+                    systemInfo.backend_status === 'ok' ? 'success' : 'danger'
+                );
+                
+                // Actualizar latencia si está disponible
+                if (systemInfo.latency !== null) {
+                    this.updateLatencyIndicator(systemInfo.latency);
+                }
+                
+            } catch (error) {
+                console.error('❌ Error obteniendo estado del sistema:', error);
+                
+                // Mostrar estados de error
+                this.updateStatusBadge('workerStatus', 'Error', 'danger');
+                this.updateStatusBadge('dbStatus', 'Error', 'danger');
+                this.updateStatusBadge('apiStatus', 'Error', 'danger');
+            }
+        }
+
+        /**
+         * Actualizar historial de lotes
+         */
+        async updateBatchHistory() {
+            try {
+                const batches = await this.apiClient.getBatchHistory();
+                this.renderBatchHistory(batches.slice(0, 10)); // Mostrar últimos 10 lotes
+                
+            } catch (error) {
+                console.error('❌ Error obteniendo historial de lotes:', error);
+                this.renderBatchHistory([]);
+            }
+        }
+
+        /**
+         * Renderizar historial de lotes
+         */
+        renderBatchHistory(batches) {
+            const batchHistoryBody = document.getElementById('batchHistoryBody');
+            if (!batchHistoryBody) return;
+
+            if (batches.length === 0) {
+                batchHistoryBody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="text-center text-muted py-4">
+                            <i class="fas fa-clock fa-2x mb-2"></i><br>
+                            No hay historial disponible
+                        </td>
+                    </tr>
+                `;
+                return;
             }
 
-        } catch (error) {
-            console.error('Error actualizando métricas:', error);
-            this.logBatchEvent(`❌ Error actualizando métricas: ${error.getUserMessage()}`, 'error');
-        }
-    }
-
-    /**
-     * ACTUALIZAR MÉTRICAS DEL SISTEMA EN TIEMPO REAL
-     */
-    updateSystemMetrics(systemInfo) {
-        this.realTimeMetrics = {
-            ...systemInfo,
-            timestamp: new Date().toISOString()
-        };
-
-        // Actualizar valores en la UI
-        if (this.elements.systemCpuValue) {
-            const cpuUsage = systemInfo.cpu_usage || 0;
-            this.elements.systemCpuValue.textContent = `${cpuUsage.toFixed(1)}%`;
-            this.elements.systemCpuValue.className = this.getCpuUsageClass(cpuUsage);
+            const html = batches.map(batch => this.renderBatchRow(batch)).join('');
+            batchHistoryBody.innerHTML = html;
         }
 
-        if (this.elements.systemMemoryValue) {
-            const memoryUsage = systemInfo.memory_usage || 0;
-            this.elements.systemMemoryValue.textContent = `${this.formatMemory(memoryUsage)}`;
-            this.elements.systemMemoryValue.className = this.getMemoryUsageClass(memoryUsage);
-        }
+        /**
+         * Renderizar fila de lote
+         */
+        renderBatchRow(batch) {
+            const date = new Date(batch.date);
+            const processingTime = this.calculateProcessingTime(batch);
+            const successRate = batch.totalFiles > 0 ? 
+                ((batch.successCount / batch.totalFiles) * 100).toFixed(1) : 0;
 
-        if (this.elements.systemDiskValue) {
-            const diskUsage = systemInfo.disk_usage || 0;
-            this.elements.systemDiskValue.textContent = `${diskUsage.toFixed(1)}%`;
-            this.elements.systemDiskValue.className = this.getDiskUsageClass(diskUsage);
-        }
-
-        // Actualizar indicador de worker
-        this.updateWorkerStatus(systemInfo.worker_status === 'running');
-    }
-
-    /**
-     * ACTUALIZAR ESTADO DE COLA
-     */
-    updateQueueStatus(queueStatus) {
-        if (this.elements.queueStatusValue) {
-            const total = (queueStatus.inbox || 0) + (queueStatus.processing || 0) + (queueStatus.completed || 0);
-            this.elements.queueStatusValue.innerHTML = `
-                <div class="queue-stats">
-                    <span class="badge bg-secondary me-1">${queueStatus.inbox || 0} pendientes</span>
-                    <span class="badge bg-warning me-1">${queueStatus.processing || 0} procesando</span>
-                    <span class="badge bg-success">${queueStatus.completed || 0} completados</span>
-                </div>
+            return `
+                <tr class="batch-row" data-batch-id="${batch.id}">
+                    <td>
+                        <span class="font-monospace small">${this.truncateText(batch.id, 20)}</span>
+                    </td>
+                    <td>
+                        <div>${date.toLocaleDateString()}</div>
+                        <small class="text-muted">${date.toLocaleTimeString()}</small>
+                    </td>
+                    <td class="text-center">
+                        <span class="badge bg-info">${batch.totalFiles}</span>
+                    </td>
+                    <td class="text-center">
+                        <span class="badge bg-success">${batch.successCount}</span>
+                    </td>
+                    <td class="text-center">
+                        <span class="badge bg-danger">${batch.errorCount}</span>
+                    </td>
+                    <td class="text-center">
+                        <span class="text-muted">${processingTime}</span>
+                    </td>
+                    <td class="text-center">
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-sm btn-outline-primary view-batch-btn" 
+                                    data-batch-id="${batch.id}" title="Ver detalles">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-success download-batch-btn" 
+                                    data-batch-id="${batch.id}" title="Descargar lote">
+                                <i class="fas fa-download"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
             `;
         }
-    }
 
-    /**
-     * ACTUALIZAR MÉTRICAS DE LOTES
-     */
-    updateBatchMetrics(newMetrics) {
-        // Agregar nuevas métricas al historial
-        if (Array.isArray(newMetrics)) {
-            this.batchMetrics = [...this.batchMetrics, ...newMetrics];
-        } else {
-            this.batchMetrics.push(newMetrics);
-        }
-
-        // Mantener solo los últimos maxDataPoints
-        if (this.batchMetrics.length > this.maxDataPoints) {
-            this.batchMetrics = this.batchMetrics.slice(-this.maxDataPoints);
-        }
-
-        // Actualizar gráficos
-        this.updateCharts();
-    }
-
-    /**
-     * MANEJAR EVENTO DE LOTE COMPLETADO
-     */
-    handleBatchCompleted(batchData) {
-        // Crear métrica simulada del lote basada en los datos del backend
-        const batchMetric = {
-            batch_id: batchData.batch_id || batchData.request_id,
-            timestamp_processed: new Date().toISOString(),
-            num_images_processed: batchData.batch_info?.processed_count || 0,
-            cpu_usage_avg_percent: this.realTimeMetrics?.cpu_usage || 0,
-            memory_usage_avg_mb: this.realTimeMetrics?.memory_usage || 0,
-            batch_processing_time_sec: batchData.batch_info?.processing_time_total || 0,
-            num_errors_in_batch: batchData.batch_info?.error_count || 0,
-            avg_confidence_percent: batchData.batch_info?.avg_confidence * 100 || 0
-        };
-
-        // Agregar al historial
-        this.updateBatchMetrics(batchMetric);
-
-        // Log del evento
-        const logMessage = `🚀 Lote completado: ${batchMetric.num_images_processed} archivos en ${batchMetric.batch_processing_time_sec.toFixed(2)}s`;
-        this.logBatchEvent(logMessage, 'success');
-    }
-
-    /**
-     * ACTUALIZAR TODOS LOS GRÁFICOS
-     */
-    updateCharts() {
-        if (this.batchMetrics.length === 0) return;
-
-        // Preparar datos para gráficos
-        const labels = this.batchMetrics.map((metric, index) => {
-            const batchNum = metric.batch_id ? metric.batch_id.split('_')[2] || (index + 1) : (index + 1);
-            return `L${batchNum}`;
-        });
-
-        // Actualizar gráfico de CPU
-        if (this.charts.cpu) {
-            this.charts.cpu.data.labels = labels;
-            this.charts.cpu.data.datasets[0].data = this.batchMetrics.map(m => m.cpu_usage_avg_percent || 0);
-            this.charts.cpu.update('none');
-        }
-
-        // Actualizar gráfico de Memoria
-        if (this.charts.memory) {
-            this.charts.memory.data.labels = labels;
-            this.charts.memory.data.datasets[0].data = this.batchMetrics.map(m => m.memory_usage_avg_mb || 0);
-            this.charts.memory.update('none');
-        }
-
-        // Actualizar gráfico de Tiempo de Procesamiento
-        if (this.charts.processingTime) {
-            this.charts.processingTime.data.labels = labels;
-            this.charts.processingTime.data.datasets[0].data = this.batchMetrics.map(m => m.batch_processing_time_sec || 0);
-            this.charts.processingTime.update('none');
-        }
-
-        // Actualizar gráfico de Confianza
-        if (this.charts.confidence) {
-            this.charts.confidence.data.labels = labels;
-            this.charts.confidence.data.datasets[0].data = this.batchMetrics.map(m => m.avg_confidence_percent || 0);
-            this.charts.confidence.update('none');
-        }
-    }
-
-    /**
-     * LOG DE EVENTOS DE LOTES
-     */
-    logBatchEvent(message, type = 'info') {
-        if (!this.elements.batchLog) return;
-
-        const timestamp = new Date().toLocaleTimeString('es-ES');
-        const typeClass = this.getLogTypeClass(type);
-        const icon = this.getLogTypeIcon(type);
-
-        const logEntry = document.createElement('div');
-        logEntry.className = `log-entry log-${type} p-2 mb-1 rounded`;
-        logEntry.innerHTML = `
-            <div class="d-flex align-items-start">
-                <span class="${typeClass} me-2">${icon}</span>
-                <div class="flex-grow-1">
-                    <span class="log-message">${this.escapeHtml(message)}</span>
-                    <small class="log-time text-muted ms-2">${timestamp}</small>
-                </div>
-            </div>
-        `;
-
-        // Agregar al inicio del log
-        this.elements.batchLog.insertBefore(logEntry, this.elements.batchLog.firstChild);
-
-        // Mantener solo las últimas 100 entradas
-        const entries = this.elements.batchLog.children;
-        if (entries.length > 100) {
-            this.elements.batchLog.removeChild(entries[entries.length - 1]);
-        }
-
-        // Auto-scroll si estaba al inicio
-        if (this.elements.batchLog.scrollTop < 50) {
-            this.elements.batchLog.scrollTop = 0;
-        }
-    }
-
-    /**
-     * LIMPIAR LOG DE LOTES
-     */
-    clearBatchLog() {
-        if (this.elements.batchLog) {
-            this.elements.batchLog.innerHTML = `
-                <div class="log-entry text-center text-muted p-3">
-                    <i class="fas fa-broom me-2"></i>Log limpiado
-                </div>
-            `;
-        }
-    }
-
-    /**
-     * ACTUALIZAR ESTADO DEL WORKER
-     */
-    updateWorkerStatus(isRunning) {
-        const workerIndicator = document.getElementById('workerStatus');
-        if (workerIndicator) {
-            if (isRunning) {
-                workerIndicator.innerHTML = '<i class="fas fa-circle text-success me-1"></i>Activo';
-                workerIndicator.className = 'badge bg-success';
+        /**
+         * Calcular tiempo de procesamiento estimado
+         */
+        calculateProcessingTime(batch) {
+            // Estimación basada en número de archivos (placeholder)
+            const avgTimePerFile = 0.5; // 500ms por archivo
+            const estimatedTime = batch.totalFiles * avgTimePerFile;
+            
+            if (estimatedTime < 60) {
+                return `${estimatedTime.toFixed(1)}s`;
             } else {
-                workerIndicator.innerHTML = '<i class="fas fa-circle text-danger me-1"></i>Inactivo';
-                workerIndicator.className = 'badge bg-danger';
+                return `${(estimatedTime / 60).toFixed(1)}m`;
             }
         }
-    }
 
-    /**
-     * UTILIDADES PARA CLASES CSS
-     */
-    getCpuUsageClass(usage) {
-        if (usage > 80) return 'text-danger fw-bold';
-        if (usage > 60) return 'text-warning fw-bold';
-        return 'text-success fw-bold';
-    }
+        /**
+         * Actualizar indicador de tasa de éxito
+         */
+        updateSuccessRateIndicator(successRate) {
+            const rateValue = parseFloat(successRate) || 0;
+            const element = document.getElementById('successRate');
+            
+            if (element) {
+                // Cambiar color según la tasa de éxito
+                element.className = 'h4';
+                if (rateValue >= 90) {
+                    element.className += ' text-success';
+                } else if (rateValue >= 70) {
+                    element.className += ' text-warning';
+                } else {
+                    element.className += ' text-danger';
+                }
+            }
+        }
 
-    getMemoryUsageClass(usage) {
-        if (usage > 2048) return 'text-danger fw-bold'; // > 2GB
-        if (usage > 1024) return 'text-warning fw-bold'; // > 1GB
-        return 'text-success fw-bold';
-    }
+        /**
+         * Actualizar indicador de latencia
+         */
+        updateLatencyIndicator(latency) {
+            // Crear elemento de latencia si no existe
+            let latencyElement = document.getElementById('systemLatency');
+            if (!latencyElement) {
+                const systemStatusCard = document.querySelector('.card-header:contains("Estado del Sistema")')?.parentElement;
+                if (systemStatusCard) {
+                    const latencyHTML = `
+                        <div class="d-flex align-items-center">
+                            <div class="flex-grow-1">
+                                <div class="fw-bold">Latencia</div>
+                                <div class="text-muted small">Tiempo de respuesta</div>
+                            </div>
+                            <span class="badge bg-info" id="systemLatency">${latency}ms</span>
+                        </div>
+                    `;
+                    systemStatusCard.querySelector('.card-body').insertAdjacentHTML('beforeend', latencyHTML);
+                }
+            } else {
+                latencyElement.textContent = `${latency}ms`;
+                
+                // Cambiar color según latencia
+                latencyElement.className = 'badge';
+                if (latency < 100) {
+                    latencyElement.className += ' bg-success';
+                } else if (latency < 500) {
+                    latencyElement.className += ' bg-warning';
+                } else {
+                    latencyElement.className += ' bg-danger';
+                }
+            }
+        }
 
-    getDiskUsageClass(usage) {
-        if (usage > 85) return 'text-danger fw-bold';
-        if (usage > 70) return 'text-warning fw-bold';
-        return 'text-success fw-bold';
-    }
+        /**
+         * Actualizar elemento DOM con valor
+         */
+        updateElement(elementId, value) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.textContent = value;
+                
+                // Añadir animación de actualización
+                element.classList.add('updating');
+                setTimeout(() => {
+                    element.classList.remove('updating');
+                }, 300);
+            }
+        }
 
-    getLogTypeClass(type) {
-        const classes = {
-            success: 'text-success',
-            error: 'text-danger',
-            warning: 'text-warning',
-            info: 'text-info'
-        };
-        return classes[type] || classes.info;
-    }
+        /**
+         * Actualizar badge de estado
+         */
+        updateStatusBadge(elementId, text, type) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.textContent = text;
+                element.className = `badge bg-${type}`;
+            }
+        }
 
-    getLogTypeIcon(type) {
-        const icons = {
-            success: '<i class="fas fa-check-circle"></i>',
-            error: '<i class="fas fa-exclamation-circle"></i>',
-            warning: '<i class="fas fa-exclamation-triangle"></i>',
-            info: '<i class="fas fa-info-circle"></i>'
-        };
-        return icons[type] || icons.info;
-    }
+        /**
+         * Mostrar mensaje de error
+         */
+        showError(message) {
+            if (window.OCRSystem.Main) {
+                window.OCRSystem.Main.showNotification(message, 'error');
+            } else {
+                console.error('❌', message);
+            }
+        }
 
-    /**
-     * UTILIDADES DE FORMATO
-     */
-    formatMemory(mb) {
-        if (mb < 1024) return `${mb.toFixed(0)} MB`;
-        return `${(mb / 1024).toFixed(1)} GB`;
-    }
+        /**
+         * Truncar texto
+         */
+        truncateText(text, maxLength) {
+            if (!text || text.length <= maxLength) return text || '-';
+            return text.substring(0, maxLength - 3) + '...';
+        }
 
-    escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    }
+        /**
+         * Habilitar/deshabilitar actualización automática
+         */
+        toggleAutoRefresh(enabled) {
+            this.isAutoRefreshEnabled = enabled;
+            
+            if (enabled) {
+                this.setupAutoRefresh();
+            } else {
+                if (this.refreshInterval) {
+                    clearInterval(this.refreshInterval);
+                    this.refreshInterval = null;
+                }
+            }
+        }
 
-    /**
-     * OBTENER ESTADÍSTICAS DEL DASHBOARD
-     */
-    getMetricsStats() {
-        if (this.batchMetrics.length === 0) {
+        /**
+         * Cambiar tasa de actualización
+         */
+        setRefreshRate(rateMs) {
+            this.refreshRate = rateMs;
+            
+            if (this.isAutoRefreshEnabled) {
+                // Reiniciar intervalo con nueva tasa
+                this.toggleAutoRefresh(false);
+                this.toggleAutoRefresh(true);
+            }
+        }
+
+        /**
+         * Obtener estadísticas actuales
+         */
+        getCurrentStats() {
             return {
-                totalBatches: 0,
-                avgProcessingTime: 0,
-                avgCpuUsage: 0,
-                avgMemoryUsage: 0,
-                avgConfidence: 0
+                totalProcessed: this.getElementValue('totalProcessed'),
+                totalSuccess: this.getElementValue('totalSuccess'),
+                totalErrors: this.getElementValue('totalErrors'),
+                successRate: this.getElementValue('successRate')
             };
         }
 
-        const metrics = this.batchMetrics;
-        return {
-            totalBatches: metrics.length,
-            avgProcessingTime: metrics.reduce((sum, m) => sum + (m.batch_processing_time_sec || 0), 0) / metrics.length,
-            avgCpuUsage: metrics.reduce((sum, m) => sum + (m.cpu_usage_avg_percent || 0), 0) / metrics.length,
-            avgMemoryUsage: metrics.reduce((sum, m) => sum + (m.memory_usage_avg_mb || 0), 0) / metrics.length,
-            avgConfidence: metrics.reduce((sum, m) => sum + (m.avg_confidence_percent || 0), 0) / metrics.length
-        };
+        /**
+         * Obtener valor de elemento DOM
+         */
+        getElementValue(elementId) {
+            const element = document.getElementById(elementId);
+            return element ? element.textContent : null;
+        }
+
+        /**
+         * Destruir instancia y limpiar recursos
+         */
+        destroy() {
+            if (this.refreshInterval) {
+                clearInterval(this.refreshInterval);
+                this.refreshInterval = null;
+            }
+        }
     }
 
-    /**
-     * EXPORTAR MÉTRICAS
-     */
-    exportMetrics() {
-        const stats = this.getMetricsStats();
-        const exportData = {
-            timestamp: new Date().toISOString(),
-            summary: stats,
-            batchMetrics: this.batchMetrics,
-            realTimeMetrics: this.realTimeMetrics
-        };
+    // Exportar el Monitoring Dashboard
+    window.OCRSystem.MonitoringDashboard = MonitoringDashboard;
 
-        const blob = new Blob([JSON.stringify(exportData, null, 2)], {
-            type: 'application/json'
-        });
+    console.log('📈 Monitoring Dashboard module loaded');
 
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `metricas_sistema_${new Date().toISOString().split('T')[0]}.json`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-
-        this.logBatchEvent('📊 Métricas exportadas exitosamente', 'success');
-    }
-
-    /**
-     * RESETEAR MÉTRICAS
-     */
-    resetMetrics() {
-        this.batchMetrics = [];
-        this.updateCharts();
-        this.clearBatchLog();
-        this.logBatchEvent('🔄 Métricas reseteadas', 'info');
-    }
-
-    /**
-     * INICIALIZACIÓN AUTOMÁTICA
-     */
-    init() {
-        // Cargar métricas iniciales
-        this.refreshMetrics();
-        
-        // Log de inicio
-        this.logBatchEvent('🟢 Dashboard de monitoreo inicializado', 'success');
-        
-        // Auto-inicio del polling si es necesario
-        // this.startPolling(); // Descomentado si se quiere auto-inicio
-    }
-}
-
-// Instancia global del monitoring dashboard
-window.monitoringDashboard = new MonitoringDashboard();
+})();

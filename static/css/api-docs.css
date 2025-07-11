@@ -1,0 +1,536 @@
+/* API DOCS STYLES - SISTEMA OCR EMPRESARIAL */
+/* FILOSOFÍA: INTEGRIDAD TOTAL + INTERFACE EXCELLENCE */
+
+/* Contenedor principal de documentación */
+.api-docs-container {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 0.75rem;
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+/* API Key Management */
+.api-key-section {
+    background: white;
+    border-radius: 0.75rem;
+    padding: 2rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    border: 2px solid #e9ecef;
+    margin-bottom: 2rem;
+}
+
+.api-key-display {
+    position: relative;
+    background: #f8f9fa;
+    border: 2px solid #dee2e6;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    font-family: 'Courier New', Consolas, Monaco, monospace;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+.api-key-input {
+    border: none;
+    background: transparent;
+    width: 100%;
+    outline: none;
+    font-family: inherit;
+    font-size: inherit;
+    color: var(--ocr-dark);
+}
+
+.api-key-actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.api-key-toggle,
+.api-key-copy {
+    border: none;
+    background: var(--ocr-secondary);
+    color: white;
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.api-key-toggle:hover,
+.api-key-copy:hover {
+    background: var(--ocr-dark);
+    transform: scale(1.05);
+}
+
+.api-key-copy.success {
+    background: var(--ocr-success);
+    animation: pulse 0.3s ease;
+}
+
+/* Documentación de endpoints */
+.endpoint-section {
+    background: white;
+    border-radius: 0.75rem;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    border: 2px solid #e9ecef;
+}
+
+.endpoint-header {
+    background: linear-gradient(135deg, var(--ocr-dark) 0%, #495057 100%);
+    color: white;
+    padding: 1rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+}
+
+.endpoint-header:hover {
+    background: linear-gradient(135deg, #495057 0%, var(--ocr-dark) 100%);
+}
+
+.endpoint-title {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-weight: 600;
+}
+
+.http-method {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.http-method.get {
+    background: var(--ocr-info);
+    color: white;
+}
+
+.http-method.post {
+    background: var(--ocr-success);
+    color: white;
+}
+
+.http-method.put {
+    background: var(--ocr-warning);
+    color: var(--ocr-dark);
+}
+
+.http-method.delete {
+    background: var(--ocr-danger);
+    color: white;
+}
+
+.endpoint-url {
+    font-family: 'Courier New', Consolas, Monaco, monospace;
+    font-size: 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+}
+
+.expand-indicator {
+    transition: transform 0.2s ease;
+}
+
+.expand-indicator.expanded {
+    transform: rotate(180deg);
+}
+
+.endpoint-content {
+    padding: 1.5rem;
+    display: none;
+}
+
+.endpoint-content.show {
+    display: block;
+    animation: slideDown 0.3s ease-out;
+}
+
+/* Descripción del endpoint */
+.endpoint-description {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-left: 4px solid var(--ocr-primary);
+    border-radius: 0 0.5rem 0.5rem 0;
+}
+
+.endpoint-description p {
+    margin: 0;
+    color: var(--ocr-secondary);
+    line-height: 1.6;
+}
+
+/* Tabs de contenido */
+.endpoint-tabs {
+    border-bottom: 2px solid #e9ecef;
+    margin-bottom: 1.5rem;
+}
+
+.endpoint-tabs .nav-link {
+    border: none;
+    border-bottom: 3px solid transparent;
+    color: var(--ocr-secondary);
+    font-weight: 500;
+    padding: 0.75rem 1rem;
+    transition: all 0.2s ease;
+}
+
+.endpoint-tabs .nav-link:hover {
+    color: var(--ocr-primary);
+    border-bottom-color: rgba(13, 110, 253, 0.3);
+}
+
+.endpoint-tabs .nav-link.active {
+    color: var(--ocr-primary);
+    border-bottom-color: var(--ocr-primary);
+    background: none;
+}
+
+/* Bloques de código */
+.code-block {
+    position: relative;
+    background: #282c34;
+    color: #abb2bf;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    font-family: 'Courier New', Consolas, Monaco, monospace;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    overflow-x: auto;
+}
+
+.code-block::before {
+    content: attr(data-language);
+    position: absolute;
+    top: 0.5rem;
+    right: 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #61dafb;
+}
+
+.code-block .copy-btn {
+    position: absolute;
+    top: 0.5rem;
+    right: 4rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.code-block .copy-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.code-block .copy-btn.success {
+    background: var(--ocr-success);
+    border-color: var(--ocr-success);
+}
+
+/* Sintaxis highlighting */
+.code-block .string {
+    color: #98c379;
+}
+
+.code-block .number {
+    color: #d19a66;
+}
+
+.code-block .boolean {
+    color: #56b6c2;
+}
+
+.code-block .key {
+    color: #e06c75;
+}
+
+.code-block .comment {
+    color: #5c6370;
+    font-style: italic;
+}
+
+/* Parámetros y respuestas */
+.param-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    background: white;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.param-table th {
+    background: var(--ocr-light);
+    color: var(--ocr-dark);
+    font-weight: 600;
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 2px solid #dee2e6;
+    font-size: 0.875rem;
+}
+
+.param-table td {
+    padding: 0.75rem;
+    border-bottom: 1px solid #f1f3f4;
+    font-size: 0.875rem;
+    vertical-align: top;
+}
+
+.param-table tr:last-child td {
+    border-bottom: none;
+}
+
+.param-name {
+    font-family: 'Courier New', Consolas, Monaco, monospace;
+    font-weight: 600;
+    color: var(--ocr-primary);
+}
+
+.param-type {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.125rem 0.5rem;
+    background: var(--ocr-secondary);
+    color: white;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.param-type.string {
+    background: var(--ocr-info);
+}
+
+.param-type.number {
+    background: var(--ocr-warning);
+    color: var(--ocr-dark);
+}
+
+.param-type.boolean {
+    background: var(--ocr-success);
+}
+
+.param-type.object {
+    background: var(--ocr-primary);
+}
+
+.param-required {
+    color: var(--ocr-danger);
+    font-weight: 600;
+    font-size: 0.75rem;
+}
+
+.param-optional {
+    color: var(--ocr-secondary);
+    font-weight: 500;
+    font-size: 0.75rem;
+}
+
+/* Ejemplos de respuesta */
+.response-example {
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin: 1rem 0;
+}
+
+.response-example h6 {
+    color: var(--ocr-dark);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.status-code {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-right: 0.5rem;
+}
+
+.status-code.success {
+    background: var(--ocr-success);
+    color: white;
+}
+
+.status-code.error {
+    background: var(--ocr-danger);
+    color: white;
+}
+
+.status-code.warning {
+    background: var(--ocr-warning);
+    color: var(--ocr-dark);
+}
+
+/* Información adicional */
+.info-box {
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+    border: 2px solid #90caf9;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin: 1rem 0;
+}
+
+.info-box.warning {
+    background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+    border-color: #ffb74d;
+}
+
+.info-box.error {
+    background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+    border-color: #ef5350;
+}
+
+.info-box i {
+    margin-right: 0.5rem;
+    font-size: 1.1rem;
+}
+
+.info-box p {
+    margin: 0;
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+/* Navegación de la documentación */
+.docs-nav {
+    background: white;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    border: 2px solid #e9ecef;
+}
+
+.docs-nav h5 {
+    color: var(--ocr-dark);
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.docs-nav-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.docs-nav-item {
+    margin-bottom: 0.5rem;
+}
+
+.docs-nav-link {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 0.75rem;
+    color: var(--ocr-secondary);
+    text-decoration: none;
+    border-radius: 0.375rem;
+    transition: all 0.2s ease;
+    font-weight: 500;
+}
+
+.docs-nav-link:hover {
+    background: var(--ocr-light);
+    color: var(--ocr-primary);
+    transform: translateX(5px);
+}
+
+.docs-nav-link i {
+    margin-right: 0.5rem;
+    width: 1rem;
+    text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .api-docs-container {
+        padding: 1rem;
+    }
+    
+    .api-key-section {
+        padding: 1rem;
+    }
+    
+    .endpoint-header {
+        padding: 0.75rem 1rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .endpoint-title {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .endpoint-content {
+        padding: 1rem;
+    }
+    
+    .code-block {
+        padding: 1rem;
+        font-size: 0.8rem;
+    }
+    
+    .param-table {
+        font-size: 0.8rem;
+    }
+    
+    .param-table th,
+    .param-table td {
+        padding: 0.5rem;
+    }
+}
+
+/* Animaciones */
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        max-height: 0;
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+    to {
+        opacity: 1;
+        max-height: 1000px;
+        padding-top: 1.5rem;
+        padding-bottom: 1.5rem;
+    }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
