@@ -1,0 +1,104 @@
+ Error obteniendo historial de lotes: 
+TypeError {}
+
+at t.value (https://70485ad5-28cb-45d4-817f-1304bb4b1e55-00-ts0qksgu2wcd.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://70485ad5-28cb-45d4-817f-1304bb4b1e55-00-ts0qksgu2wcd.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://70485ad5-28cb-45d4-817f-1304bb4b1e55-00-ts0qksgu2wcd.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://70485ad5-28cb-45d4-817f-1304bb4b1e55-00-ts0qksgu2wcd.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400
+
+ Error obteniendo API Key actual: 
+Error {}
+
+at t.value (https://aa963e51-47bc-4655-abd9-18db66e87f4c-00-188wart1gdz3t.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://aa963e51-47bc-4655-abd9-18db66e87f4c-00-188wart1gdz3t.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://aa963e51-47bc-4655-abd9-18db66e87f4c-00-188wart1gdz3t.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://aa963e51-47bc-4655-abd9-18db66e87f4c-00-188wart1gdz3t.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400
+
+ API Error: GET /api/current_api_key 
+Error {}
+
+at t.value (https://aa963e51-47bc-4655-abd9-18db66e87f4c-00-188wart1gdz3t.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://aa963e51-47bc-4655-abd9-18db66e87f4c-00-188wart1gdz3t.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://aa963e51-47bc-4655-abd9-18db66e87f4c-00-188wart1gdz3t.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://aa963e51-47bc-4655-abd9-18db66e87f4c-00-188wart1gdz3t.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400
+
+ API Error: POST /api/generate_api_key 
+Error {}
+message: "HTTP 500: Internal Server Error"
+stack: "Error: HTTP 500: Internal Server Error↵ at APIClient.request (https://aa963e51-47bc-4655-abd9-18db66e87f4c-00-188wart1gdz3t.worf.replit.dev/static/js/modules/api-client.js:54:27)↵ at async APIClient.generateApiKey (https://aa963e51-47bc-4655-abd9-18db66e87f4c-00-188wart1gdz3t.worf.replit.dev/static/js/modules/api-client.js:303:34)↵ at async APIDocs.generateNewApiKey (https://aa963e51-47bc-4655-abd9-18db66e87f4c-00-188wart1gdz3t.worf.replit.dev/static/js/modules/api-docs.js:114:34)"
+get stack: ƒ ()
+set stack: ƒ ()
+[[Prototype]]: Object
+
+
+API Error: POST /api/generate_api_key 
+Error {}
+
+at t.value (https://aa963e51-47bc-4655-abd9-18db66e87f4c-00-188wart1gdz3t.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://aa963e51-47bc-4655-abd9-18db66e87f4c-00-188wart1gdz3t.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://aa963e51-47bc-4655-abd9-18db66e87f4c-00-188wart1gdz3t.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://aa963e51-47bc-4655-abd9-18db66e87f4c-00-188wart1gdz3t.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400
+
+Error generando API Key: 
+Error {}
+
+at t.value (https://aa963e51-47bc-4655-abd9-18db66e87f4c-00-188wart1gdz3t.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://aa963e51-47bc-4655-abd9-18db66e87f4c-00-188wart1gdz3t.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://aa963e51-47bc-4655-abd9-18db66e87f4c-00-188wart1gdz3t.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://aa963e51-47bc-4655-abd9-18db66e87f4c-00-188wart1gdz3t.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400
+
+Error generando API Key: 
+Error {}
+
+at t.value (https://aa963e51-47bc-4655-abd9-18db66e87f4c-00-188wart1gdz3t.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://aa963e51-47bc-4655-abd9-18db66e87f4c-00-188wart1gdz3t.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://aa963e51-47bc-4655-abd9-18db66e87f4c-00-188wart1gdz3t.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://aa963e51-47bc-4655-abd9-18db66e87f4c-00-188wart1gdz3t.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400
+
+
+
+ Error obteniendo historial de lotes: 
+TypeError {}
+
+at t.value (https://aa963e51-47bc-4655-abd9-18db66e87f4c-00-188wart1gdz3t.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://aa963e51-47bc-4655-abd9-18db66e87f4c-00-188wart1gdz3t.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://aa963e51-47bc-4655-abd9-18db66e87f4c-00-188wart1gdz3t.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://aa963e51-47bc-4655-abd9-18db66e87f4c-00-188wart1gdz3t.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400
+
+
+
+ Lote procesado exitosamente: 
+Object {batch_id: "BATCH_20250715_083143_f54a3eaf", batch_info: {…}, estado: "sin_archivos", message: "No hay archivos para procesar", processing_status: "completed", …}
+batch_id: "BATCH_20250715_083143_f54a3eaf"
+batch_info: Object
+estado: "sin_archivos"
+message: "No hay archivos para procesar"
+processing_status: "completed"
+request_id: "BATCH_20250715_083143_f54a3eaf"
+status: "no_files"
+timestamp: "2025-07-15T08:31:43.612158"
+[[Prototype]]: Object
+
+❌ Error procesando lote: 
+Error {}
+message: "No hay archivos para procesar"
+stack: "Error: No hay archivos para procesar↵ at HTMLButtonElement.handleProcessBatch (https://aa963e51-47bc-4655-abd9-18db66e87f4c-00-188wart1gdz3t.worf.replit.dev/static/js/main.js:311:23)"
+get stack: ƒ ()
+set stack: ƒ ()
+[[Prototype]]: Object
+
+
+Error obteniendo métricas: 
+TypeError {}
+
+at t.value (https://aa963e51-47bc-4655-abd9-18db66e87f4c-00-188wart1gdz3t.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://aa963e51-47bc-4655-abd9-18db66e87f4c-00-188wart1gdz3t.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://aa963e51-47bc-4655-abd9-18db66e87f4c-00-188wart1gdz3t.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://aa963e51-47bc-4655-abd9-18db66e87f4c-00-188wart1gdz3t.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400
+
+❌ Error obteniendo estado del sistema: 
+DOMException {}
+stack: "SyntaxError: Failed to execute 'querySelector' on 'Document': '.card-header:contains("Estado del Sistema")' is not a valid selector.↵ at MonitoringDashboard.updateLatencyIndicator (https://aa963e51-47bc-4655-abd9-18db66e87f4c-00-188wart1gdz3t.worf.replit.dev/static/js/modules/monitoring-dashboard.js:255:51)↵ at MonitoringDashboard.updateSystemStatus (https://aa963e51-47bc-4655-abd9-18db66e87f4c-00-188wart1gdz3t.worf.replit.dev/static/js/modules/monitoring-dashboard.js:117:26)↵ at async Promise.all (index 1)↵ at async MonitoringDashboard.refresh (https://aa963e51-47bc-4655-abd9-18db66e87f4c-00-188wart1gdz3t.worf.replit.dev/static/js/modules/monitoring-dashboard.js:52:17)"
+get stack: ƒ ()
+set stack: ƒ ()
+[[Prototype]]: DOMException

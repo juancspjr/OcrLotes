@@ -1,0 +1,56 @@
+ Error obteniendo historial de lotes: 
+TypeError {}
+
+at t.value (https://70485ad5-28cb-45d4-817f-1304bb4b1e55-00-ts0qksgu2wcd.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://70485ad5-28cb-45d4-817f-1304bb4b1e55-00-ts0qksgu2wcd.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://70485ad5-28cb-45d4-817f-1304bb4b1e55-00-ts0qksgu2wcd.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://70485ad5-28cb-45d4-817f-1304bb4b1e55-00-ts0qksgu2wcd.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400
+
+ Error obteniendo API Key actual: 
+Error {}
+
+at t.value (https://aa963e51-47bc-4655-abd9-18db66e87f4c-00-188wart1gdz3t.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://aa963e51-47bc-4655-abd9-18db66e87f4c-00-188wart1gdz3t.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://aa963e51-47bc-4655-abd9-18db66e87f4c-00-188wart1gdz3t.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://aa963e51-47bc-4655-abd9-18db66e87f4c-00-188wart1gdz3t.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400
+
+ API Error: GET /api/current_api_key 
+Error {}
+
+at t.value (https://aa963e51-47bc-4655-abd9-18db66e87f4c-00-188wart1gdz3t.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://aa963e51-47bc-4655-abd9-18db66e87f4c-00-188wart1gdz3t.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://aa963e51-47bc-4655-abd9-18db66e87f4c-00-188wart1gdz3t.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://aa963e51-47bc-4655-abd9-18db66e87f4c-00-188wart1gdz3t.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400
+
+ API Error: POST /api/generate_api_key 
+Error {}
+message: "HTTP 500: Internal Server Error"
+stack: "Error: HTTP 500: Internal Server Error↵ at APIClient.request (https://aa963e51-47bc-4655-abd9-18db66e87f4c-00-188wart1gdz3t.worf.replit.dev/static/js/modules/api-client.js:54:27)↵ at async APIClient.generateApiKey (https://aa963e51-47bc-4655-abd9-18db66e87f4c-00-188wart1gdz3t.worf.replit.dev/static/js/modules/api-client.js:303:34)↵ at async APIDocs.generateNewApiKey (https://aa963e51-47bc-4655-abd9-18db66e87f4c-00-188wart1gdz3t.worf.replit.dev/static/js/modules/api-docs.js:114:34)"
+get stack: ƒ ()
+set stack: ƒ ()
+[[Prototype]]: Object
+
+
+API Error: POST /api/generate_api_key 
+Error {}
+
+at t.value (https://aa963e51-47bc-4655-abd9-18db66e87f4c-00-188wart1gdz3t.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://aa963e51-47bc-4655-abd9-18db66e87f4c-00-188wart1gdz3t.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://aa963e51-47bc-4655-abd9-18db66e87f4c-00-188wart1gdz3t.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://aa963e51-47bc-4655-abd9-18db66e87f4c-00-188wart1gdz3t.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400
+
+Error generando API Key: 
+Error {}
+
+at t.value (https://aa963e51-47bc-4655-abd9-18db66e87f4c-00-188wart1gdz3t.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://aa963e51-47bc-4655-abd9-18db66e87f4c-00-188wart1gdz3t.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://aa963e51-47bc-4655-abd9-18db66e87f4c-00-188wart1gdz3t.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://aa963e51-47bc-4655-abd9-18db66e87f4c-00-188wart1gdz3t.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400
+
+Error generando API Key: 
+Error {}
+
+at t.value (https://aa963e51-47bc-4655-abd9-18db66e87f4c-00-188wart1gdz3t.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://aa963e51-47bc-4655-abd9-18db66e87f4c-00-188wart1gdz3t.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://aa963e51-47bc-4655-abd9-18db66e87f4c-00-188wart1gdz3t.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://aa963e51-47bc-4655-abd9-18db66e87f4c-00-188wart1gdz3t.worf.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400

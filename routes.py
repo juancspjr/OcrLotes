@@ -3059,29 +3059,6 @@ def validate_api_key(api_key):
 
 import secrets
 import hashlib
-import psycopg2
-from urllib.parse import urlparse
-
-def get_db_connection():
-    """Obtener conexión a PostgreSQL para API Keys"""
-    try:
-        database_url = os.environ.get('DATABASE_URL')
-        if not database_url:
-            logger.error("DATABASE_URL no encontrada en variables de entorno")
-            return None
-            
-        result = urlparse(database_url)
-        conn = psycopg2.connect(
-            database=result.path[1:],
-            user=result.username,
-            password=result.password,
-            host=result.hostname,
-            port=result.port
-        )
-        return conn
-    except Exception as e:
-        logger.error(f"Error conectando a PostgreSQL: {e}")
-        return None
 
 def generate_secure_api_key():
     """Generar API Key segura de 64 caracteres"""
@@ -3100,7 +3077,7 @@ def generate_api_key():
     """
     ENDPOINT: POST /api/generate_api_key
     PROPÓSITO: Generar nueva API Key única y segura para el sistema OCR
-    FILOSOFÍA: INTEGRIDAD TOTAL + SEGURIDAD EMPRESARIAL
+    FILOSOFÍA: INTEGRIDAD TOTAL + SEGURIDAD EMPRESARIAL SIN POSTGRESQL
     """
     try:
         logger.info("🔑 Iniciando generación de nueva API Key")
@@ -3112,66 +3089,43 @@ def generate_api_key():
         # Generar API Key segura
         key_id, api_key = generate_secure_api_key()
         
-        # Conectar a base de datos
-        conn = get_db_connection()
-        if not conn:
-            return jsonify({
-                'status': 'error',
-                'mensaje': 'Error conectando a base de datos',
-                'error_code': 'DATABASE_CONNECTION_ERROR'
-            }), 500
+        # Cargar API keys existentes
+        api_keys_data = load_api_keys()
         
-        try:
-            cursor = conn.cursor()
-            
-            # Insertar nueva API Key en base de datos
-            insert_query = """
-                INSERT INTO api_keys (key_id, api_key, name, is_active, created_at, usage_count)
-                VALUES (%s, %s, %s, %s, %s, %s)
-                RETURNING id
-            """
-            cursor.execute(insert_query, (
-                key_id,
-                api_key,
-                api_key_name,
-                True,
-                datetime.now(),
-                0
-            ))
-            
-            new_id = cursor.fetchone()[0]
-            conn.commit()
-            
-            logger.info(f"✅ API Key generada exitosamente: {key_id}")
-            
-            # Respuesta exitosa
-            response = {
-                'status': 'success',
-                'mensaje': 'API Key generada exitosamente',
-                'data': {
-                    'key_id': key_id,
-                    'api_key': api_key,
-                    'name': api_key_name,
-                    'created_at': datetime.now().isoformat(),
-                    'is_active': True
-                }
+        # Crear nueva entrada
+        new_api_key_data = {
+            'key_id': key_id,
+            'api_key': api_key,
+            'name': api_key_name,
+            'is_active': True,
+            'created_at': datetime.now().isoformat(),
+            'last_used': None,
+            'usage_count': 0
+        }
+        
+        # Agregar nueva API key
+        api_keys_data[key_id] = new_api_key_data
+        
+        # Guardar en archivo
+        save_api_keys(api_keys_data)
+        
+        logger.info(f"✅ API Key generada exitosamente: {key_id}")
+        
+        # Respuesta exitosa
+        response = {
+            'status': 'success',
+            'mensaje': 'API Key generada exitosamente',
+            'data': {
+                'key_id': key_id,
+                'api_key': api_key,
+                'name': api_key_name,
+                'created_at': new_api_key_data['created_at'],
+                'is_active': True
             }
-            
-            return jsonify(response), 201
-            
-        except psycopg2.Error as db_error:
-            conn.rollback()
-            logger.error(f"Error de base de datos: {db_error}")
-            return jsonify({
-                'status': 'error',
-                'mensaje': 'Error almacenando API Key en base de datos',
-                'error_code': 'DATABASE_INSERT_ERROR'
-            }), 500
-            
-        finally:
-            cursor.close()
-            conn.close()
-            
+        }
+        
+        return jsonify(response), 201
+        
     except Exception as e:
         logger.error(f"Error generando API Key: {e}")
         return jsonify({
@@ -3180,60 +3134,113 @@ def generate_api_key():
             'error_code': 'INTERNAL_SERVER_ERROR'
         }), 500
 
+@app.route('/api/current_api_key', methods=['GET'])
+def api_current_api_key():
+    """
+    ENDPOINT: GET /api/current_api_key
+    PROPÓSITO: Obtener la API Key actual
+    """
+    try:
+        api_keys_data = load_api_keys()
+        
+        # Obtener la API key más reciente
+        if api_keys_data:
+            latest_key = max(api_keys_data.items(), key=lambda x: x[1].get('created_at', ''))
+            key_id, key_info = latest_key
+            
+            return jsonify({
+                'status': 'success',
+                'estado': 'exitoso',
+                'api_key': key_info.get('api_key'),
+                'key_id': key_id,
+                'name': key_info.get('name'),
+                'created_at': key_info.get('created_at'),
+                'usage_count': key_info.get('usage_count', 0)
+            })
+        else:
+            return jsonify({
+                'status': 'not_found',
+                'estado': 'no_encontrado',
+                'message': 'No hay API Key configurada'
+            }), 404
+            
+    except Exception as e:
+        logger.error(f"Error obteniendo API Key actual: {e}")
+        return jsonify({
+            'status': 'error',
+            'estado': 'error',
+            'message': f'Error obteniendo API Key: {str(e)}'
+        }), 500
+
+@app.route('/api/queue_count', methods=['GET'])
+def api_get_queue_count():
+    """
+    ENDPOINT: GET /api/queue_count
+    PROPÓSITO: Obtener contador de archivos en cola
+    """
+    try:
+        from config import get_async_directories
+        directories = get_async_directories()
+        inbox_dir = directories['inbox']
+        
+        count = 0
+        if os.path.exists(inbox_dir):
+            for file in os.listdir(inbox_dir):
+                if file.lower().endswith(('.png', '.jpg', '.jpeg', '.tiff', '.bmp')):
+                    count += 1
+        
+        return jsonify({
+            'error': False,
+            'status': 'exitoso',
+            'count': count,
+            'message': f'Archivos en cola: {count}'
+        })
+        
+    except Exception as e:
+        logger.error(f"Error obteniendo contador de cola: {e}")
+        return jsonify({
+            'error': True,
+            'status': 'error',
+            'count': 0,
+            'message': 'Error obteniendo contador'
+        }), 500
+
 @app.route('/api/list_api_keys', methods=['GET'])
 def list_api_keys():
     """
     ENDPOINT: GET /api/list_api_keys
     PROPÓSITO: Listar todas las API Keys activas (sin exponer las keys completas)
-    FILOSOFÍA: TRANSPARENCIA TOTAL + SEGURIDAD
+    FILOSOFÍA: TRANSPARENCIA TOTAL + SEGURIDAD SIN POSTGRESQL
     """
     try:
-        conn = get_db_connection()
-        if not conn:
-            return jsonify({
-                'status': 'error',
-                'mensaje': 'Error conectando a base de datos'
-            }), 500
+        # Cargar API keys desde archivo
+        api_keys_data = load_api_keys()
         
-        try:
-            cursor = conn.cursor()
-            
-            # Consultar API Keys (sin exponer las keys completas)
-            query = """
-                SELECT key_id, name, is_active, created_at, last_used, usage_count
-                FROM api_keys
-                ORDER BY created_at DESC
-            """
-            cursor.execute(query)
-            
-            rows = cursor.fetchall()
-            api_keys = []
-            
-            for row in rows:
-                api_keys.append({
-                    'key_id': row[0],
-                    'name': row[1],
-                    'is_active': row[2],
-                    'created_at': row[3].isoformat() if row[3] else None,
-                    'last_used': row[4].isoformat() if row[4] else None,
-                    'usage_count': row[5] or 0,
-                    'api_key_preview': f"{row[0][:12]}...{row[0][-4:]}" if row[0] else "N/A"
-                })
-            
-            return jsonify({
-                'status': 'success',
-                'mensaje': f'Lista de {len(api_keys)} API Keys',
-                'data': {
-                    'api_keys': api_keys,
-                    'total_count': len(api_keys),
-                    'active_count': sum(1 for key in api_keys if key['is_active'])
-                }
+        api_keys = []
+        for key_id, key_info in api_keys_data.items():
+            api_keys.append({
+                'key_id': key_id,
+                'name': key_info.get('name', 'Sin nombre'),
+                'is_active': key_info.get('is_active', True),
+                'created_at': key_info.get('created_at'),
+                'last_used': key_info.get('last_used'),
+                'usage_count': key_info.get('usage_count', 0),
+                'api_key_preview': f"{key_id[:12]}...{key_id[-4:]}" if key_id else "N/A"
             })
-            
-        finally:
-            cursor.close()
-            conn.close()
-            
+        
+        # Ordenar por fecha de creación (más reciente primero)
+        api_keys.sort(key=lambda x: x['created_at'] or '', reverse=True)
+        
+        return jsonify({
+            'status': 'success',
+            'mensaje': f'Lista de {len(api_keys)} API Keys',
+            'data': {
+                'api_keys': api_keys,
+                'total_count': len(api_keys),
+                'active_count': sum(1 for key in api_keys if key['is_active'])
+            }
+        })
+        
     except Exception as e:
         logger.error(f"Error listando API Keys: {e}")
         return jsonify({
@@ -3246,7 +3253,7 @@ def validate_api_key_endpoint():
     """
     ENDPOINT: POST /api/validate_api_key
     PROPÓSITO: Validar una API Key específica
-    FILOSOFÍA: SEGURIDAD EMPRESARIAL
+    FILOSOFÍA: SEGURIDAD EMPRESARIAL SIN POSTGRESQL
     """
     try:
         data = request.get_json() or {}
@@ -3259,58 +3266,37 @@ def validate_api_key_endpoint():
                 'valid': False
             }), 400
         
-        conn = get_db_connection()
-        if not conn:
-            return jsonify({
-                'status': 'error',
-                'mensaje': 'Error conectando a base de datos',
-                'valid': False
-            }), 500
+        # Cargar API keys desde archivo
+        api_keys_data = load_api_keys()
         
-        try:
-            cursor = conn.cursor()
-            
-            # Buscar y validar API Key
-            query = """
-                SELECT key_id, name, is_active, created_at, usage_count
-                FROM api_keys
-                WHERE api_key = %s AND is_active = true
-            """
-            cursor.execute(query, (api_key,))
-            row = cursor.fetchone()
-            
-            if row:
+        # Buscar la API key en los datos
+        for key_id, key_info in api_keys_data.items():
+            if key_info.get('api_key') == api_key and key_info.get('is_active', True):
                 # Actualizar último uso y contador
-                update_query = """
-                    UPDATE api_keys 
-                    SET last_used = %s, usage_count = usage_count + 1
-                    WHERE api_key = %s
-                """
-                cursor.execute(update_query, (datetime.now(), api_key))
-                conn.commit()
+                key_info['last_used'] = datetime.now().isoformat()
+                key_info['usage_count'] = key_info.get('usage_count', 0) + 1
+                
+                # Guardar cambios
+                save_api_keys(api_keys_data)
                 
                 return jsonify({
                     'status': 'success',
                     'mensaje': 'API Key válida',
                     'valid': True,
                     'data': {
-                        'key_id': row[0],
-                        'name': row[1],
-                        'created_at': row[3].isoformat() if row[3] else None,
-                        'usage_count': row[4] + 1
+                        'key_id': key_id,
+                        'name': key_info.get('name', 'Sin nombre'),
+                        'created_at': key_info.get('created_at'),
+                        'usage_count': key_info['usage_count']
                     }
                 })
-            else:
-                return jsonify({
-                    'status': 'error',
-                    'mensaje': 'API Key inválida o inactiva',
-                    'valid': False
-                }), 401
-                
-        finally:
-            cursor.close()
-            conn.close()
-            
+        
+        return jsonify({
+            'status': 'error',
+            'mensaje': 'API Key inválida o inactiva',
+            'valid': False
+        }), 401
+        
     except Exception as e:
         logger.error(f"Error validando API Key: {e}")
         return jsonify({
@@ -3318,6 +3304,117 @@ def validate_api_key_endpoint():
             'mensaje': f'Error interno: {str(e)}',
             'valid': False
         }), 500
+
+# ====================================================================================================
+# ENDPOINTS ADICIONALES - MIGRACIÓN REPLIT COMPLETADA
+# ====================================================================================================
+
+@app.route('/api/stats', methods=['GET'])
+def api_get_stats():
+    """
+    ENDPOINT: GET /api/stats
+    PROPÓSITO: Obtener estadísticas del sistema OCR
+    """
+    try:
+        import psutil
+        
+        # Obtener estadísticas del sistema
+        cpu_percent = psutil.cpu_percent(interval=1)
+        memory = psutil.virtual_memory()
+        
+        # Obtener información de caché
+        cache_info = get_cache_info()
+        
+        stats = {
+            'sistema': {
+                'cpu_uso': cpu_percent,
+                'memoria_uso': memory.percent,
+                'memoria_total': round(memory.total / (1024**3), 2),  # GB
+                'memoria_disponible': round(memory.available / (1024**3), 2)  # GB
+            },
+            'cache': cache_info,
+            'ocr': {
+                'componentes_cargados': True,
+                'modelos_disponibles': 2,
+                'status': 'operativo'
+            },
+            'archivos': {
+                'en_cola': get_queue_count(),
+                'procesados': get_processed_count()
+            }
+        }
+        
+        return jsonify({
+            'status': 'success',
+            'estado': 'exitoso',
+            'stats': stats
+        })
+        
+    except Exception as e:
+        logger.error(f"Error obteniendo estadísticas: {e}")
+        return jsonify({
+            'status': 'error',
+            'estado': 'error',
+            'message': f'Error obteniendo estadísticas: {str(e)}'
+        }), 500
+
+def get_cache_info():
+    """Obtener información del caché"""
+    try:
+        from config import get_async_directories
+        directories = get_async_directories()
+        
+        cache_size = 0
+        cache_files = 0
+        
+        for cache_dir in [directories.get('cache', ''), directories.get('temp', '')]:
+            if cache_dir and os.path.exists(cache_dir):
+                for file in os.listdir(cache_dir):
+                    file_path = os.path.join(cache_dir, file)
+                    if os.path.isfile(file_path):
+                        cache_size += os.path.getsize(file_path)
+                        cache_files += 1
+        
+        return {
+            'archivos': cache_files,
+            'tamaño_mb': round(cache_size / (1024**2), 2)
+        }
+    except:
+        return {'archivos': 0, 'tamaño_mb': 0}
+
+def get_queue_count():
+    """Obtener contador de archivos en cola"""
+    try:
+        from config import get_async_directories
+        directories = get_async_directories()
+        inbox_dir = directories.get('inbox', '')
+        
+        if not inbox_dir or not os.path.exists(inbox_dir):
+            return 0
+            
+        count = 0
+        for file in os.listdir(inbox_dir):
+            if file.lower().endswith(('.png', '.jpg', '.jpeg', '.tiff', '.bmp')):
+                count += 1
+        return count
+    except:
+        return 0
+
+def get_processed_count():
+    """Obtener contador de archivos procesados"""
+    try:
+        from config import get_async_directories
+        directories = get_async_directories()
+        
+        count = 0
+        for results_dir in [directories.get('results', ''), directories.get('historial', '')]:
+            if results_dir and os.path.exists(results_dir):
+                for file in os.listdir(results_dir):
+                    if file.endswith('.json'):
+                        count += 1
+        return count
+    except:
+        return 0
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
