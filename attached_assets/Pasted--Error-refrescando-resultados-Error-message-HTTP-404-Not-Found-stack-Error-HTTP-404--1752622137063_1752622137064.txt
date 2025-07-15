@@ -1,0 +1,52 @@
+❌ Error refrescando resultados: 
+Error {}
+message: "HTTP 404: Not Found"
+stack: "Error: HTTP 404: Not Found↵ at APIClient.request (https://93f33ebd-a612-48c0-9aec-8b92b466e226-00-2geighcgsdh57.picard.replit.dev/static/js/modules/api-client.js:54:27)↵ at async ResultsViewer.loadResults (https://93f33ebd-a612-48c0-9aec-8b92b466e226-00-2geighcgsdh57.picard.replit.dev/static/js/modules/results-viewer.js:96:30)↵ at async ResultsViewer.refresh (https://93f33ebd-a612-48c0-9aec-8b92b466e226-00-2geighcgsdh57.picard.replit.dev/static/js/modules/results-viewer.js:71:17)"
+get stack: ƒ ()
+set stack: ƒ ()
+[[Prototype]]: Object
+
+at t.value (https://93f33ebd-a612-48c0-9aec-8b92b466e226-00-2geighcgsdh57.picard.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://93f33ebd-a612-48c0-9aec-8b92b466e226-00-2geighcgsdh57.picard.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://93f33ebd-a612-48c0-9aec-8b92b466e226-00-2geighcgsdh57.picard.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://93f33ebd-a612-48c0-9aec-8b92b466e226-00-2geighcgsdh57.picard.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400
+
+❌ Error cargando resultados: 
+Error {}
+
+at t.value (https://93f33ebd-a612-48c0-9aec-8b92b466e226-00-2geighcgsdh57.picard.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://93f33ebd-a612-48c0-9aec-8b92b466e226-00-2geighcgsdh57.picard.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://93f33ebd-a612-48c0-9aec-8b92b466e226-00-2geighcgsdh57.picard.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://93f33ebd-a612-48c0-9aec-8b92b466e226-00-2geighcgsdh57.picard.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400
+
+❌ API Error: GET /api/extract_results 
+Error {}
+
+at t.value (https://93f33ebd-a612-48c0-9aec-8b92b466e226-00-2geighcgsdh57.picard.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://93f33ebd-a612-48c0-9aec-8b92b466e226-00-2geighcgsdh57.picard.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://93f33ebd-a612-48c0-9aec-8b92b466e226-00-2geighcgsdh57.picard.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://93f33ebd-a612-48c0-9aec-8b92b466e226-00-2geighcgsdh57.picard.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400
+
+❌ Error refrescando resultados: 
+Error {}
+
+at t.value (https://93f33ebd-a612-48c0-9aec-8b92b466e226-00-2geighcgsdh57.picard.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://93f33ebd-a612-48c0-9aec-8b92b466e226-00-2geighcgsdh57.picard.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://93f33ebd-a612-48c0-9aec-8b92b466e226-00-2geighcgsdh57.picard.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://93f33ebd-a612-48c0-9aec-8b92b466e226-00-2geighcgsdh57.picard.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400
+
+❌ Error cargando resultados: 
+Error {}
+message: "HTTP 404: Not Found"
+stack: "Error: HTTP 404: Not Found↵ at APIClient.request (https://93f33ebd-a612-48c0-9aec-8b92b466e226-00-2geighcgsdh57.picard.replit.dev/static/js/modules/api-client.js:54:27)↵ at async ResultsViewer.loadResults (https://93f33ebd-a612-48c0-9aec-8b92b466e226-00-2geighcgsdh57.picard.replit.dev/static/js/modules/results-viewer.js:96:30)↵ at async ResultsViewer.refresh (https://93f33ebd-a612-48c0-9aec-8b92b466e226-00-2geighcgsdh57.picard.replit.dev/static/js/modules/results-viewer.js:71:17)"
+get stack: ƒ ()
+set stack: ƒ ()
+[[Prototype]]: Object
+
+❌ API Error: GET /api/extract_results 
+Error {}
+message: "HTTP 404: Not Found"
+stack: "Error: HTTP 404: Not Found↵ at APIClient.request (https://93f33ebd-a612-48c0-9aec-8b92b466e226-00-2geighcgsdh57.picard.replit.dev/static/js/modules/api-client.js:54:27)↵ at async ResultsViewer.loadResults (https://93f33ebd-a612-48c0-9aec-8b92b466e226-00-2geighcgsdh57.picard.replit.dev/static/js/modules/results-viewer.js:96:30)↵ at async ResultsViewer.refresh (https://93f33ebd-a612-48c0-9aec-8b92b466e226-00-2geighcgsdh57.picard.replit.dev/static/js/modules/results-viewer.js:71:17)"
+get stack: ƒ ()
+set stack: ƒ ()
+[[Prototype]]: Object

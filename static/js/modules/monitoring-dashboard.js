@@ -252,7 +252,7 @@ window.OCRSystem = window.OCRSystem || {};
             // Crear elemento de latencia si no existe
             let latencyElement = document.getElementById('systemLatency');
             if (!latencyElement) {
-                const systemStatusCard = document.querySelector('.card-header:contains("Estado del Sistema")')?.parentElement;
+                const systemStatusCard = document.querySelector('.card-header')?.parentElement;
                 if (systemStatusCard) {
                     const latencyHTML = `
                         <div class="d-flex align-items-center">

@@ -232,8 +232,8 @@ window.OCRSystem = window.OCRSystem || {};
                 ]);
 
                 // Calcular métricas
-                const totalProcessed = processedFiles.length || 0;
-                const totalSuccess = processedFiles.filter(f => f.has_ocr_data).length || 0;
+                const totalProcessed = (processedFiles.files || processedFiles).length || 0;
+                const totalSuccess = (processedFiles.files || processedFiles).filter(f => f.has_ocr_data).length || 0;
                 const totalErrors = totalProcessed - totalSuccess;
                 const successRate = totalProcessed > 0 ? (totalSuccess / totalProcessed * 100).toFixed(1) : 0;
 

@@ -1,0 +1,694 @@
+{
+  "original_text_ocr": "19:16 34 Comprobante de operacion PagomovilBDV Personas 104,54 Bs Fecha : 20/06/ 2025 Operacion : 003039376430 D Identificacion : 27061025 Origen : 0102 **** 2663 Destino : 04125318244 Banco : 0105 - BANCO MERCANTIL Concepto : 08 Evelin Crear Acceso directo . O I -",
+  "structured_text_ocr": "19: 1634 Comprobante de operacion PagomovilBDV Personas 104, 54 Bs Fecha: 20/06/2025 Operacion: 003039376430 D Identificacion: 27061025 Origen: 0102 **** 2663 Destino: 04125318244 Banco: 0105 - BANCO MERCANTIL Concepto: 08 Evelin Crear Acceso directo. O I -",
+  "extracted_fields": {
+    "valor_referencia_operacion": "",
+    "monto_total": "",
+    "datos_beneficiario": "",
+    "concepto_motivo": "",
+    "fecha_operacion": "",
+    "telefono": "",
+    "cedula": "",
+    "banco_emisor_pagador": "",
+    "banco_receptor_beneficiario": "",
+    "tipo_transaccion": "",
+    "identificador_cuenta_origen": "",
+    "identificador_cuenta_destino": "",
+    "banco_destino": "",
+    "pago_fecha": "",
+    "hora_operacion": ""
+  },
+  "processing_metadata": {
+    "logica_oro_aplicada": false,
+    "ocr_confidence_avg": 0.922,
+    "error_messages": [
+      "Lógica de oro basada en coordenadas no aplicada: No se detectaron coordenadas válidas en el OCR de origen"
+    ],
+    "processing_time_ms": 526.29,
+    "total_words_detected": 35,
+    "coordinates_available": 0,
+    "ocr_method": "ONNXTR_SINGLE_PASS_COORDENADAS",
+    "timestamp": "2025-07-15T23:25:59.814321"
+  },
+  "word_data_granular": [],
+  "texto_completo": "19:16 34 Comprobante de operacion PagomovilBDV Personas 104,54 Bs Fecha : 20/06/ 2025 Operacion : 003039376430 D Identificacion : 27061025 Origen : 0102 **** 2663 Destino : 04125318244 Banco : 0105 - BANCO MERCANTIL Concepto : 08 Evelin Crear Acceso directo . O I -",
+  "texto_total_ocr": "19: 1634 Comprobante de operacion PagomovilBDV Personas 104, 54 Bs Fecha: 20/06/2025 Operacion: 003039376430 D Identificacion: 27061025 Origen: 0102 **** 2663 Destino: 04125318244 Banco: 0105 - BANCO MERCANTIL Concepto: 08 Evelin Crear Acceso directo. O I -",
+  "concepto_empresarial": "Comprobante de operacion",
+  "total_caracteres": 265,
+  "total_caracteres_ordenados": 257,
+  "tiempo_procesamiento": 0.526,
+  "metodo_extraccion": "ONNXTR_SINGLE_PASS_COORDENADAS",
+  "configuracion_onnxtr": "ultra_rapido",
+  "total_palabras_detectadas": 35,
+  "palabras_detectadas": [
+    {
+      "texto": "19:16",
+      "confianza": 0.9982750415802002,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 0,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "34",
+      "confianza": 0.9982958436012268,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 2,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Comprobante",
+      "confianza": 0.9514247179031372,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 3,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "de",
+      "confianza": 0.9990196228027344,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 3,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "operacion",
+      "confianza": 0.9838084578514099,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 3,
+        "palabra": 2
+      }
+    },
+    {
+      "texto": "PagomovilBDV",
+      "confianza": 0.8090445399284363,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 4,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Personas",
+      "confianza": 0.8194392919540405,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 4,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "104,54",
+      "confianza": 0.9972276091575623,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 5,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Bs",
+      "confianza": 0.9990901947021484,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 5,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "Fecha:",
+      "confianza": 0.9945460557937622,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 6,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "20/06/2025",
+      "confianza": 0.9938125610351562,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 7,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Operacion:",
+      "confianza": 0.9599946737289429,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 8,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "003039376430",
+      "confianza": 0.9930635094642639,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 9,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "D",
+      "confianza": 0.6948195695877075,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 9,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "Identificacion:",
+      "confianza": 0.5422073602676392,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 10,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "27061025",
+      "confianza": 0.9808969497680664,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 11,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Origen:",
+      "confianza": 0.999864935874939,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 12,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "0102****2663",
+      "confianza": 0.9421336054801941,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 13,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Destino:",
+      "confianza": 0.9942573308944702,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 14,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "04125318244",
+      "confianza": 0.8866142332553864,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 15,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Banco:",
+      "confianza": 0.9447872042655945,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 16,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "0105",
+      "confianza": 0.999902606010437,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 17,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "-",
+      "confianza": 0.9985507130622864,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 17,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "BANCO",
+      "confianza": 0.5251699686050415,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 17,
+        "palabra": 2
+      }
+    },
+    {
+      "texto": "MERCANTIL",
+      "confianza": 0.9816670417785645,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 17,
+        "palabra": 3
+      }
+    },
+    {
+      "texto": "Concepto:",
+      "confianza": 0.9931309819221497,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 18,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "08",
+      "confianza": 0.997875452041626,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 19,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Evelin",
+      "confianza": 0.9991995692253113,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 19,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "Crear",
+      "confianza": 0.9999582767486572,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 20,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Acceso",
+      "confianza": 0.9956491589546204,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 20,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "directo",
+      "confianza": 0.964930534362793,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 20,
+        "palabra": 2
+      }
+    },
+    {
+      "texto": ".",
+      "confianza": 0.8337500095367432,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 21,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "O",
+      "confianza": 0.997774064540863,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 22,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "I",
+      "confianza": 0.5068351626396179,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 22,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "-",
+      "confianza": 0.9979937076568604,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 23,
+        "palabra": 0
+      }
+    }
+  ],
+  "confianza_promedio": 0.922,
+  "estadisticas_onnxtr": {
+    "paginas_procesadas": 1,
+    "palabras_alta_confianza": 31,
+    "palabras_media_confianza": 1,
+    "palabras_baja_confianza": 3,
+    "min_confianza_aplicada": 0.5
+  },
+  "calidad_extraccion": {
+    "score_calidad": 83.5,
+    "categoria": "excelente",
+    "confianza_promedio": 0.922,
+    "palabras_alta_confianza": 31,
+    "total_palabras": 35,
+    "longitud_texto": 265,
+    "recomendaciones": [
+      "Calidad de extracción satisfactoria"
+    ]
+  },
+  "deteccion_inteligente": {
+    "tipo_imagen": "documento_escaneado",
+    "esquema_color": "texto_oscuro_fondo_claro",
+    "inversion_requerida": false,
+    "ui_elements_detectados": false,
+    "aspect_ratio": 0.43902439024390244,
+    "calidad_digital": false,
+    "dark_percentage": 8.064438819885254,
+    "light_percentage": 91.93556213378906,
+    "edge_density": 0.027411924119241194,
+    "noise_estimate": 63.80494713884951,
+    "confianza_deteccion": 0.2
+  },
+  "logica_oro_aplicada": false,
+  "datos_financieros": {
+    "amount": [
+      {
+        "valor": "19",
+        "posicion_texto": 0
+      },
+      {
+        "valor": "16",
+        "posicion_texto": 3
+      },
+      {
+        "valor": "34",
+        "posicion_texto": 6
+      },
+      {
+        "valor": "104,54",
+        "posicion_texto": 56
+      },
+      {
+        "valor": "20",
+        "posicion_texto": 74
+      }
+    ],
+    "time": [
+      {
+        "valor": "19:16",
+        "posicion_texto": 0
+      }
+    ],
+    "phone": [
+      {
+        "valor": "00303937643",
+        "posicion_texto": 98
+      },
+      {
+        "valor": "04125318244",
+        "posicion_texto": 173
+      }
+    ],
+    "analisis_documento": {
+      "tipo": "recibo_pago",
+      "confianza": 25.0,
+      "keywords_encontradas": [
+        "comprobante"
+      ]
+    },
+    "resumen_extraido": {
+      "montos_encontrados": 5,
+      "fechas_encontradas": 0,
+      "referencias_encontradas": 0,
+      "cuentas_encontradas": 0,
+      "telefonos_encontrados": 2,
+      "total_elementos": 7,
+      "completitud_porcentaje": 50
+    }
+  }
+}
