@@ -20,7 +20,7 @@ window.OCRSystem = window.OCRSystem || {};
             this.currentBatch = null;
             this.filters = {
                 status: 'all',
-                batch: 'current'
+                batch: 'all'
             };
             
             // Referencias DOM
@@ -51,7 +51,8 @@ window.OCRSystem = window.OCRSystem || {};
             if (this.batchSelector) {
                 this.batchSelector.addEventListener('change', () => {
                     this.filters.batch = this.batchSelector.value;
-                    this.loadBatch();
+                    console.log(`📋 Cargando lote específico: ${this.filters.batch}`);
+                    this.applyFilters();
                 });
             }
         }
@@ -67,10 +68,9 @@ window.OCRSystem = window.OCRSystem || {};
                 this.showLoading(true);
                 
                 // Cargar datos
-                await Promise.all([
-                    this.loadResults(),
-                    this.loadBatchHistory()
-                ]);
+                await this.loadResults();
+                // Actualizar selector de lotes después de cargar resultados
+                this.updateBatchSelector();
                 
                 // Aplicar filtros
                 this.applyFilters();
@@ -96,6 +96,8 @@ window.OCRSystem = window.OCRSystem || {};
                 const data = await this.apiClient.extractResults();
                 
                 if (data && data.archivos_procesados) {
+                    // FIX: ORDENAMIENTO POR FECHA DE PROCESAMIENTO (MAYOR A MENOR)
+                    // Los archivos ya vienen ordenados del backend, pero aseguramos el orden
                     this.results = data.archivos_procesados.map((archivo, index) => ({
                         id: index + 1,
                         filename: archivo.nombre_archivo || 'unknown',
@@ -118,6 +120,9 @@ window.OCRSystem = window.OCRSystem || {};
                         total_words: archivo.extraction_stats?.total_words || 0,
                         processing_time: archivo.extraction_stats?.processing_time || 0,
                         status: this.determineStatus(archivo),
+                        // FIX: CAMPOS DE LOTE AGREGADOS
+                        lote_id: archivo.lote_id || 'N/A',
+                        lote_fecha: archivo.lote_fecha || 'N/A',
                         raw_data: archivo
                     }));
                     
@@ -176,22 +181,41 @@ window.OCRSystem = window.OCRSystem || {};
         updateBatchSelector(batches) {
             if (!this.batchSelector) return;
             
-            // Limpiar opciones existentes
-            this.batchSelector.innerHTML = '<option value="current">Último Lote Procesado</option>';
+            // FIX: OBTENER LOTES ÚNICOS DE LOS RESULTADOS PROCESADOS
+            const uniqueBatches = new Set();
+            const batchOptions = [];
             
-            // Agregar historial de lotes (mostrar todos, no solo los últimos)
-            if (batches && batches.length > 0) {
-                batches.forEach((batch, index) => {
-                    const option = document.createElement('option');
-                    option.value = batch.id;
-                    const batchNumber = batches.length - index; // Numeración inversa (más reciente primero)
-                    option.textContent = `Lote #${batchNumber} - ${new Date(batch.date).toLocaleDateString()} (${batch.totalFiles} archivos)`;
-                    this.batchSelector.appendChild(option);
+            // Obtener lotes únicos de los resultados actuales
+            if (this.results && this.results.length > 0) {
+                this.results.forEach(result => {
+                    if (result.lote_id && result.lote_id !== 'N/A' && !uniqueBatches.has(result.lote_id)) {
+                        uniqueBatches.add(result.lote_id);
+                        batchOptions.push({
+                            id: result.lote_id,
+                            fecha: result.lote_fecha,
+                            name: result.lote_id
+                        });
+                    }
                 });
-                
-                // Actualizar información del lote actual
-                this.updateCurrentBatchInfo(batches[0]);
             }
+            
+            // Ordenar por fecha (más reciente primero)
+            batchOptions.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+            
+            // Limpiar opciones existentes
+            this.batchSelector.innerHTML = '<option value="all">Todos los Lotes</option>';
+            
+            // Agregar lotes únicos
+            batchOptions.forEach((batch, index) => {
+                const option = document.createElement('option');
+                option.value = batch.id;
+                const batchNumber = index + 1;
+                const fechaFormateada = new Date(batch.fecha).toLocaleDateString();
+                option.textContent = `Lote #${batchNumber} - ${fechaFormateada} (${batch.id})`;
+                this.batchSelector.appendChild(option);
+            });
+            
+            console.log(`📋 Selector de lotes actualizado: ${batchOptions.length} lotes únicos`);
         }
 
         /**
@@ -240,6 +264,14 @@ window.OCRSystem = window.OCRSystem || {};
                     }
                 }
                 
+                // FIX: FILTRO POR LOTE IMPLEMENTADO
+                // Filtro por lote
+                if (this.filters.batch && this.filters.batch !== 'all') {
+                    if (result.lote_id !== this.filters.batch) {
+                        return false;
+                    }
+                }
+                
                 return true;
             });
             
@@ -256,7 +288,7 @@ window.OCRSystem = window.OCRSystem || {};
             if (this.filteredResults.length === 0) {
                 this.resultsTable.innerHTML = `
                     <tr id="emptyResultsMessage">
-                        <td colspan="8" class="text-center text-muted py-5">
+                        <td colspan="9" class="text-center text-muted py-5">
                             <i class="fas fa-search fa-2x mb-2"></i><br>
                             ${this.results.length === 0 ? 'No hay resultados para mostrar' : 'No hay resultados que coincidan con los filtros'}
                         </td>
@@ -381,6 +413,12 @@ window.OCRSystem = window.OCRSystem || {};
                         <div class="result-banco" title="${result.bancoorigen}">
                             ${this.truncateText(result.bancoorigen, 20)}
                         </div>
+                    </td>
+                    <td>
+                        <div class="result-lote" title="${result.lote_id}">
+                            ${this.truncateText(result.lote_id, 15)}
+                        </div>
+                        <small class="text-muted">${new Date(result.lote_fecha).toLocaleDateString()}</small>
                     </td>
                     <td>
                         <span class="result-status ${statusClass}">
