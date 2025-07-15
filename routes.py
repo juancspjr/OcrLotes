@@ -1701,11 +1701,43 @@ def api_extract_results():
             'archivos_procesados': []
         }
         
-        # Procesar cada archivo JSON y extraer datos estructurados
+        # FIX: ORDENAMIENTO POR FECHA DE PROCESAMIENTO (MAYOR A MENOR)
+        # REASON: Usuario requiere que el último procesado aparezca primero
+        # IMPACT: Lista ordenada con archivos más recientes al inicio
+        file_info_list = []
+        
         for json_file in json_files:
             try:
+                file_path = json_file
+                file_stat = os.stat(file_path)
+                modification_time = file_stat.st_mtime
+                
                 with open(json_file, 'r', encoding='utf-8') as f:
                     result_data = json.load(f)
+                
+                # Extraer información del lote desde el nombre del archivo
+                batch_info = _extract_batch_info(json_file)
+                
+                file_info_list.append({
+                    'file_path': json_file,
+                    'result_data': result_data,
+                    'modification_time': modification_time,
+                    'batch_info': batch_info
+                })
+                
+            except Exception as e:
+                logger.error(f"Error procesando archivo {json_file}: {e}")
+                continue
+        
+        # Ordenar por fecha de modificación (más reciente primero)
+        file_info_list.sort(key=lambda x: x['modification_time'], reverse=True)
+        
+        # Procesar archivos ordenados y extraer datos estructurados
+        for file_info in file_info_list:
+            try:
+                json_file = file_info['file_path']
+                result_data = file_info['result_data']
+                batch_info = file_info['batch_info']
                 
                 # Extraer nombre de archivo original
                 nombre_archivo = _extract_original_filename(json_file, result_data)
@@ -1721,6 +1753,12 @@ def api_extract_results():
                 # REASON: Mapeo de campos empresariales desde OCR estructurado
                 # IMPACT: Campos empresariales extraídos automáticamente cuando están disponibles
                 campos_empresariales = _extract_enterprise_fields(result_data, texto_completo)
+                
+                # FIX: AGREGAR INFORMACIÓN DEL LOTE AL ARCHIVO
+                # REASON: Usuario requiere saber a qué lote pertenece cada archivo
+                # IMPACT: Campo 'lote' visible en lista de procesamientos
+                lote_info = batch_info.get('lote_id', 'N/A')
+                lote_fecha = batch_info.get('fecha_procesamiento', 'N/A')
                 
                 # FIX: Asegurar que caption se popule basado en contenido del texto
                 # REASON: Caption debe reflejar el tipo de transacción detectado
@@ -1765,6 +1803,9 @@ def api_extract_results():
                     'pago_fecha': campos_empresariales.get('pago_fecha', ''),
                     'concepto': campos_empresariales.get('concepto', ''),
                     'texto_total_ocr': texto_completo,  # MANDATO #22: Campo obligatorio con texto completo
+                    # NUEVO: Información del lote
+                    'lote_id': lote_info,
+                    'lote_fecha': lote_fecha,
                     # Campos técnicos adicionales
                     'extraction_stats': {
                         'confidence': campos_empresariales.get('confidence', 0),
@@ -1842,6 +1883,56 @@ def api_extract_results():
             'message': f'Error extrayendo resultados consolidados: {str(e)}',
             'error_code': 'EXTRACT_CONSOLIDATED_ERROR'
         }), 500
+
+def _extract_batch_info(json_file_path):
+    """
+    FIX: Extraer información del lote desde el nombre del archivo
+    REASON: Usuario requiere saber a qué lote pertenece cada archivo
+    IMPACT: Campo 'lote' visible en lista de procesamientos
+    """
+    try:
+        filename = os.path.basename(json_file_path)
+        
+        # Extraer información del formato BATCH_YYYYMMDD_HHMMSS_hash_filename
+        if filename.startswith('BATCH_'):
+            parts = filename.split('_')
+            if len(parts) >= 3:
+                batch_date = parts[1]  # YYYYMMDD
+                batch_time = parts[2]  # HHMMSS
+                
+                # Formar el ID del lote
+                lote_id = f"BATCH_{batch_date}_{batch_time}"
+                
+                # Convertir fecha a formato legible
+                try:
+                    fecha_dt = datetime.strptime(f"{batch_date}{batch_time}", "%Y%m%d%H%M%S")
+                    fecha_procesamiento = fecha_dt.strftime("%Y-%m-%d %H:%M:%S")
+                except:
+                    fecha_procesamiento = f"{batch_date[:4]}-{batch_date[4:6]}-{batch_date[6:8]} {batch_time[:2]}:{batch_time[2:4]}:{batch_time[4:6]}"
+                
+                return {
+                    'lote_id': lote_id,
+                    'fecha_procesamiento': fecha_procesamiento,
+                    'batch_date': batch_date,
+                    'batch_time': batch_time
+                }
+        
+        # Fallback para archivos sin formato BATCH_
+        return {
+            'lote_id': 'Lote Individual',
+            'fecha_procesamiento': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            'batch_date': '',
+            'batch_time': ''
+        }
+        
+    except Exception as e:
+        logger.error(f"Error extrayendo información del lote: {e}")
+        return {
+            'lote_id': 'N/A',
+            'fecha_procesamiento': 'N/A',
+            'batch_date': '',
+            'batch_time': ''
+        }
 
 def _find_corresponding_image(json_file, result_data, processed_dir):
     """
