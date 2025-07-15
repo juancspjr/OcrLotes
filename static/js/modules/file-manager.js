@@ -71,9 +71,6 @@ window.OCRSystem = window.OCRSystem || {};
         setupFileInput() {
             if (!this.fileInput) return;
 
-            // Remover event listeners existentes para evitar duplicación
-            this.fileInput.removeEventListener('change', this.fileInputHandler);
-            
             // Crear función handler para poder removerla después
             this.fileInputHandler = (e) => {
                 // Prevenir múltiples ejecuciones
@@ -365,15 +362,28 @@ window.OCRSystem = window.OCRSystem || {};
                 throw new Error('No hay archivos para procesar');
             }
 
+            // Prevenir doble procesamiento
+            if (this.isProcessing) {
+                console.warn('⚠️ Ya hay un procesamiento en curso, ignorando duplicado');
+                return;
+            }
+            
+            this.isProcessing = true;
+            
             // Preparar archivos para procesamiento
             const filesToProcess = Array.from(this.files.values());
             
             try {
                 console.log(`🚀 Iniciando procesamiento de ${filesToProcess.length} archivos...`);
                 
+                // Generar ID único para el lote
+                const batchId = this.generateBatchId();
+                console.log(`📋 ID del lote: ${batchId}`);
+                
                 // Marcar archivos como procesando
                 filesToProcess.forEach(fileData => {
                     fileData.status = 'processing';
+                    fileData.batchId = batchId;
                 });
                 this.updateDisplay();
                 
@@ -381,15 +391,19 @@ window.OCRSystem = window.OCRSystem || {};
                 const result = await this.apiClient.processBatch(filesToProcess, profile);
                 
                 // Actualizar estado según resultado
-                if (result.status === 'exitoso') {
+                if (result && (result.status === 'exitoso' || result.status === 'success')) {
                     filesToProcess.forEach(fileData => {
                         fileData.status = 'processed';
                     });
                     
+                    console.log(`✅ Lote ${batchId} procesado exitosamente`);
+                    
                     // Limpiar archivos después del procesamiento exitoso
-                    this.files.clear();
-                    this.updateDisplay();
-                    this.updateCounters();
+                    setTimeout(() => {
+                        this.files.clear();
+                        this.updateDisplay();
+                        this.updateCounters();
+                    }, 2000);
                 } else {
                     // Marcar como error
                     filesToProcess.forEach(fileData => {
@@ -409,7 +423,19 @@ window.OCRSystem = window.OCRSystem || {};
                 
                 console.error('❌ Error procesando lote:', error);
                 throw error;
+            } finally {
+                this.isProcessing = false;
             }
+        }
+
+        /**
+         * Generar ID único para el lote
+         */
+        generateBatchId() {
+            const now = new Date();
+            const timestamp = now.toISOString().replace(/[^\d]/g, '').slice(0, 14); // YYYYMMDDHHMMSS
+            const random = Math.random().toString(36).substr(2, 8);
+            return `BATCH_${timestamp}_${random}`;
         }
 
         /**

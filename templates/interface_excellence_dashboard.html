@@ -250,13 +250,17 @@
 
                     <!-- Tabla de Resultados -->
                     <div class="card">
-                        <div class="card-header bg-dark text-white">
+                        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
                             <h5 class="mb-0"><i class="fas fa-table me-2"></i>Resultados del Procesamiento</h5>
+                            <div class="d-flex align-items-center">
+                                <span class="badge bg-info me-2" id="currentBatchInfo">Lote Actual</span>
+                                <span class="badge bg-secondary" id="resultsCount">0 resultados</span>
+                            </div>
                         </div>
                         <div class="card-body p-0">
-                            <div id="resultsTableContainer" class="table-responsive">
+                            <div id="resultsTableContainer" class="table-responsive" style="max-height: 500px; overflow-y: auto;">
                                 <table class="table table-hover mb-0">
-                                    <thead class="table-light">
+                                    <thead class="table-light sticky-top">
                                         <tr>
                                             <th width="40px">#</th>
                                             <th>Archivo</th>
@@ -277,6 +281,20 @@
                                         </tr>
                                     </tbody>
                                 </table>
+                            </div>
+                            <div class="card-footer bg-light d-flex justify-content-between align-items-center">
+                                <small class="text-muted">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    Desplázate para ver todos los resultados
+                                </small>
+                                <div class="d-flex align-items-center">
+                                    <button type="button" class="btn btn-sm btn-outline-primary me-2" id="scrollToTopBtn">
+                                        <i class="fas fa-arrow-up"></i> Subir
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-outline-primary" id="scrollToBottomBtn">
+                                        <i class="fas fa-arrow-down"></i> Bajar
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>

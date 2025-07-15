@@ -179,13 +179,30 @@ window.OCRSystem = window.OCRSystem || {};
             // Limpiar opciones existentes
             this.batchSelector.innerHTML = '<option value="current">Último Lote Procesado</option>';
             
-            // Agregar historial de lotes
-            batches.forEach(batch => {
-                const option = document.createElement('option');
-                option.value = batch.id;
-                option.textContent = `Lote ${batch.id} - ${new Date(batch.date).toLocaleDateString()} (${batch.totalFiles} archivos)`;
-                this.batchSelector.appendChild(option);
-            });
+            // Agregar historial de lotes (mostrar todos, no solo los últimos)
+            if (batches && batches.length > 0) {
+                batches.forEach((batch, index) => {
+                    const option = document.createElement('option');
+                    option.value = batch.id;
+                    const batchNumber = batches.length - index; // Numeración inversa (más reciente primero)
+                    option.textContent = `Lote #${batchNumber} - ${new Date(batch.date).toLocaleDateString()} (${batch.totalFiles} archivos)`;
+                    this.batchSelector.appendChild(option);
+                });
+                
+                // Actualizar información del lote actual
+                this.updateCurrentBatchInfo(batches[0]);
+            }
+        }
+
+        /**
+         * Actualizar información del lote actual
+         */
+        updateCurrentBatchInfo(batchInfo) {
+            const currentBatchInfoElement = document.getElementById('currentBatchInfo');
+            if (currentBatchInfoElement && batchInfo) {
+                const batchDate = new Date(batchInfo.date).toLocaleDateString();
+                currentBatchInfoElement.textContent = `Lote #${batchInfo.number || 'N/A'} - ${batchDate}`;
+            }
         }
 
         /**
@@ -245,14 +262,88 @@ window.OCRSystem = window.OCRSystem || {};
                         </td>
                     </tr>
                 `;
+                this.updateResultsCountDisplay(0);
                 return;
             }
 
+            // Mostrar TODOS los resultados sin limitación
             const html = this.filteredResults.map(result => this.renderResultRow(result)).join('');
             this.resultsTable.innerHTML = html;
             
             this.attachEventListeners();
             this.updateSummary();
+            this.updateResultsCountDisplay(this.filteredResults.length);
+            this.setupScrollButtons();
+        }
+
+        /**
+         * Actualizar contador de resultados
+         */
+        updateResultsCountDisplay(count) {
+            const resultsCountElement = document.getElementById('resultsCount');
+            if (resultsCountElement) {
+                resultsCountElement.textContent = `${count} resultado${count !== 1 ? 's' : ''}`;
+            }
+        }
+
+        /**
+         * Configurar botones de scroll
+         */
+        setupScrollButtons() {
+            const scrollToTopBtn = document.getElementById('scrollToTopBtn');
+            const scrollToBottomBtn = document.getElementById('scrollToBottomBtn');
+            const tableContainer = document.getElementById('resultsTableContainer');
+            
+            if (scrollToTopBtn && tableContainer) {
+                scrollToTopBtn.addEventListener('click', () => {
+                    tableContainer.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                    console.log('📄 Scroll hacia arriba activado');
+                });
+            }
+            
+            if (scrollToBottomBtn && tableContainer) {
+                scrollToBottomBtn.addEventListener('click', () => {
+                    tableContainer.scrollTo({
+                        top: tableContainer.scrollHeight,
+                        behavior: 'smooth'
+                    });
+                    console.log('📄 Scroll hacia abajo activado');
+                });
+            }
+            
+            // Mostrar/ocultar botones según posición de scroll
+            if (tableContainer) {
+                tableContainer.addEventListener('scroll', () => {
+                    this.updateScrollButtons();
+                });
+            }
+        }
+
+        /**
+         * Actualizar estado de botones de scroll
+         */
+        updateScrollButtons() {
+            const scrollToTopBtn = document.getElementById('scrollToTopBtn');
+            const scrollToBottomBtn = document.getElementById('scrollToBottomBtn');
+            const tableContainer = document.getElementById('resultsTableContainer');
+            
+            if (!tableContainer || !scrollToTopBtn || !scrollToBottomBtn) return;
+            
+            const isAtTop = tableContainer.scrollTop === 0;
+            const isAtBottom = tableContainer.scrollTop + tableContainer.clientHeight >= tableContainer.scrollHeight - 1;
+            
+            scrollToTopBtn.disabled = isAtTop;
+            scrollToBottomBtn.disabled = isAtBottom;
+            
+            // Actualizar indicadores visuales
+            scrollToTopBtn.classList.toggle('btn-outline-primary', isAtTop);
+            scrollToTopBtn.classList.toggle('btn-primary', !isAtTop);
+            
+            scrollToBottomBtn.classList.toggle('btn-outline-primary', isAtBottom);
+            scrollToBottomBtn.classList.toggle('btn-primary', !isAtBottom);
         }
 
         /**

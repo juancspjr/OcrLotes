@@ -29,6 +29,12 @@ Sistema OCR asíncrono de alto rendimiento para procesamiento de recibos de pago
 - ✅ Cola de archivos visible con metadatos WhatsApp completos
 - ✅ Corrección de errores de upload y manejo robusto de archivos
 - ✅ Testing integral implementado con philosophy compliance
+- ✅ Sistema de numeración de lotes mejorado con batch_id único
+- ✅ Eliminación de limitación de 5 resultados con scroll completo
+- ✅ Historial de lotes con numeración secuencial implementado
+- ✅ Prevención de doble procesamiento con flag isProcessing
+- ✅ Endpoint /api/batches/history para historial completo de lotes
+- ✅ Interfaz de usuario mejorada con información de lote y botones de scroll
 
 ## Correcciones Críticas Implementadas - Zero-Fault Detection (Julio 2025)
 - ✅ **ERROR CRÍTICO 1**: Unificación de nombres de campos FormData ('images' → 'files')

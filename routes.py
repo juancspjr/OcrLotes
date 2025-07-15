@@ -1576,6 +1576,98 @@ def api_clean_system():
             'success': False
         }), 500
 
+@app.route('/api/batches/history', methods=['GET'])
+def api_get_batch_history():
+    """
+    FIX: Endpoint para obtener historial completo de lotes con numeración correcta
+    REASON: Usuario necesita ver todos los lotes procesados con numeración secuencial
+    IMPACT: Dropdown de lotes muestra historial completo con números de lote
+    """
+    try:
+        from config import get_async_directories
+        import glob
+        
+        directories = get_async_directories()
+        results_dir = directories['results']
+        
+        # Obtener todos los archivos JSON de resultados
+        batch_files = {}
+        
+        # Buscar en directorio results activo
+        if os.path.exists(results_dir):
+            for file in os.listdir(results_dir):
+                if file.endswith('.json') and 'BATCH_' in file:
+                    file_path = os.path.join(results_dir, file)
+                    if os.path.isfile(file_path):
+                        # Extraer request_id del nombre del archivo
+                        try:
+                            parts = file.split('_')
+                            if len(parts) >= 4:
+                                request_id = f"{parts[0]}_{parts[1]}_{parts[2]}_{parts[3].split('.')[0]}"
+                                batch_date = datetime.strptime(parts[1], '%Y%m%d').date()
+                                batch_time = datetime.strptime(parts[2], '%H%M%S').time()
+                                
+                                if request_id not in batch_files:
+                                    batch_files[request_id] = {
+                                        'id': request_id,
+                                        'date': datetime.combine(batch_date, batch_time).isoformat(),
+                                        'files': []
+                                    }
+                                
+                                batch_files[request_id]['files'].append(file)
+                        except (ValueError, IndexError):
+                            continue
+        
+        # Buscar en directorio historial
+        historial_dir = 'data/historial'
+        if os.path.exists(historial_dir):
+            for file in os.listdir(historial_dir):
+                if file.endswith('.json') and 'BATCH_' in file:
+                    file_path = os.path.join(historial_dir, file)
+                    if os.path.isfile(file_path):
+                        # Extraer request_id del nombre del archivo
+                        try:
+                            parts = file.split('_')
+                            if len(parts) >= 4:
+                                request_id = f"{parts[0]}_{parts[1]}_{parts[2]}_{parts[3].split('.')[0]}"
+                                batch_date = datetime.strptime(parts[1], '%Y%m%d').date()
+                                batch_time = datetime.strptime(parts[2], '%H%M%S').time()
+                                
+                                if request_id not in batch_files:
+                                    batch_files[request_id] = {
+                                        'id': request_id,
+                                        'date': datetime.combine(batch_date, batch_time).isoformat(),
+                                        'files': []
+                                    }
+                                
+                                batch_files[request_id]['files'].append(file)
+                        except (ValueError, IndexError):
+                            continue
+        
+        # Convertir a lista y ordenar por fecha (más reciente primero)
+        batches = list(batch_files.values())
+        batches.sort(key=lambda x: x['date'], reverse=True)
+        
+        # Añadir numeración secuencial y total de archivos
+        for index, batch in enumerate(batches):
+            batch['number'] = len(batches) - index  # Numeración inversa
+            batch['totalFiles'] = len(batch['files'])
+        
+        logger.info(f"📊 Historial de lotes: {len(batches)} lotes encontrados")
+        
+        return jsonify({
+            'status': 'success',
+            'batches': batches,
+            'total_batches': len(batches)
+        })
+        
+    except Exception as e:
+        logger.error(f"Error obteniendo historial de lotes: {e}")
+        return jsonify({
+            'status': 'error',
+            'message': f'Error obteniendo historial: {str(e)}'
+        }), 500
+
 @app.route('/api/extract_results', methods=['GET'])
 def api_extract_results():
     """

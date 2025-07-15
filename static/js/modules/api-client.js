@@ -133,15 +133,22 @@ window.OCRSystem = window.OCRSystem || {};
                 
                 // Agregar parámetros de seguimiento
                 const params = fileData.parameters || {};
-                formData.append(`codigo_sorteo_${index}`, params.codigo_sorteo || '');
-                formData.append(`id_whatsapp_${index}`, params.id_whatsapp || '');
-                formData.append(`nombre_usuario_${index}`, params.nombre_usuario || '');
+                formData.append(`codigo_sorteo_${index}`, params.numerosorteo || params.codigo_sorteo || '');
+                formData.append(`id_whatsapp_${index}`, params.idWhatsapp || params.id_whatsapp || '');
+                formData.append(`nombre_usuario_${index}`, params.nombre || params.nombre_usuario || '');
                 formData.append(`caption_${index}`, params.caption || '');
-                formData.append(`hora_exacta_${index}`, params.hora_exacta || '');
-                formData.append(`numero_llegada_${index}`, params.numero_llegada || index + 1);
+                formData.append(`hora_exacta_${index}`, params.horamin || params.hora_exacta || '');
+                formData.append(`numero_llegada_${index}`, params.numeroLlegada || params.numero_llegada || index + 1);
             });
 
+            // Agregar ID de lote si existe
+            if (files.length > 0 && files[0].batchId) {
+                formData.append('batch_id', files[0].batchId);
+            }
+
             try {
+                console.log(`🚀 Enviando lote de ${files.length} archivos para procesamiento`);
+                
                 const response = await fetch(`${this.baseUrl}/api/ocr/process_batch`, {
                     method: 'POST',
                     body: formData,
@@ -157,6 +164,12 @@ window.OCRSystem = window.OCRSystem || {};
 
                 const result = await response.json();
                 console.log('✅ Lote procesado exitosamente:', result);
+                
+                // Añadir status normalizado
+                if (result.status === 'success') {
+                    result.status = 'exitoso';
+                }
+                
                 return result;
                 
             } catch (error) {
@@ -250,66 +263,87 @@ window.OCRSystem = window.OCRSystem || {};
          */
         async getBatchHistory() {
             try {
-                const processedFiles = await this.getProcessedFiles();
+                // Usar el nuevo endpoint dedicado para historial de lotes
+                const response = await fetch(`${this.baseUrl}/api/batches/history`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
                 
-                // Validar que processedFiles sea un array
-                if (!Array.isArray(processedFiles)) {
-                    console.warn('⚠️ processedFiles no es un array válido');
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                
+                // Verificar respuesta exitosa
+                if (data.status === 'success' && Array.isArray(data.batches)) {
+                    return data.batches;
+                } else {
+                    console.warn('⚠️ Respuesta inesperada del servidor:', data);
                     return [];
                 }
                 
-                // Agrupar por request_id/lote
-                const batchMap = new Map();
-                
-                processedFiles.forEach(file => {
-                    // Validar que file sea un objeto válido
-                    if (!file || typeof file !== 'object' || !file.filename) {
-                        console.warn('⚠️ Archivo inválido omitido:', file);
-                        return;
-                    }
-                    
-                    // Extraer ID de lote del nombre del archivo
-                    const batchMatch = file.filename.match(/^BATCH_(\d{8}_\d{6}_[a-f0-9]+)/);
-                    const batchId = batchMatch ? batchMatch[1] : 'unknown';
-                    
-                    if (!batchMap.has(batchId)) {
-                        batchMap.set(batchId, {
-                            id: batchId,
-                            date: this.extractDateFromBatchId(batchId),
-                            files: [],
-                            totalFiles: 0,
-                            successCount: 0,
-                            errorCount: 0,
-                            avgProcessingTime: 0
-                        });
-                    }
-                    
-                    const batch = batchMap.get(batchId);
-                    batch.files.push(file);
-                    batch.totalFiles++;
-                    
-                    if (file.has_ocr_data) {
-                        batch.successCount++;
-                    } else {
-                        batch.errorCount++;
-                    }
-                });
-
-                // Convertir a array y ordenar por fecha
-                const batches = Array.from(batchMap.values()).sort((a, b) => {
-                    try {
-                        return new Date(b.date) - new Date(a.date);
-                    } catch (error) {
-                        console.warn('⚠️ Error ordenando lotes por fecha:', error);
-                        return 0;
-                    }
-                });
-
-                return batches;
             } catch (error) {
                 console.error('❌ Error obteniendo historial de lotes:', error);
-                // Retornar estructura vacía pero válida
-                return [];
+                
+                // Fallback: usar método anterior basado en archivos procesados
+                try {
+                    const processedFiles = await this.getProcessedFiles();
+                    
+                    if (!Array.isArray(processedFiles)) {
+                        return [];
+                    }
+                    
+                    // Agrupar por request_id/lote
+                    const batchMap = new Map();
+                    
+                    processedFiles.forEach(file => {
+                        if (!file || typeof file !== 'object' || !file.filename) {
+                            return;
+                        }
+                        
+                        // Extraer ID de lote del nombre del archivo
+                        const batchMatch = file.filename.match(/^BATCH_(\d{8}_\d{6}_[a-f0-9]+)/);
+                        const batchId = batchMatch ? batchMatch[1] : 'unknown';
+                        
+                        if (!batchMap.has(batchId)) {
+                            batchMap.set(batchId, {
+                                id: batchId,
+                                date: this.extractDateFromBatchId(batchId),
+                                files: [],
+                                totalFiles: 0,
+                                successCount: 0,
+                                errorCount: 0
+                            });
+                        }
+                        
+                        const batch = batchMap.get(batchId);
+                        batch.files.push(file);
+                        batch.totalFiles++;
+                        
+                        if (file.has_ocr_data) {
+                            batch.successCount++;
+                        } else {
+                            batch.errorCount++;
+                        }
+                    });
+
+                    // Convertir a array y ordenar por fecha
+                    const batches = Array.from(batchMap.values()).sort((a, b) => {
+                        try {
+                            return new Date(b.date) - new Date(a.date);
+                        } catch (error) {
+                            return 0;
+                        }
+                    });
+
+                    return batches;
+                } catch (fallbackError) {
+                    console.error('❌ Error en fallback de historial de lotes:', fallbackError);
+                    return [];
+                }
             }
         }
 
