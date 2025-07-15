@@ -1,0 +1,49 @@
+MANDATO ACTIVO: ANÁLISIS DE CONSISTENCIA GRANULAR - ESPECIFICACIONES DE REQUISITOS / HISTORIAS DE USUARIO
+TU PRÓXIMA TAREA: ANÁLISIS DE LAS ESPECIFICACIONES DE REQUISITOS / HISTORIAS DE USUARIO (GUÍA 6)
+
+Nuestro foco es la GUÍA PARA CONSTRUIR LAS ESPECIFICACIONES DE REQUISITOS / HISTORIAS DE USUARIO y su aplicación en la Documentación Unificada del Sistema OCR Asíncrono Empresarial.docx, comparado con la funcionalidad observada en el código actual del repositorio https://github.com/juancspjr/OcrLotes.
+
+Objetivo: Evaluar la conformidad de las funcionalidades actuales del backend de OcrLotes con las especificaciones de requisitos (funcionales y no funcionales) de la Documentación Unificada.
+
+Agente Replit, por favor, realiza lo siguiente:
+
+REFERENCIAS EXPLÍCITAS DE LA DOCUMENTACIÓN UNIFICADA (Especificaciones de Requisitos / Historias de Usuario):
+
+Localiza y Cita Textualmente: Abre el documento Documentación Unificada del Sistema OCR Asíncrono Empresarial.docx.
+
+Busca y extrae textualmente todas las secciones o tablas que especifiquen los Requisitos Funcionales y No Funcionales (NFRs). Presta particular atención a:
+
+Requisitos Funcionales: Descripciones de funcionalidades, procesos de negocio, y flujos de usuario (ej., "Carga de documentos", "Procesamiento OCR", "Notificación de resultados").
+
+Criterios de Aceptación: Si están definidos, citarlos explícitamente.
+
+Requisitos No Funcionales (NFRs): Aspectos como Rendimiento del Servicio (latencia, throughput), Escalabilidad, Seguridad, Resiliencia, Disponibilidad, Manejabilidad, etc.
+
+RASTREO Y DESCRIPCIÓN DE LA FUNCIONALIDAD OBSERVADA EN EL REPOSITORIO OcrLotes:
+
+Exploración del Código y Comportamiento Observado: Basándote en tu conocimiento previo del código de OcrLotes y el comportamiento que ya has analizado (incluso si estaba desviado arquitectónicamente).
+
+Para cada requisito funcional o NFR identificado en el punto 1, describe cómo se MANIFIESTA ACTUALMENTE en el código o en la funcionalidad observada.
+
+Funcionales: ¿Cómo el código actual implementa (o intenta implementar) esa funcionalidad? (ej., "el endpoint /api/upload permite la carga de imágenes, pero no PDF").
+
+No Funcionales: ¿Cómo el código actual soporta (o no soporta) esos NFRs? (ej., "La gestión de lotes EN MEMORIA compromete la Resiliencia ante caídas del servicio, no cumpliendo el NFR de X% de disponibilidad").
+
+Indica la ubicación aproximada del código relevante (archivo, función).
+
+ANÁLISIS DE DISCREPANCIAS Y COHERENCIA (OJO CLÍNICO Y CUESTIONAMIENTO PROFUNDO):
+
+Comparación Rigurosa: Compara la especificación de Requisitos de la Documentación Unificada con la funcionalidad observada/implementada en el código OcrLotes.
+
+Detalle de Discrepancias:
+
+¿Existen requisitos funcionales definidos en la documentación que no tienen una implementación clara o completa en el código?
+
+¿Existen funcionalidades en el código que no están documentadas como requisitos?
+
+¿Hay discrepancias en los criterios de aceptación o en la forma en que se cumplen los requisitos?
+
+¿Los Requisitos No Funcionales (NFRs) están siendo adecuadamente abordados por el diseño o la implementación actual del sistema?
+
+Implicaciones de las Discrepancias: Para cada discrepancia, explica su impacto potencial en la Integridad Total, Zero-Fault Detection, Comprensión Profunda del Contexto de Dominio y la capacidad del sistema para satisfacer las necesidades del negocio.
+
