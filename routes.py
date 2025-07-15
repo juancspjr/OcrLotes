@@ -1359,59 +1359,10 @@ def api_revoke_key(key_id):
             'message': f'Error revocando API key: {str(e)}'
         }), 500
 
-@app.route('/api/clean_queue', methods=['POST'])
-def api_clean_queue_new():
-    """
-    FIX: Endpoint específico para limpiar cola de archivos no procesados
-    REASON: Usuario requiere limpieza selectiva de cola sin afectar procesados
-    IMPACT: Permite limpiar solo archivos pendientes manteniendo historial procesado
-    TEST: Limpia solo directorio inbox sin tocar processed/results
-    MONITOR: Logging específico de limpieza de cola con contadores
-    INTERFACE: Llamado por botón "Limpiar Cola" en sección de archivos en cola
-    VISUAL_CHANGE: Limpia lista de cola sin afectar archivos procesados
-    REFERENCE_INTEGRITY: Endpoint /api/clean_queue específico para gestión de cola
-    """
-    try:
-        from config import get_async_directories
-        import glob
-        
-        directories = get_async_directories()
-        
-        # FIX: Limpiar solo directorio inbox (cola de archivos)
-        # REASON: Usuario requiere limpieza selectiva sin afectar archivos procesados
-        # IMPACT: Mantiene historial de procesados mientras limpia pendientes
-        inbox_files = glob.glob(os.path.join(directories['inbox'], "*.*"))
-        inbox_cleaned = 0
-        for file_path in inbox_files:
-            try:
-                os.remove(file_path)
-                inbox_cleaned += 1
-            except Exception as e:
-                logger.warning(f"No se pudo eliminar archivo de cola {file_path}: {e}")
-        
-        logger.info(f"✅ Cola de archivos limpiada: {inbox_cleaned} archivos eliminados")
-        
-        return jsonify({
-            'status': 'exitoso',
-            'estado': 'exitoso',
-            'message': f'Cola limpiada exitosamente: {inbox_cleaned} archivos eliminados',
-            'mensaje': f'Cola limpiada exitosamente: {inbox_cleaned} archivos eliminados',
-            'inbox_cleaned': inbox_cleaned,
-            'timestamp': datetime.now().isoformat(),
-            'success': True
-        }), 200
-        
-    except Exception as e:
-        logger.error(f"Error crítico limpiando cola: {e}")
-        return jsonify({
-            'status': 'error',
-            'estado': 'error',
-            'message': f'Error al limpiar cola: {str(e)}',
-            'error_code': 'QUEUE_CLEAN_ERROR'
-        }), 500
+# Cleanup endpoints removed per user request
+# All cleanup functionality has been disabled
 
-@app.route('/api/clean', methods=['POST'])
-def api_clean_system():
+# System cleanup endpoints removed per user request
     """
     FIX: Endpoint crítico para limpiar el sistema después de procesar lotes
     REASON: Interface llama a /api/clean que estaba faltante en routes.py principal
@@ -1599,22 +1550,25 @@ def api_get_batch_history():
                 if file.endswith('.json') and 'BATCH_' in file:
                     file_path = os.path.join(results_dir, file)
                     if os.path.isfile(file_path):
-                        # Extraer request_id del nombre del archivo
+                        # Extraer batch_prefix del nombre del archivo - CORREGIDO PARA MOSTRAR TODOS LOS ARCHIVOS
                         try:
                             parts = file.split('_')
                             if len(parts) >= 4:
-                                request_id = f"{parts[0]}_{parts[1]}_{parts[2]}_{parts[3].split('.')[0]}"
+                                # Usar solo las primeras 3 partes para agrupar por lote
+                                # Esto asegura que todos los archivos del mismo lote se muestren juntos
+                                batch_prefix = f"{parts[0]}_{parts[1]}_{parts[2]}"
                                 batch_date = datetime.strptime(parts[1], '%Y%m%d').date()
                                 batch_time = datetime.strptime(parts[2], '%H%M%S').time()
                                 
-                                if request_id not in batch_files:
-                                    batch_files[request_id] = {
-                                        'id': request_id,
+                                # Usar batch_prefix para agrupar todos los archivos del mismo lote
+                                if batch_prefix not in batch_files:
+                                    batch_files[batch_prefix] = {
+                                        'id': batch_prefix,
                                         'date': datetime.combine(batch_date, batch_time).isoformat(),
                                         'files': []
                                     }
                                 
-                                batch_files[request_id]['files'].append(file)
+                                batch_files[batch_prefix]['files'].append(file)
                         except (ValueError, IndexError):
                             continue
         
@@ -1625,22 +1579,25 @@ def api_get_batch_history():
                 if file.endswith('.json') and 'BATCH_' in file:
                     file_path = os.path.join(historial_dir, file)
                     if os.path.isfile(file_path):
-                        # Extraer request_id del nombre del archivo
+                        # Extraer batch_prefix del nombre del archivo - CORREGIDO PARA MOSTRAR TODOS LOS ARCHIVOS
                         try:
                             parts = file.split('_')
                             if len(parts) >= 4:
-                                request_id = f"{parts[0]}_{parts[1]}_{parts[2]}_{parts[3].split('.')[0]}"
+                                # Usar solo las primeras 3 partes para agrupar por lote
+                                # Esto asegura que todos los archivos del mismo lote se muestren juntos
+                                batch_prefix = f"{parts[0]}_{parts[1]}_{parts[2]}"
                                 batch_date = datetime.strptime(parts[1], '%Y%m%d').date()
                                 batch_time = datetime.strptime(parts[2], '%H%M%S').time()
                                 
-                                if request_id not in batch_files:
-                                    batch_files[request_id] = {
-                                        'id': request_id,
+                                # Usar batch_prefix para agrupar todos los archivos del mismo lote
+                                if batch_prefix not in batch_files:
+                                    batch_files[batch_prefix] = {
+                                        'id': batch_prefix,
                                         'date': datetime.combine(batch_date, batch_time).isoformat(),
                                         'files': []
                                     }
                                 
-                                batch_files[request_id]['files'].append(file)
+                                batch_files[batch_prefix]['files'].append(file)
                         except (ValueError, IndexError):
                             continue
         
@@ -1688,14 +1645,15 @@ def api_extract_results():
         directories = get_async_directories()
         results_dir = directories['results']
         
-        # Verificar que exista el directorio de resultados
-        if not os.path.exists(results_dir):
-            logger.warning(f"Directorio de resultados no existe: {results_dir}")
-            return jsonify({
-                'status': 'error',
-                'message': 'Directorio de resultados no encontrado',
-                'error_code': 'RESULTS_DIR_NOT_FOUND'
-            }), 404
+        # Crear directorio de resultados si no existe
+        os.makedirs(results_dir, exist_ok=True)
+        
+        # Si el directorio estaba vacío, usar historial como fuente principal
+        if not os.path.exists(results_dir) or not os.listdir(results_dir):
+            logger.info(f"Directorio de resultados vacío, usando historial como fuente principal")
+            historial_dir = directories.get('historial', 'data/historial')
+            if os.path.exists(historial_dir):
+                results_dir = historial_dir
         
         # FIX: FILTRADO CRÍTICO POR REQUEST_ID DEL ÚLTIMO LOTE ÚNICAMENTE
         # REASON: Usuario requiere JSON consolidado específico del último lote sin mezcla

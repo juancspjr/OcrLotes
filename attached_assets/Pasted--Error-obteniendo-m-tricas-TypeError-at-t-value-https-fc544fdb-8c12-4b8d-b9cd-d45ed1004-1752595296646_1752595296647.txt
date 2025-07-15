@@ -1,0 +1,112 @@
+❌ Error obteniendo métricas: 
+TypeError {}
+
+at t.value (https://fc544fdb-8c12-4b8d-b9cd-d45ed10043ef-00-3clrgvboevnv6.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://fc544fdb-8c12-4b8d-b9cd-d45ed10043ef-00-3clrgvboevnv6.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://fc544fdb-8c12-4b8d-b9cd-d45ed10043ef-00-3clrgvboevnv6.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://fc544fdb-8c12-4b8d-b9cd-d45ed10043ef-00-3clrgvboevnv6.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400
+
+❌ Error obteniendo métricas: 
+TypeError {}
+
+at t.value (https://fc544fdb-8c12-4b8d-b9cd-d45ed10043ef-00-3clrgvboevnv6.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://fc544fdb-8c12-4b8d-b9cd-d45ed10043ef-00-3clrgvboevnv6.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://fc544fdb-8c12-4b8d-b9cd-d45ed10043ef-00-3clrgvboevnv6.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://fc544fdb-8c12-4b8d-b9cd-d45ed10043ef-00-3clrgvboevnv6.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400
+
+
+❌ Error obteniendo estado del sistema: 
+DOMException {}
+
+at t.value (https://fc544fdb-8c12-4b8d-b9cd-d45ed10043ef-00-3clrgvboevnv6.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://fc544fdb-8c12-4b8d-b9cd-d45ed10043ef-00-3clrgvboevnv6.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://fc544fdb-8c12-4b8d-b9cd-d45ed10043ef-00-3clrgvboevnv6.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://fc544fdb-8c12-4b8d-b9cd-d45ed10043ef-00-3clrgvboevnv6.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400
+
+❌ Error obteniendo métricas: 
+TypeError {}
+
+at t.value (https://fc544fdb-8c12-4b8d-b9cd-d45ed10043ef-00-3clrgvboevnv6.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://fc544fdb-8c12-4b8d-b9cd-d45ed10043ef-00-3clrgvboevnv6.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://fc544fdb-8c12-4b8d-b9cd-d45ed10043ef-00-3clrgvboevnv6.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://fc544fdb-8c12-4b8d-b9cd-d45ed10043ef-00-3clrgvboevnv6.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400
+
+
+ Error obteniendo métricas: 
+TypeError {}
+message: "processedFiles.filter is not a function"
+stack: "TypeError: processedFiles.filter is not a function↵ at APIClient.getSystemMetrics (https://fc544fdb-8c12-4b8d-b9cd-d45ed10043ef-00-3clrgvboevnv6.riker.replit.dev/static/js/modules/api-client.js:236:53)↵ at async APIClient.getSystemInfo (https://fc544fdb-8c12-4b8d-b9cd-d45ed10043ef-00-3clrgvboevnv6.riker.replit.dev/static/js/modules/api-client.js:463:33)↵ at async MonitoringDashboard.updateSystemStatus (https://fc544fdb-8c12-4b8d-b9cd-d45ed10043ef-00-3clrgvboevnv6.riker.replit.dev/static/js/modules/monitoring-dashboard.js:95:36)↵ at async Promise.all (index 1)↵ at async MonitoringDashboard.refresh (https://fc544fdb-8c12-4b8d-b9cd-d45ed10043ef-00-3clrgvboevnv6.riker.replit.dev/static/js/modules/monitoring-dashboard.js:52:17)"
+get stack: ƒ ()
+set stack: ƒ ()
+[[Prototype]]: Object
+constructor: ƒ TypeError()
+message: "processedFiles.filter is not a function"
+name: "TypeError"
+[[Prototype]]: Object
+
+at t.value (https://fc544fdb-8c12-4b8d-b9cd-d45ed10043ef-00-3clrgvboevnv6.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://fc544fdb-8c12-4b8d-b9cd-d45ed10043ef-00-3clrgvboevnv6.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://fc544fdb-8c12-4b8d-b9cd-d45ed10043ef-00-3clrgvboevnv6.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://fc544fdb-8c12-4b8d-b9cd-d45ed10043ef-00-3clrgvboevnv6.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400
+
+❌ Error obteniendo métricas: 
+TypeError {}
+message: "processedFiles.filter is not a function"
+stack: "TypeError: processedFiles.filter is not a function↵ at APIClient.getSystemMetrics (https://fc544fdb-8c12-4b8d-b9cd-d45ed10043ef-00-3clrgvboevnv6.riker.replit.dev/static/js/modules/api-client.js:236:53)↵ at async MonitoringDashboard.updateSystemMetrics (https://fc544fdb-8c12-4b8d-b9cd-d45ed10043ef-00-3clrgvboevnv6.riker.replit.dev/static/js/modules/monitoring-dashboard.js:69:33)↵ at async Promise.all (index 0)↵ at async MonitoringDashboard.refresh (https://fc544fdb-8c12-4b8d-b9cd-d45ed10043ef-00-3clrgvboevnv6.riker.replit.dev/static/js/modules/monitoring-dashboard.js:52:17)"
+get stack: ƒ ()
+set stack: ƒ ()
+[[Prototype]]: Object
+
+at t.value (https://fc544fdb-8c12-4b8d-b9cd-d45ed10043ef-00-3clrgvboevnv6.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://fc544fdb-8c12-4b8d-b9cd-d45ed10043ef-00-3clrgvboevnv6.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://fc544fdb-8c12-4b8d-b9cd-d45ed10043ef-00-3clrgvboevnv6.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://fc544fdb-8c12-4b8d-b9cd-d45ed10043ef-00-3clrgvboevnv6.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400
+
+❌ Error obteniendo métricas: 
+TypeError {}
+
+at t.value (https://fc544fdb-8c12-4b8d-b9cd-d45ed10043ef-00-3clrgvboevnv6.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://fc544fdb-8c12-4b8d-b9cd-d45ed10043ef-00-3clrgvboevnv6.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://fc544fdb-8c12-4b8d-b9cd-d45ed10043ef-00-3clrgvboevnv6.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://fc544fdb-8c12-4b8d-b9cd-d45ed10043ef-00-3clrgvboevnv6.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400
+
+❌ Error obteniendo estado del sistema: 
+DOMException {}
+stack: "SyntaxError: Failed to execute 'querySelector' on 'Document': '.card-header:contains("Estado del Sistema")' is not a valid selector.↵ at MonitoringDashboard.updateLatencyIndicator (https://fc544fdb-8c12-4b8d-b9cd-d45ed10043ef-00-3clrgvboevnv6.riker.replit.dev/static/js/modules/monitoring-dashboard.js:255:51)↵ at MonitoringDashboard.updateSystemStatus (https://fc544fdb-8c12-4b8d-b9cd-d45ed10043ef-00-3clrgvboevnv6.riker.replit.dev/static/js/modules/monitoring-dashboard.js:117:26)↵ at async Promise.all (index 1)↵ at async MonitoringDashboard.refresh (https://fc544fdb-8c12-4b8d-b9cd-d45ed10043ef-00-3clrgvboevnv6.riker.replit.dev/static/js/modules/monitoring-dashboard.js:52:17)"
+get stack: ƒ ()
+set stack: ƒ ()
+[[Prototype]]: DOMException
+
+at t.value (https://fc544fdb-8c12-4b8d-b9cd-d45ed10043ef-00-3clrgvboevnv6.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://fc544fdb-8c12-4b8d-b9cd-d45ed10043ef-00-3clrgvboevnv6.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://fc544fdb-8c12-4b8d-b9cd-d45ed10043ef-00-3clrgvboevnv6.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://fc544fdb-8c12-4b8d-b9cd-d45ed10043ef-00-3clrgvboevnv6.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400
+
+ Error obteniendo métricas: 
+TypeError {}
+
+at t.value (https://fc544fdb-8c12-4b8d-b9cd-d45ed10043ef-00-3clrgvboevnv6.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://fc544fdb-8c12-4b8d-b9cd-d45ed10043ef-00-3clrgvboevnv6.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://fc544fdb-8c12-4b8d-b9cd-d45ed10043ef-00-3clrgvboevnv6.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://fc544fdb-8c12-4b8d-b9cd-d45ed10043ef-00-3clrgvboevnv6.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400
+
+❌ Error obteniendo métricas: 
+TypeError {}
+message: "processedFiles.filter is not a function"
+stack: "TypeError: processedFiles.filter is not a function↵ at APIClient.getSystemMetrics (https://fc544fdb-8c12-4b8d-b9cd-d45ed10043ef-00-3clrgvboevnv6.riker.replit.dev/static/js/modules/api-client.js:236:53)↵ at async APIClient.getSystemInfo (https://fc544fdb-8c12-4b8d-b9cd-d45ed10043ef-00-3clrgvboevnv6.riker.replit.dev/static/js/modules/api-client.js:463:33)↵ at async MonitoringDashboard.updateSystemStatus (https://fc544fdb-8c12-4b8d-b9cd-d45ed10043ef-00-3clrgvboevnv6.riker.replit.dev/static/js/modules/monitoring-dashboard.js:95:36)↵ at async Promise.all (index 1)↵ at async MonitoringDashboard.refresh (https://fc544fdb-8c12-4b8d-b9cd-d45ed10043ef-00-3clrgvboevnv6.riker.replit.dev/static/js/modules/monitoring-dashboard.js:52:17)"
+get stack: ƒ ()
+set stack: ƒ ()
+[[Prototype]]: Object
+
+at t.value (https://fc544fdb-8c12-4b8d-b9cd-d45ed10043ef-00-3clrgvboevnv6.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://fc544fdb-8c12-4b8d-b9cd-d45ed10043ef-00-3clrgvboevnv6.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://fc544fdb-8c12-4b8d-b9cd-d45ed10043ef-00-3clrgvboevnv6.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://fc544fdb-8c12-4b8d-b9cd-d45ed10043ef-00-3clrgvboevnv6.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400
+
+❌ Error obteniendo estado del sistema: 
+DOMException {}
+
+at t.value (https://fc544fdb-8c12-4b8d-b9cd-d45ed10043ef-00-3clrgvboevnv6.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://fc544fdb-8c12-4b8d-b9cd-d45ed10043ef-00-3clrgvboevnv6.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://fc544fdb-8c12-4b8d-b9cd-d45ed10043ef-00-3clrgvboevnv6.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://fc544fdb-8c12-4b8d-b9cd-d45ed10043ef-00-3clrgvboevnv6.riker.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400
