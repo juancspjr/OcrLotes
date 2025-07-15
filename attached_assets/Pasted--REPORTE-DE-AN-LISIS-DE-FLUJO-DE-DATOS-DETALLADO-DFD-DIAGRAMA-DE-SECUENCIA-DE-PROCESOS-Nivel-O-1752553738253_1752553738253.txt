@@ -1,0 +1,66 @@
+# REPORTE DE ANÁLISIS DE FLUJO DE DATOS DETALLADO (DFD) / DIAGRAMA DE SECUENCIA DE PROCESOS (Nivel Operacional)
+
+**Fecha:** 15 de Julio de 2025
+**Versión:** 1.0 (Definición Operativa Blindada)
+**Objetivo:** Establecer la especificación operativa inquebrantable del flujo ideal y corregido del "Sistema OCR Asíncrono Empresarial", enfocándose en el esqueleto base para una implementación paso a paso y alineada con los principios de `Integridad Total`, `Perfección Continua` y `Zero-Fault Detection`.
+
+---
+
+## 1. PRELUDIO Y JUSTIFICACIÓN DEL ENFOQUE CRÍTICO
+
+Este DFD Detallado / Diagrama de Secuencia de Procesos no es una mera transcripción de la `Documentación Unificada del Sistema OCR Asíncrono Empresarial.docx`. En su lugar, es una **construcción activa y crítica** basada en los hallazgos de nuestros análisis de consistencia previos (Componentes, Contratos de API, Requisitos). Estos análisis revelaron **discrepancias significativas y áreas de ambigüedad** que comprometen la `Integridad Total` y la `Claridad de Definiciones` del sistema.
+
+El propósito de esta fase es:
+* **Rectificar Discrepancias:** Formalizar el "cómo debe ser" el flujo operativo, corrigiendo inconsistencias documentales y de implementación.
+* **Profundizar en la Granularidad:** Detallar cada paso, interacción y dato con la precisión necesaria para una `Zero-Fault Detection` a nivel de procesamiento, crucial para el comportamiento asíncrono y por lotes.
+* **Alinear con el Propósito Principal:** Asegurar que cada elemento del flujo contribuya directamente a la visión de un "esqueleto base" funcional y robusto, que permita luego la construcción modular de "maquillajes" (e.g., UI, métricas avanzadas).
+* **Habilitar Implementación Paso a Paso:** Proporcionar una hoja de ruta clara y secuencial para el desarrollo, facilitando la gestión y validación de cada incremento.
+
+---
+
+## 2. FOCO DEL PROCESO CRÍTICO: FLUJO COMPLETO DE INGESTIÓN ASÍNCRONA DE DOCUMENTOS POR LOTE, PROCESAMIENTO CONCURRENTE Y ENTREGA CONDICIONAL DE RESULTADOS
+
+Hemos seleccionado este flujo como el "esqueleto base" del sistema, ya que encapsula la funcionalidad central y los principios asíncronos del `Sistema OCR Asíncrono Empresarial`.
+
+---
+
+## 3. ESPECIFICACIÓN DEL FLUJO DE DATOS DETALLADO / DIAGRAMA DE SECUENCIA (Nivel Operacional)
+
+La siguiente tabla describe, con `Granularidad` máxima, cada paso del flujo, incluyendo los actores/componentes involucrados, los eventos, los datos intercambiados y, crucialmente, las `Condiciones/Notas` que abordan el manejo de errores, la resiliencia (`Persistencia de Correcciones`), el rendimiento y otras consideraciones no funcionales.
+
+| **Paso** | **Actor/Componente Origen** | **Evento/Acción** | **Actor/Componente Destino** | **Datos/Mensaje Enviado** | **Condiciones/Notas (Manejo de Errores, NFRs)** |
+| :------- | :-------------------------- | :-------------------------------------- | :--------------------------- | :------------------------------------ | :------------------------------------------------------------------------------------------------------------------ |
+| **1.** | `Usuario Final (AE-01)`     | Carga de Documento Individual (para Lote) | `API Gateway (CO-01)`        | `multipart/form-data` (archivo + JSON metadatos `metadata_entrada`) | [cite_start]`HU-ING-001`[cite: 1]. Validación estricta de `Content-Type` (ej. `image/jpeg`, `image/png`, `application/pdf`) y tamaño máximo de archivo (`NFR-REND-003`). Retorna `202 Accepted` con `idDocumento` (UUID) y `estadoDocumento` (`RECIBIDO`). Errores: `400 Bad Request` por validación de entrada, `500 Internal Server Error` si falla almacenamiento temporal inicial. |
+| **2.** | `API Gateway (CO-01)`       | Almacenamiento Temporal de Documento    | `Servicio de Almacenamiento (CO-06)` | `archivo_binario`, `idDocumento`, `metadata_entrada` | Almacenamiento en un sistema de alta disponibilidad y baja latencia (ej. S3/MinIO) para el archivo original. Retorna `URL_documento_almacenado`. [cite_start]Cumple `NFR-REND-001` (baja latencia para operaciones de I/O)[cite: 1]. Manejo de fallos de almacenamiento con mecanismos de reintentos con backoff exponencial (`NFR-RESI-001`). |
+| **3.** | `API Gateway (CO-01)`       | Creación/Actualización Lote `EN_MEMORIA` | `API Gateway (CO-01)` (Lógica Interna/Caché) | `idLote` (UUID), `idDocumento`, `URL_documento_almacenado`, `estadoDocumento` (`RECIBIDO`), `metadata_entrada` | Mantiene un `mapa_lotes` en memoria volátil donde la clave es `idLote` y el valor es una estructura que contiene la `lista_documentos_en_lote` (con sus estados y URLs). Si el `idLote` proporcionado por el usuario no existe, se crea uno nuevo. [cite_start]Cumple `NFR-REND-002` (respuesta rápida)[cite: 1]. |
+| **4.** | `API Gateway (CO-01)`       | Respuesta Carga Documento               | `Usuario Final (AE-01)`      | `JSON_confirmacion_carga` (`idDocumento`, `idLote`, `estado_documento`) | Confirma la recepción exitosa del documento y su asignación a un lote. [cite_start]Aplica `Interface Excellence`[cite: 1]. |
+| **5.** | `Usuario Final (AE-01)`     | Solicitud de Procesamiento de Lote      | `API Gateway (CO-01)`        | `idLote`                              | [cite_start]`HU-LOT-003`[cite: 1]. Dispara el inicio del procesamiento asíncrono para todos los documentos asociados al `idLote`. Retorna `202 Accepted` con confirmación. `404 Not Found` si el lote no existe, `409 Conflict` si el lote ya está en estado de procesamiento o ya fue procesado. |
+| **6.** | `API Gateway (CO-01)`       | Encolamiento de Lote para Procesamiento | `Cola de Mensajes (Kafka/RabbitMQ)` | `idLote`, `lista_urls_documentos`, `metadata_lote` | Publica un mensaje en una cola de mensajes persistente (ej. Kafka, RabbitMQ) denominada `ocr_lotes_pendientes`. [cite_start]Este mecanismo permite la `Escalabilidad Horizontal` de los `OCR Worker Service (CO-04)` (`NFR-ESCA-001`) y asegura la `Resiliencia` al desacoplar la ingestión del procesamiento (`NFR-RESI-002`)[cite: 1]. |
+| **7.** | `OCR Worker Service (CO-04)`| Consumo de Mensaje de Lote              | `Cola de Mensajes (Kafka/RabbitMQ)` | `idLote`, `lista_urls_documentos`, `metadata_lote` | Los `OCR Worker Service (CO-04)` escuchan esta cola. [cite_start]Cada worker consume un mensaje de lote disponible, asegurando un procesamiento distribuido y concurrente (`NFR-ESCA-001`)[cite: 1]. |
+| **8.** | `OCR Worker Service (CO-04)`| Descarga de Documento para OCR          | `Servicio de Almacenamiento (CO-06)` | `URL_documento`                       | Descarga el archivo binario del documento de pago desde el `Servicio de Almacenamiento (CO-06)`. Implementa reintentos con backoff exponencial para fallos de red o de almacenamiento (`NFR-RESI-001`). |
+| **9.** | `OCR Worker Service (CO-04)`| Procesamiento OCR del Documento         | `OCR Worker Service (CO-04)` (Motor OnnxTR, Spatial Processor) | `archivo_binario`, `metadata_entrada` | Aplica el motor `OnnxTR` con modelos pre-cargados y optimizados para la inferencia, y el `Spatial Processor` para extracción de datos de recibos de pagos móviles venezolanos. Genera `JSON_resultado_OCR`. [cite_start]`NFR-PERF-001` (procesamiento en fracciones de segundo)[cite: 1]. Incluye `Manejo de Errores Específico de OCR` (ej. imagen ilegible, campos no detectados) y clasifica el resultado como `EXITO` o `FALLO_OCR`, con detalles del fallo. |
+| **10.** | `OCR Worker Service (CO-04)`| Almacenamiento de Resultados OCR        | `Servicio de Almacenamiento (CO-06)` | `idLote`, `idDocumento`, `JSON_resultado_OCR`, `estado_procesamiento` | Persistencia del `JSON_resultado_OCR` individual para cada documento en el `Servicio de Almacenamiento (CO-06)`. [cite_start]Asegura la `Integridad Total` de los datos procesados (`NFR-INTEG-001`)[cite: 1]. Manejo de fallos de almacenamiento persistente. |
+| **11.** | `OCR Worker Service (CO-04)`| Notificación de Documento Procesado     | `API Gateway (CO-01)` (vía Webhook Asíncrono) | `idLote`, `idDocumento`, `estado_procesamiento` (`EXITO`/`FALLO_OCR`), `url_resultado_ocr` (si éxito), `detalles_error` (si fallo) | Envía un webhook asíncrono al `API Gateway (CO-01)`. El `API Gateway` actualiza el `estadoDocumento` correspondiente en su `mapa_lotes` en memoria y actualiza contadores de `documentos_procesados` y `documentos_fallidos`. `NFR-RESI-001` (reintentos para el webhook). |
+| **12.** | `API Gateway (CO-01)`       | Verificación de Lote Completo           | `API Gateway (CO-01)` (Lógica Interna/Caché) | `idLote`                              | Compara el total de `documentos_procesados` más `documentos_fallidos` con el `total_documentos_en_lote`. Si son iguales, el `estadoLote` se actualiza a `COMPLETO_EXITO` (todos los documentos procesados sin fallos irrecuperables) o `COMPLETO_PARCIAL_FALLO` (algunos documentos fallaron en OCR). |
+| **13.** | `Usuario Final (AE-01)`     | Solicitud de Estado de Lote             | `API Gateway (CO-01)`        | `idLote`                              | [cite_start]`HU-LOT-002`[cite: 1]. Retorna un `JSON_estado_lote` que incluye el `estadoLote` actual (`EN_ESPERA_LLENADO`, `EN_ESPERA_PROCESAMIENTO`, `EN_PROCESAMIENTO`, `COMPLETO_EXITO`, `COMPLETO_PARCIAL_FALLO`), así como el número de `documentos_procesados`, `documentos_fallidos` y `total_documentos`. `404 Not Found` si el lote no existe. |
+| **14.** | `Usuario Final (AE-01)`     | Solicitud de Resultados de Lote         | `API Gateway (CO-01)`        | `idLote`                              | [cite_start]`HU-LOT-004`[cite: 1]. Solo se permite si el `estadoLote` es `COMPLETO_EXITO` o `COMPLETO_PARCIAL_FALLO`. Retorna `409 Conflict` si el lote aún no ha terminado de procesarse. |
+| **15.** | `API Gateway (CO-01)`       | Agregación y Entrega de Resultados      | `Servicio de Almacenamiento (CO-06)` | `idLote`                              | Agrupa todos los `JSON_resultado_OCR` individuales del lote. Genera un único `JSON_resultados_agrupados` que puede ser devuelto directamente o una `URL_JSON_resultados_agrupados`. **Crucialmente, este JSON agregado debe incluir detalles de los documentos que fallaron en el OCR, permitiendo la `Zero-Fault Detection` y la auditoría.** |
+| **16.** | `API Gateway (CO-01)`       | Notificación a `n8n` de Lote Completo   | `Sistema Externo n8n (IN-07)`| `POST` a Webhook `n8n` con `idLote`, `estado_final_lote`, `url_resultados_ocr` (para el JSON agregado), `resumen_errores_lote` | [cite_start]**CRÍTICO:** `HU-INT-001`[cite: 1]. Esta notificación se envía **solo después de que el lote haya sido marcado como `COMPLETO_EXITO` o `COMPLETO_PARCIAL_FALLO`**. Implementa `NFR-RESI-001` (reintentos con backoff exponencial) para asegurar la entrega a `n8n`. **Se debe enviar información detallada sobre los documentos fallidos si los hay**, permitiendo a `n8n` manejar flujos de negocio alternativos para estos casos. |
+| **17.** | `API Gateway (CO-01)`       | Liberación de Recursos de Lote          | `API Gateway (CO-01)` (Lógica Interna/Caché) | `idLote`                              | Elimina la entrada del `idLote` y sus documentos asociados del `mapa_lotes` `EN_MEMORIA` **después de confirmar la entrega exitosa a `n8n` (Paso 16) O la solicitud exitosa de los resultados por el usuario (Paso 15)**. Esto permite liberar memoria y gestionar nuevos lotes sin problemas, asegurando `Rendimiento del Servicio` y `Escalabilidad` al no retener datos de lotes procesados innecesariamente en memoria. |
+
+---
+
+## 4. VALIDACIÓN CONTRA TUS PRIORIDADES: "ESQUELETO BASE" VS. "MAQUILLAJES"
+
+Este DFD está diseñado para ser el **"esqueleto base" funcional y operativo** de tu sistema, centrándose en el procesamiento asíncrono y la gestión de lotes:
+
+* **Esqueleto Base (Core):** Todos los pasos detallados en la tabla anterior son esenciales para la operación fundamental del sistema, permitiendo la ingestión, procesamiento y entrega de resultados de manera robusta y asíncrona. Constituyen la base inquebrantable que has solicitado.
+* **Maquillajes (Frontend/Visualización/Métricas Avanzadas):**
+    * Los pasos 4 (Respuesta Carga Documento) y 13 (Solicitud de Estado de Lote) son los puntos de interacción que el frontend (`CO-05`) utilizará para proporcionar feedback al usuario y habilitar la visualización del estado del procesamiento.
+    * [cite_start]La capacidad de "fijar 20 procesos que se vean en gráficas" o implementar "métricas avanzadas" (como se menciona en `REPORTE_CONFORMIDAD_FINAL_SISTEMA_OCR.md` [cite: 2]) se construirá sobre esta base. Esto implicaría la adición de módulos de telemetría que capturen eventos de pasos clave (ej. encolamiento, inicio de procesamiento, finalización de documento/lote, errores) y los envíen a un sistema de monitoreo. Estos son componentes adicionales que se beneficiarán de la claridad de este flujo base, pero no son parte del flujo operativo fundamental que aquí se detalla.
+
+Este enfoque asegura que el desarrollo se centre primero en la `Integridad Total` y la `Perfección Continua` del "esqueleto" antes de invertir en las capas de presentación, tal como lo has solicitado.
+
+---
+[1]: uploaded:GUÍA PARA CONSTRUIR EL DIAGRAMA DE FLUJO DE DATOS (DFD) DETALLADO DIAGRAMA DE SECUENCIA DE PROCESOS (Nivel Operacional).txt
+[2]: uploaded:REPORTE_CONFORMIDAD_FINAL_SISTEMA_OCR.md

@@ -1,0 +1,45 @@
+MANDATO ACTIVO REAFIRMADO: CONSTRUCCIÓN DEL DIAGRAMA DE FLUJO DE DATOS (DFD) DETALLADO / DIAGRAMA DE SECUENCIA DE PROCESOS (Nivel Operacional) (GUÍA 7)
+Tu misión es construir un REPORTE_ANALISIS_FLUJO_DATOS_DETALLADO.md que sirva como la especificación operativa inquebrantable del "Sistema OCR Asíncrono Empresarial". Este documento NO es un resumen de lo ya existente si es inconsistente, sino la definición del flujo ideal y corregido que necesitamos para la implementación paso a paso.
+
+Agente Replit, por favor, procede con lo siguiente:
+
+FOCO DEL PROCESO CRÍTICO (El Esqueleto Base del Sistema):
+
+Centraremos el DFD en el "Flujo Completo de Ingestión Asíncrona de Documentos por Lote, Procesamiento Concurrente y Entrega Condicional de Resultados (incluyendo errores)". Este es el corazón de tu "esqueleto base".
+
+CONSTRUCCIÓN PASO A PASO DEL FLUJO OPERACIONAL (Como DEBE ser, con Granularidad Máxima):
+
+Para el proceso crítico definido, describe cada paso, cada interacción, cada dato/mensaje transformado y cada condición que debe cumplirse. Piensa en el orquestador (API Gateway - CO-01), los trabajadores (OCR Worker Service - CO-04), el almacenamiento (Servicio de Almacenamiento - CO-06) y los sistemas externos (Usuario Final - AE-01, n8n - IN-07).
+
+Utiliza la siguiente estructura de tabla Markdown, siendo exhaustivo en la columna Condiciones/Notas para reflejar el manejo de errores, reintentos, validaciones y cómo se mantienen los Requisitos No Funcionales (ej., asincronía, rendimiento, resiliencia):
+
+Paso	Actor/Componente Origen	Evento/Acción	Actor/Componente Destino	Datos/Mensaje Enviado	Condiciones/Notas (Manejo de Errores, NFRs)
+1.	Usuario Final (AE-01)	Carga de Documento Individual (para Lote)	API Gateway (CO-01)	multipart/form-data (archivo + JSON metadatos metadata_entrada)	HU-ING-001. Validar Content-Type, tamaño máx. (NFR-REND-003). Retorna 202 Accepted con idDocumento y estadoDocumento. Errores: 400 Bad Request por validación de entrada, 500 Internal Server Error si falla almacenamiento temporal.
+2.	API Gateway (CO-01)	Almacenamiento Temporal de Documento	Servicio de Almacenamiento (CO-06)	archivo_binario, idDocumento, metadata_entrada	Almacenamiento rápido (ej. S3/MinIO). Retorna URL_documento_almacenado. NFR-REND-001 (baja latencia). Manejo de fallos de almacenamiento con reintentos (NFR-RESI-001).
+3.	API Gateway (CO-01)	Creación/Actualización Lote EN_MEMORIA	API Gateway (CO-01) (Lógica Interna/Caché)	idLote (UUID), idDocumento, URL_documento_almacenado, estadoDocumento (RECIBIDO), metadata_entrada	Mantiene mapa_lotes con idLote como clave, lista_documentos_en_lote (con estados) como valor. Si idLote no existe, crea nuevo. NFR-REND-002 (respuesta rápida).
+4.	API Gateway (CO-01)	Respuesta Carga Documento	Usuario Final (AE-01)	JSON_confirmacion_carga (idDocumento, idLote, estado_documento)	Confirma recepción y asignación a lote. Interface Excellence.
+5.	Usuario Final (AE-01)	Solicitud de Procesamiento de Lote	API Gateway (CO-01)	idLote	HU-LOT-003. Dispara el procesamiento asíncrono para el idLote. Retorna 202 Accepted con confirmación. 404 Not Found si lote no existe, 409 Conflict si ya está en procesamiento.
+6.	API Gateway (CO-01)	Encolamiento de Lote para Procesamiento	Cola de Mensajes (Kafka/RabbitMQ)	idLote, lista_urls_documentos, metadata_lote	Publica mensaje en cola ocr_lotes_pendientes. NFR-ESCA-001 (procesamiento distribuido). NFR-RESI-002 (persistencia de mensajes).
+7.	OCR Worker Service (CO-04)	Consumo de Mensaje de Lote	Cola de Mensajes (Kafka/RabbitMQ)	idLote, lista_urls_documentos, metadata_lote	Workers escuchan la cola. Cada worker toma un lote disponible. NFR-ESCA-001.
+8.	OCR Worker Service (CO-04)	Descarga de Documento para OCR	Servicio de Almacenamiento (CO-06)	URL_documento	Descarga el archivo (archivo_binario). Manejo de errores de red/almacenamiento con reintentos y backoff (NFR-RESI-001).
+9.	OCR Worker Service (CO-04)	Procesamiento OCR del Documento	OCR Worker Service (CO-04) (Motor OnnxTR)	archivo_binario, metadata_entrada	Aplica OnnxTR y Spatial Processor. Genera JSON_resultado_OCR. NFR-PERF-001 (fracciones de segundo). Manejo de errores de OCR (ej., ilegible) y clasificación de resultados como EXITO o FALLO_OCR.
+10.	OCR Worker Service (CO-04)	Almacenamiento de Resultados OCR	Servicio de Almacenamiento (CO-06)	idLote, idDocumento, JSON_resultado_OCR, estado_procesamiento	Persistencia en almacenamiento de resultados. NFR-INTEG-001 (consistencia). Manejo de fallos de almacenamiento.
+11.	OCR Worker Service (CO-04)	Notificación de Documento Procesado	API Gateway (CO-01) (vía Webhook)	idLote, idDocumento, estado_procesamiento (EXITO/FALLO_OCR), url_resultado_ocr (si éxito), detalles_error (si fallo)	Webhook asíncrono. Actualiza estadoDocumento en el mapa del lote. Cuenta documentos_procesados y documentos_fallidos. NFR-RESI-001 (reintentos webhook).
+12.	API Gateway (CO-01)	Verificación de Lote Completo	API Gateway (CO-01) (Lógica Interna/Caché)	idLote	Compara documentos_procesados + documentos_fallidos con total_documentos_en_lote. Si son iguales, marca estadoLote como COMPLETO_EXITO o COMPLETO_PARCIAL_FALLO.
+13.	Usuario Final (AE-01)	Solicitud de Estado de Lote	API Gateway (CO-01)	idLote	HU-LOT-002. Retorna JSON_estado_lote (incluye estadoLote, documentos_procesados, documentos_fallidos, total_documentos). 404 Not Found si lote no existe.
+14.	Usuario Final (AE-01)	Solicitud de Resultados de Lote	API Gateway (CO-01)	idLote	HU-LOT-004. Solo permitido si estadoLote es COMPLETO_EXITO o COMPLETO_PARCIAL_FALLO. 409 Conflict si no está completo.
+15.	API Gateway (CO-01)	Agregación y Entrega de Resultados	Servicio de Almacenamiento (CO-06)	idLote	Agrupa los JSON_resultado_OCR individuales del lote. Genera un único JSON_resultados_agrupados. Retorna URL_JSON_resultados_agrupados o el JSON directo. Incluye detalles de errores de documentos fallidos.
+16.	API Gateway (CO-01)	Notificación a n8n de Lote Completo	Sistema Externo n8n (IN-07)	POST a Webhook n8n con idLote, estado_final, url_resultados_ocr, resumen_errores	CRÍTICO: HU-INT-001. Solo después de que el lote esté COMPLETO. NFR-RESI-001 (reintentos con backoff exponencial). Envía información de errores si los hay.
+17.	API Gateway (CO-01)	Liberación de Recursos de Lote	API Gateway (CO-01) (Lógica Interna/Caché)	idLote	Elimina idLote y sus documentos_en_lote del mapa EN_MEMORIA después de confirmar entrega a n8n y/o solicitud exitosa de resultados por usuario. Permite que el API Gateway procese nuevos lotes sin problemas mientras se espera la liberación de datos de lotes anteriores.
+
+Exportar a Hojas de cálculo
+VALIDACIÓN CONTRA TUS PRIORIDADES (El Esqueleto y los Maquillajes):
+
+Esqueleto Base (Core): Todos los pasos de la tabla anterior están diseñados para el "esqueleto base" de tu solución.
+
+Maquillajes (Frontend/Visualización):
+
+Los pasos 4 y 13 habilitan la visualización del estado y progreso en un frontend.
+
+La capacidad de "fijar 20 procesos que se vean en gráficas" se habilitará con métricas y observabilidad que podrían integrarse con las notificaciones de estado (Paso 11) o con un sistema de monitoreo separado que consuma eventos de la cola (Paso 6) o del webhook (Paso 11). Estos son componentes "añadidos" que se beneficiarán de este flujo base, pero no son el foco principal del DFD.
+

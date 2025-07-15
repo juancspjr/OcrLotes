@@ -1,0 +1,92 @@
+REPORTE DE ARQUEOLOGÍA INICIAL - API KEY
+1. UBICACIÓN DE LÓGICA DE API KEY
+Archivos identificados:
+
+    routes.py: Contiene la lógica principal de validación y gestión de API Keys
+    static/js/modules/api-docs.js: Módulo frontend para interacción con API Keys
+    api_keys.json: Archivo de almacenamiento de API Keys (sistema dual)
+
+Funciones específicas en routes.py:
+
+    Sistema de validación principal:
+        validate_api_key() - líneas 3036-3055: Validación de API Key contra archivo JSON
+        validate_api_key_endpoint() - líneas 3246-3315: Endpoint POST /api/validate_api_key
+
+    Sistema de gestión de API Keys:
+        load_api_keys() - líneas 1158-1166: Carga desde archivo JSON
+        save_api_keys() - líneas 1168-1171: Guardado en archivo JSON
+        generate_api_key() - líneas 1173-1176: Generación de API Key segura
+        get_db_connection() - líneas 3067-3086: Conexión a PostgreSQL
+
+    Endpoints de gestión:
+        generate_api_key() - líneas 3100-3145: POST /api/generate_api_key
+        api_generate_key() - líneas 1178-1231: POST /api/generate_key
+        api_list_keys() - líneas 1233+: GET /api/list_keys
+
+Configuración relacionada:
+
+    Variable de entorno: DATABASE_URL para conexión PostgreSQL
+    Archivo de configuración: API_KEYS_FILE = 'api_keys.json' (línea 1156)
+
+2. DESCRIPCIÓN DE LA LÓGICA DE VALIDACIÓN (TAL CUAL ESTÁ)
+Sistema Dual de Almacenamiento:
+
+El sistema actual implementa dos mecanismos de almacenamiento para API Keys:
+
+    Sistema de archivo JSON (api_keys.json):
+        Función validate_api_key() busca en estructura JSON local
+        Actualiza last_used y usage_count en archivo
+        Retorna información completa de la key si es válida
+
+    Sistema de base de datos PostgreSQL:
+        Función validate_api_key_endpoint() consulta tabla api_keys
+        Query SQL: SELECT key_id, name, is_active, created_at, usage_count FROM api_keys WHERE api_key = %s AND is_active = true
+        Actualiza last_used y usage_count en base de datos
+
+Proceso de validación:
+
+    Verificación inicial: Chequea si api_key no está vacía
+    Búsqueda: Busca coincidencia exacta en sistema de almacenamiento
+    Actualización de uso: Incrementa contador y actualiza timestamp
+    Respuesta: Retorna información de la key o None/error
+
+Comportamiento en caso de fallo:
+
+    API Key inválida: Retorna None o response JSON con "valid": false
+    Error de conexión: Retorna error 500 con mensaje "Error conectando a base de datos"
+    API Key vacía: Retorna error 400 con mensaje "API Key requerida"
+
+3. COMPARACIÓN CON DOCUMENTACIÓN UNIFICADA
+Hallazgos en la documentación:
+
+Después de revisar la Documentación Unificada del Sistema OCR Asíncrono Empresarial y los archivos técnicos disponibles, NO SE ENCONTRARON ESPECIFICACIONES EXPLÍCITAS sobre:
+
+    Propósito específico de las API Keys
+    Estándares de seguridad requeridos
+    Integración con sistemas externos (n8n)
+    Políticas de autenticación empresarial
+
+Referencias indirectas encontradas:
+
+La documentación menciona "sistemas downstream (n8n)" como objetivo, lo que sugiere que las API Keys están destinadas para integración con workflows de automatización, pero no especifica:
+
+    Formato de autenticación requerido
+    Niveles de permisos
+    Políticas de renovación
+    Auditoría de uso
+
+Discrepancias identificadas:
+
+    FALTA DE ESPECIFICACIÓN: No hay documentación explícita sobre el propósito o implementación de API Keys
+
+    SISTEMA DUAL NO DOCUMENTADO: El código implementa dos sistemas de almacenamiento (JSON + PostgreSQL) sin documentación de por qué existe esta dualidad
+
+    SEGURIDAD NO ESPECIFICADA: No hay estándares documentados sobre longitud, formato, o políticas de rotación de API Keys
+
+    INTEGRACIÓN N8N NO DOCUMENTADA: Aunque la documentación menciona n8n como sistema downstream, no especifica cómo las API Keys facilitan esta integración
+
+Recomendación:
+
+Se requiere documentación específica que defina el propósito, estándares de seguridad y políticas de uso de las API Keys para alinear la implementación con los requisitos empresariales del sistema OCR asíncrono.
+
+Estado: El sistema de API Keys está implementado funcionalmente pero carece de especificación documentada clara sobre su propósito y políticas de uso empresarial.
