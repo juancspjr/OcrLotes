@@ -29,8 +29,6 @@ import config
 # REFERENCE_INTEGRITY: Variable logger ahora existe y está configurada correctamente
 logger = logging.getLogger(__name__)
 
-logger = logging.getLogger(__name__)
-
 def validate_whatsapp_metadata(metadata_dict):
     """
     FIX: Validación robusta de metadatos WhatsApp siguiendo filosofía Zero-Fault Detection

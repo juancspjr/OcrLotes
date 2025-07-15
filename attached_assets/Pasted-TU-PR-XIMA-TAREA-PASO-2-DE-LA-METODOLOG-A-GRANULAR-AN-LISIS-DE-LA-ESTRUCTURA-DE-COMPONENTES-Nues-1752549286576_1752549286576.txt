@@ -1,0 +1,47 @@
+TU PRÓXIMA TAREA (PASO 2 DE LA METODOLOGÍA GRANULAR): ANÁLISIS DE LA ESTRUCTURA DE COMPONENTES
+
+Nuestro objetivo es una evaluación "con ojo clínico" de la Sección 1.1 "Estructura de Componentes" de la Documentación Unificada del Sistema OCR Asíncrono Empresarial.docx. El propósito es determinar si la estructura de componentes actual del backend en el repositorio https://github.com/juancspjr/OcrLotes coincide rigurosamente con la arquitectura de contenedores (CO-XX) allí definida.
+
+Agente Replit, para ejecutar esta tarea con la Integridad Total requerida, por favor, realiza lo siguiente y entrega tus resultados en un archivo Markdown detallado:
+
+REFERENCIAS EXPLÍCITAS DE LA DOCUMENTACIÓN UNIFICADA (Sección 1.1 "Estructura de Componentes"):
+
+Localiza y Cita Textualmente: Abre el documento Documentación Unificada del Sistema OCR Asíncrono Empresarial.docx. Navega específicamente a la "Sección 1.1 Estructura de Componentes".
+
+Extrae y presenta aquí, textualmente, las descripciones clave de cada componente (CO-XX) que se mencionen en esa sección. Si la documentación detalla las responsabilidades principales de cada CO-XX o cómo interactúan entre sí, incluye también esas descripciones. Si no están en la 1.1, busca en secciones como "Mejoras Tecnológicas para la Optimización Asíncrona" que también listan componentes con su CO-XX.
+
+Objetivo CLARIDAD DE DEFINICIONES: Asegúrate de que cada componente CO-XX esté claramente definido tal como lo establece la documentación.
+
+RASTREO Y DESCRIPCIÓN DE LA ESTRUCTURA ACTUAL EN EL REPOSITORIO OcrLotes:
+
+Exploración del Código Actual: Navega por el repositorio https://github.com/juancspjr/OcrLotes.
+
+Identifica los archivos, módulos y/o directorios clave que, en la implementación actual del backend, parecen cumplir los roles o agrupar la lógica de los componentes.
+
+Describe las responsabilidades actuales de estos archivos/módulos. ¿Cómo están organizados? ¿Hay una clara separación de las funcionalidades o ves responsabilidades mezcladas en un mismo archivo/módulo?
+
+ANÁLISIS DE DISCREPANCIAS Y COHERENCIA (OJO CLÍNICO Y ZERO-FAULT DETECTION):
+
+Comparación Rigurosa: Realiza una comparación uno a uno entre los componentes (CO-XX) definidos en la Documentación Unificada del Sistema OCR Asíncrono Empresarial.docx (Sección 1.1 y otras secciones relevantes si citan CO-XX) y la estructura real que has encontrado en el código del repositorio OcrLotes.
+
+Detalle de Discrepancias:
+
+¿Existe un componente CO-XX definido en la documentación que no tiene una contraparte clara o identificable en el código actual? Si es así, descríbelo.
+
+¿Hay un componente CO-XX en la documentación cuyas responsabilidades están dispersas en múltiples archivos/módulos en el código, en lugar de estar encapsuladas como se esperaría? Identifícalo.
+
+¿El código actual implementa una estructura de componentes o una separación de responsabilidades que difiere significativamente de lo especificado en la documentación (ej., un componente en la docs es un microservicio, pero en el código es parte de un monolito)?
+
+¿Hay responsabilidades mezcladas o acoplamientos fuertes entre los módulos actuales que contradicen los principios de Modularidad o Acoplamiento Débil que busca la documentación?
+
+Implicaciones de las Discrepancias: Para cada discrepancia identificada, explica brevemente el impacto potencial en la Integridad Total, la Modularidad, el Acoplamiento Débil, la Escalabilidad o el Rendimiento del Servicio del sistema.
+
+FORMATO DE ENTREGA:
+
+Tu respuesta debe ser un archivo Markdown (.md) denominado REPORTE_ANALISIS_CONSISTENCIA_COMPONENTES.md. Utiliza títulos, subtítulos, listas y bloques de código (``) para una máxima Claridad de Definiciones y legibilidad.
+
+RECORDATORIO CRÍTICO:
+
+NO REALICES NINGUNA MODIFICACIÓN AL CÓDIGO. Tu rol en este paso es exclusivamente de Observación, Comparación y Reporte.
+
+Estoy a la espera de tu REPORTE_ANALISIS_CONSISTENCIA_COMPONENTES.md para proceder con la siguiente fase de nuestro plan de alineación granular.
