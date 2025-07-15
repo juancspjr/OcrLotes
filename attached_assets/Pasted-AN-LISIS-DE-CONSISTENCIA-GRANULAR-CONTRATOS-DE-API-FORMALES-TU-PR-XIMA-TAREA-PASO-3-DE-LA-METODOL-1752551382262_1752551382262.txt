@@ -1,0 +1,61 @@
+ANÁLISIS DE CONSISTENCIA GRANULAR - CONTRATOS DE API FORMALES
+TU PRÓXIMA TAREA (PASO 3 DE LA METODOLOGÍA GRANULAR): ANÁLISIS DE LOS CONTRATOS DE API FORMALES
+
+Nuestro foco es la GUÍA PARA CONSTRUIR LOS CONTRATOS DE API FORMALES y su aplicación en la Documentación Unificada del Sistema OCR Asíncrono Empresarial.docx, comparado con el código actual en https://github.com/juancspjr/OcrLotes.
+
+Objetivo del Paso 3: Evaluar la conformidad de los contratos de API del backend de OcrLotes con las especificaciones de la Documentación Unificada, prestando especial atención a cómo se espera que interactúen los componentes CO-01 y CO-04.
+
+Agente Replit, por favor, realiza lo siguiente:
+
+REFERENCIAS EXPLÍCITAS DE LA DOCUMENTACIÓN UNIFICADA (Contratos de API Formales):
+
+Localiza y Cita Textualmente: Abre el documento Documentación Unificada del Sistema OCR Asíncrono Empresarial.docx.
+
+Busca y extrae textualmente todas las secciones o tablas que especifiquen los Contratos de API. Presta particular atención a los endpoints relacionados con la API Gateway (CO-01) y el OCR Worker Service (CO-04), incluyendo:
+
+URLs (ej., /api/upload, /api/ocr/process_batch, etc.)
+
+Métodos HTTP (GET, POST, PUT, DELETE)
+
+Parámetros de entrada (query, body, headers) y sus tipos de datos esperados.
+
+Estructuras de respuesta exitosa (JSON) y sus campos.
+
+Estructuras de respuesta de error (códigos de estado HTTP, mensajes de error).
+
+Si la documentación describe explícitamente cómo CO-01 y CO-04 se comunican internamente a través de APIs o contratos, asegúrate de citarlo.
+
+RASTREO Y DESCRIPCIÓN DE LAS INTERFACES ACTUALES EN EL REPOSITORIO OcrLotes:
+
+Exploración del Código Actual: Navega por el repositorio https://github.com/juancspjr/OcrLotes. (Recuerda: seguimos analizando el estado original del repositorio, ignorando cualquier intento de modificación previo).
+
+Identifica las implementaciones de los endpoints API relevantes. Busca en app.py, routes.py, y cualquier otro archivo que maneje las solicitudes HTTP.
+
+Para cada endpoint identificado, describe:
+
+Su URL y método HTTP.
+
+Qué parámetros espera y de qué tipo.
+
+Qué tipo de respuesta genera (estructura JSON, códigos de estado).
+
+Cómo maneja los errores.
+
+ANÁLISIS DE DISCREPANCIAS Y COHERENCIA (OJO CLÍNICO Y ZERO-FAULT DETECTION):
+
+Comparación Rigurosa: Compara la especificación de los Contratos de API de la Documentación Unificada con la implementación actual en el código OcrLotes.
+
+Detalle de Discrepancias:
+
+¿Existen endpoints definidos en la documentación que no tienen una implementación clara en el código?
+
+¿Existen endpoints en el código que no están documentados?
+
+¿Hay discrepancias en las URLs, métodos HTTP, parámetros de entrada/salida (nombres, tipos, obligatoriedad)?
+
+¿El manejo de errores (códigos de estado HTTP, estructuras de error) en el código coincide con la documentación?
+
+¿Se mencionan interfaces internas entre CO-01 y CO-04 en la documentación que no tienen un claro correlato en el código, o viceversa?
+
+Implicaciones de las Discrepancias: Para cada discrepancia, explica su impacto potencial en la Interface Excellence, Acoplamiento Débil, Claridad de Definiciones y la facilidad de integración con sistemas downstream (como n8n).
+
