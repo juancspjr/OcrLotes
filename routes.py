@@ -1655,59 +1655,29 @@ def api_extract_results():
             if os.path.exists(historial_dir):
                 results_dir = historial_dir
         
-        # FIX: FILTRADO CRÍTICO POR REQUEST_ID DEL ÚLTIMO LOTE ÚNICAMENTE
-        # REASON: Usuario requiere JSON consolidado específico del último lote sin mezcla
-        # IMPACT: Eliminación completa de archivos de lotes anteriores del consolidado
-        last_request_id = _get_last_batch_request_id()
+        # FIX: MOSTRAR TODOS LOS ARCHIVOS DE TODOS LOS LOTES
+        # REASON: Usuario requiere ver todos los archivos procesados, no solo del último lote
+        # IMPACT: Visualización completa de todos los archivos procesados en el sistema
         json_files = []
         
-        if not last_request_id:
-            logger.warning("No hay request_id del último lote. Retornando archivos más recientes.")
-            # Fallback: usar archivos más recientes (últimos 10 minutos)
-            import time
-            current_time = time.time()
-            ten_minutes_ago = current_time - 600
-            
-            # Buscar en directorio results activo con filtro de tiempo
-            if os.path.exists(results_dir):
-                for file in os.listdir(results_dir):
-                    if file.endswith('.json'):
-                        file_path = os.path.join(results_dir, file)
-                        if os.path.isfile(file_path):
-                            file_time = os.path.getmtime(file_path)
-                            if file_time >= ten_minutes_ago:
-                                json_files.append(file_path)
-                                
-            logger.info(f"📊 Filtro temporal: {len(json_files)} archivos de últimos 10 minutos")
-        else:
-            logger.info(f"🎯 Filtrando por request_id del último lote: {last_request_id}")
-            
-            # FIX: Extraer prefijo específico del request_id del último lote
-            # REASON: Debe capturar solo archivos del mismo session timestamp (minuto específico)
-            # IMPACT: Filtrado correcto que encuentra solo archivos del último lote procesado  
-            batch_parts = last_request_id.split('_')  # ['BATCH', '20250707', '040348', '874c4681']
-            # Usar BATCH_YYYYMMDD_HHMM para capturar solo el lote específico
-            session_timestamp = batch_parts[2][:4]  # "0403" de "040348"
-            base_request_pattern = f"{batch_parts[0]}_{batch_parts[1]}_{session_timestamp}"  # "BATCH_20250707_0403"
-            
-            # Buscar en directorio results activo con filtro por request_id
-            if os.path.exists(results_dir):
-                for file in os.listdir(results_dir):
-                    if file.endswith('.json') and base_request_pattern in file:
-                        file_path = os.path.join(results_dir, file)
-                        if os.path.isfile(file_path):
-                            json_files.append(file_path)
-            
-            # Buscar TAMBIÉN en directorio historial empresarial con filtro
-            historial_dir = 'data/historial'
-            if os.path.exists(historial_dir):
-                for file in os.listdir(historial_dir):
-                    if file.endswith('.json') and 'result_' in file and base_request_pattern in file:
-                        file_path = os.path.join(historial_dir, file)
-                        if os.path.isfile(file_path):
-                            json_files.append(file_path)
-                            
-            logger.info(f"📊 Filtro por request_id: {len(json_files)} archivos del último lote")
+        # Buscar en directorio results activo (archivos actuales)
+        if os.path.exists(results_dir):
+            for file in os.listdir(results_dir):
+                if file.endswith('.json'):
+                    file_path = os.path.join(results_dir, file)
+                    if os.path.isfile(file_path):
+                        json_files.append(file_path)
+        
+        # Buscar TAMBIÉN en directorio historial empresarial
+        historial_dir = 'data/historial'
+        if os.path.exists(historial_dir):
+            for file in os.listdir(historial_dir):
+                if file.endswith('.json'):
+                    file_path = os.path.join(historial_dir, file)
+                    if os.path.isfile(file_path):
+                        json_files.append(file_path)
+                        
+        logger.info(f"📊 Archivos encontrados: {len(json_files)} archivos de todos los lotes")
         
         if not json_files:
             logger.info("No hay archivos de resultados disponibles para extraer")
