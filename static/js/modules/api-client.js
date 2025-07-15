@@ -252,10 +252,22 @@ window.OCRSystem = window.OCRSystem || {};
             try {
                 const processedFiles = await this.getProcessedFiles();
                 
+                // Validar que processedFiles sea un array
+                if (!Array.isArray(processedFiles)) {
+                    console.warn('⚠️ processedFiles no es un array válido');
+                    return [];
+                }
+                
                 // Agrupar por request_id/lote
                 const batchMap = new Map();
                 
                 processedFiles.forEach(file => {
+                    // Validar que file sea un objeto válido
+                    if (!file || typeof file !== 'object' || !file.filename) {
+                        console.warn('⚠️ Archivo inválido omitido:', file);
+                        return;
+                    }
+                    
                     // Extraer ID de lote del nombre del archivo
                     const batchMatch = file.filename.match(/^BATCH_(\d{8}_\d{6}_[a-f0-9]+)/);
                     const batchId = batchMatch ? batchMatch[1] : 'unknown';
@@ -284,13 +296,19 @@ window.OCRSystem = window.OCRSystem || {};
                 });
 
                 // Convertir a array y ordenar por fecha
-                const batches = Array.from(batchMap.values()).sort((a, b) => 
-                    new Date(b.date) - new Date(a.date)
-                );
+                const batches = Array.from(batchMap.values()).sort((a, b) => {
+                    try {
+                        return new Date(b.date) - new Date(a.date);
+                    } catch (error) {
+                        console.warn('⚠️ Error ordenando lotes por fecha:', error);
+                        return 0;
+                    }
+                });
 
                 return batches;
             } catch (error) {
                 console.error('❌ Error obteniendo historial de lotes:', error);
+                // Retornar estructura vacía pero válida
                 return [];
             }
         }
@@ -328,9 +346,20 @@ window.OCRSystem = window.OCRSystem || {};
          */
         extractDateFromBatchId(batchId) {
             try {
+                // Validar que batchId sea válido
+                if (!batchId || typeof batchId !== 'string') {
+                    return new Date();
+                }
+                
                 const match = batchId.match(/^(\d{8})_(\d{6})/);
                 if (match) {
                     const [, dateStr, timeStr] = match;
+                    
+                    // Validar longitudes
+                    if (dateStr.length !== 8 || timeStr.length !== 6) {
+                        return new Date();
+                    }
+                    
                     const year = dateStr.substring(0, 4);
                     const month = dateStr.substring(4, 6);
                     const day = dateStr.substring(6, 8);
@@ -338,7 +367,22 @@ window.OCRSystem = window.OCRSystem || {};
                     const minute = timeStr.substring(2, 4);
                     const second = timeStr.substring(4, 6);
                     
-                    return new Date(`${year}-${month}-${day}T${hour}:${minute}:${second}`);
+                    // Validar rangos válidos
+                    if (parseInt(month) < 1 || parseInt(month) > 12 ||
+                        parseInt(day) < 1 || parseInt(day) > 31 ||
+                        parseInt(hour) > 23 || parseInt(minute) > 59 || parseInt(second) > 59) {
+                        return new Date();
+                    }
+                    
+                    const dateStr_ISO = `${year}-${month}-${day}T${hour}:${minute}:${second}`;
+                    const parsedDate = new Date(dateStr_ISO);
+                    
+                    // Validar que la fecha sea válida
+                    if (isNaN(parsedDate.getTime())) {
+                        return new Date();
+                    }
+                    
+                    return parsedDate;
                 }
             } catch (error) {
                 console.warn('⚠️ Error parseando fecha de lote:', error);

@@ -17,6 +17,7 @@ window.OCRSystem = window.OCRSystem || {};
             this.apiClient = config.apiClient;
             this.files = new Map();
             this.fileCounter = 0;
+            this.isProcessingFiles = false;
             
             // Referencias DOM
             this.dropArea = document.getElementById(config.dropAreaId);
@@ -70,9 +71,33 @@ window.OCRSystem = window.OCRSystem || {};
         setupFileInput() {
             if (!this.fileInput) return;
 
-            this.fileInput.addEventListener('change', (e) => {
-                this.handleFiles(Array.from(e.target.files));
-            });
+            // Remover event listeners existentes para evitar duplicación
+            this.fileInput.removeEventListener('change', this.fileInputHandler);
+            
+            // Crear función handler para poder removerla después
+            this.fileInputHandler = (e) => {
+                // Prevenir múltiples ejecuciones
+                if (this.isProcessingFiles) {
+                    console.log('⚠️ Ya se está procesando archivo, ignorando...');
+                    return;
+                }
+                
+                this.isProcessingFiles = true;
+                
+                try {
+                    this.handleFiles(Array.from(e.target.files));
+                } finally {
+                    // Limpiar input para permitir seleccionar el mismo archivo
+                    e.target.value = '';
+                    
+                    // Permitir nuevas selecciones después de un breve delay
+                    setTimeout(() => {
+                        this.isProcessingFiles = false;
+                    }, 500);
+                }
+            };
+            
+            this.fileInput.addEventListener('change', this.fileInputHandler);
         }
 
         /**
