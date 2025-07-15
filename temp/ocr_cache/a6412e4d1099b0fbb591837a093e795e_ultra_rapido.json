@@ -1,0 +1,444 @@
+{
+  "original_text_ocr": "ZiNli Recibo Enviaste dinero -$10.00 Recibe Diego Camacho diegoboh 1987 @gmail . com Fecha 14 JUL 2025 - 4:57 PM Mensaje Pagado 10 dolar",
+  "structured_text_ocr": "ZiNli Recibo Enviaste dinero -$10. 00 Recibe Diego Camacho diegoboh 1987 @gmail. com Fecha 14 JUL 2025 - 4: 57 PM Mensaje Pagado 10 dolar",
+  "extracted_fields": {
+    "valor_referencia_operacion": "",
+    "monto_total": "",
+    "datos_beneficiario": "",
+    "concepto_motivo": "",
+    "fecha_operacion": "",
+    "telefono": "",
+    "cedula": "",
+    "banco_emisor_pagador": "",
+    "banco_receptor_beneficiario": "",
+    "tipo_transaccion": "",
+    "identificador_cuenta_origen": "",
+    "identificador_cuenta_destino": "",
+    "banco_destino": "",
+    "pago_fecha": "",
+    "hora_operacion": ""
+  },
+  "processing_metadata": {
+    "logica_oro_aplicada": false,
+    "ocr_confidence_avg": 0.905,
+    "error_messages": [
+      "Lógica de oro basada en coordenadas no aplicada: No se detectaron coordenadas válidas en el OCR de origen"
+    ],
+    "processing_time_ms": 512.94,
+    "total_words_detected": 20,
+    "coordinates_available": 0,
+    "ocr_method": "ONNXTR_SINGLE_PASS_COORDENADAS",
+    "timestamp": "2025-07-15T09:09:17.792585"
+  },
+  "word_data_granular": [],
+  "texto_completo": "ZiNli Recibo Enviaste dinero -$10.00 Recibe Diego Camacho diegoboh 1987 @gmail . com Fecha 14 JUL 2025 - 4:57 PM Mensaje Pagado 10 dolar",
+  "texto_total_ocr": "ZiNli Recibo Enviaste dinero -$10. 00 Recibe Diego Camacho diegoboh 1987 @gmail. com Fecha 14 JUL 2025 - 4: 57 PM Mensaje Pagado 10 dolar",
+  "concepto_empresarial": "Operación registrada",
+  "total_caracteres": 136,
+  "total_caracteres_ordenados": 137,
+  "tiempo_procesamiento": 0.513,
+  "metodo_extraccion": "ONNXTR_SINGLE_PASS_COORDENADAS",
+  "configuracion_onnxtr": "ultra_rapido",
+  "total_palabras_detectadas": 20,
+  "palabras_detectadas": [
+    {
+      "texto": "ZiNli",
+      "confianza": 0.7559078931808472,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 0,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Recibo",
+      "confianza": 0.9344676733016968,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 1,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Enviaste",
+      "confianza": 0.9977298378944397,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 2,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "dinero",
+      "confianza": 0.9996023774147034,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 2,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "-$10.00",
+      "confianza": 0.9829615950584412,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 3,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Recibe",
+      "confianza": 0.8113320469856262,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 4,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Diego",
+      "confianza": 0.9993062019348145,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 5,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Camacho",
+      "confianza": 0.8171902298927307,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 5,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "diegoboh1987@gmail.com",
+      "confianza": 0.8162651459376017,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 6,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Fecha",
+      "confianza": 0.9819206595420837,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 7,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "14",
+      "confianza": 0.9643295407295227,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 8,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "JUL",
+      "confianza": 0.9731119871139526,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 8,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "2025",
+      "confianza": 0.9975141286849976,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 8,
+        "palabra": 2
+      }
+    },
+    {
+      "texto": "-",
+      "confianza": 0.6687197089195251,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 8,
+        "palabra": 3
+      }
+    },
+    {
+      "texto": "4:57",
+      "confianza": 0.9984951019287109,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 8,
+        "palabra": 4
+      }
+    },
+    {
+      "texto": "PM",
+      "confianza": 0.8945885896682739,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 8,
+        "palabra": 5
+      }
+    },
+    {
+      "texto": "Mensaje",
+      "confianza": 0.9006244540214539,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 9,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Pagado",
+      "confianza": 0.8624634146690369,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 10,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "10",
+      "confianza": 0.7382881045341492,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 10,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "dolar",
+      "confianza": 0.999377429485321,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 10,
+        "palabra": 2
+      }
+    }
+  ],
+  "confianza_promedio": 0.905,
+  "estadisticas_onnxtr": {
+    "paginas_procesadas": 1,
+    "palabras_alta_confianza": 17,
+    "palabras_media_confianza": 3,
+    "palabras_baja_confianza": 0,
+    "min_confianza_aplicada": 0.5
+  },
+  "calidad_extraccion": {
+    "score_calidad": 76.7,
+    "categoria": "buena",
+    "confianza_promedio": 0.905,
+    "palabras_alta_confianza": 17,
+    "total_palabras": 20,
+    "longitud_texto": 136,
+    "recomendaciones": [
+      "Calidad de extracción satisfactoria"
+    ]
+  },
+  "deteccion_inteligente": {
+    "tipo_imagen": "screenshot_movil",
+    "esquema_color": "texto_oscuro_fondo_claro",
+    "inversion_requerida": false,
+    "ui_elements_detectados": true,
+    "aspect_ratio": 0.6722689075630253,
+    "calidad_digital": false,
+    "dark_percentage": 35.74631881713867,
+    "light_percentage": 64.2536849975586,
+    "edge_density": 0.016348946986201887,
+    "noise_estimate": 51.82868497124427,
+    "confianza_deteccion": 0.6000000000000001
+  },
+  "logica_oro_aplicada": false,
+  "datos_financieros": {
+    "amount": [
+      {
+        "valor": "10",
+        "posicion_texto": 31
+      },
+      {
+        "valor": "00",
+        "posicion_texto": 34
+      },
+      {
+        "valor": "198",
+        "posicion_texto": 67
+      },
+      {
+        "valor": "7",
+        "posicion_texto": 70
+      },
+      {
+        "valor": "14",
+        "posicion_texto": 91
+      }
+    ],
+    "time": [
+      {
+        "valor": "4:57 PM",
+        "posicion_texto": 105
+      }
+    ],
+    "analisis_documento": {
+      "tipo": "recibo_pago",
+      "confianza": 25.0,
+      "keywords_encontradas": [
+        "recibo"
+      ]
+    },
+    "resumen_extraido": {
+      "montos_encontrados": 5,
+      "fechas_encontradas": 0,
+      "referencias_encontradas": 0,
+      "cuentas_encontradas": 0,
+      "telefonos_encontrados": 0,
+      "total_elementos": 5,
+      "completitud_porcentaje": 50
+    }
+  }
+}

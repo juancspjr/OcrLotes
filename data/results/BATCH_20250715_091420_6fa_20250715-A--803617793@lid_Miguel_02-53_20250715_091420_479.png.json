@@ -1,0 +1,1152 @@
+{
+  "status": "exitoso",
+  "request_id": "BATCH_20250715_091420_6fa_20250715-A--803617793@lid_Miguel_02-53_20250715_091420_479.png",
+  "filename": "20250715-A--803617793@lid_Miguel_02-53_20250715_091420_479.png",
+  "tiempo_procesamiento": 0.9986240863800049,
+  "fecha_procesamiento": "2025-07-15T09:14:21.496173",
+  "original_text_ocr": "El dinero fue enviado Bs . 313,62 Dinero Rapido BDVA Provincial Banco : BANCO MERCANTIL Numero celular : 04125318244 Identificacion : V 27061025 Concepto : Pago Fecha : 20/06/ 2025 Referencia : 000012071",
+  "structured_text_ocr": "El dinero fue enviado Bs. 313, 62 Dinero Rapido BDVA Provincial Banco: BANCO MERCANTIL Numero celular: 04125318244 Identificacion: V 27061025 Concepto: Pago Fecha: 20/06/2025 Referencia: 000012071",
+  "extracted_fields": {
+    "valor_referencia_operacion": "",
+    "monto_total": "",
+    "datos_beneficiario": "",
+    "concepto_motivo": "",
+    "fecha_operacion": "",
+    "telefono": "",
+    "cedula": "",
+    "banco_emisor_pagador": "",
+    "banco_receptor_beneficiario": "",
+    "tipo_transaccion": "",
+    "identificador_cuenta_origen": "",
+    "identificador_cuenta_destino": "",
+    "banco_destino": "BANCO MERCANTIL",
+    "pago_fecha": "20/06/ 2025",
+    "hora_operacion": "",
+    "monto": "313.62"
+  },
+  "processing_metadata": {
+    "logica_oro_aplicada": false,
+    "ocr_confidence_avg": 0.922,
+    "error_messages": [
+      "Lógica de oro basada en coordenadas no aplicada: No se detectaron coordenadas válidas en el OCR de origen"
+    ],
+    "processing_time_ms": 761.44,
+    "total_words_detected": 24,
+    "coordinates_available": 0,
+    "ocr_method": "ONNXTR_SINGLE_PASS_COORDENADAS",
+    "timestamp": "2025-07-15T09:14:21.492465"
+  },
+  "Información del Archivo": {
+    "fecha_procesamiento": "2025-07-15T09:14:21.495396",
+    "formato": ".png",
+    "nombre_original": "20250715-A--803617793@lid_Miguel_02-53_20250715_091420_479.png",
+    "tamaño": 105450
+  },
+  "Estadísticas": {
+    "confianza_promedio": "92.2%",
+    "palabras_alta_confianza": 21,
+    "palabras_baja_confianza": 0,
+    "total_palabras": 24,
+    "calidad_categoria": "Excelente",
+    "tiempo_procesamiento": "1.00s",
+    "lineas_texto": 1,
+    "longitud_texto": 203
+  },
+  "Texto Extraído": {
+    "texto_completo": "El dinero fue enviado Bs . 313,62 Dinero Rapido BDVA Provincial Banco : BANCO MERCANTIL Numero celular : 04125318244 Identificacion : V 27061025 Concepto : Pago Fecha : 20/06/ 2025 Referencia : 000012071",
+    "longitud_texto": 203,
+    "lineas_texto": 1
+  },
+  "validacion": {
+    "imagen_info": {
+      "ancho": 1019,
+      "alto": 1080,
+      "resolucion_total": 1100520,
+      "canales": 1,
+      "modo": "L",
+      "formato": "PNG",
+      "brillo_promedio": 159.9879420637517,
+      "desviacion_brillo": 99.36193242755131,
+      "rango_dinamico": 255.0,
+      "histogram": [
+        6849.0,
+        73.0,
+        94.0,
+        80.0,
+        120.0,
+        92.0,
+        93.0,
+        94.0,
+        118.0,
+        1111.0,
+        98.0,
+        100.0,
+        125.0,
+        116.0,
+        120.0,
+        119.0,
+        141.0,
+        149.0,
+        140.0,
+        156.0,
+        181.0,
+        190.0,
+        191.0,
+        191.0,
+        193.0,
+        227.0,
+        237.0,
+        244.0,
+        234.0,
+        255.0,
+        288.0,
+        265.0,
+        317.0,
+        312.0,
+        395.0,
+        437.0,
+        361.0,
+        351.0,
+        426.0,
+        395.0,
+        1509.0,
+        500.0,
+        510.0,
+        565.0,
+        569.0,
+        598.0,
+        707.0,
+        713.0,
+        767.0,
+        747.0,
+        929.0,
+        996.0,
+        996.0,
+        1356.0,
+        1562.0,
+        2078.0,
+        464754.0,
+        3613.0,
+        2059.0,
+        1064.0,
+        799.0,
+        723.0,
+        759.0,
+        1664.0,
+        553.0,
+        466.0,
+        458.0,
+        388.0,
+        407.0,
+        286.0,
+        299.0,
+        264.0,
+        278.0,
+        1245.0,
+        245.0,
+        187.0,
+        186.0,
+        155.0,
+        217.0,
+        146.0,
+        157.0,
+        140.0,
+        144.0,
+        136.0,
+        128.0,
+        89.0,
+        1147.0,
+        105.0,
+        126.0,
+        97.0,
+        126.0,
+        106.0,
+        121.0,
+        116.0,
+        110.0,
+        100.0,
+        112.0,
+        121.0,
+        101.0,
+        103.0,
+        115.0,
+        101.0,
+        133.0,
+        89.0,
+        128.0,
+        94.0,
+        93.0,
+        115.0,
+        112.0,
+        99.0,
+        103.0,
+        85.0,
+        115.0,
+        102.0,
+        113.0,
+        108.0,
+        99.0,
+        82.0,
+        87.0,
+        93.0,
+        102.0,
+        93.0,
+        96.0,
+        107.0,
+        89.0,
+        91.0,
+        108.0,
+        105.0,
+        89.0,
+        82.0,
+        88.0,
+        113.0,
+        96.0,
+        116.0,
+        98.0,
+        96.0,
+        86.0,
+        102.0,
+        87.0,
+        91.0,
+        104.0,
+        103.0,
+        106.0,
+        94.0,
+        99.0,
+        138.0,
+        97.0,
+        99.0,
+        132.0,
+        98.0,
+        109.0,
+        105.0,
+        106.0,
+        135.0,
+        101.0,
+        101.0,
+        113.0,
+        98.0,
+        100.0,
+        100.0,
+        96.0,
+        109.0,
+        104.0,
+        94.0,
+        103.0,
+        117.0,
+        157.0,
+        123.0,
+        96.0,
+        102.0,
+        137.0,
+        87.0,
+        113.0,
+        94.0,
+        95.0,
+        89.0,
+        113.0,
+        121.0,
+        102.0,
+        132.0,
+        102.0,
+        101.0,
+        97.0,
+        85.0,
+        116.0,
+        107.0,
+        117.0,
+        93.0,
+        150.0,
+        113.0,
+        114.0,
+        108.0,
+        116.0,
+        124.0,
+        127.0,
+        107.0,
+        113.0,
+        107.0,
+        117.0,
+        110.0,
+        132.0,
+        112.0,
+        126.0,
+        126.0,
+        115.0,
+        95.0,
+        136.0,
+        104.0,
+        100.0,
+        121.0,
+        104.0,
+        119.0,
+        103.0,
+        128.0,
+        129.0,
+        119.0,
+        136.0,
+        122.0,
+        150.0,
+        123.0,
+        148.0,
+        120.0,
+        164.0,
+        154.0,
+        176.0,
+        143.0,
+        204.0,
+        197.0,
+        215.0,
+        205.0,
+        235.0,
+        244.0,
+        291.0,
+        262.0,
+        341.0,
+        326.0,
+        339.0,
+        395.0,
+        423.0,
+        444.0,
+        515.0,
+        534.0,
+        598.0,
+        593.0,
+        797.0,
+        788.0,
+        900.0,
+        981.0,
+        1040.0,
+        1092.0,
+        1328.0,
+        2497.0,
+        2100.0,
+        2713.0,
+        17656.0,
+        533035.0
+      ],
+      "histogram_analysis": {
+        "picos_principales": [
+          [
+            56,
+            464754
+          ]
+        ],
+        "rango_fondo_sugerido": 255,
+        "rango_texto_sugerido": 0,
+        "distribucion": {
+          "oscuras": 0.4658706784248352,
+          "medias": 0.009138407185673714,
+          "claras": 0.5249909162521362
+        },
+        "requiere_inversion": false,
+        "bimodal": false
+      },
+      "variaciones_fondo": {
+        "total_regiones_analizadas": 1638,
+        "fondos_unicos_detectados": 2,
+        "variacion_fondos": 99.375242877761,
+        "fondos_heterogeneos": false,
+        "rango_fondos": [
+          56,
+          255
+        ],
+        "requiere_unificacion_avanzada": true,
+        "regiones_variacion": [
+          {
+            "posicion": [
+              0,
+              0
+            ],
+            "media_local": 56.0,
+            "std_local": 0.0,
+            "pico_fondo": 56
+          },
+          {
+            "posicion": [
+              25,
+              0
+            ],
+            "media_local": 56.0,
+            "std_local": 0.0,
+            "pico_fondo": 56
+          },
+          {
+            "posicion": [
+              50,
+              0
+            ],
+            "media_local": 56.0,
+            "std_local": 0.0,
+            "pico_fondo": 56
+          },
+          {
+            "posicion": [
+              75,
+              0
+            ],
+            "media_local": 56.0,
+            "std_local": 0.0,
+            "pico_fondo": 56
+          },
+          {
+            "posicion": [
+              100,
+              0
+            ],
+            "media_local": 56.0,
+            "std_local": 0.0,
+            "pico_fondo": 56
+          },
+          {
+            "posicion": [
+              125,
+              0
+            ],
+            "media_local": 56.0,
+            "std_local": 0.0,
+            "pico_fondo": 56
+          },
+          {
+            "posicion": [
+              150,
+              0
+            ],
+            "media_local": 56.0,
+            "std_local": 0.0,
+            "pico_fondo": 56
+          },
+          {
+            "posicion": [
+              175,
+              0
+            ],
+            "media_local": 56.0,
+            "std_local": 0.0,
+            "pico_fondo": 56
+          },
+          {
+            "posicion": [
+              200,
+              0
+            ],
+            "media_local": 56.0,
+            "std_local": 0.0,
+            "pico_fondo": 56
+          },
+          {
+            "posicion": [
+              225,
+              0
+            ],
+            "media_local": 56.0,
+            "std_local": 0.0,
+            "pico_fondo": 56
+          }
+        ]
+      }
+    },
+    "calidad_imagen": {
+      "contraste": 99.36193242755131,
+      "blur_variance": 1341.5483560260082,
+      "entropy": 1.9482783079147339,
+      "gradiente_promedio": 35.4972547276469,
+      "brillo_promedio": 159.9879420637517,
+      "uniformidad_brillo": 99.36193242755131,
+      "calificacion_calidad": 80
+    },
+    "deteccion_texto": {
+      "regiones_detectadas": 44,
+      "area_total_texto": 136763,
+      "densidad_texto": 0.12427125358921237,
+      "regiones": [
+        {
+          "x": 485,
+          "y": 1044,
+          "width": 12,
+          "height": 32,
+          "area": 384,
+          "aspect_ratio": 0.375
+        },
+        {
+          "x": 190,
+          "y": 1044,
+          "width": 27,
+          "height": 32,
+          "area": 864,
+          "aspect_ratio": 0.84375
+        },
+        {
+          "x": 499,
+          "y": 1043,
+          "width": 78,
+          "height": 33,
+          "area": 2574,
+          "aspect_ratio": 2.3636363636363638
+        },
+        {
+          "x": 389,
+          "y": 1043,
+          "width": 96,
+          "height": 33,
+          "area": 3168,
+          "aspect_ratio": 2.909090909090909
+        },
+        {
+          "x": 42,
+          "y": 1043,
+          "width": 147,
+          "height": 33,
+          "area": 4851,
+          "aspect_ratio": 4.454545454545454
+        },
+        {
+          "x": 99,
+          "y": 945,
+          "width": 40,
+          "height": 33,
+          "area": 1320,
+          "aspect_ratio": 1.2121212121212122
+        },
+        {
+          "x": 389,
+          "y": 943,
+          "width": 219,
+          "height": 35,
+          "area": 7665,
+          "aspect_ratio": 6.257142857142857
+        },
+        {
+          "x": 42,
+          "y": 942,
+          "width": 56,
+          "height": 36,
+          "area": 2016,
+          "aspect_ratio": 1.5555555555555556
+        },
+        {
+          "x": 390,
+          "y": 846,
+          "width": 83,
+          "height": 40,
+          "area": 3320,
+          "aspect_ratio": 2.075
+        },
+        {
+          "x": 41,
+          "y": 846,
+          "width": 171,
+          "height": 40,
+          "area": 6840,
+          "aspect_ratio": 4.275
+        },
+        {
+          "x": 514,
+          "y": 748,
+          "width": 67,
+          "height": 33,
+          "area": 2211,
+          "aspect_ratio": 2.0303030303030303
+        },
+        {
+          "x": 499,
+          "y": 748,
+          "width": 13,
+          "height": 32,
+          "area": 416,
+          "aspect_ratio": 0.40625
+        },
+        {
+          "x": 389,
+          "y": 748,
+          "width": 111,
+          "height": 33,
+          "area": 3663,
+          "aspect_ratio": 3.3636363636363638
+        },
+        {
+          "x": 51,
+          "y": 748,
+          "width": 215,
+          "height": 32,
+          "area": 6880,
+          "aspect_ratio": 6.71875
+        },
+        {
+          "x": 283,
+          "y": 656,
+          "width": 23,
+          "height": 25,
+          "area": 575,
+          "aspect_ratio": 0.92
+        },
+        {
+          "x": 233,
+          "y": 656,
+          "width": 20,
+          "height": 25,
+          "area": 500,
+          "aspect_ratio": 0.8
+        },
+        {
+          "x": 90,
+          "y": 654,
+          "width": 89,
+          "height": 28,
+          "area": 2492,
+          "aspect_ratio": 3.1785714285714284
+        },
+        {
+          "x": 530,
+          "y": 649,
+          "width": 89,
+          "height": 33,
+          "area": 2937,
+          "aspect_ratio": 2.696969696969697
+        },
+        {
+          "x": 450,
+          "y": 649,
+          "width": 78,
+          "height": 33,
+          "area": 2574,
+          "aspect_ratio": 2.3636363636363638
+        },
+        {
+          "x": 436,
+          "y": 649,
+          "width": 12,
+          "height": 32,
+          "area": 384,
+          "aspect_ratio": 0.375
+        }
+      ],
+      "cobertura_texto_porcentaje": 12.427125358921238
+    },
+    "ruido_artefactos": {
+      "nivel_ruido": 2.8659306509649984,
+      "desviacion_ruido": 11.80325416851274,
+      "porcentaje_pixeles_ruidosos": 4.2170065060153386,
+      "uniformidad": 2.6815487224221277,
+      "calificacion_ruido": "Bajo"
+    },
+    "geometria_orientacion": {
+      "sesgo_estimado": 2.5,
+      "lineas_detectadas": 50,
+      "simetria_horizontal": 0.9104267954826355,
+      "relacion_aspecto": 0.9435185185185185,
+      "requiere_deskew": true,
+      "orientacion_correcta": true
+    },
+    "deteccion_inteligente": {
+      "tipo_imagen": "documento_escaneado",
+      "esquema_color": "texto_oscuro_fondo_claro",
+      "inversion_requerida": false,
+      "ui_elements_detectados": true,
+      "aspect_ratio": 0.9435185185185185,
+      "calidad_digital": false,
+      "dark_percentage": 47.09019470214844,
+      "light_percentage": 52.90980529785156,
+      "edge_density": 0.021071856940355467,
+      "noise_estimate": 59.1607704561441,
+      "confianza_deteccion": 0.4
+    },
+    "recomendaciones": {
+      "perfil_recomendado": "rapido",
+      "aplicar_deskew": true,
+      "nivel_denoise": "moderado",
+      "ajuste_contraste": false,
+      "filtro_bilateral": true,
+      "prioridades": [
+        "Corrección de sesgo necesaria"
+      ]
+    },
+    "puntuacion_general": {
+      "total": 80.6,
+      "calidad": 80,
+      "texto": 62.1,
+      "ruido": 100,
+      "geometria": 100,
+      "categoria": "Excelente"
+    }
+  },
+  "mejora": {
+    "perfil_usado": "ultra_rapido",
+    "pasos_aplicados": [
+      "00_analisis_sin_unificacion",
+      "00_maxima_claridad_letras",
+      "01_no_inversion_necesaria",
+      "02_sin_procesamiento"
+    ],
+    "metricas_antes": {
+      "brillo_promedio": 159.9879420637517,
+      "contraste": 99.36193242755131,
+      "nitidez": 1341.5483560260082,
+      "rango_dinamico": 255.0
+    },
+    "parametros_aplicados": {
+      "analisis_fondos": {
+        "intensidad_media_original": 159.99,
+        "porcentaje_fondo_oscuro": 0.4650000035762787,
+        "unificacion_aplicada": false,
+        "razon_no_unificacion": "preservacion_calidad_usuario"
+      },
+      "no_inversion": {
+        "razon": "imagen_suficientemente_clara",
+        "intensidad_media": 159.99
+      },
+      "documento_processing_eliminado": {
+        "razon": "eliminado_por_solicitud_usuario",
+        "bilateral_filter": false,
+        "contraste_adaptativo": false,
+        "binarizacion": false,
+        "impacto": "preserva_imagen_original_completamente"
+      }
+    },
+    "tiempo_procesamiento": 0.017,
+    "estrategia_aplicada": "Documento Escaneado - SIN PROCESAMIENTO",
+    "metricas_despues": {
+      "brillo_promedio": 159.78674081343365,
+      "contraste": 99.96858897199024,
+      "nitidez": 2326.8101129164734,
+      "rango_dinamico": 255.0
+    },
+    "imagen_mejorada": "imagen_mejorada.png",
+    "mejora_calidad": {
+      "contraste": {
+        "antes": 99.36,
+        "despues": 99.97,
+        "cambio": 0.61,
+        "porcentaje": 0.6
+      },
+      "nitidez": {
+        "antes": 1341.55,
+        "despues": 2326.81,
+        "cambio": 985.26,
+        "porcentaje": 73.4
+      },
+      "rango_dinamico": {
+        "antes": 255.0,
+        "despues": 255.0,
+        "cambio": 0.0,
+        "porcentaje": 0.0
+      }
+    }
+  },
+  "datos_extraidos": {
+    "texto_completo": "El dinero fue enviado Bs . 313,62 Dinero Rapido BDVA Provincial Banco : BANCO MERCANTIL Numero celular : 04125318244 Identificacion : V 27061025 Concepto : Pago Fecha : 20/06/ 2025 Referencia : 000012071",
+    "palabras_detectadas": [
+      {
+        "texto": "El",
+        "confianza": 0.9119136333465576,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 0,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "dinero",
+        "confianza": 0.9998096823692322,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 0,
+          "palabra": 1
+        }
+      },
+      {
+        "texto": "fue",
+        "confianza": 0.997314989566803,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 0,
+          "palabra": 2
+        }
+      },
+      {
+        "texto": "enviado",
+        "confianza": 0.9984517097473145,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 0,
+          "palabra": 3
+        }
+      },
+      {
+        "texto": "Bs.",
+        "confianza": 0.9980871677398682,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 1,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "313,62",
+        "confianza": 0.9937577247619629,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 1,
+          "palabra": 1
+        }
+      },
+      {
+        "texto": "Dinero",
+        "confianza": 0.9989546537399292,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 2,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "Rapido",
+        "confianza": 0.8775657415390015,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 2,
+          "palabra": 1
+        }
+      },
+      {
+        "texto": "BDVA",
+        "confianza": 0.8838101625442505,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 3,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "Provincial",
+        "confianza": 0.8130096197128296,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 3,
+          "palabra": 1
+        }
+      },
+      {
+        "texto": "Banco:",
+        "confianza": 0.9273133277893066,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 4,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "BANCO",
+        "confianza": 0.9924169778823853,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 5,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "MERCANTIL",
+        "confianza": 0.9329137206077576,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 5,
+          "palabra": 1
+        }
+      },
+      {
+        "texto": "Numero",
+        "confianza": 0.9345391988754272,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 6,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "celular:",
+        "confianza": 0.9964424967765808,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 6,
+          "palabra": 1
+        }
+      },
+      {
+        "texto": "04125318244",
+        "confianza": 0.8439763784408569,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 7,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "Identificacion:",
+        "confianza": 0.6485762000083923,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 8,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "V27061025",
+        "confianza": 0.7047865986824036,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 9,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "Concepto:",
+        "confianza": 0.9660258293151855,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 10,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "Pago",
+        "confianza": 0.9830952286720276,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 11,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "Fecha:",
+        "confianza": 0.9975839853286743,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 12,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "20/06/2025",
+        "confianza": 0.9794734120368958,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 13,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "Referencia:",
+        "confianza": 0.7462667226791382,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 14,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "000012071",
+        "confianza": 0.9995649456977844,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 15,
+          "palabra": 0
+        }
+      }
+    ],
+    "metodo_extraccion": "ONNX_TR",
+    "tiempo_procesamiento": 0.9986240863800049,
+    "total_palabras_detectadas": 24,
+    "confianza_promedio": 0.9219020878275236
+  },
+  "estadisticas": {
+    "confianza_promedio": "92.2%",
+    "palabras_alta_confianza": 21,
+    "palabras_baja_confianza": 0,
+    "total_palabras": 24,
+    "calidad_categoria": "Excelente",
+    "tiempo_procesamiento": "1.00s",
+    "lineas_texto": 1,
+    "longitud_texto": 203
+  },
+  "calidad_extraccion": {
+    "score_calidad": 83.1,
+    "categoria": "excelente",
+    "confianza_promedio": 0.922,
+    "palabras_alta_confianza": 21,
+    "total_palabras": 24,
+    "longitud_texto": 203,
+    "recomendaciones": [
+      "Calidad de extracción satisfactoria"
+    ]
+  },
+  "texto_extraido": "El dinero fue enviado Bs . 313,62 Dinero Rapido BDVA Provincial Banco : BANCO MERCANTIL Numero celular : 04125318244 Identificacion : V 27061025 Concepto : Pago Fecha : 20/06/ 2025 Referencia : 000012071"
+}

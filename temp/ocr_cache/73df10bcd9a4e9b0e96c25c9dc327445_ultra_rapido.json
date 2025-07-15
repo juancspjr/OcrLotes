@@ -1,0 +1,502 @@
+{
+  "original_text_ocr": "8.27 Comprobante de operacion PagamovilBDV Personas 522.70 8s Fecha : 2025 Operaciér : SC3S : 33965664 dentifcacion : Origen : Banco : SANCO Carrcepta : A : 37 Cruar Accusa dircto",
+  "structured_text_ocr": "8. 27 Comprobante de operacion PagamovilBDV Personas 522. 708s Fecha: 2025 Operaciér: SC3S: 33965664 dentifcacion: Origen: Banco: SANCO Carrcepta: A: 37 Cruar Accusa dircto",
+  "extracted_fields": {
+    "valor_referencia_operacion": "",
+    "monto_total": "",
+    "datos_beneficiario": "",
+    "concepto_motivo": "",
+    "fecha_operacion": "",
+    "telefono": "",
+    "cedula": "",
+    "banco_emisor_pagador": "",
+    "banco_receptor_beneficiario": "",
+    "tipo_transaccion": "",
+    "identificador_cuenta_origen": "",
+    "identificador_cuenta_destino": "",
+    "banco_destino": "",
+    "pago_fecha": "",
+    "hora_operacion": ""
+  },
+  "processing_metadata": {
+    "logica_oro_aplicada": false,
+    "ocr_confidence_avg": 0.733,
+    "error_messages": [
+      "Lógica de oro basada en coordenadas no aplicada: No se detectaron coordenadas válidas en el OCR de origen"
+    ],
+    "processing_time_ms": 658.16,
+    "total_words_detected": 24,
+    "coordinates_available": 0,
+    "ocr_method": "ONNXTR_SINGLE_PASS_COORDENADAS",
+    "timestamp": "2025-07-15T09:01:01.809159"
+  },
+  "word_data_granular": [],
+  "texto_completo": "8.27 Comprobante de operacion PagamovilBDV Personas 522.70 8s Fecha : 2025 Operaciér : SC3S : 33965664 dentifcacion : Origen : Banco : SANCO Carrcepta : A : 37 Cruar Accusa dircto",
+  "texto_total_ocr": "8. 27 Comprobante de operacion PagamovilBDV Personas 522. 708s Fecha: 2025 Operaciér: SC3S: 33965664 dentifcacion: Origen: Banco: SANCO Carrcepta: A: 37 Cruar Accusa dircto",
+  "concepto_empresarial": "Comprobante de operacion",
+  "total_caracteres": 179,
+  "total_caracteres_ordenados": 172,
+  "tiempo_procesamiento": 0.658,
+  "metodo_extraccion": "ONNXTR_SINGLE_PASS_COORDENADAS",
+  "configuracion_onnxtr": "ultra_rapido",
+  "total_palabras_detectadas": 24,
+  "palabras_detectadas": [
+    {
+      "texto": "8.27",
+      "confianza": 0.5801494717597961,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 0,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Comprobante",
+      "confianza": 0.991793692111969,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 4,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "de",
+      "confianza": 0.999849796295166,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 4,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "operacion",
+      "confianza": 0.9989137649536133,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 4,
+        "palabra": 2
+      }
+    },
+    {
+      "texto": "PagamovilBDV",
+      "confianza": 0.5770425796508789,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 5,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Personas",
+      "confianza": 0.993144154548645,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 5,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "522.70",
+      "confianza": 0.9982227683067322,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 6,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "8s",
+      "confianza": 0.5331855416297913,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 6,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "Fecha:",
+      "confianza": 0.7526847124099731,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 7,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "2025",
+      "confianza": 0.9254508018493652,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 8,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "Operaciér:",
+      "confianza": 0.6071459650993347,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 9,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "SC3S:",
+      "confianza": 0.543095052242279,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 10,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "33965664",
+      "confianza": 0.724401593208313,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 10,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "dentifcacion:",
+      "confianza": 0.6198962926864624,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 11,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Origen:",
+      "confianza": 0.9898159503936768,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 13,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Banco:",
+      "confianza": 0.7573984265327454,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 18,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "SANCO",
+      "confianza": 0.6217426657676697,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 19,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "Carrcepta:",
+      "confianza": 0.5770940780639648,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 20,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "A",
+      "confianza": 0.5265907049179077,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 21,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": ":",
+      "confianza": 0.8590062260627747,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 21,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "37",
+      "confianza": 0.6774844527244568,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 22,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Cruar",
+      "confianza": 0.6290600895881653,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 23,
+        "palabra": 0
+      }
+    },
+    {
+      "texto": "Accusa",
+      "confianza": 0.6138922572135925,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 23,
+        "palabra": 1
+      }
+    },
+    {
+      "texto": "dircto",
+      "confianza": 0.5008249282836914,
+      "coordinates": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "posicion": {
+        "pagina": 0,
+        "bloque": 0,
+        "linea": 23,
+        "palabra": 2
+      }
+    }
+  ],
+  "confianza_promedio": 0.733,
+  "estadisticas_onnxtr": {
+    "paginas_procesadas": 1,
+    "palabras_alta_confianza": 8,
+    "palabras_media_confianza": 9,
+    "palabras_baja_confianza": 7,
+    "min_confianza_aplicada": 0.5
+  },
+  "calidad_extraccion": {
+    "score_calidad": 59.3,
+    "categoria": "regular",
+    "confianza_promedio": 0.733,
+    "palabras_alta_confianza": 8,
+    "total_palabras": 24,
+    "longitud_texto": 179,
+    "recomendaciones": [
+      "Muchas palabras tienen confianza media/baja - verificar preprocessing"
+    ]
+  },
+  "deteccion_inteligente": {
+    "tipo_imagen": "screenshot_movil",
+    "esquema_color": "texto_oscuro_fondo_claro",
+    "inversion_requerida": false,
+    "ui_elements_detectados": true,
+    "aspect_ratio": 0.45,
+    "calidad_digital": false,
+    "dark_percentage": 2.352156639099121,
+    "light_percentage": 97.64784240722656,
+    "edge_density": 0.02101813747904283,
+    "noise_estimate": 61.126744533245336,
+    "confianza_deteccion": 0.6000000000000001
+  },
+  "logica_oro_aplicada": false,
+  "datos_financieros": {
+    "amount": [
+      {
+        "valor": "8",
+        "posicion_texto": 0
+      },
+      {
+        "valor": "27",
+        "posicion_texto": 2
+      },
+      {
+        "valor": "522",
+        "posicion_texto": 52
+      },
+      {
+        "valor": "70",
+        "posicion_texto": 56
+      },
+      {
+        "valor": "8",
+        "posicion_texto": 0
+      }
+    ],
+    "analisis_documento": {
+      "tipo": "recibo_pago",
+      "confianza": 25.0,
+      "keywords_encontradas": [
+        "comprobante"
+      ]
+    },
+    "resumen_extraido": {
+      "montos_encontrados": 5,
+      "fechas_encontradas": 0,
+      "referencias_encontradas": 0,
+      "cuentas_encontradas": 0,
+      "telefonos_encontrados": 0,
+      "total_elementos": 5,
+      "completitud_porcentaje": 50
+    }
+  }
+}

@@ -1,0 +1,1067 @@
+{
+  "status": "exitoso",
+  "request_id": "BATCH_20250715_091421_465_20250715-F--572063137@lid_Carmen_06-11_20250715_091420_480.png",
+  "filename": "20250715-F--572063137@lid_Carmen_06-11_20250715_091420_480.png",
+  "tiempo_procesamiento": 1.1500005722045898,
+  "fecha_procesamiento": "2025-07-15T09:14:23.017474",
+  "original_text_ocr": "El dnaro ( @s 313,62 Banco : BANCO MERCANTIL Numero celular : 04125318244 Identificacion : V 27061025 Concepto : Pago Fecha : 20/06/ 2025 Referencia : 000012071",
+  "structured_text_ocr": "El dnaro ( @s 313, 62 Banco: BANCO MERCANTIL Numero celular: 04125318244 Identificacion: V 27061025 Concepto: Pago Fecha: 20/06/2025 Referencia: 000012071",
+  "extracted_fields": {
+    "valor_referencia_operacion": "",
+    "monto_total": "",
+    "datos_beneficiario": "",
+    "concepto_motivo": "",
+    "fecha_operacion": "",
+    "telefono": "",
+    "cedula": "",
+    "banco_emisor_pagador": "",
+    "banco_receptor_beneficiario": "",
+    "tipo_transaccion": "",
+    "identificador_cuenta_origen": "",
+    "identificador_cuenta_destino": "",
+    "banco_destino": "BANCO MERCANTIL",
+    "pago_fecha": "20/06/ 2025",
+    "hora_operacion": "",
+    "monto": "313.62"
+  },
+  "processing_metadata": {
+    "logica_oro_aplicada": false,
+    "ocr_confidence_avg": 0.855,
+    "error_messages": [
+      "Lógica de oro basada en coordenadas no aplicada: No se detectaron coordenadas válidas en el OCR de origen"
+    ],
+    "processing_time_ms": 845.34,
+    "total_words_detected": 19,
+    "coordinates_available": 0,
+    "ocr_method": "ONNXTR_SINGLE_PASS_COORDENADAS",
+    "timestamp": "2025-07-15T09:14:23.013778"
+  },
+  "Información del Archivo": {
+    "fecha_procesamiento": "2025-07-15T09:14:23.015546",
+    "formato": ".png",
+    "nombre_original": "20250715-F--572063137@lid_Carmen_06-11_20250715_091420_480.png",
+    "tamaño": 23414
+  },
+  "Estadísticas": {
+    "confianza_promedio": "85.5%",
+    "palabras_alta_confianza": 12,
+    "palabras_baja_confianza": 0,
+    "total_palabras": 19,
+    "calidad_categoria": "Muy Buena",
+    "tiempo_procesamiento": "1.15s",
+    "lineas_texto": 1,
+    "longitud_texto": 160
+  },
+  "Texto Extraído": {
+    "texto_completo": "El dnaro ( @s 313,62 Banco : BANCO MERCANTIL Numero celular : 04125318244 Identificacion : V 27061025 Concepto : Pago Fecha : 20/06/ 2025 Referencia : 000012071",
+    "longitud_texto": 160,
+    "lineas_texto": 1
+  },
+  "validacion": {
+    "imagen_info": {
+      "ancho": 1019,
+      "alto": 1080,
+      "resolucion_total": 1100520,
+      "canales": 1,
+      "modo": "L",
+      "formato": "PNG",
+      "brillo_promedio": 242.96458946679752,
+      "desviacion_brillo": 54.07567456133962,
+      "rango_dinamico": 255.0,
+      "histogram": [
+        51942.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1048578.0
+      ],
+      "histogram_analysis": {
+        "picos_principales": [],
+        "rango_fondo_sugerido": 255,
+        "rango_texto_sugerido": 0,
+        "distribucion": {
+          "oscuras": 0.04719768837094307,
+          "medias": 0.0,
+          "claras": 0.952802300453186
+        },
+        "requiere_inversion": false,
+        "bimodal": false
+      },
+      "variaciones_fondo": {
+        "total_regiones_analizadas": 1638,
+        "fondos_unicos_detectados": 2,
+        "variacion_fondos": 29.35339248932974,
+        "fondos_heterogeneos": false,
+        "rango_fondos": [
+          0,
+          255
+        ],
+        "requiere_unificacion_avanzada": true,
+        "regiones_variacion": [
+          {
+            "posicion": [
+              0,
+              0
+            ],
+            "media_local": 255.0,
+            "std_local": 0.0,
+            "pico_fondo": 255
+          },
+          {
+            "posicion": [
+              25,
+              0
+            ],
+            "media_local": 255.0,
+            "std_local": 0.0,
+            "pico_fondo": 255
+          },
+          {
+            "posicion": [
+              50,
+              0
+            ],
+            "media_local": 255.0,
+            "std_local": 0.0,
+            "pico_fondo": 255
+          },
+          {
+            "posicion": [
+              75,
+              0
+            ],
+            "media_local": 255.0,
+            "std_local": 0.0,
+            "pico_fondo": 255
+          },
+          {
+            "posicion": [
+              100,
+              0
+            ],
+            "media_local": 255.0,
+            "std_local": 0.0,
+            "pico_fondo": 255
+          },
+          {
+            "posicion": [
+              125,
+              0
+            ],
+            "media_local": 255.0,
+            "std_local": 0.0,
+            "pico_fondo": 255
+          },
+          {
+            "posicion": [
+              150,
+              0
+            ],
+            "media_local": 255.0,
+            "std_local": 0.0,
+            "pico_fondo": 255
+          },
+          {
+            "posicion": [
+              175,
+              0
+            ],
+            "media_local": 255.0,
+            "std_local": 0.0,
+            "pico_fondo": 255
+          },
+          {
+            "posicion": [
+              200,
+              0
+            ],
+            "media_local": 255.0,
+            "std_local": 0.0,
+            "pico_fondo": 255
+          },
+          {
+            "posicion": [
+              225,
+              0
+            ],
+            "media_local": 255.0,
+            "std_local": 0.0,
+            "pico_fondo": 255
+          }
+        ]
+      }
+    },
+    "calidad_imagen": {
+      "contraste": 54.07567456133962,
+      "blur_variance": 5653.911105659143,
+      "entropy": 0.2743712067604065,
+      "gradiente_promedio": 49.93168379243768,
+      "brillo_promedio": 242.96458946679752,
+      "uniformidad_brillo": 54.07567456133962,
+      "calificacion_calidad": 65
+    },
+    "deteccion_texto": {
+      "regiones_detectadas": 39,
+      "area_total_texto": 154923,
+      "densidad_texto": 0.1407725438883437,
+      "regiones": [
+        {
+          "x": 149,
+          "y": 1044,
+          "width": 68,
+          "height": 32,
+          "area": 2176,
+          "aspect_ratio": 2.125
+        },
+        {
+          "x": 499,
+          "y": 1043,
+          "width": 77,
+          "height": 33,
+          "area": 2541,
+          "aspect_ratio": 2.3333333333333335
+        },
+        {
+          "x": 485,
+          "y": 1043,
+          "width": 12,
+          "height": 32,
+          "area": 384,
+          "aspect_ratio": 0.375
+        },
+        {
+          "x": 389,
+          "y": 1043,
+          "width": 95,
+          "height": 33,
+          "area": 3135,
+          "aspect_ratio": 2.878787878787879
+        },
+        {
+          "x": 42,
+          "y": 1043,
+          "width": 106,
+          "height": 33,
+          "area": 3498,
+          "aspect_ratio": 3.212121212121212
+        },
+        {
+          "x": 389,
+          "y": 945,
+          "width": 218,
+          "height": 33,
+          "area": 7194,
+          "aspect_ratio": 6.606060606060606
+        },
+        {
+          "x": 42,
+          "y": 945,
+          "width": 97,
+          "height": 32,
+          "area": 3104,
+          "aspect_ratio": 3.03125
+        },
+        {
+          "x": 390,
+          "y": 846,
+          "width": 82,
+          "height": 40,
+          "area": 3280,
+          "aspect_ratio": 2.05
+        },
+        {
+          "x": 41,
+          "y": 845,
+          "width": 170,
+          "height": 40,
+          "area": 6800,
+          "aspect_ratio": 4.25
+        },
+        {
+          "x": 500,
+          "y": 748,
+          "width": 12,
+          "height": 32,
+          "area": 384,
+          "aspect_ratio": 0.375
+        },
+        {
+          "x": 223,
+          "y": 748,
+          "width": 42,
+          "height": 32,
+          "area": 1344,
+          "aspect_ratio": 1.3125
+        },
+        {
+          "x": 51,
+          "y": 748,
+          "width": 172,
+          "height": 32,
+          "area": 5504,
+          "aspect_ratio": 5.375
+        },
+        {
+          "x": 514,
+          "y": 747,
+          "width": 66,
+          "height": 33,
+          "area": 2178,
+          "aspect_ratio": 2.0
+        },
+        {
+          "x": 389,
+          "y": 747,
+          "width": 110,
+          "height": 33,
+          "area": 3630,
+          "aspect_ratio": 3.3333333333333335
+        },
+        {
+          "x": 232,
+          "y": 656,
+          "width": 21,
+          "height": 25,
+          "area": 525,
+          "aspect_ratio": 0.84
+        },
+        {
+          "x": 90,
+          "y": 656,
+          "width": 87,
+          "height": 25,
+          "area": 2175,
+          "aspect_ratio": 3.48
+        },
+        {
+          "x": 515,
+          "y": 649,
+          "width": 13,
+          "height": 32,
+          "area": 416,
+          "aspect_ratio": 0.40625
+        },
+        {
+          "x": 436,
+          "y": 649,
+          "width": 12,
+          "height": 32,
+          "area": 384,
+          "aspect_ratio": 0.375
+        },
+        {
+          "x": 254,
+          "y": 649,
+          "width": 51,
+          "height": 32,
+          "area": 1632,
+          "aspect_ratio": 1.59375
+        },
+        {
+          "x": 184,
+          "y": 649,
+          "width": 48,
+          "height": 32,
+          "area": 1536,
+          "aspect_ratio": 1.5
+        }
+      ],
+      "cobertura_texto_porcentaje": 14.07725438883437
+    },
+    "ruido_artefactos": {
+      "nivel_ruido": 4.932181150728747,
+      "desviacion_ruido": 19.085661961898694,
+      "porcentaje_pixeles_ruidosos": 4.87478646458038,
+      "uniformidad": 2.6940764365936105,
+      "calificacion_ruido": "Bajo"
+    },
+    "geometria_orientacion": {
+      "sesgo_estimado": 2.5,
+      "lineas_detectadas": 50,
+      "simetria_horizontal": 0.43396705389022827,
+      "relacion_aspecto": 0.9435185185185185,
+      "requiere_deskew": true,
+      "orientacion_correcta": true
+    },
+    "deteccion_inteligente": {
+      "tipo_imagen": "documento_escaneado",
+      "esquema_color": "texto_oscuro_fondo_claro",
+      "inversion_requerida": false,
+      "ui_elements_detectados": true,
+      "aspect_ratio": 0.9435185185185185,
+      "calidad_digital": false,
+      "dark_percentage": 4.71976900100708,
+      "light_percentage": 95.28022766113281,
+      "edge_density": 0.02197597499363937,
+      "noise_estimate": 35.27625259880774,
+      "confianza_deteccion": 0.4
+    },
+    "recomendaciones": {
+      "perfil_recomendado": "rapido",
+      "aplicar_deskew": true,
+      "nivel_denoise": "moderado",
+      "ajuste_contraste": false,
+      "filtro_bilateral": true,
+      "prioridades": [
+        "Corrección de sesgo necesaria"
+      ]
+    },
+    "puntuacion_general": {
+      "total": 77.1,
+      "calidad": 65,
+      "texto": 70.4,
+      "ruido": 100,
+      "geometria": 100,
+      "categoria": "Buena"
+    }
+  },
+  "mejora": {
+    "perfil_usado": "ultra_rapido",
+    "pasos_aplicados": [
+      "00_analisis_sin_unificacion",
+      "00_maxima_claridad_letras",
+      "01_no_inversion_necesaria",
+      "02_sin_procesamiento"
+    ],
+    "metricas_antes": {
+      "brillo_promedio": 242.96458946679752,
+      "contraste": 54.07567456133962,
+      "nitidez": 5653.911105659143,
+      "rango_dinamico": 255.0
+    },
+    "parametros_aplicados": {
+      "analisis_fondos": {
+        "intensidad_media_original": 242.96,
+        "porcentaje_fondo_oscuro": 0.04699999839067459,
+        "unificacion_aplicada": false,
+        "razon_no_unificacion": "preservacion_calidad_usuario"
+      },
+      "no_inversion": {
+        "razon": "imagen_suficientemente_clara",
+        "intensidad_media": 242.96
+      },
+      "documento_processing_eliminado": {
+        "razon": "eliminado_por_solicitud_usuario",
+        "bilateral_filter": false,
+        "contraste_adaptativo": false,
+        "binarizacion": false,
+        "impacto": "preserva_imagen_original_completamente"
+      }
+    },
+    "tiempo_procesamiento": 0.021,
+    "estrategia_aplicada": "Documento Escaneado - SIN PROCESAMIENTO",
+    "metricas_despues": {
+      "brillo_promedio": 242.96458946679752,
+      "contraste": 54.07567456133962,
+      "nitidez": 5653.911105659143,
+      "rango_dinamico": 255.0
+    },
+    "imagen_mejorada": "imagen_mejorada.png",
+    "mejora_calidad": {
+      "contraste": {
+        "antes": 54.08,
+        "despues": 54.08,
+        "cambio": 0.0,
+        "porcentaje": 0.0
+      },
+      "nitidez": {
+        "antes": 5653.91,
+        "despues": 5653.91,
+        "cambio": 0.0,
+        "porcentaje": 0.0
+      },
+      "rango_dinamico": {
+        "antes": 255.0,
+        "despues": 255.0,
+        "cambio": 0.0,
+        "porcentaje": 0.0
+      }
+    }
+  },
+  "datos_extraidos": {
+    "texto_completo": "El dnaro ( @s 313,62 Banco : BANCO MERCANTIL Numero celular : 04125318244 Identificacion : V 27061025 Concepto : Pago Fecha : 20/06/ 2025 Referencia : 000012071",
+    "palabras_detectadas": [
+      {
+        "texto": "El",
+        "confianza": 0.7713382840156555,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 0,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "dnaro",
+        "confianza": 0.6657687425613403,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 0,
+          "palabra": 1
+        }
+      },
+      {
+        "texto": "(",
+        "confianza": 0.9963332414627075,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 0,
+          "palabra": 4
+        }
+      },
+      {
+        "texto": "@s",
+        "confianza": 0.5433441996574402,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 1,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "313,62",
+        "confianza": 0.9602000117301941,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 1,
+          "palabra": 1
+        }
+      },
+      {
+        "texto": "Banco:",
+        "confianza": 0.7828599810600281,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 4,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "BANCO",
+        "confianza": 0.8334593772888184,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 5,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "MERCANTIL",
+        "confianza": 0.9509688019752502,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 5,
+          "palabra": 1
+        }
+      },
+      {
+        "texto": "Numero",
+        "confianza": 0.8574219346046448,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 6,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "celular:",
+        "confianza": 0.9697247743606567,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 6,
+          "palabra": 1
+        }
+      },
+      {
+        "texto": "04125318244",
+        "confianza": 0.9760427474975586,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 7,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "Identificacion:",
+        "confianza": 0.578228235244751,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 8,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "V27061025",
+        "confianza": 0.9977959394454956,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 9,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "Concepto:",
+        "confianza": 0.9946169257164001,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 10,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "Pago",
+        "confianza": 0.754565954208374,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 11,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "Fecha:",
+        "confianza": 0.9744012951850891,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 12,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "20/06/2025",
+        "confianza": 0.9197994470596313,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 13,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "Referencia:",
+        "confianza": 0.7102267742156982,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 14,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "000012071",
+        "confianza": 0.999942421913147,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 15,
+          "palabra": 0
+        }
+      }
+    ],
+    "metodo_extraccion": "ONNX_TR",
+    "tiempo_procesamiento": 1.1500005722045898,
+    "total_palabras_detectadas": 19,
+    "confianza_promedio": 0.8545810046948885
+  },
+  "estadisticas": {
+    "confianza_promedio": "85.5%",
+    "palabras_alta_confianza": 12,
+    "palabras_baja_confianza": 0,
+    "total_palabras": 19,
+    "calidad_categoria": "Muy Buena",
+    "tiempo_procesamiento": "1.15s",
+    "lineas_texto": 1,
+    "longitud_texto": 160
+  },
+  "calidad_extraccion": {
+    "score_calidad": 68.1,
+    "categoria": "buena",
+    "confianza_promedio": 0.855,
+    "palabras_alta_confianza": 12,
+    "total_palabras": 19,
+    "longitud_texto": 160,
+    "recomendaciones": [
+      "Calidad de extracción satisfactoria"
+    ]
+  },
+  "texto_extraido": "El dnaro ( @s 313,62 Banco : BANCO MERCANTIL Numero celular : 04125318244 Identificacion : V 27061025 Concepto : Pago Fecha : 20/06/ 2025 Referencia : 000012071"
+}

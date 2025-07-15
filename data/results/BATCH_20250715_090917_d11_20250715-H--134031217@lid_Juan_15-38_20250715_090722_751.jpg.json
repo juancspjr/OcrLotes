@@ -1,0 +1,1090 @@
+{
+  "status": "exitoso",
+  "request_id": "BATCH_20250715_090917_d11_20250715-H--134031217@lid_Juan_15-38_20250715_090722_751.jpg",
+  "filename": "20250715-H--134031217@lid_Juan_15-38_20250715_090722_751.jpg",
+  "tiempo_procesamiento": 0.6572108268737793,
+  "fecha_procesamiento": "2025-07-15T09:09:17.794929",
+  "original_text_ocr": "ZiNli Recibo Enviaste dinero -$10.00 Recibe Diego Camacho diegoboh 1987 @gmail . com Fecha 14 JUL 2025 - 4:57 PM Mensaje Pagado 10 dolar",
+  "structured_text_ocr": "ZiNli Recibo Enviaste dinero -$10. 00 Recibe Diego Camacho diegoboh 1987 @gmail. com Fecha 14 JUL 2025 - 4: 57 PM Mensaje Pagado 10 dolar",
+  "extracted_fields": {
+    "valor_referencia_operacion": "",
+    "monto_total": "",
+    "datos_beneficiario": "",
+    "concepto_motivo": "",
+    "fecha_operacion": "",
+    "telefono": "",
+    "cedula": "",
+    "banco_emisor_pagador": "",
+    "banco_receptor_beneficiario": "",
+    "tipo_transaccion": "",
+    "identificador_cuenta_origen": "",
+    "identificador_cuenta_destino": "",
+    "banco_destino": "",
+    "pago_fecha": "",
+    "hora_operacion": "",
+    "monto": "10.00"
+  },
+  "processing_metadata": {
+    "logica_oro_aplicada": false,
+    "ocr_confidence_avg": 0.905,
+    "error_messages": [
+      "Lógica de oro basada en coordenadas no aplicada: No se detectaron coordenadas válidas en el OCR de origen"
+    ],
+    "processing_time_ms": 512.94,
+    "total_words_detected": 20,
+    "coordinates_available": 0,
+    "ocr_method": "ONNXTR_SINGLE_PASS_COORDENADAS",
+    "timestamp": "2025-07-15T09:09:17.792585"
+  },
+  "Información del Archivo": {
+    "fecha_procesamiento": "2025-07-15T09:09:17.794247",
+    "formato": ".jpg",
+    "nombre_original": "20250715-H--134031217@lid_Juan_15-38_20250715_090722_751.jpg",
+    "tamaño": 30063
+  },
+  "Estadísticas": {
+    "confianza_promedio": "90.5%",
+    "palabras_alta_confianza": 17,
+    "palabras_baja_confianza": 0,
+    "total_palabras": 20,
+    "calidad_categoria": "Excelente",
+    "tiempo_procesamiento": "0.66s",
+    "lineas_texto": 1,
+    "longitud_texto": 136
+  },
+  "Texto Extraído": {
+    "texto_completo": "ZiNli Recibo Enviaste dinero -$10.00 Recibe Diego Camacho diegoboh 1987 @gmail . com Fecha 14 JUL 2025 - 4:57 PM Mensaje Pagado 10 dolar",
+    "longitud_texto": 136,
+    "lineas_texto": 1
+  },
+  "validacion": {
+    "imagen_info": {
+      "ancho": 720,
+      "alto": 1071,
+      "resolucion_total": 771120,
+      "canales": 3,
+      "modo": "RGB",
+      "formato": "JPEG",
+      "brillo_promedio": 191.5499299719888,
+      "desviacion_brillo": 83.49464708538713,
+      "rango_dinamico": 254.0,
+      "histogram": [
+        0.0,
+        1.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        3.0,
+        0.0,
+        1.0,
+        1.0,
+        2.0,
+        2.0,
+        5.0,
+        0.0,
+        8.0,
+        8.0,
+        7.0,
+        9.0,
+        12.0,
+        9.0,
+        12.0,
+        7.0,
+        11.0,
+        8.0,
+        24.0,
+        19.0,
+        14.0,
+        19.0,
+        21.0,
+        17.0,
+        22.0,
+        26.0,
+        27.0,
+        40.0,
+        31.0,
+        38.0,
+        33.0,
+        35.0,
+        51.0,
+        28.0,
+        43.0,
+        31.0,
+        33.0,
+        20.0,
+        14.0,
+        29.0,
+        23.0,
+        28.0,
+        22.0,
+        27.0,
+        29.0,
+        25.0,
+        21.0,
+        26.0,
+        32.0,
+        33.0,
+        31.0,
+        35.0,
+        45.0,
+        43.0,
+        77.0,
+        88.0,
+        94.0,
+        127.0,
+        148.0,
+        209.0,
+        246.0,
+        276.0,
+        367.0,
+        432.0,
+        549.0,
+        689.0,
+        937.0,
+        1084.0,
+        1457.0,
+        3068.0,
+        249934.0,
+        2439.0,
+        2140.0,
+        1137.0,
+        1032.0,
+        803.0,
+        696.0,
+        594.0,
+        503.0,
+        483.0,
+        345.0,
+        290.0,
+        222.0,
+        271.0,
+        179.0,
+        192.0,
+        176.0,
+        140.0,
+        166.0,
+        153.0,
+        120.0,
+        120.0,
+        107.0,
+        132.0,
+        103.0,
+        94.0,
+        109.0,
+        114.0,
+        91.0,
+        106.0,
+        105.0,
+        127.0,
+        93.0,
+        77.0,
+        107.0,
+        114.0,
+        93.0,
+        82.0,
+        82.0,
+        102.0,
+        84.0,
+        83.0,
+        69.0,
+        84.0,
+        93.0,
+        98.0,
+        92.0,
+        81.0,
+        84.0,
+        74.0,
+        82.0,
+        76.0,
+        77.0,
+        62.0,
+        66.0,
+        87.0,
+        76.0,
+        126.0,
+        67.0,
+        77.0,
+        71.0,
+        81.0,
+        64.0,
+        71.0,
+        126.0,
+        92.0,
+        95.0,
+        81.0,
+        108.0,
+        128.0,
+        109.0,
+        127.0,
+        103.0,
+        170.0,
+        124.0,
+        118.0,
+        121.0,
+        95.0,
+        91.0,
+        111.0,
+        87.0,
+        108.0,
+        69.0,
+        97.0,
+        64.0,
+        83.0,
+        60.0,
+        59.0,
+        86.0,
+        72.0,
+        82.0,
+        76.0,
+        62.0,
+        74.0,
+        74.0,
+        52.0,
+        58.0,
+        63.0,
+        69.0,
+        52.0,
+        77.0,
+        68.0,
+        66.0,
+        70.0,
+        48.0,
+        59.0,
+        78.0,
+        65.0,
+        81.0,
+        56.0,
+        66.0,
+        50.0,
+        64.0,
+        53.0,
+        59.0,
+        70.0,
+        70.0,
+        77.0,
+        53.0,
+        55.0,
+        58.0,
+        49.0,
+        74.0,
+        53.0,
+        66.0,
+        47.0,
+        61.0,
+        72.0,
+        72.0,
+        77.0,
+        105.0,
+        67.0,
+        87.0,
+        88.0,
+        97.0,
+        104.0,
+        75.0,
+        85.0,
+        95.0,
+        98.0,
+        80.0,
+        80.0,
+        72.0,
+        83.0,
+        74.0,
+        82.0,
+        104.0,
+        86.0,
+        107.0,
+        98.0,
+        96.0,
+        114.0,
+        95.0,
+        125.0,
+        142.0,
+        134.0,
+        159.0,
+        149.0,
+        185.0,
+        180.0,
+        216.0,
+        305.0,
+        307.0,
+        347.0,
+        510.0,
+        555.0,
+        1434.0,
+        777.0,
+        887.0,
+        1031.0,
+        1429.0,
+        1856.0,
+        1891.0,
+        3730.0,
+        11449.0,
+        459202.0
+      ],
+      "histogram_analysis": {
+        "picos_principales": [
+          [
+            80,
+            249934
+          ]
+        ],
+        "rango_fondo_sugerido": 255,
+        "rango_texto_sugerido": 0,
+        "distribucion": {
+          "oscuras": 0.34712105989456177,
+          "medias": 0.015408756211400032,
+          "claras": 0.6374701857566833
+        },
+        "requiere_inversion": false,
+        "bimodal": false
+      },
+      "variaciones_fondo": {
+        "total_regiones_analizadas": 1107,
+        "fondos_unicos_detectados": 2,
+        "variacion_fondos": 84.29202658958567,
+        "fondos_heterogeneos": false,
+        "rango_fondos": [
+          80,
+          255
+        ],
+        "requiere_unificacion_avanzada": true,
+        "regiones_variacion": [
+          {
+            "posicion": [
+              0,
+              0
+            ],
+            "media_local": 80.0312,
+            "std_local": 1.5016745852547415,
+            "pico_fondo": 80
+          },
+          {
+            "posicion": [
+              25,
+              0
+            ],
+            "media_local": 109.2504,
+            "std_local": 62.86154070526747,
+            "pico_fondo": 80
+          },
+          {
+            "posicion": [
+              50,
+              0
+            ],
+            "media_local": 135.2628,
+            "std_local": 77.7248849221406,
+            "pico_fondo": 80
+          },
+          {
+            "posicion": [
+              75,
+              0
+            ],
+            "media_local": 134.4672,
+            "std_local": 77.88489535307856,
+            "pico_fondo": 80
+          },
+          {
+            "posicion": [
+              100,
+              0
+            ],
+            "media_local": 140.2016,
+            "std_local": 79.26542346723444,
+            "pico_fondo": 80
+          },
+          {
+            "posicion": [
+              125,
+              0
+            ],
+            "media_local": 125.1856,
+            "std_local": 73.34384740821822,
+            "pico_fondo": 80
+          },
+          {
+            "posicion": [
+              150,
+              0
+            ],
+            "media_local": 93.4076,
+            "std_local": 45.56924250237214,
+            "pico_fondo": 80
+          },
+          {
+            "posicion": [
+              175,
+              0
+            ],
+            "media_local": 80.0,
+            "std_local": 0.0,
+            "pico_fondo": 80
+          },
+          {
+            "posicion": [
+              200,
+              0
+            ],
+            "media_local": 80.0,
+            "std_local": 0.0,
+            "pico_fondo": 80
+          },
+          {
+            "posicion": [
+              225,
+              0
+            ],
+            "media_local": 80.0,
+            "std_local": 0.0,
+            "pico_fondo": 80
+          }
+        ]
+      }
+    },
+    "calidad_imagen": {
+      "contraste": 83.49464708538713,
+      "blur_variance": 512.9855651515007,
+      "entropy": 1.7428340911865234,
+      "gradiente_promedio": 20.550151795900792,
+      "brillo_promedio": 191.5499299719888,
+      "uniformidad_brillo": 83.49464708538713,
+      "calificacion_calidad": 80
+    },
+    "deteccion_texto": {
+      "regiones_detectadas": 37,
+      "area_total_texto": 60429,
+      "densidad_texto": 0.07836523498288205,
+      "regiones": [
+        {
+          "x": 199,
+          "y": 803,
+          "width": 74,
+          "height": 26,
+          "area": 1924,
+          "aspect_ratio": 2.8461538461538463
+        },
+        {
+          "x": 158,
+          "y": 803,
+          "width": 34,
+          "height": 26,
+          "area": 884,
+          "aspect_ratio": 1.3076923076923077
+        },
+        {
+          "x": 43,
+          "y": 802,
+          "width": 108,
+          "height": 34,
+          "area": 3672,
+          "aspect_ratio": 3.176470588235294
+        },
+        {
+          "x": 43,
+          "y": 757,
+          "width": 104,
+          "height": 28,
+          "area": 2912,
+          "aspect_ratio": 3.7142857142857144
+        },
+        {
+          "x": 232,
+          "y": 684,
+          "width": 15,
+          "height": 8,
+          "area": 120,
+          "aspect_ratio": 1.875
+        },
+        {
+          "x": 42,
+          "y": 673,
+          "width": 34,
+          "height": 26,
+          "area": 884,
+          "aspect_ratio": 1.3076923076923077
+        },
+        {
+          "x": 324,
+          "y": 672,
+          "width": 44,
+          "height": 27,
+          "area": 1188,
+          "aspect_ratio": 1.6296296296296295
+        },
+        {
+          "x": 254,
+          "y": 672,
+          "width": 63,
+          "height": 28,
+          "area": 1764,
+          "aspect_ratio": 2.25
+        },
+        {
+          "x": 149,
+          "y": 672,
+          "width": 76,
+          "height": 28,
+          "area": 2128,
+          "aspect_ratio": 2.7142857142857144
+        },
+        {
+          "x": 82,
+          "y": 672,
+          "width": 62,
+          "height": 28,
+          "area": 1736,
+          "aspect_ratio": 2.2142857142857144
+        },
+        {
+          "x": 43,
+          "y": 627,
+          "width": 77,
+          "height": 24,
+          "area": 1848,
+          "aspect_ratio": 3.2083333333333335
+        },
+        {
+          "x": 131,
+          "y": 496,
+          "width": 139,
+          "height": 26,
+          "area": 3614,
+          "aspect_ratio": 5.346153846153846
+        },
+        {
+          "x": 43,
+          "y": 495,
+          "width": 82,
+          "height": 34,
+          "area": 2788,
+          "aspect_ratio": 2.411764705882353
+        },
+        {
+          "x": 43,
+          "y": 450,
+          "width": 86,
+          "height": 24,
+          "area": 2064,
+          "aspect_ratio": 3.5833333333333335
+        },
+        {
+          "x": 191,
+          "y": 300,
+          "width": 12,
+          "height": 12,
+          "area": 144,
+          "aspect_ratio": 1.0
+        },
+        {
+          "x": 46,
+          "y": 284,
+          "width": 28,
+          "height": 9,
+          "area": 252,
+          "aspect_ratio": 3.111111111111111
+        },
+        {
+          "x": 119,
+          "y": 259,
+          "width": 25,
+          "height": 53,
+          "area": 1325,
+          "aspect_ratio": 0.4716981132075472
+        },
+        {
+          "x": 249,
+          "y": 258,
+          "width": 39,
+          "height": 55,
+          "area": 2145,
+          "aspect_ratio": 0.7090909090909091
+        },
+        {
+          "x": 206,
+          "y": 258,
+          "width": 39,
+          "height": 55,
+          "area": 2145,
+          "aspect_ratio": 0.7090909090909091
+        },
+        {
+          "x": 149,
+          "y": 258,
+          "width": 39,
+          "height": 55,
+          "area": 2145,
+          "aspect_ratio": 0.7090909090909091
+        }
+      ],
+      "cobertura_texto_porcentaje": 7.836523498288204
+    },
+    "ruido_artefactos": {
+      "nivel_ruido": 1.578802261645399,
+      "desviacion_ruido": 7.453837036191695,
+      "porcentaje_pixeles_ruidosos": 3.4650897395995437,
+      "uniformidad": 1.2232103952692188,
+      "calificacion_ruido": "Bajo"
+    },
+    "geometria_orientacion": {
+      "sesgo_estimado": 2.5,
+      "lineas_detectadas": 27,
+      "simetria_horizontal": 0.9155182242393494,
+      "relacion_aspecto": 0.6722689075630253,
+      "requiere_deskew": true,
+      "orientacion_correcta": true
+    },
+    "deteccion_inteligente": {
+      "tipo_imagen": "screenshot_movil",
+      "esquema_color": "texto_oscuro_fondo_claro",
+      "inversion_requerida": false,
+      "ui_elements_detectados": true,
+      "aspect_ratio": 0.6722689075630253,
+      "calidad_digital": false,
+      "dark_percentage": 35.74631881713867,
+      "light_percentage": 64.2536849975586,
+      "edge_density": 0.016348946986201887,
+      "noise_estimate": 51.82868497124427,
+      "confianza_deteccion": 0.6000000000000001
+    },
+    "recomendaciones": {
+      "perfil_recomendado": "rapido",
+      "aplicar_deskew": true,
+      "nivel_denoise": "moderado",
+      "ajuste_contraste": false,
+      "filtro_bilateral": true,
+      "prioridades": [
+        "Corrección de sesgo necesaria"
+      ]
+    },
+    "puntuacion_general": {
+      "total": 73.8,
+      "calidad": 80,
+      "texto": 39.2,
+      "ruido": 100,
+      "geometria": 100,
+      "categoria": "Buena"
+    }
+  },
+  "mejora": {
+    "perfil_usado": "ultra_rapido",
+    "pasos_aplicados": [
+      "00_analisis_sin_unificacion",
+      "00_maxima_claridad_letras",
+      "01_no_inversion_necesaria",
+      "02_sin_procesamiento"
+    ],
+    "metricas_antes": {
+      "brillo_promedio": 191.5499299719888,
+      "contraste": 83.49464708538713,
+      "nitidez": 512.9855651515007,
+      "rango_dinamico": 254.0
+    },
+    "parametros_aplicados": {
+      "analisis_fondos": {
+        "intensidad_media_original": 191.55,
+        "porcentaje_fondo_oscuro": 0.014000000432133675,
+        "unificacion_aplicada": false,
+        "razon_no_unificacion": "preservacion_calidad_usuario"
+      },
+      "no_inversion": {
+        "razon": "imagen_suficientemente_clara",
+        "intensidad_media": 191.55
+      },
+      "screenshot_processing_eliminado": {
+        "razon": "eliminado_por_solicitud_usuario",
+        "upscaling": false,
+        "unsharp_masking": false,
+        "contrast_adjustment": false,
+        "binarization": false,
+        "brightness_adjustment": false,
+        "impacto": "preserva_imagen_original_completamente"
+      }
+    },
+    "tiempo_procesamiento": 0.011,
+    "estrategia_aplicada": "Screenshot Móvil - SIN PROCESAMIENTO",
+    "metricas_despues": {
+      "brillo_promedio": 191.19433162153751,
+      "contraste": 84.3642903645984,
+      "nitidez": 1159.0794532589118,
+      "rango_dinamico": 255.0
+    },
+    "imagen_mejorada": "imagen_mejorada.png",
+    "mejora_calidad": {
+      "contraste": {
+        "antes": 83.49,
+        "despues": 84.36,
+        "cambio": 0.87,
+        "porcentaje": 1.0
+      },
+      "nitidez": {
+        "antes": 512.99,
+        "despues": 1159.08,
+        "cambio": 646.09,
+        "porcentaje": 125.9
+      },
+      "rango_dinamico": {
+        "antes": 254.0,
+        "despues": 255.0,
+        "cambio": 1.0,
+        "porcentaje": 0.4
+      }
+    }
+  },
+  "datos_extraidos": {
+    "texto_completo": "ZiNli Recibo Enviaste dinero -$10.00 Recibe Diego Camacho diegoboh 1987 @gmail . com Fecha 14 JUL 2025 - 4:57 PM Mensaje Pagado 10 dolar",
+    "palabras_detectadas": [
+      {
+        "texto": "ZiNli",
+        "confianza": 0.7559078931808472,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 0,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "Recibo",
+        "confianza": 0.9344676733016968,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 1,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "Enviaste",
+        "confianza": 0.9977298378944397,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 2,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "dinero",
+        "confianza": 0.9996023774147034,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 2,
+          "palabra": 1
+        }
+      },
+      {
+        "texto": "-$10.00",
+        "confianza": 0.9829615950584412,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 3,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "Recibe",
+        "confianza": 0.8113320469856262,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 4,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "Diego",
+        "confianza": 0.9993062019348145,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 5,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "Camacho",
+        "confianza": 0.8171902298927307,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 5,
+          "palabra": 1
+        }
+      },
+      {
+        "texto": "diegoboh1987@gmail.com",
+        "confianza": 0.8162651459376017,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 6,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "Fecha",
+        "confianza": 0.9819206595420837,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 7,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "14",
+        "confianza": 0.9643295407295227,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 8,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "JUL",
+        "confianza": 0.9731119871139526,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 8,
+          "palabra": 1
+        }
+      },
+      {
+        "texto": "2025",
+        "confianza": 0.9975141286849976,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 8,
+          "palabra": 2
+        }
+      },
+      {
+        "texto": "-",
+        "confianza": 0.6687197089195251,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 8,
+          "palabra": 3
+        }
+      },
+      {
+        "texto": "4:57",
+        "confianza": 0.9984951019287109,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 8,
+          "palabra": 4
+        }
+      },
+      {
+        "texto": "PM",
+        "confianza": 0.8945885896682739,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 8,
+          "palabra": 5
+        }
+      },
+      {
+        "texto": "Mensaje",
+        "confianza": 0.9006244540214539,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 9,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "Pagado",
+        "confianza": 0.8624634146690369,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 10,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "10",
+        "confianza": 0.7382881045341492,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 10,
+          "palabra": 1
+        }
+      },
+      {
+        "texto": "dolar",
+        "confianza": 0.999377429485321,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 10,
+          "palabra": 2
+        }
+      }
+    ],
+    "metodo_extraccion": "ONNX_TR",
+    "tiempo_procesamiento": 0.6572108268737793,
+    "total_palabras_detectadas": 20,
+    "confianza_promedio": 0.9047098060448964
+  },
+  "estadisticas": {
+    "confianza_promedio": "90.5%",
+    "palabras_alta_confianza": 17,
+    "palabras_baja_confianza": 0,
+    "total_palabras": 20,
+    "calidad_categoria": "Excelente",
+    "tiempo_procesamiento": "0.66s",
+    "lineas_texto": 1,
+    "longitud_texto": 136
+  },
+  "calidad_extraccion": {
+    "score_calidad": 76.7,
+    "categoria": "buena",
+    "confianza_promedio": 0.905,
+    "palabras_alta_confianza": 17,
+    "total_palabras": 20,
+    "longitud_texto": 136,
+    "recomendaciones": [
+      "Calidad de extracción satisfactoria"
+    ]
+  },
+  "texto_extraido": "ZiNli Recibo Enviaste dinero -$10.00 Recibe Diego Camacho diegoboh 1987 @gmail . com Fecha 14 JUL 2025 - 4:57 PM Mensaje Pagado 10 dolar"
+}
