@@ -531,6 +531,69 @@ def api_process_batch():
         # Inicializar orquestador
         orquestador = OrquestadorOCR()
         
+        # FIX: Manejo de archivos enviados directamente en process_batch
+        # REASON: Frontend envía archivos directamente a process_batch en lugar de usar process_image primero
+        # IMPACT: Permite procesamiento directo de archivos desde el frontend
+        # SOLUTION: Guardar archivos en inbox y luego procesarlos
+        
+        # Verificar si hay archivos en el request
+        files_in_request = request.files.getlist('files')
+        
+        if files_in_request:
+            # Hay archivos en el request, necesitamos guardarlos primero
+            logger.info(f"📁 Archivos detectados en process_batch: {len(files_in_request)}")
+            
+            # Guardar archivos en inbox
+            from config import get_async_directories
+            directories = get_async_directories()
+            
+            for i, file in enumerate(files_in_request):
+                if file.filename and file.filename != '':
+                    # Generar nombre único con timestamp
+                    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S_%f')[:-3]
+                    
+                    # Obtener parámetros específicos del archivo
+                    codigo_sorteo = data.get(f'codigo_sorteo_{i}', 'A')
+                    id_whatsapp = data.get(f'id_whatsapp_{i}', f'{timestamp}@lid')
+                    nombre_usuario = data.get(f'nombre_usuario_{i}', 'Usuario')
+                    caption = data.get(f'caption_{i}', '')
+                    hora_exacta = data.get(f'hora_exacta_{i}', '00-00')
+                    numero_llegada = data.get(f'numero_llegada_{i}', i + 1)
+                    
+                    # Generar nombre de archivo con formato WhatsApp
+                    fecha_sorteo = datetime.now().strftime('%Y%m%d')
+                    file_ext = file.filename.rsplit('.', 1)[1].lower() if '.' in file.filename else 'png'
+                    
+                    final_filename = f"{fecha_sorteo}-{codigo_sorteo}--{id_whatsapp}_{nombre_usuario}_{hora_exacta}_{timestamp}.{file_ext}"
+                    
+                    # Guardar archivo en inbox
+                    file_path = os.path.join(directories['inbox'], final_filename)
+                    file.save(file_path)
+                    
+                    # Crear metadatos
+                    metadata = {
+                        'filename_original': file.filename,
+                        'filename_final': final_filename,
+                        'request_id': request_id,
+                        'upload_timestamp': datetime.now().isoformat(),
+                        'file_size': os.path.getsize(file_path),
+                        'numerosorteo': codigo_sorteo,
+                        'idWhatsapp': id_whatsapp,
+                        'nombre': nombre_usuario,
+                        'horamin': hora_exacta,
+                        'fechasorteo': fecha_sorteo,
+                        'caption': caption,
+                        'numero_llegada': numero_llegada,
+                        'processed_via': 'process_batch_direct'
+                    }
+                    
+                    # Guardar metadatos
+                    metadata_path = file_path.replace(f'.{file_ext}', '.metadata.json')
+                    with open(metadata_path, 'w', encoding='utf-8') as f:
+                        json.dump(metadata, f, ensure_ascii=False, indent=2)
+                    
+                    logger.info(f"📁 Archivo guardado: {final_filename}")
+        
         # Procesar lote con tracking del request_id
         resultado = orquestador.process_queue_batch(
             max_files=batch_size,

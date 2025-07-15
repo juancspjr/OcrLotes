@@ -1,0 +1,30 @@
+INFO:aplicador_ocr:✅ Reglas de extracción cargadas: 16 campos configurados
+INFO:aplicador_ocr:Iniciando warm-up de modelos frecuentes...
+INFO:aplicador_ocr:CPU detectado con psutil: 4 núcleos físicos, 8 lógicos
+INFO:root:Available providers: ['AzureExecutionProvider', 'CPUExecutionProvider']
+INFO:root:Using downloaded & verified file: /home/runner/.cache/onnxtr/models/db_mobilenet_v3_large-4987e7bd.onnx
+INFO:root:Available providers: ['AzureExecutionProvider', 'CPUExecutionProvider']
+INFO:root:Using downloaded & verified file: /home/runner/.cache/onnxtr/models/crnn_mobilenet_v3_small-bded4d49.onnx
+INFO:aplicador_ocr:Predictor db_mobilenet_v3_large_crnn_mobilenet_v3_small inicializado correctamente
+INFO:aplicador_ocr:Inicializando predictor OnnxTR optimizado para: db_mobilenet_v3_large_crnn_vgg16_bn
+INFO:aplicador_ocr:CPU detectado con psutil: 4 núcleos físicos, 8 lógicos
+INFO:root:Available providers: ['AzureExecutionProvider', 'CPUExecutionProvider']
+INFO:root:Using downloaded & verified file: /home/runner/.cache/onnxtr/models/db_mobilenet_v3_large-4987e7bd.onnx
+INFO:root:Available providers: ['AzureExecutionProvider', 'CPUExecutionProvider']
+INFO:root:Using downloaded & verified file: /home/runner/.cache/onnxtr/models/crnn_vgg16_bn-662979cc.onnx
+INFO:aplicador_ocr:Predictor db_mobilenet_v3_large_crnn_vgg16_bn inicializado correctamente
+INFO:aplicador_ocr:Warm-up de modelos completado correctamente
+INFO:app:✅ Componentes OCR pre-cargados exitosamente
+INFO:aplicador_ocr:Warm-up de modelos completado correctamente
+INFO:app:🚀 Worker de procesamiento por lotes iniciado
+INFO:app:Worker asíncrono iniciado
+INFO:routes:✅ Sistema OCR asíncrono inicializado exitosamente
+INFO:routes:✅ Rutas API HTTP y directorios asíncronos inicializados
+INFO:routes:📨 Procesando lote con datos: {'profile': 'ultra_rapido', 'codigo_sorteo_0': 'A', 'id_whatsapp_0': '508571211@lid', 'nombre_usuario_0': 'Juan', 'caption_0': 'Pago Móvil', 'hora_exacta_0': '15-30', 'numero_llegada_0': '1'}
+INFO:routes:📝 Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryAcGh6rZdCBCed7WM
+INFO:routes:✅ Procesamiento de lote iniciado. Request ID: BATCH_20250715_084050_83b99ef6
+INFO:routes:⚙️ Configuración: profile=ultra_rapido, batch_size=5
+INFO:routes:✅ Lote procesado exitosamente: 0 archivos. Request ID: BATCH_20250715_084050_83b99ef6
+^C[2025-07-15 08:42:38 +0000] [2012] [INFO] Handling signal: int
+[2025-07-15 08:42:38 +0000] [2023] [INFO] Worker exiting (pid: 2023)
+[2025-07-15 08:42:38 +0000] [2012] [INFO] Shutting down: Master
