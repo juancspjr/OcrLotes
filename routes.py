@@ -1527,6 +1527,149 @@ def api_revoke_key(key_id):
             'success': False
         }), 500
 
+@app.route('/api/extract_all_results', methods=['GET'])
+def api_extract_all_results():
+    """
+    FIX: Endpoint para extraer TODOS los archivos (historial completo)
+    REASON: Usuario necesita acceder tanto a lote actual como historial completo
+    IMPACT: Separación entre procesamiento actual y acceso a historial
+    """
+    try:
+        from config import get_async_directories
+        directories = get_async_directories()
+        results_dir = directories['results']
+        
+        # Buscar TODOS los archivos (como estaba antes)
+        json_files = []
+        
+        # Buscar en directorio results activo (archivos actuales)
+        if os.path.exists(results_dir):
+            for file in os.listdir(results_dir):
+                if file.endswith('.json'):
+                    file_path = os.path.join(results_dir, file)
+                    if os.path.isfile(file_path):
+                        json_files.append(file_path)
+        
+        # Buscar TAMBIÉN en directorio historial empresarial
+        historial_dir = 'data/historial'
+        if os.path.exists(historial_dir):
+            for file in os.listdir(historial_dir):
+                if file.endswith('.json'):
+                    file_path = os.path.join(historial_dir, file)
+                    if os.path.isfile(file_path):
+                        json_files.append(file_path)
+                        
+        logger.info(f"📊 Archivos encontrados (historial completo): {len(json_files)} archivos")
+        
+        if not json_files:
+            return jsonify({
+                'status': 'warning',
+                'message': 'No hay resultados disponibles para extraer',
+                'total_files': 0,
+                'error_code': 'NO_RESULTS_AVAILABLE'
+            }), 404
+        
+        # Procesar como antes pero con todos los archivos
+        consolidated_results = {
+            'metadata': {
+                'fecha_extraccion': datetime.now().isoformat(),
+                'total_archivos': len(json_files),
+                'version_sistema': '1.0',
+                'tipo_extraccion': 'historial_completo'
+            },
+            'archivos_procesados': []
+        }
+        
+        # Procesar todos los archivos ordenados por fecha
+        file_info_list = []
+        
+        for json_file in json_files:
+            try:
+                file_path = json_file
+                file_stat = os.stat(file_path)
+                modification_time = file_stat.st_mtime
+                
+                with open(json_file, 'r', encoding='utf-8') as f:
+                    result_data = json.load(f)
+                
+                batch_info = _extract_batch_info(json_file)
+                
+                file_info_list.append({
+                    'file_path': json_file,
+                    'result_data': result_data,
+                    'modification_time': modification_time,
+                    'batch_info': batch_info
+                })
+                
+            except Exception as e:
+                logger.error(f"Error procesando archivo {json_file}: {e}")
+                continue
+        
+        # Ordenar por fecha de modificación (más reciente primero)
+        file_info_list.sort(key=lambda x: x['modification_time'], reverse=True)
+        
+        # Procesar archivos y extraer datos estructurados
+        for file_info in file_info_list:
+            try:
+                json_file = file_info['file_path']
+                result_data = file_info['result_data']
+                batch_info = file_info['batch_info']
+                
+                nombre_archivo = _extract_original_filename(json_file, result_data)
+                
+                metadata = result_data.get('metadata', {})
+                texto_completo = _extract_full_text(result_data)
+                
+                tracking_params = _extract_tracking_parameters(nombre_archivo, metadata, result_data)
+                
+                enterprise_fields = _extract_enterprise_fields(result_data, texto_completo)
+                
+                archivo_resultado = {
+                    'nombre_archivo': nombre_archivo,
+                    'lote': batch_info.get('batch_id', 'N/A'),
+                    'fecha_procesamiento': batch_info.get('date', 'N/A'),
+                    'caption': tracking_params.get('caption', ''),
+                    'otro': tracking_params.get('otro', ''),
+                    'referencia': enterprise_fields.get('referencia', ''),
+                    'bancoorigen': enterprise_fields.get('bancoorigen', ''),
+                    'monto': enterprise_fields.get('monto', ''),
+                    'datosbeneficiario': {
+                        'cedula': enterprise_fields.get('cedula', ''),
+                        'telefono': enterprise_fields.get('telefono', ''),
+                        'banco_destino': enterprise_fields.get('banco_destino', '')
+                    },
+                    'pago_fecha': enterprise_fields.get('pago_fecha', ''),
+                    'concepto': enterprise_fields.get('concepto', ''),
+                    'texto_total_ocr': texto_completo[:500] if texto_completo else ''
+                }
+                
+                consolidated_results['archivos_procesados'].append(archivo_resultado)
+                
+            except Exception as e:
+                logger.error(f"Error extrayendo datos empresariales de {json_file}: {e}")
+                archivo_resultado = {
+                    'nombre_archivo': os.path.basename(json_file),
+                    'lote': 'Error',
+                    'error': str(e),
+                    'status': 'error_extraccion'
+                }
+                consolidated_results['archivos_procesados'].append(archivo_resultado)
+        
+        response = jsonify(consolidated_results)
+        response.headers['Content-Type'] = 'application/json; charset=utf-8'
+        response.headers['Content-Disposition'] = f'attachment; filename=historial_completo_{datetime.now().strftime("%Y%m%d_%H%M%S")}.json'
+        
+        logger.info(f"✅ JSON historial completo generado: {len(consolidated_results['archivos_procesados'])} archivos")
+        
+        return response
+        
+    except Exception as e:
+        logger.error(f"Error generando JSON historial completo: {e}")
+        return jsonify({
+            'status': 'error',
+            'message': f'Error generando historial: {str(e)}'
+        }), 500
+
 @app.route('/api/batches/history', methods=['GET'])
 def api_get_batch_history():
     """
@@ -1655,29 +1798,34 @@ def api_extract_results():
             if os.path.exists(historial_dir):
                 results_dir = historial_dir
         
-        # FIX: MOSTRAR TODOS LOS ARCHIVOS DE TODOS LOS LOTES
-        # REASON: Usuario requiere ver todos los archivos procesados, no solo del último lote
-        # IMPACT: Visualización completa de todos los archivos procesados en el sistema
+        # FIX: FILTRADO ESPECÍFICO SOLO ARCHIVOS DEL ÚLTIMO LOTE PROCESADO
+        # REASON: Usuario requiere que la extracción sea SOLO del lote actual, no del historial
+        # IMPACT: Integridad del procesamiento por lotes sin contaminación de datos históricos
+        last_batch_request_id = _get_last_batch_request_id()
         json_files = []
         
-        # Buscar en directorio results activo (archivos actuales)
-        if os.path.exists(results_dir):
-            for file in os.listdir(results_dir):
-                if file.endswith('.json'):
-                    file_path = os.path.join(results_dir, file)
-                    if os.path.isfile(file_path):
-                        json_files.append(file_path)
-        
-        # Buscar TAMBIÉN en directorio historial empresarial
-        historial_dir = 'data/historial'
-        if os.path.exists(historial_dir):
-            for file in os.listdir(historial_dir):
-                if file.endswith('.json'):
-                    file_path = os.path.join(historial_dir, file)
-                    if os.path.isfile(file_path):
-                        json_files.append(file_path)
+        if not last_batch_request_id:
+            logger.warning("No hay request_id del último lote. Extrayendo todos los archivos recientes.")
+            # Si no hay request_id, solo tomar archivos del directorio results (más recientes)
+            if os.path.exists(results_dir):
+                for file in os.listdir(results_dir):
+                    if file.endswith('.json'):
+                        file_path = os.path.join(results_dir, file)
+                        if os.path.isfile(file_path):
+                            json_files.append(file_path)
+        else:
+            logger.info(f"🎯 Filtrando archivos por lote específico: {last_batch_request_id}")
+            
+            # Buscar archivos que contengan el request_id del último lote
+            for directory in [results_dir, 'data/historial']:
+                if os.path.exists(directory):
+                    for file in os.listdir(directory):
+                        if file.endswith('.json') and last_batch_request_id in file:
+                            file_path = os.path.join(directory, file)
+                            if os.path.isfile(file_path):
+                                json_files.append(file_path)
                         
-        logger.info(f"📊 Archivos encontrados: {len(json_files)} archivos de todos los lotes")
+        logger.info(f"📊 Archivos encontrados del lote actual: {len(json_files)} archivos (Request ID: {last_batch_request_id or 'Todos'})")
         
         if not json_files:
             logger.info("No hay archivos de resultados disponibles para extraer")
