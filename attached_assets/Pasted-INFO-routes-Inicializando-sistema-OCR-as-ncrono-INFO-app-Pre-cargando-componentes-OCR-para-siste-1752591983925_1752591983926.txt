@@ -1,0 +1,120 @@
+INFO:routes:Inicializando sistema OCR asíncrono...
+INFO:app:Pre-cargando componentes OCR para sistema asíncrono...
+INFO:main_ocr_process:Inicializando AplicadorOCR (lazy loading)...
+INFO:aplicador_ocr:Iniciando warm-up de modelos frecuentes...
+INFO:aplicador_ocr:Inicializando predictor OnnxTR optimizado para: db_mobilenet_v3_large_crnn_mobilenet_v3_small
+INFO:aplicador_ocr:✅ Reglas de extracción cargadas: 16 campos configurados
+INFO:aplicador_ocr:Iniciando warm-up de modelos frecuentes...
+INFO:aplicador_ocr:CPU detectado con psutil: 4 núcleos físicos, 8 lógicos
+INFO:root:Available providers: ['AzureExecutionProvider', 'CPUExecutionProvider']
+INFO:root:Using downloaded & verified file: /home/runner/.cache/onnxtr/models/db_mobilenet_v3_large-4987e7bd.onnx
+INFO:root:Available providers: ['AzureExecutionProvider', 'CPUExecutionProvider']
+INFO:root:Using downloaded & verified file: /home/runner/.cache/onnxtr/models/crnn_mobilenet_v3_small-bded4d49.onnx
+INFO:aplicador_ocr:Predictor db_mobilenet_v3_large_crnn_mobilenet_v3_small inicializado correctamente
+INFO:aplicador_ocr:Inicializando predictor OnnxTR optimizado para: db_mobilenet_v3_large_crnn_vgg16_bn
+INFO:aplicador_ocr:CPU detectado con psutil: 4 núcleos físicos, 8 lógicos
+INFO:root:Available providers: ['AzureExecutionProvider', 'CPUExecutionProvider']
+INFO:root:Using downloaded & verified file: /home/runner/.cache/onnxtr/models/db_mobilenet_v3_large-4987e7bd.onnx
+INFO:root:Available providers: ['AzureExecutionProvider', 'CPUExecutionProvider']
+INFO:root:Using downloaded & verified file: /home/runner/.cache/onnxtr/models/crnn_vgg16_bn-662979cc.onnx
+INFO:aplicador_ocr:Predictor db_mobilenet_v3_large_crnn_vgg16_bn inicializado correctamente
+INFO:aplicador_ocr:Warm-up de modelos completado correctamente
+INFO:aplicador_ocr:Warm-up de modelos completado correctamente
+INFO:app:✅ Componentes OCR pre-cargados exitosamente
+INFO:app:🚀 Worker de procesamiento por lotes iniciado
+INFO:app:Worker asíncrono iniciado
+INFO:routes:✅ Sistema OCR asíncrono inicializado exitosamente
+INFO:routes:✅ Rutas API HTTP y directorios asíncronos inicializados
+DEBUG:routes:Archivo BATCH_20250715_090722_47f_20250715-A--332147223@lid_Carmen_16-55_20250715_090101_015.png.json: OCR=True, Coords=True, Words=35, Texto=249 chars
+DEBUG:routes:Archivo BATCH_20250715_090722_954_20250715-B--262813033@lid_Juanff_19-38_20250715_090101_016.png.json: OCR=True, Coords=True, Words=23, Texto=202 chars
+DEBUG:routes:Archivo BATCH_20250715_090723_145_20250715-E--315898801@lid_Pedrocv_02-39_20250715_090101_017.png.json: OCR=True, Coords=True, Words=35, Texto=249 chars
+DEBUG:routes:Archivo BATCH_20250715_090723_6d3_20250715-C--532917340@lid_Miguel3_07-41_20250715_090101_016.png.json: OCR=True, Coords=True, Words=22, Texto=184 chars
+DEBUG:routes:Archivo BATCH_20250715_090724_d16_20250715-F--703605506@lid_José5gr_06-36_20250715_090101_018.png.json: OCR=True, Coords=True, Words=23, Texto=190 chars
+DEBUG:routes:Archivo BATCH_20250715_090830_2aa_20250715-G--711571170@lid_Joséb5s_11-48_20250715_090101_018.png.json: OCR=True, Coords=True, Words=25, Texto=203 chars
+DEBUG:routes:Archivo BATCH_20250715_090830_686_20250715-A--484929917@lid_Carlos_22-21_20250715_090610_997.png.json: OCR=True, Coords=True, Words=22, Texto=172 chars
+DEBUG:routes:Archivo BATCH_20250715_090830_b6c_20250715-A--860774823@lid_Sofía_06-24_20250715_085541_057.jpg.json: OCR=True, Coords=True, Words=18, Texto=164 chars
+DEBUG:routes:Archivo BATCH_20250715_090831_313_20250715-A--777941864@lid_Juan_10-56_20250715_090100_978.jpg.json: OCR=True, Coords=True, Words=18, Texto=164 chars
+DEBUG:routes:Archivo BATCH_20250715_090831_cfa_20250715-B--481267850@lid_Juan2_03-18_20250715_090100_978.jpg.json: OCR=True, Coords=True, Words=22, Texto=202 chars
+DEBUG:routes:Archivo BATCH_20250715_090916_509_20250715-E--866079769@lid_Carlos002_07-02_20250715_090916_363.png.json: OCR=True, Coords=True, Words=22, Texto=184 chars
+DEBUG:routes:Archivo BATCH_20250715_090916_e42_20250715-D--557480507@lid_Anafffc_17-09_20250715_090101_017.jpg.json: OCR=True, Coords=True, Words=39, Texto=305 chars
+DEBUG:routes:Archivo BATCH_20250715_090917_d11_20250715-H--134031217@lid_Juan_15-38_20250715_090722_751.jpg.json: OCR=True, Coords=True, Words=20, Texto=136 chars
+DEBUG:routes:Archivo BATCH_20250715_090917_d3d_20250715-D--712452825@lid_Carlos001_07-21_20250715_090830_247.jpg.json: OCR=True, Coords=True, Words=22, Texto=202 chars
+DEBUG:routes:Archivo BATCH_20250715_091057_41e_20250715-A--571990577@lid_Carlos003_04-18_20250715_091057_158.png.json: OCR=True, Coords=True, Words=30, Texto=239 chars
+DEBUG:routes:Archivo BATCH_20250715_091145_9b5_20250715-A--752274032@lid_Carlos04_20-37_20250715_091145_324.jpg.json: OCR=True, Coords=True, Words=20, Texto=136 chars
+DEBUG:routes:Archivo BATCH_20250715_091420_6fa_20250715-A--803617793@lid_Miguel_02-53_20250715_091420_479.png.json: OCR=True, Coords=True, Words=24, Texto=203 chars
+DEBUG:routes:Archivo BATCH_20250715_091421_12d_20250715-A--818085416@lid_Carmen_07-28_20250715_091420_479.png.json: OCR=True, Coords=True, Words=22, Texto=184 chars
+DEBUG:routes:Archivo BATCH_20250715_091421_465_20250715-F--572063137@lid_Carmen_06-11_20250715_091420_480.png.json: OCR=True, Coords=True, Words=19, Texto=160 chars
+DEBUG:routes:Archivo BATCH_20250715_091421_686_20250715-A--745275176@lid_Miguel_20-02_20250715_091420_480.png.json: OCR=True, Coords=True, Words=24, Texto=202 chars
+DEBUG:routes:Archivo BATCH_20250715_091423_1a3_20250715-G--382438449@lid_Laura_02-45_20250715_091420_480.png.json: OCR=True, Coords=True, Words=25, Texto=161 chars
+DEBUG:routes:Archivo BATCH_20250715_091545_735_20250715-H--858106533@lid_Ana_18-14_20250715_091420_481.png.json: OCR=True, Coords=True, Words=25, Texto=161 chars
+DEBUG:routes:Archivo BATCH_20250715_091545_dd0_20250715-I--938943274@lid_Pedro_14-16_20250715_091420_481.png.json: OCR=True, Coords=True, Words=20, Texto=168 chars
+DEBUG:routes:Archivo BATCH_20250715_091546_e6d_20250715-J--957691283@lid_Pedro_08-17_20250715_091420_482.png.json: OCR=True, Coords=True, Words=20, Texto=191 chars
+DEBUG:routes:Archivo BATCH_20250715_091548_da1_20250715-A--705481078@lid_José_23-16_20250715_091420_482.png.json: OCR=True, Coords=True, Words=22, Texto=184 chars
+DEBUG:routes:Archivo BATCH_20250715_091548_f45_20250715-B--141890348@lid_Ana_06-16_20250715_091420_482.png.json: OCR=True, Coords=True, Words=23, Texto=202 chars
+DEBUG:routes:Archivo BATCH_20250715_145036_602_20250715-A--287813517@lid_José_05-30_20250715_091420_490.png.json: OCR=True, Coords=True, Words=25, Texto=203 chars
+DEBUG:routes:Archivo BATCH_20250715_145036_782_20250715-C--803242351@lid_Ana_19-54_20250715_091420_483.png.json: OCR=True, Coords=True, Words=22, Texto=172 chars
+DEBUG:routes:Archivo BATCH_20250715_145036_a51_20250715-D--403909343@lid_María_04-09_20250715_091420_483.png.json: OCR=True, Coords=True, Words=35, Texto=249 chars
+DEBUG:routes:Archivo BATCH_20250715_145036_2b5_20250715-F--983203804@lid_Carlos_04-03_20250715_091420_485.png.json: OCR=True, Coords=True, Words=35, Texto=249 chars
+DEBUG:routes:Archivo BATCH_20250715_145036_52c_20250715-G--622981266@lid_Juan_19-37_20250715_091420_485.png.json: OCR=True, Coords=True, Words=35, Texto=255 chars
+DEBUG:routes:Archivo BATCH_20250715_090722_47f_20250715-A--332147223@lid_Carmen_16-55_20250715_090101_015.png.json: OCR=True, Coords=True, Words=35, Texto=249 chars
+DEBUG:routes:Archivo BATCH_20250715_090722_954_20250715-B--262813033@lid_Juanff_19-38_20250715_090101_016.png.json: OCR=True, Coords=True, Words=23, Texto=202 chars
+DEBUG:routes:Archivo BATCH_20250715_090723_145_20250715-E--315898801@lid_Pedrocv_02-39_20250715_090101_017.png.json: OCR=True, Coords=True, Words=35, Texto=249 chars
+DEBUG:routes:Archivo BATCH_20250715_090723_6d3_20250715-C--532917340@lid_Miguel3_07-41_20250715_090101_016.png.json: OCR=True, Coords=True, Words=22, Texto=184 chars
+DEBUG:routes:Archivo BATCH_20250715_090724_d16_20250715-F--703605506@lid_José5gr_06-36_20250715_090101_018.png.json: OCR=True, Coords=True, Words=23, Texto=190 chars
+DEBUG:routes:Archivo BATCH_20250715_090830_2aa_20250715-G--711571170@lid_Joséb5s_11-48_20250715_090101_018.png.json: OCR=True, Coords=True, Words=25, Texto=203 chars
+DEBUG:routes:Archivo BATCH_20250715_090830_686_20250715-A--484929917@lid_Carlos_22-21_20250715_090610_997.png.json: OCR=True, Coords=True, Words=22, Texto=172 chars
+DEBUG:routes:Archivo BATCH_20250715_090830_b6c_20250715-A--860774823@lid_Sofía_06-24_20250715_085541_057.jpg.json: OCR=True, Coords=True, Words=18, Texto=164 chars
+DEBUG:routes:Archivo BATCH_20250715_090831_313_20250715-A--777941864@lid_Juan_10-56_20250715_090100_978.jpg.json: OCR=True, Coords=True, Words=18, Texto=164 chars
+DEBUG:routes:Archivo BATCH_20250715_090831_cfa_20250715-B--481267850@lid_Juan2_03-18_20250715_090100_978.jpg.json: OCR=True, Coords=True, Words=22, Texto=202 chars
+DEBUG:routes:Archivo BATCH_20250715_090916_509_20250715-E--866079769@lid_Carlos002_07-02_20250715_090916_363.png.json: OCR=True, Coords=True, Words=22, Texto=184 chars
+DEBUG:routes:Archivo BATCH_20250715_090916_e42_20250715-D--557480507@lid_Anafffc_17-09_20250715_090101_017.jpg.json: OCR=True, Coords=True, Words=39, Texto=305 chars
+DEBUG:routes:Archivo BATCH_20250715_090917_d11_20250715-H--134031217@lid_Juan_15-38_20250715_090722_751.jpg.json: OCR=True, Coords=True, Words=20, Texto=136 chars
+DEBUG:routes:Archivo BATCH_20250715_090917_d3d_20250715-D--712452825@lid_Carlos001_07-21_20250715_090830_247.jpg.json: OCR=True, Coords=True, Words=22, Texto=202 chars
+DEBUG:routes:Archivo BATCH_20250715_091057_41e_20250715-A--571990577@lid_Carlos003_04-18_20250715_091057_158.png.json: OCR=True, Coords=True, Words=30, Texto=239 chars
+DEBUG:routes:Archivo BATCH_20250715_091145_9b5_20250715-A--752274032@lid_Carlos04_20-37_20250715_091145_324.jpg.json: OCR=True, Coords=True, Words=20, Texto=136 chars
+DEBUG:routes:Archivo BATCH_20250715_091420_6fa_20250715-A--803617793@lid_Miguel_02-53_20250715_091420_479.png.json: OCR=True, Coords=True, Words=24, Texto=203 chars
+DEBUG:routes:Archivo BATCH_20250715_091421_12d_20250715-A--818085416@lid_Carmen_07-28_20250715_091420_479.png.json: OCR=True, Coords=True, Words=22, Texto=184 chars
+DEBUG:routes:Archivo BATCH_20250715_091421_465_20250715-F--572063137@lid_Carmen_06-11_20250715_091420_480.png.json: OCR=True, Coords=True, Words=19, Texto=160 chars
+DEBUG:routes:Archivo BATCH_20250715_091421_686_20250715-A--745275176@lid_Miguel_20-02_20250715_091420_480.png.json: OCR=True, Coords=True, Words=24, Texto=202 chars
+DEBUG:routes:Archivo BATCH_20250715_091423_1a3_20250715-G--382438449@lid_Laura_02-45_20250715_091420_480.png.json: OCR=True, Coords=True, Words=25, Texto=161 chars
+DEBUG:routes:Archivo BATCH_20250715_091545_735_20250715-H--858106533@lid_Ana_18-14_20250715_091420_481.png.json: OCR=True, Coords=True, Words=25, Texto=161 chars
+DEBUG:routes:Archivo BATCH_20250715_091545_dd0_20250715-I--938943274@lid_Pedro_14-16_20250715_091420_481.png.json: OCR=True, Coords=True, Words=20, Texto=168 chars
+DEBUG:routes:Archivo BATCH_20250715_091546_e6d_20250715-J--957691283@lid_Pedro_08-17_20250715_091420_482.png.json: OCR=True, Coords=True, Words=20, Texto=191 chars
+DEBUG:routes:Archivo BATCH_20250715_091548_da1_20250715-A--705481078@lid_José_23-16_20250715_091420_482.png.json: OCR=True, Coords=True, Words=22, Texto=184 chars
+DEBUG:routes:Archivo BATCH_20250715_091548_f45_20250715-B--141890348@lid_Ana_06-16_20250715_091420_482.png.json: OCR=True, Coords=True, Words=23, Texto=202 chars
+DEBUG:routes:Archivo BATCH_20250715_145036_602_20250715-A--287813517@lid_José_05-30_20250715_091420_490.png.json: OCR=True, Coords=True, Words=25, Texto=203 chars
+DEBUG:routes:Archivo BATCH_20250715_145036_782_20250715-C--803242351@lid_Ana_19-54_20250715_091420_483.png.json: OCR=True, Coords=True, Words=22, Texto=172 chars
+DEBUG:routes:Archivo BATCH_20250715_145036_a51_20250715-D--403909343@lid_María_04-09_20250715_091420_483.png.json: OCR=True, Coords=True, Words=35, Texto=249 chars
+DEBUG:routes:Archivo BATCH_20250715_145036_2b5_20250715-F--983203804@lid_Carlos_04-03_20250715_091420_485.png.json: OCR=True, Coords=True, Words=35, Texto=249 chars
+DEBUG:routes:Archivo BATCH_20250715_145036_52c_20250715-G--622981266@lid_Juan_19-37_20250715_091420_485.png.json: OCR=True, Coords=True, Words=35, Texto=255 chars
+DEBUG:routes:Archivo BATCH_20250715_090722_47f_20250715-A--332147223@lid_Carmen_16-55_20250715_090101_015.png.json: OCR=True, Coords=True, Words=35, Texto=249 chars
+DEBUG:routes:Archivo BATCH_20250715_090722_954_20250715-B--262813033@lid_Juanff_19-38_20250715_090101_016.png.json: OCR=True, Coords=True, Words=23, Texto=202 chars
+DEBUG:routes:Archivo BATCH_20250715_090723_145_20250715-E--315898801@lid_Pedrocv_02-39_20250715_090101_017.png.json: OCR=True, Coords=True, Words=35, Texto=249 chars
+DEBUG:routes:Archivo BATCH_20250715_090723_6d3_20250715-C--532917340@lid_Miguel3_07-41_20250715_090101_016.png.json: OCR=True, Coords=True, Words=22, Texto=184 chars
+DEBUG:routes:Archivo BATCH_20250715_090724_d16_20250715-F--703605506@lid_José5gr_06-36_20250715_090101_018.png.json: OCR=True, Coords=True, Words=23, Texto=190 chars
+DEBUG:routes:Archivo BATCH_20250715_090830_2aa_20250715-G--711571170@lid_Joséb5s_11-48_20250715_090101_018.png.json: OCR=True, Coords=True, Words=25, Texto=203 chars
+DEBUG:routes:Archivo BATCH_20250715_090830_686_20250715-A--484929917@lid_Carlos_22-21_20250715_090610_997.png.json: OCR=True, Coords=True, Words=22, Texto=172 chars
+DEBUG:routes:Archivo BATCH_20250715_090830_b6c_20250715-A--860774823@lid_Sofía_06-24_20250715_085541_057.jpg.json: OCR=True, Coords=True, Words=18, Texto=164 chars
+DEBUG:routes:Archivo BATCH_20250715_090831_313_20250715-A--777941864@lid_Juan_10-56_20250715_090100_978.jpg.json: OCR=True, Coords=True, Words=18, Texto=164 chars
+DEBUG:routes:Archivo BATCH_20250715_090831_cfa_20250715-B--481267850@lid_Juan2_03-18_20250715_090100_978.jpg.json: OCR=True, Coords=True, Words=22, Texto=202 chars
+DEBUG:routes:Archivo BATCH_20250715_090916_509_20250715-E--866079769@lid_Carlos002_07-02_20250715_090916_363.png.json: OCR=True, Coords=True, Words=22, Texto=184 chars
+DEBUG:routes:Archivo BATCH_20250715_090916_e42_20250715-D--557480507@lid_Anafffc_17-09_20250715_090101_017.jpg.json: OCR=True, Coords=True, Words=39, Texto=305 chars
+DEBUG:routes:Archivo BATCH_20250715_090917_d11_20250715-H--134031217@lid_Juan_15-38_20250715_090722_751.jpg.json: OCR=True, Coords=True, Words=20, Texto=136 chars
+DEBUG:routes:Archivo BATCH_20250715_090917_d3d_20250715-D--712452825@lid_Carlos001_07-21_20250715_090830_247.jpg.json: OCR=True, Coords=True, Words=22, Texto=202 chars
+DEBUG:routes:Archivo BATCH_20250715_091057_41e_20250715-A--571990577@lid_Carlos003_04-18_20250715_091057_158.png.json: OCR=True, Coords=True, Words=30, Texto=239 chars
+DEBUG:routes:Archivo BATCH_20250715_091145_9b5_20250715-A--752274032@lid_Carlos04_20-37_20250715_091145_324.jpg.json: OCR=True, Coords=True, Words=20, Texto=136 chars
+DEBUG:routes:Archivo BATCH_20250715_091420_6fa_20250715-A--803617793@lid_Miguel_02-53_20250715_091420_479.png.json: OCR=True, Coords=True, Words=24, Texto=203 chars
+DEBUG:routes:Archivo BATCH_20250715_091421_12d_20250715-A--818085416@lid_Carmen_07-28_20250715_091420_479.png.json: OCR=True, Coords=True, Words=22, Texto=184 chars
+DEBUG:routes:Archivo BATCH_20250715_091421_465_20250715-F--572063137@lid_Carmen_06-11_20250715_091420_480.png.json: OCR=True, Coords=True, Words=19, Texto=160 chars
+DEBUG:routes:Archivo BATCH_20250715_091421_686_20250715-A--745275176@lid_Miguel_20-02_20250715_091420_480.png.json: OCR=True, Coords=True, Words=24, Texto=202 chars
+DEBUG:routes:Archivo BATCH_20250715_091423_1a3_20250715-G--382438449@lid_Laura_02-45_20250715_091420_480.png.json: OCR=True, Coords=True, Words=25, Texto=161 chars
+DEBUG:routes:Archivo BATCH_20250715_091545_735_20250715-H--858106533@lid_Ana_18-14_20250715_091420_481.png.json: OCR=True, Coords=True, Words=25, Texto=161 chars
+DEBUG:routes:Archivo BATCH_20250715_091545_dd0_20250715-I--938943274@lid_Pedro_14-16_20250715_091420_481.png.json: OCR=True, Coords=True, Words=20, Texto=168 chars
+DEBUG:routes:Archivo BATCH_20250715_091546_e6d_20250715-J--957691283@lid_Pedro_08-17_20250715_091420_482.png.json: OCR=True, Coords=True, Words=20, Texto=191 chars
+DEBUG:routes:Archivo BATCH_20250715_091548_da1_20250715-A--705481078@lid_José_23-16_20250715_091420_482.png.json: OCR=True, Coords=True, Words=22, Texto=184 chars
+DEBUG:routes:Archivo BATCH_20250715_091548_f45_20250715-B--141890348@lid_Ana_06-16_20250715_091420_482.png.json: OCR=True, Coords=True, Words=23, Texto=202 chars
+DEBUG:routes:Archivo BATCH_20250715_145036_602_20250715-A--287813517@lid_José_05-30_20250715_091420_490.png.json: OCR=True, Coords=True, Words=25, Texto=203 chars
+DEBUG:routes:Archivo BATCH_20250715_145036_782_20250715-C--803242351@lid_Ana_19-54_20250715_091420_483.png.json: OCR=True, Coords=True, Words=22, Texto=172 chars
+DEBUG:routes:Archivo BATCH_20250715_145036_a51_20250715-D--403909343@lid_María_04-09_20250715_091420_483.png.json: OCR=True, Coords=True, Words=35, Texto=249 chars
+DEBUG:routes:Archivo BATCH_20250715_145036_2b5_20250715-F--983203804@lid_Carlos_04-03_20250715_091420_485.png.json: OCR=True, Coords=True, Words=35, Texto=249 chars
+DEBUG:routes:Archivo BATCH_20250715_145036_52c_20250715-G--622981266@lid_Juan_19-37_20250715_091420_485.png.json: OCR=True, Coords=True, Words=35, Texto=255 chars

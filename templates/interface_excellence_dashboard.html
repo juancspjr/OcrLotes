@@ -537,22 +537,31 @@
         // Inicialización del Sistema OCR Empresarial
         console.log('🌟 Iniciando Sistema OCR Empresarial - MANDATO 14');
         
+        // Variable para evitar doble inicialización
+        let systemInitialized = false;
+        
         document.addEventListener('DOMContentLoaded', function() {
             console.log('🚀 Inicializando Sistema OCR Empresarial...');
             
             // Verificar conectividad con backend
             console.log('🔍 Verificando conectividad con backend...');
             
-            // Inicializar el sistema principal
-            if (typeof window.OCRSystem !== 'undefined') {
-                window.OCRSystem.init();
-                console.log('🎯 Interface Excellence Dashboard inicializado - MANDATO 14');
-            } else {
+            // Función para inicializar el sistema de manera segura
+            function initializeSystemSafely() {
+                if (typeof window.OCRSystem !== 'undefined' && !systemInitialized) {
+                    systemInitialized = true;
+                    window.OCRSystem.init();
+                    console.log('🎯 Interface Excellence Dashboard inicializado - MANDATO 14');
+                    return true;
+                }
+                return false;
+            }
+            
+            // Intentar inicializar inmediatamente
+            if (!initializeSystemSafely()) {
                 console.warn('⚠️ OCRSystem no está disponible, esperando carga...');
                 setTimeout(() => {
-                    if (typeof window.OCRSystem !== 'undefined') {
-                        window.OCRSystem.init();
-                    }
+                    initializeSystemSafely();
                 }, 1000);
             }
         });
