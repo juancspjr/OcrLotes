@@ -1359,10 +1359,8 @@ def api_revoke_key(key_id):
             'message': f'Error revocando API key: {str(e)}'
         }), 500
 
-# Cleanup endpoints removed per user request
-# All cleanup functionality has been disabled
-
-# System cleanup endpoints removed per user request
+@app.route('/api/clean', methods=['POST'])
+def api_clean():
     """
     FIX: Endpoint crítico para limpiar el sistema después de procesar lotes
     REASON: Interface llama a /api/clean que estaba faltante en routes.py principal
@@ -1523,7 +1521,7 @@ def api_revoke_key(key_id):
             'message': f'Error al limpiar sistema: {str(e)}',
             'mensaje': f'Error al limpiar sistema: {str(e)}',
             'error_code': 'CLEAN_SYSTEM_ERROR',
-            'timestamp': datetime.datetime.now().isoformat(),
+            'timestamp': datetime.now().isoformat(),
             'success': False
         }), 500
 
