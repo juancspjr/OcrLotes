@@ -1,0 +1,1110 @@
+{
+  "status": "exitoso",
+  "request_id": "BATCH_20250716_002933_572_20250716-H--120546131@lid_María_00-35_20250716_002933_187.png",
+  "filename": "20250716-H--120546131@lid_María_00-35_20250716_002933_187.png",
+  "tiempo_procesamiento": 0.16903114318847656,
+  "fecha_procesamiento": "2025-07-16T00:29:33.659339",
+  "original_text_ocr": "A Personas 104,54 Bs Fecha : 20/06/ 2025 Operacion; 003039387344 I - Identificacion : 2/ 061025 Origen : 0102 **** 2679 Destino : 04125318244 Banco : 0105 - BANCO MERCANTIL",
+  "structured_text_ocr": "Personas 104,54 003039387344 04125318244 Banco BANCO MERCANTIL 20/06/ 2/ A Bs Fecha : 2025 Operacion; I - Identificacion : 061025 Origen : 0102 **** 2679 Destino : : 0105 -",
+  "extracted_fields": {
+    "referencia": "003039387344",
+    "bancoorigen": "BANCO MERCANTIL",
+    "monto": "104.54",
+    "telefono": "04125318244",
+    "cedula": "",
+    "banco_destino": "BANCO MERCANTIL",
+    "pago_fecha": "20/06/ 2025",
+    "fecha_operacion": "20/06/ 2025",
+    "concepto": "Transacción bancaria",
+    "texto_total_ocr": "A Personas 104,54 Bs Fecha : 20/06/ 2025 Operacion; 003039387344 I - Identificacion : 2/ 061025 Origen : 0102 **** 2679 Destino : 04125318244 Banco : 0105 - BANCO MERCANTIL"
+  },
+  "processing_metadata": {
+    "logica_oro_aplicada": true,
+    "ocr_confidence_avg": 0.9,
+    "error_messages": [
+      "Lógica de oro aplicada sobre caché para cumplir mandato"
+    ],
+    "processing_time_ms": 0,
+    "total_words_detected": 0,
+    "coordinates_available": 0,
+    "ocr_method": "ONNX_TR_CACHE_WITH_GOLD_LOGIC",
+    "timestamp": "2025-07-16T00:29:33.658079"
+  },
+  "Información del Archivo": {
+    "fecha_procesamiento": "2025-07-16T00:29:33.658201",
+    "formato": ".png",
+    "nombre_original": "20250716-H--120546131@lid_María_00-35_20250716_002933_187.png",
+    "tamaño": 35638
+  },
+  "Estadísticas": {
+    "confianza_promedio": "92.3%",
+    "palabras_alta_confianza": 19,
+    "palabras_baja_confianza": 0,
+    "total_palabras": 22,
+    "calidad_categoria": "Excelente",
+    "tiempo_procesamiento": "0.17s",
+    "lineas_texto": 1,
+    "longitud_texto": 172
+  },
+  "Texto Extraído": {
+    "texto_completo": "A Personas 104,54 Bs Fecha : 20/06/ 2025 Operacion; 003039387344 I - Identificacion : 2/ 061025 Origen : 0102 **** 2679 Destino : 04125318244 Banco : 0105 - BANCO MERCANTIL",
+    "longitud_texto": 172,
+    "lineas_texto": 1
+  },
+  "validacion": {
+    "imagen_info": {
+      "ancho": 720,
+      "alto": 879,
+      "resolucion_total": 632880,
+      "canales": 3,
+      "modo": "RGB",
+      "formato": "JPEG",
+      "brillo_promedio": 49.93417709518392,
+      "desviacion_brillo": 46.757898388750995,
+      "rango_dinamico": 255.0,
+      "histogram": [
+        54.0,
+        13.0,
+        18.0,
+        24.0,
+        17.0,
+        33.0,
+        36.0,
+        34.0,
+        35.0,
+        67.0,
+        79.0,
+        86.0,
+        115.0,
+        114.0,
+        150.0,
+        167.0,
+        205.0,
+        294.0,
+        321.0,
+        422.0,
+        422.0,
+        528.0,
+        645.0,
+        1428.0,
+        829.0,
+        1058.0,
+        1266.0,
+        1541.0,
+        1871.0,
+        2321.0,
+        3841.0,
+        3694.0,
+        4281.0,
+        489311.0,
+        6317.0,
+        2967.0,
+        2703.0,
+        2262.0,
+        1789.0,
+        1547.0,
+        1284.0,
+        1002.0,
+        858.0,
+        737.0,
+        568.0,
+        471.0,
+        372.0,
+        335.0,
+        322.0,
+        263.0,
+        237.0,
+        209.0,
+        219.0,
+        178.0,
+        170.0,
+        160.0,
+        125.0,
+        133.0,
+        112.0,
+        111.0,
+        121.0,
+        123.0,
+        124.0,
+        104.0,
+        117.0,
+        93.0,
+        83.0,
+        83.0,
+        84.0,
+        92.0,
+        651.0,
+        87.0,
+        106.0,
+        79.0,
+        86.0,
+        92.0,
+        79.0,
+        100.0,
+        95.0,
+        95.0,
+        91.0,
+        709.0,
+        184.0,
+        706.0,
+        535.0,
+        977.0,
+        214.0,
+        151.0,
+        130.0,
+        115.0,
+        68.0,
+        69.0,
+        75.0,
+        66.0,
+        66.0,
+        60.0,
+        79.0,
+        87.0,
+        68.0,
+        105.0,
+        76.0,
+        85.0,
+        68.0,
+        89.0,
+        78.0,
+        95.0,
+        101.0,
+        102.0,
+        124.0,
+        133.0,
+        148.0,
+        157.0,
+        155.0,
+        222.0,
+        850.0,
+        933.0,
+        2214.0,
+        45314.0,
+        1611.0,
+        1493.0,
+        272.0,
+        210.0,
+        193.0,
+        189.0,
+        147.0,
+        121.0,
+        120.0,
+        90.0,
+        95.0,
+        86.0,
+        87.0,
+        68.0,
+        73.0,
+        77.0,
+        94.0,
+        91.0,
+        85.0,
+        111.0,
+        77.0,
+        94.0,
+        76.0,
+        79.0,
+        78.0,
+        72.0,
+        99.0,
+        93.0,
+        71.0,
+        89.0,
+        81.0,
+        100.0,
+        94.0,
+        89.0,
+        85.0,
+        62.0,
+        73.0,
+        89.0,
+        108.0,
+        75.0,
+        80.0,
+        65.0,
+        89.0,
+        91.0,
+        80.0,
+        71.0,
+        67.0,
+        75.0,
+        76.0,
+        82.0,
+        115.0,
+        89.0,
+        93.0,
+        100.0,
+        94.0,
+        85.0,
+        91.0,
+        91.0,
+        85.0,
+        92.0,
+        99.0,
+        106.0,
+        72.0,
+        107.0,
+        99.0,
+        100.0,
+        74.0,
+        79.0,
+        89.0,
+        89.0,
+        86.0,
+        105.0,
+        98.0,
+        90.0,
+        105.0,
+        83.0,
+        102.0,
+        96.0,
+        106.0,
+        96.0,
+        98.0,
+        108.0,
+        118.0,
+        107.0,
+        131.0,
+        129.0,
+        142.0,
+        195.0,
+        287.0,
+        1355.0,
+        215.0,
+        168.0,
+        121.0,
+        155.0,
+        115.0,
+        131.0,
+        124.0,
+        111.0,
+        93.0,
+        113.0,
+        111.0,
+        114.0,
+        121.0,
+        107.0,
+        115.0,
+        108.0,
+        120.0,
+        124.0,
+        127.0,
+        116.0,
+        127.0,
+        107.0,
+        100.0,
+        118.0,
+        109.0,
+        89.0,
+        98.0,
+        110.0,
+        112.0,
+        86.0,
+        119.0,
+        110.0,
+        134.0,
+        115.0,
+        102.0,
+        129.0,
+        133.0,
+        125.0,
+        137.0,
+        149.0,
+        128.0,
+        156.0,
+        150.0,
+        170.0,
+        192.0,
+        194.0,
+        241.0,
+        14808.0
+      ],
+      "histogram_analysis": {
+        "picos_principales": [
+          [
+            33,
+            489311
+          ],
+          [
+            117,
+            45314
+          ]
+        ],
+        "rango_fondo_sugerido": 117,
+        "rango_texto_sugerido": 33,
+        "distribucion": {
+          "oscuras": 0.8619169592857361,
+          "medias": 0.09692832827568054,
+          "claras": 0.04115471988916397
+        },
+        "requiere_inversion": true,
+        "bimodal": true
+      },
+      "variaciones_fondo": {
+        "total_regiones_analizadas": 918,
+        "fondos_unicos_detectados": 6,
+        "variacion_fondos": 26.061556943316145,
+        "fondos_heterogeneos": true,
+        "rango_fondos": [
+          33,
+          255
+        ],
+        "requiere_unificacion_avanzada": true,
+        "regiones_variacion": [
+          {
+            "posicion": [
+              0,
+              0
+            ],
+            "media_local": 33.0,
+            "std_local": 0.0,
+            "pico_fondo": 33
+          },
+          {
+            "posicion": [
+              25,
+              0
+            ],
+            "media_local": 33.0,
+            "std_local": 0.0,
+            "pico_fondo": 33
+          },
+          {
+            "posicion": [
+              50,
+              0
+            ],
+            "media_local": 33.0,
+            "std_local": 0.0,
+            "pico_fondo": 33
+          },
+          {
+            "posicion": [
+              75,
+              0
+            ],
+            "media_local": 33.0,
+            "std_local": 0.0,
+            "pico_fondo": 33
+          },
+          {
+            "posicion": [
+              100,
+              0
+            ],
+            "media_local": 33.0,
+            "std_local": 0.0,
+            "pico_fondo": 33
+          },
+          {
+            "posicion": [
+              125,
+              0
+            ],
+            "media_local": 33.0,
+            "std_local": 0.0,
+            "pico_fondo": 33
+          },
+          {
+            "posicion": [
+              150,
+              0
+            ],
+            "media_local": 33.0,
+            "std_local": 0.0,
+            "pico_fondo": 33
+          },
+          {
+            "posicion": [
+              175,
+              0
+            ],
+            "media_local": 33.0,
+            "std_local": 0.0,
+            "pico_fondo": 33
+          },
+          {
+            "posicion": [
+              200,
+              0
+            ],
+            "media_local": 33.0,
+            "std_local": 0.0,
+            "pico_fondo": 33
+          },
+          {
+            "posicion": [
+              225,
+              0
+            ],
+            "media_local": 33.0,
+            "std_local": 0.0,
+            "pico_fondo": 33
+          }
+        ]
+      }
+    },
+    "calidad_imagen": {
+      "contraste": 46.757898388750995,
+      "blur_variance": 1110.718221248074,
+      "entropy": 1.933966875076294,
+      "gradiente_promedio": 42.52235298532598,
+      "brillo_promedio": 49.93417709518392,
+      "uniformidad_brillo": 46.757898388750995,
+      "calificacion_calidad": 65
+    },
+    "deteccion_texto": {
+      "regiones_detectadas": 26,
+      "area_total_texto": 155378,
+      "densidad_texto": 0.24550941726709644,
+      "regiones": [
+        {
+          "x": 330,
+          "y": 790,
+          "width": 14,
+          "height": 8,
+          "area": 112,
+          "aspect_ratio": 1.75
+        },
+        {
+          "x": 639,
+          "y": 778,
+          "width": 19,
+          "height": 28,
+          "area": 532,
+          "aspect_ratio": 0.6785714285714286
+        },
+        {
+          "x": 244,
+          "y": 778,
+          "width": 21,
+          "height": 27,
+          "area": 567,
+          "aspect_ratio": 0.7777777777777778
+        },
+        {
+          "x": 475,
+          "y": 777,
+          "width": 163,
+          "height": 32,
+          "area": 5216,
+          "aspect_ratio": 5.09375
+        },
+        {
+          "x": 352,
+          "y": 777,
+          "width": 115,
+          "height": 29,
+          "area": 3335,
+          "aspect_ratio": 3.9655172413793105
+        },
+        {
+          "x": 266,
+          "y": 777,
+          "width": 57,
+          "height": 29,
+          "area": 1653,
+          "aspect_ratio": 1.9655172413793103
+        },
+        {
+          "x": 64,
+          "y": 777,
+          "width": 98,
+          "height": 29,
+          "area": 2842,
+          "aspect_ratio": 3.3793103448275863
+        },
+        {
+          "x": 561,
+          "y": 710,
+          "width": 96,
+          "height": 28,
+          "area": 2688,
+          "aspect_ratio": 3.4285714285714284
+        },
+        {
+          "x": 443,
+          "y": 710,
+          "width": 58,
+          "height": 28,
+          "area": 1624,
+          "aspect_ratio": 2.0714285714285716
+        },
+        {
+          "x": 501,
+          "y": 709,
+          "width": 59,
+          "height": 29,
+          "area": 1711,
+          "aspect_ratio": 2.0344827586206895
+        },
+        {
+          "x": 64,
+          "y": 709,
+          "width": 120,
+          "height": 29,
+          "area": 3480,
+          "aspect_ratio": 4.137931034482759
+        },
+        {
+          "x": 443,
+          "y": 642,
+          "width": 21,
+          "height": 27,
+          "area": 567,
+          "aspect_ratio": 0.7777777777777778
+        },
+        {
+          "x": 465,
+          "y": 641,
+          "width": 191,
+          "height": 31,
+          "area": 5921,
+          "aspect_ratio": 6.161290322580645
+        },
+        {
+          "x": 63,
+          "y": 641,
+          "width": 107,
+          "height": 35,
+          "area": 3745,
+          "aspect_ratio": 3.057142857142857
+        },
+        {
+          "x": 501,
+          "y": 573,
+          "width": 156,
+          "height": 29,
+          "area": 4524,
+          "aspect_ratio": 5.379310344827586
+        },
+        {
+          "x": 64,
+          "y": 571,
+          "width": 198,
+          "height": 31,
+          "area": 6138,
+          "aspect_ratio": 6.387096774193548
+        },
+        {
+          "x": 383,
+          "y": 505,
+          "width": 234,
+          "height": 29,
+          "area": 6786,
+          "aspect_ratio": 8.068965517241379
+        },
+        {
+          "x": 63,
+          "y": 503,
+          "width": 157,
+          "height": 37,
+          "area": 5809,
+          "aspect_ratio": 4.243243243243243
+        },
+        {
+          "x": 629,
+          "y": 494,
+          "width": 37,
+          "height": 42,
+          "area": 1554,
+          "aspect_ratio": 0.8809523809523809
+        },
+        {
+          "x": 483,
+          "y": 437,
+          "width": 174,
+          "height": 31,
+          "area": 5394,
+          "aspect_ratio": 5.612903225806452
+        }
+      ],
+      "cobertura_texto_porcentaje": 24.550941726709645
+    },
+    "ruido_artefactos": {
+      "nivel_ruido": 3.1275597269624575,
+      "desviacion_ruido": 10.877349693433873,
+      "porcentaje_pixeles_ruidosos": 5.2027240551131335,
+      "uniformidad": 2.4172149538617114,
+      "calificacion_ruido": "Moderado"
+    },
+    "geometria_orientacion": {
+      "sesgo_estimado": 2.5,
+      "lineas_detectadas": 50,
+      "simetria_horizontal": 0.4919326603412628,
+      "relacion_aspecto": 0.8191126279863481,
+      "requiere_deskew": true,
+      "orientacion_correcta": true
+    },
+    "deteccion_inteligente": {
+      "tipo_imagen": "screenshot_movil",
+      "esquema_color": "texto_claro_fondo_oscuro",
+      "inversion_requerida": true,
+      "ui_elements_detectados": true,
+      "aspect_ratio": 0.8191126279863481,
+      "calidad_digital": false,
+      "dark_percentage": 95.3119125366211,
+      "light_percentage": 4.6880927085876465,
+      "edge_density": 0.028499873593730247,
+      "noise_estimate": 64.5722161257968,
+      "confianza_deteccion": 0.7
+    },
+    "recomendaciones": {
+      "perfil_recomendado": "rapido",
+      "aplicar_deskew": true,
+      "nivel_denoise": "moderado",
+      "ajuste_contraste": false,
+      "filtro_bilateral": true,
+      "prioridades": [
+        "Corrección de sesgo necesaria"
+      ]
+    },
+    "puntuacion_general": {
+      "total": 78.0,
+      "calidad": 65,
+      "texto": 100,
+      "ruido": 60,
+      "geometria": 100,
+      "categoria": "Buena"
+    }
+  },
+  "mejora": {
+    "perfil_usado": "ultra_rapido",
+    "pasos_aplicados": [
+      "00_analisis_sin_unificacion",
+      "00_maxima_claridad_letras",
+      "01_inversion_global_simple",
+      "02_sin_procesamiento"
+    ],
+    "metricas_antes": {
+      "brillo_promedio": 49.93417709518392,
+      "contraste": 46.757898388750995,
+      "nitidez": 1110.718221248074,
+      "rango_dinamico": 255.0
+    },
+    "parametros_aplicados": {
+      "analisis_fondos": {
+        "intensidad_media_original": 49.93,
+        "porcentaje_fondo_oscuro": 0.8579999804496765,
+        "unificacion_aplicada": false,
+        "razon_no_unificacion": "preservacion_calidad_usuario"
+      },
+      "inversion_global": {
+        "intensidad_media_original": 49.93,
+        "razon": "imagen_muy_oscura_necesita_inversion"
+      },
+      "screenshot_processing_eliminado": {
+        "razon": "eliminado_por_solicitud_usuario",
+        "upscaling": false,
+        "unsharp_masking": false,
+        "contrast_adjustment": false,
+        "binarization": false,
+        "brightness_adjustment": false,
+        "impacto": "preserva_imagen_original_completamente"
+      }
+    },
+    "tiempo_procesamiento": 0.016,
+    "estrategia_aplicada": "Screenshot Móvil - SIN PROCESAMIENTO",
+    "metricas_despues": {
+      "brillo_promedio": 205.57661009986094,
+      "contraste": 48.28762971222334,
+      "nitidez": 2371.1734484385374,
+      "rango_dinamico": 255.0
+    },
+    "imagen_mejorada": "imagen_mejorada.png",
+    "mejora_calidad": {
+      "contraste": {
+        "antes": 46.76,
+        "despues": 48.29,
+        "cambio": 1.53,
+        "porcentaje": 3.3
+      },
+      "nitidez": {
+        "antes": 1110.72,
+        "despues": 2371.17,
+        "cambio": 1260.46,
+        "porcentaje": 113.5
+      },
+      "rango_dinamico": {
+        "antes": 255.0,
+        "despues": 255.0,
+        "cambio": 0.0,
+        "porcentaje": 0.0
+      }
+    }
+  },
+  "datos_extraidos": {
+    "texto_completo": "A Personas 104,54 Bs Fecha : 20/06/ 2025 Operacion; 003039387344 I - Identificacion : 2/ 061025 Origen : 0102 **** 2679 Destino : 04125318244 Banco : 0105 - BANCO MERCANTIL",
+    "palabras_detectadas": [
+      {
+        "texto": "A",
+        "confianza": 0.9667848944664001,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 0,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "Personas",
+        "confianza": 0.9927195310592651,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 1,
+          "palabra": 1
+        }
+      },
+      {
+        "texto": "104,54",
+        "confianza": 0.9967294931411743,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 2,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "Bs",
+        "confianza": 0.9987064599990845,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 2,
+          "palabra": 1
+        }
+      },
+      {
+        "texto": "Fecha:",
+        "confianza": 0.9500440955162048,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 3,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "20/06/2025",
+        "confianza": 0.9990684390068054,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 4,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "Operacion;",
+        "confianza": 0.6175447702407837,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 5,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "003039387344",
+        "confianza": 0.9877862930297852,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 6,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "I",
+        "confianza": 0.9475021362304688,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 6,
+          "palabra": 1
+        }
+      },
+      {
+        "texto": "-",
+        "confianza": 0.9415252804756165,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 6,
+          "palabra": 2
+        }
+      },
+      {
+        "texto": "Identificacion:",
+        "confianza": 0.9462568759918213,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 7,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "2/061025",
+        "confianza": 0.8452515602111816,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 8,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "Origen:",
+        "confianza": 0.9992734789848328,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 9,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "0102****",
+        "confianza": 0.9686998128890991,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 10,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "2679",
+        "confianza": 0.5096032619476318,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 10,
+          "palabra": 1
+        }
+      },
+      {
+        "texto": "Destino:",
+        "confianza": 0.9970941543579102,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 11,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "04125318244",
+        "confianza": 0.9969721734523773,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 12,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "Banco:",
+        "confianza": 0.9863489866256714,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 13,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "0105",
+        "confianza": 0.999997615814209,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 14,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "-",
+        "confianza": 0.9812107086181641,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 14,
+          "palabra": 1
+        }
+      },
+      {
+        "texto": "BANCO",
+        "confianza": 0.719585120677948,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 14,
+          "palabra": 2
+        }
+      },
+      {
+        "texto": "MERCANTIL",
+        "confianza": 0.9471012949943542,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 14,
+          "palabra": 3
+        }
+      }
+    ],
+    "metodo_extraccion": "ONNXTR_SINGLE_PASS_COORDENADAS",
+    "tiempo_procesamiento": 0.16903114318847656,
+    "total_palabras_detectadas": 22,
+    "confianza_promedio": 0.9225366562604904
+  },
+  "estadisticas": {
+    "confianza_promedio": "92.3%",
+    "palabras_alta_confianza": 19,
+    "palabras_baja_confianza": 0,
+    "total_palabras": 22,
+    "calidad_categoria": "Excelente",
+    "tiempo_procesamiento": "0.17s",
+    "lineas_texto": 1,
+    "longitud_texto": 172
+  },
+  "calidad_extraccion": {},
+  "texto_extraido": "A Personas 104,54 Bs Fecha : 20/06/ 2025 Operacion; 003039387344 I - Identificacion : 2/ 061025 Origen : 0102 **** 2679 Destino : 04125318244 Banco : 0105 - BANCO MERCANTIL"
+}

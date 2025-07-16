@@ -1799,9 +1799,9 @@ def api_extract_results():
             if os.path.exists(historial_dir):
                 results_dir = historial_dir
         
-        # FIX: DETECCIÓN AUTOMÁTICA DEL LOTE MÁS RECIENTE
-        # REASON: last_batch_request_id no coincide con archivos reales, usar detección automática
-        # IMPACT: Mostrar automáticamente el lote más reciente por timestamp
+        # FIX: MOSTRAR TODOS LOS ARCHIVOS PROCESADOS SIN FILTRAR POR LOTE
+        # REASON: Usuario quiere ver todos los archivos procesados, no solo el último lote
+        # IMPACT: Descarga consolidada incluye todos los archivos disponibles
         json_files = []
         
         # Obtener todos los archivos JSON del directorio results
@@ -1812,9 +1812,9 @@ def api_extract_results():
                     if os.path.isfile(file_path):
                         json_files.append(file_path)
         
+        # Información de lotes para logging
+        batch_groups = {}
         if json_files:
-            # Agrupar archivos por prefijo de lote (BATCH_YYYYMMDD_HHMMSS)
-            batch_groups = {}
             for file_path in json_files:
                 filename = os.path.basename(file_path)
                 # Extraer prefijo del lote (primeras 3 partes: BATCH_YYYYMMDD_HHMMSS)
@@ -1827,20 +1827,22 @@ def api_extract_results():
                         batch_groups[batch_prefix].append(file_path)
             
             if batch_groups:
-                # Encontrar el lote más reciente por timestamp
-                latest_batch = max(batch_groups.keys(), key=lambda x: x.split('_')[1] + x.split('_')[2])
-                json_files = batch_groups[latest_batch]
-                logger.info(f"🎯 Lote más reciente detectado automáticamente: {latest_batch} ({len(json_files)} archivos)")
+                logger.info(f"🎯 Archivos encontrados en {len(batch_groups)} lotes diferentes:")
+                for batch_prefix, files in batch_groups.items():
+                    logger.info(f"  - {batch_prefix}: {len(files)} archivos")
             else:
                 logger.info("⚠️ No se encontraron lotes válidos, mostrando todos los archivos")
         else:
             logger.info("📭 No hay archivos JSON en el directorio")
                         
         # Determinar el ID del lote actual para logging
-        current_batch_id = "Detección automática"
+        current_batch_id = "Todos los lotes"
         if json_files and batch_groups:
-            current_batch_id = latest_batch
-        logger.info(f"📊 Archivos encontrados del lote actual: {len(json_files)} archivos (Lote: {current_batch_id})")
+            if len(batch_groups) == 1:
+                current_batch_id = list(batch_groups.keys())[0]
+            else:
+                current_batch_id = f"Múltiples lotes ({len(batch_groups)})"
+        logger.info(f"📊 Archivos encontrados en total: {len(json_files)} archivos (Origen: {current_batch_id})")
         
         if not json_files:
             logger.info("No hay archivos de resultados disponibles para extraer")

@@ -1,0 +1,15 @@
+{
+  "filename_original": "prueba.jpg",
+  "filename_final": "20250716-B--729600359@lid_Pedro_00-12_20250716_002933_183.jpg",
+  "request_id": "BATCH_20250716_002932_dd1d4e93",
+  "upload_timestamp": "2025-07-16T00:29:33.185125",
+  "file_size": 35748,
+  "numerosorteo": "B",
+  "idWhatsapp": "729600359@lid",
+  "nombre": "Pedro",
+  "horamin": "00-12",
+  "fechasorteo": "20250716",
+  "caption": "Pago Móvil",
+  "numero_llegada": "2",
+  "processed_via": "process_batch_direct"
+}

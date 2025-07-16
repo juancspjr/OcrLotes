@@ -1,0 +1,426 @@
+INFO:routes:📝 Content-Type: multipart/form-data; boundary=----WebKitFormBoundarywb71AtKQWBp0yjMA
+INFO:routes:✅ Procesamiento de lote iniciado. Request ID: BATCH_20250716_003452_90a783ec
+INFO:routes:⚙️ Configuración: profile=ultra_rapido, batch_size=5
+INFO:routes:📁 Archivos detectados en process_batch: 12
+INFO:routes:📁 Archivo guardado: 20250716-A--494915317@lid_José_01-50_20250716_003453_615.jpg
+INFO:routes:📁 Archivo guardado: 20250716-B--240962743@lid_Carlos_06-30_20250716_003453_616.jpg
+INFO:routes:📁 Archivo guardado: 20250716-C--215436791@lid_Sofía_15-57_20250716_003453_617.png
+INFO:routes:📁 Archivo guardado: 20250716-D--927239364@lid_Juan_23-39_20250716_003453_617.png
+INFO:routes:📁 Archivo guardado: 20250716-E--912836760@lid_Juan_13-48_20250716_003453_618.png
+INFO:routes:📁 Archivo guardado: 20250716-F--715052943@lid_Ana_12-14_20250716_003453_618.png
+INFO:routes:📁 Archivo guardado: 20250716-G--160405993@lid_Juan_16-27_20250716_003453_619.jpg
+INFO:routes:📁 Archivo guardado: 20250716-H--467981771@lid_Carlos_17-23_20250716_003453_619.jpg
+INFO:routes:📁 Archivo guardado: 20250716-I--187306631@lid_Carlos_12-31_20250716_003453_619.jpg
+INFO:routes:📁 Archivo guardado: 20250716-J--502937043@lid_Carmen_20-37_20250716_003453_620.jpg
+INFO:routes:📁 Archivo guardado: 20250716-A--864643782@lid_Laura_15-20_20250716_003453_620.jpg
+INFO:routes:📁 Archivo guardado: 20250716-B--180825140@lid_María_22-20_20250716_003453_620.jpg
+INFO:main_ocr_process:Iniciando procesamiento por lotes: 12 archivos
+INFO:main_ocr_process:Inicializando ValidadorOCR (lazy loading)...
+INFO:validador_ocr:Análisis completado para data/inbox/20250716-C--215436791@lid_Sofía_15-57_20250716_003453_617.png
+INFO:main_ocr_process:Inicializando MejoradorOCR (lazy loading)...
+INFO:mejora_ocr:Iniciando procesamiento con perfil: ultra_rapido
+INFO:mejora_ocr:Procesamiento completado en 0.017s
+INFO:main_ocr_process:Inicializando AplicadorOCR (lazy loading)...
+INFO:aplicador_ocr:Iniciando warm-up de modelos frecuentes...
+INFO:aplicador_ocr:Warm-up de modelos completado correctamente
+INFO:aplicador_ocr:✅ Reglas de extracción cargadas: 16 campos configurados
+INFO:aplicador_ocr:CACHÉ HIT: Resultado recuperado para hash c13b518c en 0.000s
+INFO:aplicador_ocr:📋 Estructura empresarial aplicada: 32 elementos reorganizados
+INFO:aplicador_ocr:🏆 MANDATO COMPLETADO: Lógica de oro aplicada sobre caché - textos diferenciados
+INFO:aplicador_ocr:CACHÉ HIT adaptado: 202 caracteres disponibles
+INFO:main_ocr_process:🏦 MANDATO 4/X FASE 2: Banco origen extraído: BANCO MERCANTIL Numero celular → BANCO MERCANTIL
+INFO:main_ocr_process:🏆 MANDATO 4/X FASE 2: Monto venezolano normalizado: 313,62 → 313.62
+INFO:main_ocr_process:✅ MANDATO 4/X FASE 2: Monto extraído correctamente: 313.62
+INFO:main_ocr_process:🆔 MANDATO 4/X FASE 2: Cédula extraída: V 27061025
+INFO:main_ocr_process:📱 MANDATO 5/X: Iniciando búsqueda directa de teléfonos venezolanos en texto: 'Eldinero fue enviado Bs . 313,62 Dinero Rapido BBVA Provincial Banco : BANCO MERCANTIL Numero celular : 04125318244 Identificacion : V 27061025 Concepto : Pago Fecha : 20/06/ 2025 Referencia : 0000120...'
+INFO:main_ocr_process:📱 MANDATO 5/X: Fase directa sin resultados, iniciando búsqueda con keywords
+INFO:main_ocr_process:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+INFO:main_ocr_process:📅 MANDATO 3 X FASE 2: Fecha operación extraída: 20/06/ 2025
+INFO:main_ocr_process:Extracción posicional completada: 7/9 campos detectados
+INFO:main_ocr_process:🏦 MANDATO 5/X FASE 2: Banco destino corregido: 'BANCO MERCANTIL Numero celular ' → BANCO MERCANTIL
+INFO:main_ocr_process:📅 MANDATO 5/X FASE 3: Fecha de pago corregida: '20/06/ 2025'
+INFO:main_ocr_process:✅ MANDATO 5/X FASES 2 Y 3: Correcciones aplicadas - banco_destino: 'BANCO MERCANTIL', telefono: '04125318244', pago_fecha: '20/06/ 2025', monto: '313.62'
+INFO:main_ocr_process:✅ Imagen procesada exitosamente: 20250716-C--215436791@lid_Sofía_15-57_20250716_003453_617.png → BATCH_20250716_003453_a21_20250716-C--215436791@lid_Sofía_15-57_20250716_003453_617.png.json
+INFO:main_ocr_process:✅ Procesado: 20250716-C--215436791@lid_Sofía_15-57_20250716_003453_617.png
+INFO:validador_ocr:Análisis completado para data/inbox/20250716-D--927239364@lid_Juan_23-39_20250716_003453_617.png
+INFO:mejora_ocr:Iniciando procesamiento con perfil: ultra_rapido
+INFO:mejora_ocr:Procesamiento completado en 0.009s
+INFO:aplicador_ocr:CACHÉ HIT: Resultado recuperado para hash 0c5623aa en 0.000s
+INFO:aplicador_ocr:📋 Estructura empresarial aplicada: 30 elementos reorganizados
+INFO:aplicador_ocr:🏆 MANDATO COMPLETADO: Lógica de oro aplicada sobre caché - textos diferenciados
+INFO:aplicador_ocr:CACHÉ HIT adaptado: 172 caracteres disponibles
+INFO:main_ocr_process:🏦 MANDATO 4/X FASE 2: Banco origen extraído: BANCO MERCANTIL → BANCO MERCANTIL
+INFO:main_ocr_process:🏆 MANDATO 4/X FASE 2: Monto venezolano normalizado: 104,54 → 104.54
+INFO:main_ocr_process:✅ MANDATO 4/X FASE 2: Monto extraído correctamente: 104.54
+INFO:main_ocr_process:📱 MANDATO 5/X: Iniciando búsqueda directa de teléfonos venezolanos en texto: 'A Personas 104,54 Bs Fecha : 20/06/ 2025 Operacion; 003039387344 I - Identificacion : 2/ 061025 Origen : 0102 **** 2679 Destino : 04125318244 Banco : 0105 - BANCO MERCANTIL...'
+INFO:main_ocr_process:📱 MANDATO 5/X: Fase directa sin resultados, iniciando búsqueda con keywords
+INFO:main_ocr_process:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+INFO:main_ocr_process:📅 MANDATO 3 X FASE 2: Fecha operación extraída: 20/06/ 2025
+INFO:main_ocr_process:Extracción posicional completada: 6/9 campos detectados
+INFO:main_ocr_process:🏦 MANDATO 5/X FASE 2: Banco destino corregido: 'BANCO MERCANTIL' → BANCO MERCANTIL
+INFO:main_ocr_process:📅 MANDATO 5/X FASE 3: Fecha de pago corregida: '20/06/ 2025'
+INFO:main_ocr_process:✅ MANDATO 5/X FASES 2 Y 3: Correcciones aplicadas - banco_destino: 'BANCO MERCANTIL', telefono: '04125318244', pago_fecha: '20/06/ 2025', monto: '104.54'
+INFO:main_ocr_process:✅ Imagen procesada exitosamente: 20250716-D--927239364@lid_Juan_23-39_20250716_003453_617.png → BATCH_20250716_003453_e70_20250716-D--927239364@lid_Juan_23-39_20250716_003453_617.png.json
+INFO:main_ocr_process:✅ Procesado: 20250716-D--927239364@lid_Juan_23-39_20250716_003453_617.png
+DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
+DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 41 9
+DEBUG:PIL.PngImagePlugin:STREAM b'iTXt' 62 1235
+DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 1309 476678
+INFO:validador_ocr:Análisis completado para data/inbox/20250716-E--912836760@lid_Juan_13-48_20250716_003453_618.png
+INFO:mejora_ocr:Iniciando procesamiento con perfil: ultra_rapido
+INFO:mejora_ocr:Procesamiento completado en 0.029s
+INFO:aplicador_ocr:CACHÉ HIT: Resultado recuperado para hash 9c1a02bd en 0.001s
+INFO:aplicador_ocr:📋 Estructura empresarial aplicada: 32 elementos reorganizados
+INFO:aplicador_ocr:🏆 MANDATO COMPLETADO: Lógica de oro aplicada sobre caché - textos diferenciados
+INFO:aplicador_ocr:CACHÉ HIT adaptado: 190 caracteres disponibles
+INFO:main_ocr_process:🏦 MANDATO 4/X FASE 2: Banco origen extraído: BANCO MERCANTIL Concepto → BANCO MERCANTIL
+INFO:main_ocr_process:🏆 MANDATO 4/X FASE 2: Monto venezolano normalizado: 104,54 → 104.54
+INFO:main_ocr_process:✅ MANDATO 4/X FASE 2: Monto extraído correctamente: 104.54
+INFO:main_ocr_process:📱 MANDATO 5/X: Iniciando búsqueda directa de teléfonos venezolanos en texto: 'Personas 104,54 Bs Fecha : 20/06/ 2025 Operacion : 003039376430 D Identificacion : 27061025 Origen : 0102 ****2 2663 Destino : 04125318244 Banco : 0105 = BANCO MERCANTIL Concepto : 08 Evelin...'
+INFO:main_ocr_process:📱 MANDATO 5/X: Fase directa sin resultados, iniciando búsqueda con keywords
+INFO:main_ocr_process:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+INFO:main_ocr_process:📅 MANDATO 3 X FASE 2: Fecha operación extraída: 20/06/ 2025
+INFO:main_ocr_process:Extracción posicional completada: 6/9 campos detectados
+INFO:main_ocr_process:🏦 MANDATO 5/X FASE 2: Banco destino corregido: 'BANCO MERCANTIL Concepto ' → BANCO MERCANTIL
+INFO:main_ocr_process:📅 MANDATO 5/X FASE 3: Fecha de pago corregida: '20/06/ 2025'
+INFO:main_ocr_process:✅ MANDATO 5/X FASES 2 Y 3: Correcciones aplicadas - banco_destino: 'BANCO MERCANTIL', telefono: '04125318244', pago_fecha: '20/06/ 2025', monto: '104.54'
+INFO:main_ocr_process:✅ Imagen procesada exitosamente: 20250716-E--912836760@lid_Juan_13-48_20250716_003453_618.png → BATCH_20250716_003453_271_20250716-E--912836760@lid_Juan_13-48_20250716_003453_618.png.json
+INFO:main_ocr_process:✅ Procesado: 20250716-E--912836760@lid_Juan_13-48_20250716_003453_618.png
+INFO:validador_ocr:Análisis completado para data/inbox/20250716-F--715052943@lid_Ana_12-14_20250716_003453_618.png
+INFO:mejora_ocr:Iniciando procesamiento con perfil: ultra_rapido
+INFO:mejora_ocr:Procesamiento completado en 0.006s
+INFO:aplicador_ocr:CACHÉ HIT: Resultado recuperado para hash 16d32a4c en 0.000s
+INFO:aplicador_ocr:📋 Estructura empresarial aplicada: 34 elementos reorganizados
+INFO:aplicador_ocr:🏆 MANDATO COMPLETADO: Lógica de oro aplicada sobre caché - textos diferenciados
+INFO:aplicador_ocr:CACHÉ HIT adaptado: 203 caracteres disponibles
+INFO:main_ocr_process:🏦 MANDATO 4/X FASE 2: Banco origen extraído: BANCO MERCANTIL Concepto → BANCO MERCANTIL
+INFO:main_ocr_process:🏆 MANDATO 4/X FASE 2: Monto venezolano normalizado: 104,54 → 104.54
+INFO:main_ocr_process:✅ MANDATO 4/X FASE 2: Monto extraído correctamente: 104.54
+INFO:main_ocr_process:📱 MANDATO 5/X: Iniciando búsqueda directa de teléfonos venezolanos en texto: 'PagomovilBDV Personas 104,54 Bs Fecha : 20/06/ 2025 Operacion : 003039376430 D Identificacion : 27061025 Origen : 0102 ** TA 2663 Destino : 04125318244 Banco : 0105 = BANCO MERCANTIL Concepto : 08 Eve...'
+INFO:main_ocr_process:📱 MANDATO 5/X: Fase directa sin resultados, iniciando búsqueda con keywords
+INFO:main_ocr_process:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+INFO:main_ocr_process:📅 MANDATO 3 X FASE 2: Fecha operación extraída: 20/06/ 2025
+INFO:main_ocr_process:Extracción posicional completada: 6/9 campos detectados
+INFO:main_ocr_process:🏦 MANDATO 5/X FASE 2: Banco destino corregido: 'BANCO MERCANTIL Concepto ' → BANCO MERCANTIL
+INFO:main_ocr_process:📅 MANDATO 5/X FASE 3: Fecha de pago corregida: '20/06/ 2025'
+INFO:main_ocr_process:✅ MANDATO 5/X FASES 2 Y 3: Correcciones aplicadas - banco_destino: 'BANCO MERCANTIL', telefono: '04125318244', pago_fecha: '20/06/ 2025', monto: '104.54'
+INFO:main_ocr_process:✅ Imagen procesada exitosamente: 20250716-F--715052943@lid_Ana_12-14_20250716_003453_618.png → BATCH_20250716_003454_b8d_20250716-F--715052943@lid_Ana_12-14_20250716_003453_618.png.json
+INFO:main_ocr_process:✅ Procesado: 20250716-F--715052943@lid_Ana_12-14_20250716_003453_618.png
+INFO:validador_ocr:Análisis completado para data/inbox/20250716-A--494915317@lid_José_01-50_20250716_003453_615.jpg
+INFO:mejora_ocr:Iniciando procesamiento con perfil: ultra_rapido
+INFO:mejora_ocr:Procesamiento completado en 0.009s
+INFO:aplicador_ocr:Optimización para screenshot móvil: usando ultra_rapido
+INFO:aplicador_ocr:Imagen cargada correctamente para OnnxTR: data/inbox/20250716-A--494915317@lid_José_01-50_20250716_003453_615.jpg
+INFO:aplicador_ocr:Iniciando OCR OnnxTR OPTIMIZADO - Perfil: ultra_rapido
+INFO:aplicador_ocr:Modelos: db_mobilenet_v3_large + crnn_mobilenet_v3_small
+WARNING:aplicador_ocr:🔧 No hay coordenadas válidas - usando fallback de ordenamiento básico
+INFO:aplicador_ocr:OCR OnnxTR completado en 0.55s
+INFO:aplicador_ocr:Texto extraído: 161 caracteres, 18 palabras
+INFO:aplicador_ocr:Confianza promedio: 0.903
+Error extrayendo coordenadas: tuple index out of range
+INFO:aplicador_ocr:🎯 MANDATO: Coordenadas extraídas del OCR: 0 palabras con coordenadas
+INFO:aplicador_ocr:Mandato 4: Configuración de geometría dinámica deshabilitada o no hay coordenadas. Omitiendo generación de líneas lógicas.
+WARNING:aplicador_ocr:Lógica de Oro basada en coordenadas no aplicada: No se detectaron coordenadas válidas en el OCR de origen. Procesado con fallback de texto limpio.
+INFO:aplicador_ocr:🔧 MANDATO: Aplicando fallback de Lógica de Oro (sin coordenadas válidas)
+DEBUG:aplicador_ocr:🔧 MANDATO: Texto limpio fallback creado: 155 caracteres
+INFO:aplicador_ocr:🔧 MANDATO: Texto diferenciado pero sin coordenadas válidas
+DEBUG:aplicador_ocr:🔧 Iniciando extracción GRANULAR con 16 campos
+DEBUG:aplicador_ocr:🎯 Procesando valor_referencia_operacion con 1 reglas refinadas
+DEBUG:aplicador_ocr:🔍 Aplicando regla REF_TRANSFERENCIA_PAGO_MOVIL_CONSOLIDADO para valor_referencia_operacion
+DEBUG:aplicador_ocr:📍 Palabras priorizadas por región: 18 de 18
+DEBUG:aplicador_ocr:❌ REF_TRANSFERENCIA_PAGO_MOVIL_CONSOLIDADO: No se encontraron keywords válidas
+DEBUG:aplicador_ocr:❌ valor_referencia_operacion no encontrado con ninguna regla refinada
+DEBUG:aplicador_ocr:❌ Campo valor_referencia_operacion no encontrado
+DEBUG:aplicador_ocr:🎯 Procesando monto_total con 1 reglas refinadas
+DEBUG:aplicador_ocr:🔍 Aplicando regla MONTO_FINAL_GRANDES_CIFRAS_PAGO_CONSOLIDADO para monto_total
+DEBUG:aplicador_ocr:📍 Palabras priorizadas por región: 18 de 18
+DEBUG:aplicador_ocr:❌ MONTO_FINAL_GRANDES_CIFRAS_PAGO_CONSOLIDADO: No se encontraron keywords válidas
+DEBUG:aplicador_ocr:❌ monto_total no encontrado con ninguna regla refinada
+DEBUG:aplicador_ocr:❌ Campo monto_total no encontrado
+DEBUG:aplicador_ocr:🎯 Procesando datos_beneficiario con 2 reglas refinadas
+DEBUG:aplicador_ocr:🔍 Aplicando regla BENEFICIARIO_NOMBRE_CONSOLIDADO para datos_beneficiario
+DEBUG:aplicador_ocr:📍 Palabras priorizadas por región: 18 de 18
+DEBUG:aplicador_ocr:❌ BENEFICIARIO_NOMBRE_CONSOLIDADO: No se encontraron keywords válidas
+DEBUG:aplicador_ocr:🔍 Aplicando regla TITULAR_CUENTA_ORIGEN para datos_beneficiario
+DEBUG:aplicador_ocr:📍 Palabras priorizadas por región: 18 de 18
+DEBUG:aplicador_ocr:❌ TITULAR_CUENTA_ORIGEN: No se encontraron keywords válidas
+DEBUG:aplicador_ocr:❌ datos_beneficiario no encontrado con ninguna regla refinada
+DEBUG:aplicador_ocr:❌ Campo datos_beneficiario no encontrado
+DEBUG:aplicador_ocr:🎯 Procesando concepto_motivo con 1 reglas refinadas
+DEBUG:aplicador_ocr:🔍 Aplicando regla CONCEPTO_GENERICO_PAGO_CONSOLIDADO para concepto_motivo
+DEBUG:aplicador_ocr:📍 Palabras priorizadas por región: 18 de 18
+DEBUG:aplicador_ocr:❌ CONCEPTO_GENERICO_PAGO_CONSOLIDADO: No se encontraron keywords válidas
+DEBUG:aplicador_ocr:❌ concepto_motivo no encontrado con ninguna regla refinada
+DEBUG:aplicador_ocr:❌ Campo concepto_motivo no encontrado
+DEBUG:aplicador_ocr:🎯 Procesando fecha_operacion con 1 reglas refinadas
+DEBUG:aplicador_ocr:🔍 Aplicando regla FECHA_DDMMYYYY_CONSOLIDADO para fecha_operacion
+DEBUG:aplicador_ocr:📍 Palabras priorizadas por región: 18 de 18
+DEBUG:aplicador_ocr:❌ FECHA_DDMMYYYY_CONSOLIDADO: No se encontraron keywords válidas
+DEBUG:aplicador_ocr:❌ fecha_operacion no encontrado con ninguna regla refinada
+DEBUG:aplicador_ocr:❌ Campo fecha_operacion no encontrado
+INFO:aplicador_ocr:📱 MANDATO 5/X: Procesando campo telefono con 2 reglas refinadas
+DEBUG:aplicador_ocr:🎯 Procesando telefono con 2 reglas refinadas
+DEBUG:aplicador_ocr:🔍 Aplicando regla TELEFONO_BENEFICIARIO_VENEZOLANO_MANDATO_7 para telefono
+DEBUG:aplicador_ocr:📍 Palabras priorizadas por región: 18 de 18
+DEBUG:aplicador_ocr:❌ TELEFONO_BENEFICIARIO_VENEZOLANO_MANDATO_7: No se encontraron keywords válidas
+DEBUG:aplicador_ocr:🔍 Aplicando regla TELEFONO_EMISOR_VENEZOLANO para telefono
+DEBUG:aplicador_ocr:📍 Palabras priorizadas por región: 18 de 18
+DEBUG:aplicador_ocr:❌ TELEFONO_EMISOR_VENEZOLANO: No se encontraron keywords válidas
+DEBUG:aplicador_ocr:❌ telefono no encontrado con ninguna regla refinada
+DEBUG:aplicador_ocr:❌ Campo telefono no encontrado
+WARNING:aplicador_ocr:📱 MANDATO 5/X FALLIDO: Campo telefono vacío a pesar de reglas refinadas
+DEBUG:aplicador_ocr:🎯 Procesando cedula con 1 reglas refinadas
+DEBUG:aplicador_ocr:🔍 Aplicando regla CEDULA_GENERICA_CI_RIF_PERSONA_CONSOLIDADO para cedula
+DEBUG:aplicador_ocr:📍 Palabras priorizadas por región: 18 de 18
+DEBUG:aplicador_ocr:❌ CEDULA_GENERICA_CI_RIF_PERSONA_CONSOLIDADO: No se encontraron keywords válidas
+DEBUG:aplicador_ocr:❌ cedula no encontrado con ninguna regla refinada
+DEBUG:aplicador_ocr:❌ Campo cedula no encontrado
+DEBUG:aplicador_ocr:🎯 Procesando banco_emisor_pagador con 1 reglas refinadas
+DEBUG:aplicador_ocr:🔍 Aplicando regla BANCO_ORIGEN_TRANSFERENCIA_CONSOLIDADO para banco_emisor_pagador
+DEBUG:aplicador_ocr:📍 Palabras priorizadas por región: 18 de 18
+DEBUG:aplicador_ocr:❌ BANCO_ORIGEN_TRANSFERENCIA_CONSOLIDADO: No se encontraron keywords válidas
+DEBUG:aplicador_ocr:❌ banco_emisor_pagador no encontrado con ninguna regla refinada
+DEBUG:aplicador_ocr:❌ Campo banco_emisor_pagador no encontrado
+DEBUG:aplicador_ocr:🎯 Procesando banco_receptor_beneficiario con 1 reglas refinadas
+DEBUG:aplicador_ocr:🔍 Aplicando regla BANCO_DESTINO_TRANSFERENCIA_CONSOLIDADO para banco_receptor_beneficiario
+DEBUG:aplicador_ocr:📍 Palabras priorizadas por región: 18 de 18
+DEBUG:aplicador_ocr:❌ BANCO_DESTINO_TRANSFERENCIA_CONSOLIDADO: No se encontraron keywords válidas
+DEBUG:aplicador_ocr:❌ banco_receptor_beneficiario no encontrado con ninguna regla refinada
+DEBUG:aplicador_ocr:❌ Campo banco_receptor_beneficiario no encontrado
+DEBUG:aplicador_ocr:🎯 Procesando tipo_transaccion con 3 reglas refinadas
+DEBUG:aplicador_ocr:🔍 Aplicando regla TIPO_PAGO_MOVIL_CONSOLIDADO para tipo_transaccion
+DEBUG:aplicador_ocr:📍 Palabras priorizadas por región: 18 de 18
+DEBUG:aplicador_ocr:❌ TIPO_PAGO_MOVIL_CONSOLIDADO: No se encontraron keywords válidas
+DEBUG:aplicador_ocr:🔍 Aplicando regla TIPO_TRANSFERENCIA_CONSOLIDADO para tipo_transaccion
+DEBUG:aplicador_ocr:📍 Palabras priorizadas por región: 18 de 18
+DEBUG:aplicador_ocr:❌ TIPO_TRANSFERENCIA_CONSOLIDADO: No se encontraron keywords válidas
+DEBUG:aplicador_ocr:🔍 Aplicando regla TIPO_COMPROBANTE_PAGO para tipo_transaccion
+DEBUG:aplicador_ocr:📍 Palabras priorizadas por región: 18 de 18
+DEBUG:aplicador_ocr:❌ TIPO_COMPROBANTE_PAGO: No se encontraron keywords válidas
+DEBUG:aplicador_ocr:❌ tipo_transaccion no encontrado con ninguna regla refinada
+DEBUG:aplicador_ocr:❌ Campo tipo_transaccion no encontrado
+DEBUG:aplicador_ocr:🎯 Procesando identificador_cuenta_origen con 1 reglas refinadas
+DEBUG:aplicador_ocr:🔍 Aplicando regla CUENTA_ORIGEN_PARCIAL_O_TELEFONO_CONSOLIDADO para identificador_cuenta_origen
+DEBUG:aplicador_ocr:📍 Palabras priorizadas por región: 18 de 18
+DEBUG:aplicador_ocr:❌ CUENTA_ORIGEN_PARCIAL_O_TELEFONO_CONSOLIDADO: No se encontraron keywords válidas
+DEBUG:aplicador_ocr:❌ identificador_cuenta_origen no encontrado con ninguna regla refinada
+DEBUG:aplicador_ocr:❌ Campo identificador_cuenta_origen no encontrado
+DEBUG:aplicador_ocr:🎯 Procesando identificador_cuenta_destino con 1 reglas refinadas
+DEBUG:aplicador_ocr:🔍 Aplicando regla CUENTA_DESTINO_PARCIAL_O_TELEFONO_CONSOLIDADO para identificador_cuenta_destino
+DEBUG:aplicador_ocr:📍 Palabras priorizadas por región: 18 de 18
+DEBUG:aplicador_ocr:❌ CUENTA_DESTINO_PARCIAL_O_TELEFONO_CONSOLIDADO: No se encontraron keywords válidas
+DEBUG:aplicador_ocr:❌ identificador_cuenta_destino no encontrado con ninguna regla refinada
+DEBUG:aplicador_ocr:❌ Campo identificador_cuenta_destino no encontrado
+INFO:aplicador_ocr:📱 MANDATO 5/X: Procesando campo telefono con 2 reglas refinadas
+DEBUG:aplicador_ocr:🎯 Procesando telefono con 2 reglas refinadas
+DEBUG:aplicador_ocr:🔍 Aplicando regla TELEFONO_DIRECTO_SIN_KEYWORD para telefono
+DEBUG:aplicador_ocr:📍 Palabras priorizadas por región: 18 de 18
+DEBUG:aplicador_ocr:📱 TELEFONO_DIRECTO_SIN_KEYWORD: Búsqueda directa de patrones sin keywords (MANDATO 5/X)
+DEBUG:aplicador_ocr:📱 MANDATO 5/X: Búsqueda directa de patrones sin keywords
+DEBUG:aplicador_ocr:❌ TELEFONO_DIRECTO_SIN_KEYWORD: No se encontraron patrones directos
+DEBUG:aplicador_ocr:🔍 Aplicando regla TELEFONO_VENEZOLANO_CONSOLIDADO para telefono
+DEBUG:aplicador_ocr:📍 Palabras priorizadas por región: 18 de 18
+DEBUG:aplicador_ocr:❌ TELEFONO_VENEZOLANO_CONSOLIDADO: No se encontraron keywords válidas
+DEBUG:aplicador_ocr:❌ telefono no encontrado con ninguna regla refinada
+DEBUG:aplicador_ocr:❌ Campo telefono no encontrado
+WARNING:aplicador_ocr:📱 MANDATO 5/X FALLIDO: Campo telefono vacío a pesar de reglas refinadas
+DEBUG:aplicador_ocr:🎯 Procesando banco_destino con 1 reglas refinadas
+DEBUG:aplicador_ocr:🔍 Aplicando regla BANCO_DESTINO_BENEFICIARIO_CONSOLIDADO para banco_destino
+DEBUG:aplicador_ocr:📍 Palabras priorizadas por región: 18 de 18
+DEBUG:aplicador_ocr:❌ BANCO_DESTINO_BENEFICIARIO_CONSOLIDADO: No se encontraron keywords válidas
+DEBUG:aplicador_ocr:❌ banco_destino no encontrado con ninguna regla refinada
+DEBUG:aplicador_ocr:❌ Campo banco_destino no encontrado
+DEBUG:aplicador_ocr:🎯 Procesando pago_fecha con 1 reglas refinadas
+DEBUG:aplicador_ocr:🔍 Aplicando regla PAGO_FECHA_DDMMYYYY_CONSOLIDADO para pago_fecha
+DEBUG:aplicador_ocr:📍 Palabras priorizadas por región: 18 de 18
+DEBUG:aplicador_ocr:❌ PAGO_FECHA_DDMMYYYY_CONSOLIDADO: No se encontraron keywords válidas
+DEBUG:aplicador_ocr:❌ pago_fecha no encontrado con ninguna regla refinada
+DEBUG:aplicador_ocr:❌ Campo pago_fecha no encontrado
+DEBUG:aplicador_ocr:🎯 Procesando hora_operacion con 1 reglas refinadas
+DEBUG:aplicador_ocr:🔍 Aplicando regla HORA_HHMMSS_PAGO_CONSOLIDADO para hora_operacion
+DEBUG:aplicador_ocr:📍 Palabras priorizadas por región: 18 de 18
+DEBUG:aplicador_ocr:❌ HORA_HHMMSS_PAGO_CONSOLIDADO: No se encontraron keywords válidas
+DEBUG:aplicador_ocr:❌ hora_operacion no encontrado con ninguna regla refinada
+DEBUG:aplicador_ocr:❌ Campo hora_operacion no encontrado
+INFO:aplicador_ocr:🎯 Extracción GRANULAR completada: 0 campos encontrados
+INFO:aplicador_ocr:🎯 MANDATO: Aplicando corrección de cédula a texto: 'Personas 1.085,00 Bs Fecha : 15/07/ 2025 Operacion : 003215578991 Identificacion : 27623430 Origen :...'
+INFO:aplicador_ocr:🎯 MANDATO: Post-corrección cédula: 
+INFO:aplicador_ocr:🏆 Extracción de campos basada en texto estructurado (Lógica de Oro aplicada)
+INFO:aplicador_ocr:Resultado guardado en caché para hash 7e9fc935
+INFO:aplicador_ocr:OCR ELITE SINGLE-PASS completado exitosamente. Total: 161 caracteres
+INFO:main_ocr_process:🏦 MANDATO 4/X FASE 2: Banco origen extraído: BANESCO Concepto → BANCO BANESCO
+INFO:main_ocr_process:🏆 MANDATO 4/X FASE 2: Monto venezolano normalizado: 1.085,00 → 1085.00
+INFO:main_ocr_process:✅ MANDATO 4/X FASE 2: Monto extraído correctamente: 1085.00
+INFO:main_ocr_process:📱 MANDATO 5/X: Iniciando búsqueda directa de teléfonos venezolanos en texto: 'Personas 1.085,00 Bs Fecha : 15/07/ 2025 Operacion : 003215578991 Identificacion : 27623430 Origen : Destino : 04129255657 Banco : 0134 = BANESCO Concepto : pago...'
+INFO:main_ocr_process:📱 MANDATO 5/X: Fase directa sin resultados, iniciando búsqueda con keywords
+INFO:main_ocr_process:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04129255657
+INFO:main_ocr_process:📅 MANDATO 3 X FASE 2: Fecha operación extraída: 15/07/ 2025
+INFO:main_ocr_process:Extracción posicional completada: 6/9 campos detectados
+INFO:main_ocr_process:📅 MANDATO 5/X FASE 3: Fecha de pago corregida: '15/07/ 2025'
+INFO:main_ocr_process:💰 MANDATO 5/X FASE 3: Monto corregido: '085,00' → 085.00
+INFO:main_ocr_process:✅ MANDATO 5/X FASES 2 Y 3: Correcciones aplicadas - banco_destino: '', telefono: '', pago_fecha: '15/07/ 2025', monto: '085.00'
+INFO:main_ocr_process:✅ Imagen procesada exitosamente: 20250716-A--494915317@lid_José_01-50_20250716_003453_615.jpg → BATCH_20250716_003454_442_20250716-A--494915317@lid_José_01-50_20250716_003453_615.jpg.json
+INFO:main_ocr_process:✅ Procesado: 20250716-A--494915317@lid_José_01-50_20250716_003453_615.jpg
+INFO:validador_ocr:Análisis completado para data/inbox/20250716-B--240962743@lid_Carlos_06-30_20250716_003453_616.jpg
+INFO:mejora_ocr:Iniciando procesamiento con perfil: ultra_rapido
+INFO:mejora_ocr:Procesamiento completado en 0.008s
+INFO:aplicador_ocr:CACHÉ HIT: Resultado recuperado para hash 3937873d en 0.000s
+INFO:aplicador_ocr:📋 Estructura empresarial aplicada: 26 elementos reorganizados
+INFO:aplicador_ocr:🏆 MANDATO COMPLETADO: Lógica de oro aplicada sobre caché - textos diferenciados
+INFO:aplicador_ocr:CACHÉ HIT adaptado: 164 caracteres disponibles
+INFO:main_ocr_process:🏆 MANDATO 4/X FASE 2: Monto venezolano normalizado: 2.150,00 → 2150.00
+INFO:main_ocr_process:✅ MANDATO 4/X FASE 2: Monto extraído correctamente: 2150.00
+INFO:main_ocr_process:📱 MANDATO 5/X: Iniciando búsqueda directa de teléfonos venezolanos en texto: 'Personas 2.150,00 Bs Fecha : 13/07/ 2025 Operacion : 003200542462 Identificacion : 27623430 Origen : Destino : 04129255657 Banco : 0114 = BANCARIBE Concepto : pagos...'
+INFO:main_ocr_process:📱 MANDATO 5/X: Fase directa sin resultados, iniciando búsqueda con keywords
+INFO:main_ocr_process:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04129255657
+INFO:main_ocr_process:📅 MANDATO 3 X FASE 2: Fecha operación extraída: 13/07/ 2025
+INFO:main_ocr_process:Extracción posicional completada: 5/9 campos detectados
+INFO:main_ocr_process:📅 MANDATO 5/X FASE 3: Fecha de pago corregida: '13/07/ 2025'
+INFO:main_ocr_process:✅ MANDATO 5/X FASES 2 Y 3: Correcciones aplicadas - banco_destino: '', telefono: '04129255657', pago_fecha: '13/07/ 2025', monto: '2150.00'
+INFO:main_ocr_process:✅ Imagen procesada exitosamente: 20250716-B--240962743@lid_Carlos_06-30_20250716_003453_616.jpg → BATCH_20250716_003455_2b5_20250716-B--240962743@lid_Carlos_06-30_20250716_003453_616.jpg.json
+INFO:main_ocr_process:✅ Procesado: 20250716-B--240962743@lid_Carlos_06-30_20250716_003453_616.jpg
+INFO:validador_ocr:Análisis completado para data/inbox/20250716-G--160405993@lid_Juan_16-27_20250716_003453_619.jpg
+INFO:mejora_ocr:Iniciando procesamiento con perfil: ultra_rapido
+INFO:mejora_ocr:Procesamiento completado en 0.018s
+INFO:aplicador_ocr:CACHÉ HIT: Resultado recuperado para hash c2a4e16c en 0.000s
+INFO:aplicador_ocr:📋 Estructura empresarial aplicada: 31 elementos reorganizados
+INFO:aplicador_ocr:🏆 MANDATO COMPLETADO: Lógica de oro aplicada sobre caché - textos diferenciados
+INFO:aplicador_ocr:CACHÉ HIT adaptado: 194 caracteres disponibles
+INFO:main_ocr_process:🏦 MANDATO 4/X FASE 2: Banco origen extraído: BANCO MERCANTIL Concepto → BANCO MERCANTIL
+INFO:main_ocr_process:🏆 MANDATO 4/X FASE 2: Monto venezolano normalizado: 105,00 → 105.00
+INFO:main_ocr_process:✅ MANDATO 4/X FASE 2: Monto extraído correctamente: 105.00
+INFO:main_ocr_process:📱 MANDATO 5/X: Iniciando búsqueda directa de teléfonos venezolanos en texto: 'A PagomovilBDV Personas 105,00 Bs Fecha : 20/06/ 2025 Operacion : 003039298732 Identificacion : 27061025 Origen; 0102 **** 7105 Destino : 04125318244 Banco : 0105 = BANCO MERCANTIL Concepto : 61...'
+INFO:main_ocr_process:📱 MANDATO 5/X: Fase directa sin resultados, iniciando búsqueda con keywords
+INFO:main_ocr_process:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+INFO:main_ocr_process:📅 MANDATO 3 X FASE 2: Fecha operación extraída: 20/06/ 2025
+INFO:main_ocr_process:Extracción posicional completada: 6/9 campos detectados
+INFO:main_ocr_process:🏦 MANDATO 5/X FASE 2: Banco destino corregido: 'BANCO MERCANTIL Concepto ' → BANCO MERCANTIL
+INFO:main_ocr_process:📅 MANDATO 5/X FASE 3: Fecha de pago corregida: '20/06/ 2025'
+INFO:main_ocr_process:✅ MANDATO 5/X FASES 2 Y 3: Correcciones aplicadas - banco_destino: 'BANCO MERCANTIL', telefono: '04125318244', pago_fecha: '20/06/ 2025', monto: '105.00'
+INFO:main_ocr_process:✅ Imagen procesada exitosamente: 20250716-G--160405993@lid_Juan_16-27_20250716_003453_619.jpg → BATCH_20250716_003455_5c4_20250716-G--160405993@lid_Juan_16-27_20250716_003453_619.jpg.json
+INFO:main_ocr_process:✅ Procesado: 20250716-G--160405993@lid_Juan_16-27_20250716_003453_619.jpg
+INFO:validador_ocr:Análisis completado para data/inbox/20250716-H--467981771@lid_Carlos_17-23_20250716_003453_619.jpg
+INFO:mejora_ocr:Iniciando procesamiento con perfil: ultra_rapido
+INFO:mejora_ocr:Procesamiento completado en 0.017s
+INFO:aplicador_ocr:CACHÉ HIT: Resultado recuperado para hash 32f24c09 en 0.000s
+INFO:aplicador_ocr:📋 Estructura empresarial aplicada: 33 elementos reorganizados
+INFO:aplicador_ocr:🏆 MANDATO COMPLETADO: Lógica de oro aplicada sobre caché - textos diferenciados
+INFO:aplicador_ocr:CACHÉ HIT adaptado: 205 caracteres disponibles
+INFO:main_ocr_process:🏦 MANDATO 4/X FASE 2: Banco origen extraído: BANCO MERCANTIL Concepto → BANCO MERCANTIL
+INFO:main_ocr_process:🏆 MANDATO 4/X FASE 2: Monto venezolano normalizado: 313,62 → 313.62
+INFO:main_ocr_process:✅ MANDATO 4/X FASE 2: Monto extraído correctamente: 313.62
+INFO:main_ocr_process:📱 MANDATO 5/X: Iniciando búsqueda directa de teléfonos venezolanos en texto: 'PagomovilBDV Personas 313,62 Bs Fecha : 20/06/ 2025 Operacion : 003039284465 Identificacion : 27061025 Origen : 0102 **** 5335 Destino : 04125318244 Banco : 0105 = BANCO MERCANTIL Concepto : 0291 92 R...'
+INFO:main_ocr_process:📱 MANDATO 5/X: Fase directa sin resultados, iniciando búsqueda con keywords
+INFO:main_ocr_process:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+INFO:main_ocr_process:📅 MANDATO 3 X FASE 2: Fecha operación extraída: 20/06/ 2025
+INFO:main_ocr_process:Extracción posicional completada: 6/9 campos detectados
+INFO:main_ocr_process:🏦 MANDATO 5/X FASE 2: Banco destino corregido: 'BANCO MERCANTIL Concepto ' → BANCO MERCANTIL
+INFO:main_ocr_process:📅 MANDATO 5/X FASE 3: Fecha de pago corregida: '20/06/ 2025'
+INFO:main_ocr_process:✅ MANDATO 5/X FASES 2 Y 3: Correcciones aplicadas - banco_destino: 'BANCO MERCANTIL', telefono: '04125318244', pago_fecha: '20/06/ 2025', monto: '313.62'
+INFO:main_ocr_process:✅ Imagen procesada exitosamente: 20250716-H--467981771@lid_Carlos_17-23_20250716_003453_619.jpg → BATCH_20250716_003455_45b_20250716-H--467981771@lid_Carlos_17-23_20250716_003453_619.jpg.json
+INFO:main_ocr_process:✅ Procesado: 20250716-H--467981771@lid_Carlos_17-23_20250716_003453_619.jpg
+INFO:validador_ocr:Análisis completado para data/inbox/20250716-I--187306631@lid_Carlos_12-31_20250716_003453_619.jpg
+INFO:mejora_ocr:Iniciando procesamiento con perfil: ultra_rapido
+INFO:mejora_ocr:Procesamiento completado en 0.014s
+INFO:aplicador_ocr:CACHÉ HIT: Resultado recuperado para hash c13b518c en 0.000s
+INFO:aplicador_ocr:📋 Estructura empresarial aplicada: 32 elementos reorganizados
+INFO:aplicador_ocr:🏆 MANDATO COMPLETADO: Lógica de oro aplicada sobre caché - textos diferenciados
+INFO:aplicador_ocr:CACHÉ HIT adaptado: 202 caracteres disponibles
+INFO:main_ocr_process:🏦 MANDATO 4/X FASE 2: Banco origen extraído: BANCO MERCANTIL Numero celular → BANCO MERCANTIL
+INFO:main_ocr_process:🏆 MANDATO 4/X FASE 2: Monto venezolano normalizado: 313,62 → 313.62
+INFO:main_ocr_process:✅ MANDATO 4/X FASE 2: Monto extraído correctamente: 313.62
+INFO:main_ocr_process:🆔 MANDATO 4/X FASE 2: Cédula extraída: V 27061025
+INFO:main_ocr_process:📱 MANDATO 5/X: Iniciando búsqueda directa de teléfonos venezolanos en texto: 'Eldinero fue enviado Bs . 313,62 Dinero Rapido BBVA Provincial Banco : BANCO MERCANTIL Numero celular : 04125318244 Identificacion : V 27061025 Concepto : Pago Fecha : 20/06/ 2025 Referencia : 0000120...'
+INFO:main_ocr_process:📱 MANDATO 5/X: Fase directa sin resultados, iniciando búsqueda con keywords
+INFO:main_ocr_process:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+INFO:main_ocr_process:📅 MANDATO 3 X FASE 2: Fecha operación extraída: 20/06/ 2025
+INFO:main_ocr_process:Extracción posicional completada: 7/9 campos detectados
+INFO:main_ocr_process:🏦 MANDATO 5/X FASE 2: Banco destino corregido: 'BANCO MERCANTIL Numero celular ' → BANCO MERCANTIL
+INFO:main_ocr_process:📅 MANDATO 5/X FASE 3: Fecha de pago corregida: '20/06/ 2025'
+INFO:main_ocr_process:✅ MANDATO 5/X FASES 2 Y 3: Correcciones aplicadas - banco_destino: 'BANCO MERCANTIL', telefono: '04125318244', pago_fecha: '20/06/ 2025', monto: '313.62'
+INFO:main_ocr_process:✅ Imagen procesada exitosamente: 20250716-I--187306631@lid_Carlos_12-31_20250716_003453_619.jpg → BATCH_20250716_003455_8e0_20250716-I--187306631@lid_Carlos_12-31_20250716_003453_619.jpg.json
+INFO:main_ocr_process:✅ Procesado: 20250716-I--187306631@lid_Carlos_12-31_20250716_003453_619.jpg
+INFO:validador_ocr:Análisis completado para data/inbox/20250716-J--502937043@lid_Carmen_20-37_20250716_003453_620.jpg
+INFO:mejora_ocr:Iniciando procesamiento con perfil: ultra_rapido
+INFO:mejora_ocr:Procesamiento completado en 0.01s
+INFO:aplicador_ocr:CACHÉ HIT: Resultado recuperado para hash a8d82fad en 0.004s
+INFO:aplicador_ocr:📋 Estructura empresarial aplicada: 29 elementos reorganizados
+INFO:aplicador_ocr:🏆 MANDATO COMPLETADO: Lógica de oro aplicada sobre caché - textos diferenciados
+INFO:aplicador_ocr:CACHÉ HIT adaptado: 171 caracteres disponibles
+INFO:main_ocr_process:🏦 MANDATO 4/X FASE 2: Banco origen extraído: BANCO MERCANTIL → BANCO MERCANTIL
+INFO:main_ocr_process:🏆 MANDATO 4/X FASE 2: Monto venezolano normalizado: 104,52 → 104.52
+INFO:main_ocr_process:✅ MANDATO 4/X FASE 2: Monto extraído correctamente: 104.52
+INFO:main_ocr_process:📱 MANDATO 5/X: Iniciando búsqueda directa de teléfonos venezolanos en texto: 'Personas 104,52 Bs Fecha : 20/06/ 2025 Operacion : 003039243692 D - Identificacion : 27061025 Origen : 0102 ****: 2716 Destino : 04125318244 Banco : 0105 = BANCO MERCANTIL...'
+INFO:main_ocr_process:📱 MANDATO 5/X: Fase directa sin resultados, iniciando búsqueda con keywords
+INFO:main_ocr_process:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+INFO:main_ocr_process:📅 MANDATO 3 X FASE 2: Fecha operación extraída: 20/06/ 2025
+INFO:main_ocr_process:Extracción posicional completada: 6/9 campos detectados
+INFO:main_ocr_process:🏦 MANDATO 5/X FASE 2: Banco destino corregido: 'BANCO MERCANTIL' → BANCO MERCANTIL
+INFO:main_ocr_process:📅 MANDATO 5/X FASE 3: Fecha de pago corregida: '20/06/ 2025'
+INFO:main_ocr_process:✅ MANDATO 5/X FASES 2 Y 3: Correcciones aplicadas - banco_destino: 'BANCO MERCANTIL', telefono: '04125318244', pago_fecha: '20/06/ 2025', monto: '104.52'
+INFO:main_ocr_process:✅ Imagen procesada exitosamente: 20250716-J--502937043@lid_Carmen_20-37_20250716_003453_620.jpg → BATCH_20250716_003455_ac9_20250716-J--502937043@lid_Carmen_20-37_20250716_003453_620.jpg.json
+INFO:main_ocr_process:✅ Procesado: 20250716-J--502937043@lid_Carmen_20-37_20250716_003453_620.jpg
+INFO:validador_ocr:Análisis completado para data/inbox/20250716-A--864643782@lid_Laura_15-20_20250716_003453_620.jpg
+INFO:mejora_ocr:Iniciando procesamiento con perfil: ultra_rapido
+INFO:mejora_ocr:Procesamiento completado en 0.016s
+INFO:aplicador_ocr:CACHÉ HIT: Resultado recuperado para hash 0b06904e en 0.000s
+INFO:aplicador_ocr:📋 Estructura empresarial aplicada: 41 elementos reorganizados
+INFO:aplicador_ocr:🏆 MANDATO COMPLETADO: Lógica de oro aplicada sobre caché - textos diferenciados
+INFO:aplicador_ocr:CACHÉ HIT adaptado: 237 caracteres disponibles
+INFO:main_ocr_process:🏦 MANDATO 4/X FASE 2: Banco origen extraído: MERCANTIL FECHA → BANCO MERCANTIL
+INFO:main_ocr_process:🏆 MANDATO 4/X FASE 2: Monto venezolano normalizado: 313,62 → 313.62
+INFO:main_ocr_process:✅ MANDATO 4/X FASE 2: Monto extraído correctamente: 313.62
+INFO:main_ocr_process:🆔 MANDATO 4/X FASE 2: Cédula extraída: V - 27061025
+INFO:main_ocr_process:📱 MANDATO 5/X: Iniciando búsqueda directa de teléfonos venezolanos en texto: 'Bancamiga Banco Universal NUMERO DE REFERENCIA : 190018901378 MONTO DE LA OPERACION : Bs . 313,62 CI / RIF BENEFICIARIO : V - 27061025 TELF BENEFICIARIO : 04125318244 BANCO : MERCANTIL FECHA : 20/06/2...'
+INFO:main_ocr_process:📱 MANDATO 5/X: Fase directa sin resultados, iniciando búsqueda con keywords
+INFO:main_ocr_process:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+INFO:main_ocr_process:Extracción posicional completada: 7/9 campos detectados
+INFO:main_ocr_process:🏦 MANDATO 5/X FASE 2: Banco destino corregido: 'Banco Universal' → BANCO MERCANTIL
+INFO:main_ocr_process:✅ MANDATO 5/X FASES 2 Y 3: Correcciones aplicadas - banco_destino: 'BANCO MERCANTIL', telefono: '04125318244', pago_fecha: '20/06/25', monto: '313.62'
+INFO:main_ocr_process:✅ Imagen procesada exitosamente: 20250716-A--864643782@lid_Laura_15-20_20250716_003453_620.jpg → BATCH_20250716_003455_497_20250716-A--864643782@lid_Laura_15-20_20250716_003453_620.jpg.json
+INFO:main_ocr_process:✅ Procesado: 20250716-A--864643782@lid_Laura_15-20_20250716_003453_620.jpg
+INFO:validador_ocr:Análisis completado para data/inbox/20250716-B--180825140@lid_María_22-20_20250716_003453_620.jpg
+INFO:mejora_ocr:Iniciando procesamiento con perfil: ultra_rapido
+INFO:mejora_ocr:Procesamiento completado en 0.011s
+INFO:aplicador_ocr:CACHÉ HIT: Resultado recuperado para hash f3883b61 en 0.000s
+INFO:aplicador_ocr:📋 Estructura empresarial aplicada: 32 elementos reorganizados
+INFO:aplicador_ocr:🏆 MANDATO COMPLETADO: Lógica de oro aplicada sobre caché - textos diferenciados
+INFO:aplicador_ocr:CACHÉ HIT adaptado: 198 caracteres disponibles
+INFO:main_ocr_process:🏦 MANDATO 4/X FASE 2: Banco origen extraído: BANCO MERCANTIL Concepto → BANCO MERCANTIL
+INFO:main_ocr_process:🏆 MANDATO 4/X FASE 2: Monto venezolano normalizado: 104,54 → 104.54
+INFO:main_ocr_process:✅ MANDATO 4/X FASE 2: Monto extraído correctamente: 104.54
+INFO:main_ocr_process:📱 MANDATO 5/X: Iniciando búsqueda directa de teléfonos venezolanos en texto: 'PagomévilBDV Personas 104,54 Bs Fecha : 20/06/ 2025 Operacion : 003039150652 Identificacion : 27061025 Origen : 0102 **** 7897 Destino : 04125318244 Banco : 0105 = BANCO MERCANTIL Concepto : pago 10...'
+INFO:main_ocr_process:📱 MANDATO 5/X: Fase directa sin resultados, iniciando búsqueda con keywords
+INFO:main_ocr_process:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+INFO:main_ocr_process:📅 MANDATO 3 X FASE 2: Fecha operación extraída: 20/06/ 2025
+INFO:main_ocr_process:Extracción posicional completada: 6/9 campos detectados
+INFO:main_ocr_process:🏦 MANDATO 5/X FASE 2: Banco destino corregido: 'BANCO MERCANTIL Concepto ' → BANCO MERCANTIL
+INFO:main_ocr_process:📅 MANDATO 5/X FASE 3: Fecha de pago corregida: '20/06/ 2025'
+INFO:main_ocr_process:✅ MANDATO 5/X FASES 2 Y 3: Correcciones aplicadas - banco_destino: 'BANCO MERCANTIL', telefono: '04125318244', pago_fecha: '20/06/ 2025', monto: '104.54'
+INFO:main_ocr_process:✅ Imagen procesada exitosamente: 20250716-B--180825140@lid_María_22-20_20250716_003453_620.jpg → BATCH_20250716_003456_26b_20250716-B--180825140@lid_María_22-20_20250716_003453_620.jpg.json
+INFO:main_ocr_process:✅ Procesado: 20250716-B--180825140@lid_María_22-20_20250716_003453_620.jpg
+DEBUG:routes:📝 Estado almacenado: BATCH_20250716_003452_90a783ec
+INFO:routes:💾 Almacenado request_id del último lote exitoso: BATCH_20250716_003452_90a783ec
+INFO:routes:✅ Lote procesado exitosamente: 12 archivos. Request ID: BATCH_20250716_003452_90a783ec
+INFO:routes:🎯 Lote más reciente detectado automáticamente: BATCH_20250716_003456 (1 archivos)
+INFO:routes:📊 Archivos encontrados del lote actual: 1 archivos (Lote: BATCH_20250716_003456)
+INFO:routes:📄 Texto tradicional usado: 198 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'B', 'id_whatsapp': '180825140@lid', 'nombre_usuario': 'María', 'hora_exacta': '22-20', 'numero_llegada': 39}
+DEBUG:routes:Archivo procesado: 20250716-B--180825140@lid_María_22-20_20250716_003453_620.jpg - 198 chars
+INFO:routes:✅ JSON consolidado generado exitosamente: 1 archivos
+INFO:routes:📊 Estadísticas consolidadas: {'fecha_extraccion': '2025-07-16T00:34:56.370898', 'total_archivos': 1, 'version_sistema': '1.0', 'tipo_extraccion': 'consolidado_empresarial'}
+INFO:routes:🎯 Lote más reciente detectado automáticamente: BATCH_20250716_003456 (1 archivos)
+INFO:routes:📊 Archivos encontrados del lote actual: 1 archivos (Lote: BATCH_20250716_003456)
+INFO:routes:📄 Texto tradicional usado: 198 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'B', 'id_whatsapp': '180825140@lid', 'nombre_usuario': 'María', 'hora_exacta': '22-20', 'numero_llegada': 39}
+DEBUG:routes:Archivo procesado: 20250716-B--180825140@lid_María_22-20_20250716_003453_620.jpg - 198 chars
+INFO:routes:✅ JSON consolidado generado exitosamente: 1 archivos
+INFO:routes:📊 Estadísticas consolidadas: {'fecha_extraccion': '2025-07-16T00:34:57.355657', 'total_archivos': 1, 'version_sistema': '1.0', 'tipo_extraccion': 'consolidado_empresarial'}
