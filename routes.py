@@ -595,8 +595,11 @@ def api_process_batch():
                     logger.info(f"📁 Archivo guardado: {final_filename}")
         
         # Procesar lote con tracking del request_id
+        # FIX: Procesar TODOS los archivos disponibles sin límite de batch_size
+        # REASON: Usuario reportó que solo se procesaron 4 de 10 archivos subidos
+        # SOLUTION: Usar max_files=50 para procesar todos los archivos disponibles
         resultado = orquestador.process_queue_batch(
-            max_files=batch_size,
+            max_files=50,  # PROCESAMIENTO COMPLETO: Sin límite artificial
             profile=profile,
             request_id=request_id  # MANDATO CRÍTICO: Pasar request_id para persistencia
         )

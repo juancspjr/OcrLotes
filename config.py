@@ -547,10 +547,10 @@ def get_api_config():
 
 # Configuración del sistema de procesamiento por lotes
 BATCH_PROCESSING_CONFIG = {
-    'batch_size': 5,  # Número ideal de imágenes por lote
-    'max_batch_size': 20,  # Tamaño máximo de lote
+    'batch_size': 20,  # Número ideal de imágenes por lote - AUMENTADO PARA PROCESAR TODOS LOS ARCHIVOS
+    'max_batch_size': 50,  # Tamaño máximo de lote - AUMENTADO
     'min_batch_size': 1,  # Tamaño mínimo de lote
-    'max_files_per_batch': 50,  # Máximo archivos por carga masiva
+    'max_files_per_batch': 100,  # Máximo archivos por carga masiva - AUMENTADO
     'batch_timeout_seconds': 60,  # Tiempo máximo para formar un lote
     'polling_interval_seconds': 5,  # Frecuencia de monitoreo del inbox
     'max_concurrent_batches': 2,  # Máximo de lotes simultáneos

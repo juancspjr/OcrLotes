@@ -1042,7 +1042,7 @@ class OrquestadorOCR:
                 'filename': os.path.basename(image_path) if image_path else 'unknown'
             }
 
-    def process_queue_batch(self, max_files=5, profile='ultra_rapido', request_id=None):
+    def process_queue_batch(self, max_files=50, profile='ultra_rapido', request_id=None):
         """
         FIX: Método para procesamiento por lotes desde API con tracking request_id
         REASON: Error 'OrquestadorOCR' object has no attribute 'process_queue_batch'
