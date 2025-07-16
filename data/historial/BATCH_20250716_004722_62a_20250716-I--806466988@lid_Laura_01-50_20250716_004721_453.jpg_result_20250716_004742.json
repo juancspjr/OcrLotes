@@ -1,0 +1,1354 @@
+{
+  "status": "exitoso",
+  "request_id": "BATCH_20250716_004722_62a_20250716-I--806466988@lid_Laura_01-50_20250716_004721_453.jpg",
+  "filename": "20250716-I--806466988@lid_Laura_01-50_20250716_004721_453.jpg",
+  "tiempo_procesamiento": 0.10717391967773438,
+  "fecha_procesamiento": "2025-07-16T00:47:22.432269",
+  "original_text_ocr": "718pm Val . 50 - Comprobante de operacion PagomovilBDV Personas 209,08 Bs Fecha : 20/06/ 2025 Operacion : 003039392904 - - dentificacion : 27061025 Origen : 0102 **** 3799 Destino : 04125318244 Banco : 0108 - BBVA PROVINCIAL Concepto : pago Luzmar Crear Acceso directo I C",
+  "structured_text_ocr": "operacion Personas Operacion pago 209,08 003039392904 27061025 04125318244 Banco PROVINCIAL 20/06/ 718pm Val . 50 - Comprobante de PagomovilBDV Bs Fecha : 2025 : - - dentificacion : Origen : 0102 **** 3799 Destino : : 0108 - BBVA Concepto : Luzmar Crear Acceso directo I C",
+  "extracted_fields": {
+    "referencia": "003039392904",
+    "bancoorigen": "BANCO PROVINCIAL",
+    "monto": "209.08",
+    "telefono": "04125318244",
+    "cedula": "",
+    "banco_destino": "",
+    "pago_fecha": "20/06/ 2025",
+    "fecha_operacion": "20/06/ 2025",
+    "concepto": "Transacción bancaria",
+    "texto_total_ocr": "718pm Val . 50 - Comprobante de operacion PagomovilBDV Personas 209,08 Bs Fecha : 20/06/ 2025 Operacion : 003039392904 - - dentificacion : 27061025 Origen : 0102 **** 3799 Destino : 04125318244 Banco : 0108 - BBVA PROVINCIAL Concepto : pago Luzmar Crear Acceso directo I C"
+  },
+  "processing_metadata": {
+    "logica_oro_aplicada": true,
+    "ocr_confidence_avg": 0.9,
+    "error_messages": [
+      "Lógica de oro aplicada sobre caché para cumplir mandato"
+    ],
+    "processing_time_ms": 0,
+    "total_words_detected": 0,
+    "coordinates_available": 0,
+    "ocr_method": "ONNX_TR_CACHE_WITH_GOLD_LOGIC",
+    "timestamp": "2025-07-16T00:47:22.431254"
+  },
+  "Información del Archivo": {
+    "fecha_procesamiento": "2025-07-16T00:47:22.431354",
+    "formato": ".jpg",
+    "nombre_original": "20250716-I--806466988@lid_Laura_01-50_20250716_004721_453.jpg",
+    "tamaño": 23654
+  },
+  "Estadísticas": {
+    "confianza_promedio": "89.8%",
+    "palabras_alta_confianza": 29,
+    "palabras_baja_confianza": 0,
+    "total_palabras": 37,
+    "calidad_categoria": "Muy Buena",
+    "tiempo_procesamiento": "0.11s",
+    "lineas_texto": 1,
+    "longitud_texto": 272
+  },
+  "Texto Extraído": {
+    "texto_completo": "718pm Val . 50 - Comprobante de operacion PagomovilBDV Personas 209,08 Bs Fecha : 20/06/ 2025 Operacion : 003039392904 - - dentificacion : 27061025 Origen : 0102 **** 3799 Destino : 04125318244 Banco : 0108 - BBVA PROVINCIAL Concepto : pago Luzmar Crear Acceso directo I C",
+    "longitud_texto": 272,
+    "lineas_texto": 1
+  },
+  "validacion": {
+    "imagen_info": {
+      "ancho": 485,
+      "alto": 1080,
+      "resolucion_total": 523800,
+      "canales": 3,
+      "modo": "RGB",
+      "formato": "JPEG",
+      "brillo_promedio": 204.88983008781977,
+      "desviacion_brillo": 55.02231279540023,
+      "rango_dinamico": 255.0,
+      "histogram": [
+        2869.0,
+        22233.0,
+        1074.0,
+        114.0,
+        103.0,
+        87.0,
+        100.0,
+        93.0,
+        73.0,
+        86.0,
+        57.0,
+        67.0,
+        66.0,
+        55.0,
+        83.0,
+        84.0,
+        93.0,
+        85.0,
+        89.0,
+        79.0,
+        89.0,
+        62.0,
+        100.0,
+        122.0,
+        126.0,
+        128.0,
+        128.0,
+        110.0,
+        116.0,
+        142.0,
+        125.0,
+        111.0,
+        143.0,
+        130.0,
+        113.0,
+        149.0,
+        126.0,
+        97.0,
+        113.0,
+        126.0,
+        114.0,
+        95.0,
+        123.0,
+        98.0,
+        113.0,
+        105.0,
+        105.0,
+        86.0,
+        127.0,
+        115.0,
+        101.0,
+        114.0,
+        113.0,
+        88.0,
+        87.0,
+        99.0,
+        114.0,
+        93.0,
+        94.0,
+        85.0,
+        107.0,
+        115.0,
+        113.0,
+        118.0,
+        104.0,
+        126.0,
+        98.0,
+        139.0,
+        107.0,
+        117.0,
+        118.0,
+        107.0,
+        128.0,
+        115.0,
+        135.0,
+        124.0,
+        135.0,
+        128.0,
+        156.0,
+        191.0,
+        166.0,
+        176.0,
+        141.0,
+        342.0,
+        236.0,
+        149.0,
+        363.0,
+        187.0,
+        155.0,
+        147.0,
+        133.0,
+        118.0,
+        119.0,
+        103.0,
+        121.0,
+        103.0,
+        100.0,
+        115.0,
+        111.0,
+        128.0,
+        86.0,
+        99.0,
+        88.0,
+        98.0,
+        111.0,
+        107.0,
+        108.0,
+        99.0,
+        102.0,
+        126.0,
+        99.0,
+        115.0,
+        105.0,
+        118.0,
+        111.0,
+        113.0,
+        106.0,
+        111.0,
+        108.0,
+        100.0,
+        97.0,
+        122.0,
+        125.0,
+        125.0,
+        110.0,
+        108.0,
+        111.0,
+        124.0,
+        117.0,
+        90.0,
+        120.0,
+        101.0,
+        102.0,
+        92.0,
+        94.0,
+        105.0,
+        92.0,
+        91.0,
+        112.0,
+        101.0,
+        119.0,
+        103.0,
+        86.0,
+        110.0,
+        111.0,
+        109.0,
+        132.0,
+        102.0,
+        130.0,
+        157.0,
+        147.0,
+        166.0,
+        173.0,
+        138.0,
+        129.0,
+        109.0,
+        128.0,
+        137.0,
+        137.0,
+        124.0,
+        157.0,
+        163.0,
+        196.0,
+        682.0,
+        239.0,
+        302.0,
+        832.0,
+        864.0,
+        14651.0,
+        1331.0,
+        331.0,
+        779.0,
+        214.0,
+        711.0,
+        190.0,
+        174.0,
+        167.0,
+        168.0,
+        148.0,
+        125.0,
+        122.0,
+        146.0,
+        123.0,
+        130.0,
+        126.0,
+        120.0,
+        131.0,
+        128.0,
+        145.0,
+        137.0,
+        124.0,
+        128.0,
+        152.0,
+        131.0,
+        147.0,
+        143.0,
+        128.0,
+        164.0,
+        173.0,
+        168.0,
+        197.0,
+        194.0,
+        213.0,
+        227.0,
+        258.0,
+        339.0,
+        430.0,
+        686.0,
+        435.0,
+        414.0,
+        434.0,
+        530.0,
+        1488.0,
+        806.0,
+        18534.0,
+        2146.0,
+        1458.0,
+        1026.0,
+        2527.0,
+        1420.0,
+        2363.0,
+        2241.0,
+        2831.0,
+        2952.0,
+        392355.0,
+        3020.0,
+        2299.0,
+        2079.0,
+        1497.0,
+        1235.0,
+        1070.0,
+        883.0,
+        784.0,
+        679.0,
+        541.0,
+        486.0,
+        369.0,
+        338.0,
+        279.0,
+        260.0,
+        191.0,
+        173.0,
+        137.0,
+        146.0,
+        126.0,
+        118.0,
+        77.0,
+        87.0,
+        93.0,
+        77.0,
+        42.0,
+        190.0,
+        58.0,
+        48.0,
+        32.0,
+        187.0
+      ],
+      "histogram_analysis": {
+        "picos_principales": [
+          [
+            224,
+            392355
+          ],
+          [
+            1,
+            22233
+          ],
+          [
+            214,
+            18534
+          ]
+        ],
+        "rango_fondo_sugerido": 224,
+        "rango_texto_sugerido": 1,
+        "distribucion": {
+          "oscuras": 0.06788277626037598,
+          "medias": 0.05478426814079285,
+          "claras": 0.8773329257965088
+        },
+        "requiere_inversion": false,
+        "bimodal": true
+      },
+      "variaciones_fondo": {
+        "total_regiones_analizadas": 756,
+        "fondos_unicos_detectados": 5,
+        "variacion_fondos": 39.74685394492347,
+        "fondos_heterogeneos": true,
+        "rango_fondos": [
+          1,
+          224
+        ],
+        "requiere_unificacion_avanzada": true,
+        "regiones_variacion": [
+          {
+            "posicion": [
+              0,
+              0
+            ],
+            "media_local": 170.0828,
+            "std_local": 38.13704687256212,
+            "pico_fondo": 168
+          },
+          {
+            "posicion": [
+              25,
+              0
+            ],
+            "media_local": 169.8672,
+            "std_local": 38.142825854411996,
+            "pico_fondo": 168
+          },
+          {
+            "posicion": [
+              50,
+              0
+            ],
+            "media_local": 168.3456,
+            "std_local": 29.71598493471149,
+            "pico_fondo": 168
+          },
+          {
+            "posicion": [
+              75,
+              0
+            ],
+            "media_local": 163.0536,
+            "std_local": 30.07493852096792,
+            "pico_fondo": 168
+          },
+          {
+            "posicion": [
+              100,
+              0
+            ],
+            "media_local": 165.3788,
+            "std_local": 26.22106234613693,
+            "pico_fondo": 168
+          },
+          {
+            "posicion": [
+              125,
+              0
+            ],
+            "media_local": 170.4792,
+            "std_local": 15.919823094494486,
+            "pico_fondo": 168
+          },
+          {
+            "posicion": [
+              150,
+              0
+            ],
+            "media_local": 171.44,
+            "std_local": 13.498385088594857,
+            "pico_fondo": 168
+          },
+          {
+            "posicion": [
+              175,
+              0
+            ],
+            "media_local": 171.44,
+            "std_local": 13.498385088594857,
+            "pico_fondo": 168
+          },
+          {
+            "posicion": [
+              200,
+              0
+            ],
+            "media_local": 171.44,
+            "std_local": 13.498385088594857,
+            "pico_fondo": 168
+          },
+          {
+            "posicion": [
+              225,
+              0
+            ],
+            "media_local": 171.44,
+            "std_local": 13.498385088594857,
+            "pico_fondo": 168
+          }
+        ]
+      }
+    },
+    "calidad_imagen": {
+      "contraste": 55.02231279540023,
+      "blur_variance": 1038.7102749140893,
+      "entropy": 2.2224273681640625,
+      "gradiente_promedio": 33.57340621598936,
+      "brillo_promedio": 204.88983008781977,
+      "uniformidad_brillo": 55.02231279540023,
+      "calificacion_calidad": 70
+    },
+    "deteccion_texto": {
+      "regiones_detectadas": 42,
+      "area_total_texto": 65984,
+      "densidad_texto": 0.12597174494081712,
+      "regiones": [
+        {
+          "x": 230,
+          "y": 1041,
+          "width": 25,
+          "height": 25,
+          "area": 625,
+          "aspect_ratio": 1.0
+        },
+        {
+          "x": 347,
+          "y": 1040,
+          "width": 25,
+          "height": 25,
+          "area": 625,
+          "aspect_ratio": 1.0
+        },
+        {
+          "x": 115,
+          "y": 1040,
+          "width": 21,
+          "height": 25,
+          "area": 525,
+          "aspect_ratio": 0.84
+        },
+        {
+          "x": 190,
+          "y": 989,
+          "width": 171,
+          "height": 19,
+          "area": 3249,
+          "aspect_ratio": 9.0
+        },
+        {
+          "x": 133,
+          "y": 985,
+          "width": 47,
+          "height": 29,
+          "area": 1363,
+          "aspect_ratio": 1.6206896551724137
+        },
+        {
+          "x": 230,
+          "y": 914,
+          "width": 26,
+          "height": 26,
+          "area": 676,
+          "aspect_ratio": 1.0
+        },
+        {
+          "x": 342,
+          "y": 611,
+          "width": 44,
+          "height": 19,
+          "area": 836,
+          "aspect_ratio": 2.3157894736842106
+        },
+        {
+          "x": 388,
+          "y": 608,
+          "width": 63,
+          "height": 18,
+          "area": 1134,
+          "aspect_ratio": 3.5
+        },
+        {
+          "x": 34,
+          "y": 608,
+          "width": 84,
+          "height": 22,
+          "area": 1848,
+          "aspect_ratio": 3.8181818181818183
+        },
+        {
+          "x": 287,
+          "y": 569,
+          "width": 52,
+          "height": 22,
+          "area": 1144,
+          "aspect_ratio": 2.3636363636363638
+        },
+        {
+          "x": 226,
+          "y": 569,
+          "width": 47,
+          "height": 20,
+          "area": 940,
+          "aspect_ratio": 2.35
+        },
+        {
+          "x": 34,
+          "y": 569,
+          "width": 58,
+          "height": 20,
+          "area": 1160,
+          "aspect_ratio": 2.9
+        },
+        {
+          "x": 339,
+          "y": 568,
+          "width": 111,
+          "height": 21,
+          "area": 2331,
+          "aspect_ratio": 5.285714285714286
+        },
+        {
+          "x": 328,
+          "y": 531,
+          "width": 122,
+          "height": 18,
+          "area": 2196,
+          "aspect_ratio": 6.777777777777778
+        },
+        {
+          "x": 34,
+          "y": 531,
+          "width": 70,
+          "height": 19,
+          "area": 1330,
+          "aspect_ratio": 3.6842105263157894
+        },
+        {
+          "x": 328,
+          "y": 493,
+          "width": 122,
+          "height": 18,
+          "area": 2196,
+          "aspect_ratio": 6.777777777777778
+        },
+        {
+          "x": 34,
+          "y": 493,
+          "width": 63,
+          "height": 22,
+          "area": 1386,
+          "aspect_ratio": 2.8636363636363638
+        },
+        {
+          "x": 361,
+          "y": 454,
+          "width": 90,
+          "height": 20,
+          "area": 1800,
+          "aspect_ratio": 4.5
+        },
+        {
+          "x": 34,
+          "y": 453,
+          "width": 114,
+          "height": 22,
+          "area": 2508,
+          "aspect_ratio": 5.181818181818182
+        },
+        {
+          "x": 295,
+          "y": 416,
+          "width": 133,
+          "height": 19,
+          "area": 2527,
+          "aspect_ratio": 7.0
+        }
+      ],
+      "cobertura_texto_porcentaje": 12.597174494081711
+    },
+    "ruido_artefactos": {
+      "nivel_ruido": 2.6986044291714393,
+      "desviacion_ruido": 10.298193158082972,
+      "porcentaje_pixeles_ruidosos": 4.370179457808324,
+      "uniformidad": 3.1262962962962964,
+      "calificacion_ruido": "Bajo"
+    },
+    "geometria_orientacion": {
+      "sesgo_estimado": 2.5,
+      "lineas_detectadas": 36,
+      "simetria_horizontal": 0.8536530137062073,
+      "relacion_aspecto": 0.44907407407407407,
+      "requiere_deskew": true,
+      "orientacion_correcta": true
+    },
+    "deteccion_inteligente": {
+      "tipo_imagen": "screenshot_movil",
+      "esquema_color": "texto_oscuro_fondo_claro",
+      "inversion_requerida": false,
+      "ui_elements_detectados": false,
+      "aspect_ratio": 0.44907407407407407,
+      "calidad_digital": false,
+      "dark_percentage": 7.777968883514404,
+      "light_percentage": 92.22203063964844,
+      "edge_density": 0.028640702558228332,
+      "noise_estimate": 63.29964086240281,
+      "confianza_deteccion": 0.2
+    },
+    "recomendaciones": {
+      "perfil_recomendado": "rapido",
+      "aplicar_deskew": true,
+      "nivel_denoise": "moderado",
+      "ajuste_contraste": false,
+      "filtro_bilateral": true,
+      "prioridades": [
+        "Corrección de sesgo necesaria"
+      ]
+    },
+    "puntuacion_general": {
+      "total": 76.9,
+      "calidad": 70,
+      "texto": 63.0,
+      "ruido": 100,
+      "geometria": 100,
+      "categoria": "Buena"
+    }
+  },
+  "mejora": {
+    "perfil_usado": "ultra_rapido",
+    "pasos_aplicados": [
+      "00_analisis_sin_unificacion",
+      "00_maxima_claridad_letras",
+      "01_no_inversion_necesaria",
+      "02_sin_procesamiento"
+    ],
+    "metricas_antes": {
+      "brillo_promedio": 204.88983008781977,
+      "contraste": 55.02231279540023,
+      "nitidez": 1038.7102749140893,
+      "rango_dinamico": 255.0
+    },
+    "parametros_aplicados": {
+      "analisis_fondos": {
+        "intensidad_media_original": 204.89,
+        "porcentaje_fondo_oscuro": 0.06599999964237213,
+        "unificacion_aplicada": false,
+        "razon_no_unificacion": "preservacion_calidad_usuario"
+      },
+      "no_inversion": {
+        "razon": "imagen_suficientemente_clara",
+        "intensidad_media": 204.89
+      },
+      "screenshot_processing_eliminado": {
+        "razon": "eliminado_por_solicitud_usuario",
+        "upscaling": false,
+        "unsharp_masking": false,
+        "contrast_adjustment": false,
+        "binarization": false,
+        "brightness_adjustment": false,
+        "impacto": "preserva_imagen_original_completamente"
+      }
+    },
+    "tiempo_procesamiento": 0.009,
+    "estrategia_aplicada": "Screenshot Móvil - SIN PROCESAMIENTO",
+    "metricas_despues": {
+      "brillo_promedio": 204.98478235967926,
+      "contraste": 57.04867788925665,
+      "nitidez": 2401.0218823978616,
+      "rango_dinamico": 255.0
+    },
+    "imagen_mejorada": "imagen_mejorada.png",
+    "mejora_calidad": {
+      "contraste": {
+        "antes": 55.02,
+        "despues": 57.05,
+        "cambio": 2.03,
+        "porcentaje": 3.7
+      },
+      "nitidez": {
+        "antes": 1038.71,
+        "despues": 2401.02,
+        "cambio": 1362.31,
+        "porcentaje": 131.2
+      },
+      "rango_dinamico": {
+        "antes": 255.0,
+        "despues": 255.0,
+        "cambio": 0.0,
+        "porcentaje": 0.0
+      }
+    }
+  },
+  "datos_extraidos": {
+    "texto_completo": "718pm Val . 50 - Comprobante de operacion PagomovilBDV Personas 209,08 Bs Fecha : 20/06/ 2025 Operacion : 003039392904 - - dentificacion : 27061025 Origen : 0102 **** 3799 Destino : 04125318244 Banco : 0108 - BBVA PROVINCIAL Concepto : pago Luzmar Crear Acceso directo I C",
+    "palabras_detectadas": [
+      {
+        "texto": "718pm",
+        "confianza": 0.6850228905677795,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 0,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "Val",
+        "confianza": 0.5791394114494324,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 2,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": ".",
+        "confianza": 0.6229310035705566,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 2,
+          "palabra": 1
+        }
+      },
+      {
+        "texto": "50",
+        "confianza": 0.5734823346138,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 2,
+          "palabra": 2
+        }
+      },
+      {
+        "texto": "-",
+        "confianza": 0.8350885510444641,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 3,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "Comprobante",
+        "confianza": 0.998113751411438,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 4,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "de",
+        "confianza": 0.999997615814209,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 4,
+          "palabra": 1
+        }
+      },
+      {
+        "texto": "operacion",
+        "confianza": 0.9734869599342346,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 4,
+          "palabra": 2
+        }
+      },
+      {
+        "texto": "PagomovilBDV",
+        "confianza": 0.7363507151603699,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 5,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "Personas",
+        "confianza": 0.6128711104393005,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 5,
+          "palabra": 1
+        }
+      },
+      {
+        "texto": "209,08",
+        "confianza": 0.9929857850074768,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 6,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "Bs",
+        "confianza": 0.9928160905838013,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 6,
+          "palabra": 1
+        }
+      },
+      {
+        "texto": "Fecha:",
+        "confianza": 0.99534010887146,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 7,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "20/06/2025",
+        "confianza": 0.9931394457817078,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 8,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "Operacion:",
+        "confianza": 0.9869295358657837,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 9,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "003039392904",
+        "confianza": 0.7762434184551239,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 10,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "-",
+        "confianza": 0.8161543011665344,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 10,
+          "palabra": 1
+        }
+      },
+      {
+        "texto": "-",
+        "confianza": 0.966444194316864,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 10,
+          "palabra": 2
+        }
+      },
+      {
+        "texto": "dentificacion:",
+        "confianza": 0.9521094560623169,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 11,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "27061025",
+        "confianza": 0.9953651428222656,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 12,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "Origen:",
+        "confianza": 0.9429953098297119,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 13,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "0102****3799",
+        "confianza": 0.8218863606452942,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 14,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "Destino:",
+        "confianza": 0.9509470462799072,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 15,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "04125318244",
+        "confianza": 0.9432434141635895,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 16,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "Banco:",
+        "confianza": 0.9687033891677856,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 17,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "0108",
+        "confianza": 0.9998341798782349,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 18,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "-",
+        "confianza": 0.9998468160629272,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 18,
+          "palabra": 1
+        }
+      },
+      {
+        "texto": "BBVA",
+        "confianza": 0.9717439413070679,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 18,
+          "palabra": 2
+        }
+      },
+      {
+        "texto": "PROVINCIAL",
+        "confianza": 0.6295469999313354,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 18,
+          "palabra": 3
+        }
+      },
+      {
+        "texto": "Concepto:",
+        "confianza": 0.9932397603988647,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 19,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "pago",
+        "confianza": 0.9990168809890747,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 20,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "Luzmar",
+        "confianza": 0.96510249376297,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 20,
+          "palabra": 1
+        }
+      },
+      {
+        "texto": "Crear",
+        "confianza": 0.9998929500579834,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 21,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "Acceso",
+        "confianza": 0.9985839128494263,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 21,
+          "palabra": 1
+        }
+      },
+      {
+        "texto": "directo",
+        "confianza": 0.9997363686561584,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 21,
+          "palabra": 2
+        }
+      },
+      {
+        "texto": "I",
+        "confianza": 0.9941430687904358,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 22,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "C",
+        "confianza": 0.9773223400115967,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 23,
+          "palabra": 0
+        }
+      }
+    ],
+    "metodo_extraccion": "ONNXTR_SINGLE_PASS_COORDENADAS",
+    "tiempo_procesamiento": 0.10717391967773438,
+    "total_palabras_detectadas": 37,
+    "confianza_promedio": 0.8983728933978725
+  },
+  "estadisticas": {
+    "confianza_promedio": "89.8%",
+    "palabras_alta_confianza": 29,
+    "palabras_baja_confianza": 0,
+    "total_palabras": 37,
+    "calidad_categoria": "Muy Buena",
+    "tiempo_procesamiento": "0.11s",
+    "lineas_texto": 1,
+    "longitud_texto": 272
+  },
+  "calidad_extraccion": {},
+  "texto_extraido": "718pm Val . 50 - Comprobante de operacion PagomovilBDV Personas 209,08 Bs Fecha : 20/06/ 2025 Operacion : 003039392904 - - dentificacion : 27061025 Origen : 0102 **** 3799 Destino : 04125318244 Banco : 0108 - BBVA PROVINCIAL Concepto : pago Luzmar Crear Acceso directo I C"
+}
