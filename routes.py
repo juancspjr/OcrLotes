@@ -1799,89 +1799,66 @@ def api_extract_results():
             if os.path.exists(historial_dir):
                 results_dir = historial_dir
         
-        # FIX: MOSTRAR SOLO EL ÚLTIMO LOTE Y MOVER EL PENÚLTIMO AL HISTORIAL
-        # REASON: Usuario quiere ver solo el último lote, enviar penúltimo al historial automáticamente
-        # IMPACT: Sistema simple - solo último lote visible, automáticamente gestiona historial
+        # FIX: APLICAR INTEGRIDAD TOTAL - RECUPERAR TODOS LOS ARCHIVOS DEL ÚLTIMO LOTE
+        # REASON: Usuario requiere que si envía 15 archivos, se muestren exactamente 15 archivos
+        # IMPACT: Sistema no-dinámico - archivos enviados = archivos mostrados (INTEGRIDAD TOTAL)
+        # METODOLOGÍA: Buscar en AMBOS directorios (results + historial) y recuperar TODOS los archivos del último lote
         json_files = []
         
-        # Obtener todos los archivos JSON del directorio results
+        # INTEGRIDAD TOTAL: Buscar archivos en AMBOS directorios
         all_json_files = []
+        
+        # Buscar en directorio results
         if os.path.exists(results_dir):
             for file in os.listdir(results_dir):
-                if file.endswith('.json'):
+                if file.endswith('.json') and file.startswith('BATCH_'):
                     file_path = os.path.join(results_dir, file)
                     if os.path.isfile(file_path):
                         all_json_files.append(file_path)
         
-        # Agrupar archivos por lote
-        batch_groups = {}
+        # Buscar TAMBIÉN en historial (para archivos que se movieron automáticamente)
+        historial_dir = directories.get('historial', 'data/historial')
+        if os.path.exists(historial_dir):
+            for file in os.listdir(historial_dir):
+                if file.endswith('.json') and file.startswith('BATCH_'):
+                    file_path = os.path.join(historial_dir, file)
+                    if os.path.isfile(file_path):
+                        all_json_files.append(file_path)
+        
+        # INTEGRIDAD TOTAL: Agrupar archivos por FECHA de lote (no por timestamp exacto)
         if all_json_files:
+            batch_groups = {}
             for file_path in all_json_files:
                 filename = os.path.basename(file_path)
-                # Extraer prefijo del lote (primeras 3 partes: BATCH_YYYYMMDD_HHMMSS)
-                if filename.startswith('BATCH_'):
-                    parts = filename.split('_')
-                    if len(parts) >= 3:
-                        batch_prefix = f"{parts[0]}_{parts[1]}_{parts[2]}"
-                        if batch_prefix not in batch_groups:
-                            batch_groups[batch_prefix] = []
-                        batch_groups[batch_prefix].append(file_path)
+                parts = filename.split('_')
+                if len(parts) >= 2:
+                    # Agrupar por fecha (BATCH_YYYYMMDD) sin timestamp exacto
+                    batch_date = f"{parts[0]}_{parts[1]}"
+                    if batch_date not in batch_groups:
+                        batch_groups[batch_date] = []
+                    batch_groups[batch_date].append(file_path)
             
+            # Obtener el último lote COMPLETO por fecha (todos sus archivos)
             if batch_groups:
-                # Ordenar lotes por timestamp (más reciente primero)
-                sorted_batches = sorted(batch_groups.keys(), key=lambda x: x.split('_')[1] + x.split('_')[2], reverse=True)
-                
-                # Tomar solo el último lote para mostrar
+                sorted_batches = sorted(batch_groups.keys(), key=lambda x: x.split('_')[1], reverse=True)
                 if sorted_batches:
-                    latest_batch = sorted_batches[0]
-                    json_files = batch_groups[latest_batch]
-                    
-                    # MOVER PENÚLTIMO LOTE AL HISTORIAL AUTOMÁTICAMENTE
-                    if len(sorted_batches) > 1:
-                        second_latest_batch = sorted_batches[1]
-                        files_to_move = batch_groups[second_latest_batch]
+                    latest_batch_date = sorted_batches[0]
+                    json_files = batch_groups[latest_batch_date]
+                    logger.info(f"📥 INTEGRIDAD TOTAL: Recuperando TODOS los archivos del último lote por fecha: {latest_batch_date} ({len(json_files)} archivos)")
+        
+        if not json_files:
+            logger.info("📭 No hay archivos JSON disponibles")
                         
-                        # Crear directorio historial si no existe
-                        historial_dir = directories.get('historial', 'data/historial')
-                        os.makedirs(historial_dir, exist_ok=True)
-                        
-                        # Mover archivos del penúltimo lote al historial
-                        moved_count = 0
-                        for file_path in files_to_move:
-                            try:
-                                filename = os.path.basename(file_path)
-                                historial_path = os.path.join(historial_dir, filename)
-                                
-                                # Mover archivo solo si no existe en historial
-                                if not os.path.exists(historial_path):
-                                    import shutil
-                                    shutil.move(file_path, historial_path)
-                                    moved_count += 1
-                                    logger.debug(f"📁 Movido a historial: {filename}")
-                                else:
-                                    # Si ya existe, eliminar el duplicado
-                                    os.remove(file_path)
-                                    logger.debug(f"🗑️ Eliminado duplicado: {filename}")
-                            except Exception as move_error:
-                                logger.error(f"Error moviendo {file_path} al historial: {move_error}")
-                        
-                        if moved_count > 0:
-                            logger.info(f"📁 Movidos {moved_count} archivos del lote {second_latest_batch} al historial")
-                    
-                    logger.info(f"🎯 Mostrando solo el último lote: {latest_batch} ({len(json_files)} archivos)")
-                else:
-                    logger.info("⚠️ No se encontraron lotes válidos")
-            else:
-                logger.info("⚠️ No se encontraron lotes válidos, mostrando todos los archivos")
-        else:
-            logger.info("📭 No hay archivos JSON en el directorio")
-                        
-        # Determinar el ID del lote actual para logging
+        # INTEGRIDAD TOTAL: Determinar el ID del lote actual correctamente
         current_batch_id = "Sin lotes"
-        if json_files and batch_groups:
-            if sorted_batches:
-                current_batch_id = sorted_batches[0]  # Último lote
-        logger.info(f"📊 Mostrando último lote: {len(json_files)} archivos (Lote: {current_batch_id})")
+        if json_files:
+            # Analizar el primer archivo para determinar el lote
+            first_file = os.path.basename(json_files[0])
+            if first_file.startswith('BATCH_'):
+                parts = first_file.split('_')
+                if len(parts) >= 3:
+                    current_batch_id = f"{parts[0]}_{parts[1]}_{parts[2]}"
+        logger.info(f"📊 INTEGRIDAD TOTAL: Mostrando {len(json_files)} archivos del lote {current_batch_id}")
         
         if not json_files:
             logger.info("No hay archivos de resultados disponibles para extraer")
@@ -1987,9 +1964,9 @@ def api_extract_results():
                 # MANDATO CRÍTICO #2: Inclusión obligatoria de texto_total_ocr y concepto redefinido
                 # REASON: Campo texto_total_ocr AUSENTE violaba mandato estructural  
                 # IMPACT: Campo texto_total_ocr incluido con texto completo + concepto conciso separado
+                # INTEGRIDAD TOTAL: Campo codigo_sorteo removido según solicitud del usuario
                 archivo_consolidado = {
                     'nombre_archivo': nombre_archivo,
-                    'codigo_sorteo': tracking_params.get('codigo_sorteo', ''),  # MANDATO: Parámetro de seguimiento
                     'id_whatsapp': tracking_params.get('id_whatsapp', ''),      # MANDATO: Parámetro de seguimiento
                     'nombre_usuario': tracking_params.get('nombre_usuario', ''), # MANDATO: Parámetro de seguimiento
                     'caption': caption,
