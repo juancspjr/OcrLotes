@@ -1799,23 +1799,24 @@ def api_extract_results():
             if os.path.exists(historial_dir):
                 results_dir = historial_dir
         
-        # FIX: MOSTRAR TODOS LOS ARCHIVOS PROCESADOS SIN FILTRAR POR LOTE
-        # REASON: Usuario quiere ver todos los archivos procesados, no solo el último lote
-        # IMPACT: Descarga consolidada incluye todos los archivos disponibles
+        # FIX: MOSTRAR SOLO EL ÚLTIMO LOTE Y MOVER EL PENÚLTIMO AL HISTORIAL
+        # REASON: Usuario quiere ver solo el último lote, enviar penúltimo al historial automáticamente
+        # IMPACT: Sistema simple - solo último lote visible, automáticamente gestiona historial
         json_files = []
         
         # Obtener todos los archivos JSON del directorio results
+        all_json_files = []
         if os.path.exists(results_dir):
             for file in os.listdir(results_dir):
                 if file.endswith('.json'):
                     file_path = os.path.join(results_dir, file)
                     if os.path.isfile(file_path):
-                        json_files.append(file_path)
+                        all_json_files.append(file_path)
         
-        # Información de lotes para logging
+        # Agrupar archivos por lote
         batch_groups = {}
-        if json_files:
-            for file_path in json_files:
+        if all_json_files:
+            for file_path in all_json_files:
                 filename = os.path.basename(file_path)
                 # Extraer prefijo del lote (primeras 3 partes: BATCH_YYYYMMDD_HHMMSS)
                 if filename.startswith('BATCH_'):
@@ -1827,22 +1828,60 @@ def api_extract_results():
                         batch_groups[batch_prefix].append(file_path)
             
             if batch_groups:
-                logger.info(f"🎯 Archivos encontrados en {len(batch_groups)} lotes diferentes:")
-                for batch_prefix, files in batch_groups.items():
-                    logger.info(f"  - {batch_prefix}: {len(files)} archivos")
+                # Ordenar lotes por timestamp (más reciente primero)
+                sorted_batches = sorted(batch_groups.keys(), key=lambda x: x.split('_')[1] + x.split('_')[2], reverse=True)
+                
+                # Tomar solo el último lote para mostrar
+                if sorted_batches:
+                    latest_batch = sorted_batches[0]
+                    json_files = batch_groups[latest_batch]
+                    
+                    # MOVER PENÚLTIMO LOTE AL HISTORIAL AUTOMÁTICAMENTE
+                    if len(sorted_batches) > 1:
+                        second_latest_batch = sorted_batches[1]
+                        files_to_move = batch_groups[second_latest_batch]
+                        
+                        # Crear directorio historial si no existe
+                        historial_dir = directories.get('historial', 'data/historial')
+                        os.makedirs(historial_dir, exist_ok=True)
+                        
+                        # Mover archivos del penúltimo lote al historial
+                        moved_count = 0
+                        for file_path in files_to_move:
+                            try:
+                                filename = os.path.basename(file_path)
+                                historial_path = os.path.join(historial_dir, filename)
+                                
+                                # Mover archivo solo si no existe en historial
+                                if not os.path.exists(historial_path):
+                                    import shutil
+                                    shutil.move(file_path, historial_path)
+                                    moved_count += 1
+                                    logger.debug(f"📁 Movido a historial: {filename}")
+                                else:
+                                    # Si ya existe, eliminar el duplicado
+                                    os.remove(file_path)
+                                    logger.debug(f"🗑️ Eliminado duplicado: {filename}")
+                            except Exception as move_error:
+                                logger.error(f"Error moviendo {file_path} al historial: {move_error}")
+                        
+                        if moved_count > 0:
+                            logger.info(f"📁 Movidos {moved_count} archivos del lote {second_latest_batch} al historial")
+                    
+                    logger.info(f"🎯 Mostrando solo el último lote: {latest_batch} ({len(json_files)} archivos)")
+                else:
+                    logger.info("⚠️ No se encontraron lotes válidos")
             else:
                 logger.info("⚠️ No se encontraron lotes válidos, mostrando todos los archivos")
         else:
             logger.info("📭 No hay archivos JSON en el directorio")
                         
         # Determinar el ID del lote actual para logging
-        current_batch_id = "Todos los lotes"
+        current_batch_id = "Sin lotes"
         if json_files and batch_groups:
-            if len(batch_groups) == 1:
-                current_batch_id = list(batch_groups.keys())[0]
-            else:
-                current_batch_id = f"Múltiples lotes ({len(batch_groups)})"
-        logger.info(f"📊 Archivos encontrados en total: {len(json_files)} archivos (Origen: {current_batch_id})")
+            if sorted_batches:
+                current_batch_id = sorted_batches[0]  # Último lote
+        logger.info(f"📊 Mostrando último lote: {len(json_files)} archivos (Lote: {current_batch_id})")
         
         if not json_files:
             logger.info("No hay archivos de resultados disponibles para extraer")
