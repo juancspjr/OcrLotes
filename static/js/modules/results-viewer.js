@@ -424,7 +424,11 @@ window.OCRSystem = window.OCRSystem || {};
                     </td>
                     <td>
                         <div class="result-actions">
-                            <!-- BOTÓN 'VER DETALLES' OCULTO POR SOLICITUD DEL USUARIO -->
+                            <!-- BOTÓN 'VER DETALLES' RESTAURADO POR SOLICITUD DEL USUARIO -->
+                            <button type="button" class="btn btn-sm btn-view view-result-btn" 
+                                    data-result-id="${result.id}" title="Ver detalles">
+                                <i class="fas fa-eye"></i>
+                            </button>
                             <button type="button" class="btn btn-sm btn-download download-result-btn" 
                                     data-result-id="${result.id}" title="Descargar JSON">
                                 <i class="fas fa-download"></i>
@@ -439,7 +443,13 @@ window.OCRSystem = window.OCRSystem || {};
          * Adjuntar event listeners a elementos dinámicos
          */
         attachEventListeners() {
-            // BOTONES DE VER DETALLES ELIMINADOS POR SOLICITUD DEL USUARIO
+            // BOTONES DE VER DETALLES RESTAURADOS POR SOLICITUD DEL USUARIO
+            document.querySelectorAll('.view-result-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const resultId = parseInt(e.target.closest('.view-result-btn').getAttribute('data-result-id'));
+                    this.showResultDetails(resultId);
+                });
+            });
             
             // Botones de descarga
             document.querySelectorAll('.download-result-btn').forEach(btn => {

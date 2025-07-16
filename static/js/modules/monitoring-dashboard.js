@@ -196,10 +196,7 @@ window.OCRSystem = window.OCRSystem || {};
                     </td>
                     <td class="text-center">
                         <div class="btn-group" role="group">
-                            <button type="button" class="btn btn-sm btn-outline-primary view-batch-btn" 
-                                    data-batch-id="${batch.id}" title="Ver detalles">
-                                <i class="fas fa-eye"></i>
-                            </button>
+                            <!-- BOTÓN 'VER DETALLES' ELIMINADO DEL HISTORIAL DE LOTES POR SOLICITUD DEL USUARIO -->
                             <button type="button" class="btn btn-sm btn-outline-success download-batch-btn" 
                                     data-batch-id="${batch.id}" title="Descargar lote">
                                 <i class="fas fa-download"></i>

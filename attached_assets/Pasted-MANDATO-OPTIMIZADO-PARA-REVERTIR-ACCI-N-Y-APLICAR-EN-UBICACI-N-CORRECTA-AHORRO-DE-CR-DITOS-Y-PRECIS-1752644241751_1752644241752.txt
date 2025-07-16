@@ -1,0 +1,43 @@
+MANDATO OPTIMIZADO PARA REVERTIR ACCIÓN Y APLICAR EN UBICACIÓN CORRECTA (AHORRO DE CRÉDITOS Y PRECISIÓN)
+OBJETIVO PRINCIPAL DE ESTA SOLICITUD: "1. Revertir la eliminación del botón 'Ver Detalles' (icono azul con ojo) en la columna 'Acciones' de la tabla 'Resultados del Procesamiento' (sección 'Resultados'). 2. Aplicar la eliminación de dicho botón 'Ver Detalles' exclusivamente en la columna 'Acciones' de la tabla 'Historial de Lotes' en la sección 'Monitoreo'. Esta acción debe ser puramente visual en el frontend y no afectar datos ni lógica de backend."
+
+1. CONTEXTO MÍNIMO Y RELEVANTE DEL PROBLEMA (Indispensable para el Diagnóstico)
+Ubicación/Sección del Código Afectado:
+
+Para Reversión: Lógica del Frontend Dashboard Service (CO-05) que renderiza la tabla 'Resultados del Procesamiento'. Se busca revertir la modificación que eliminó el botón 'Ver Detalles' de su columna 'Acciones' allí.
+
+Para Nueva Aplicación: Lógica del Frontend Dashboard Service (CO-05) que renderiza la tabla 'Historial de Lotes' en la sección 'Monitoreo'. Aquí se busca eliminar el botón 'Ver Detalles' de su columna 'Acciones'.
+
+Extracto de Código Actual Relevante (¡EN SU LUGAR, DESCRIPCIÓN DETALLADA!):
+
+Estado actual (tras la acción previa):
+
+En la tabla 'Resultados del Procesamiento' (sección 'Resultados'), el botón 'Ver Detalles' (icono azul con ojo) ha sido eliminado visualmente de la columna 'Acciones'.
+
+En la tabla 'Historial de Lotes' (sección 'Monitoreo'), el botón 'Ver Detalles' (icono azul con ojo) sigue visible en la columna 'Acciones' junto al botón de descarga.
+
+Estructura del Código Frontend (Asunción): Ambas tablas (Resultados del Procesamiento y Historial de Lotes) probablemente se construyen usando templates HTML y/o JavaScript que iteran sobre una lista de datos para generar las filas y columnas, incluyendo la columna 'Acciones' con sus botones.
+
+Comportamiento Actual Observado:
+
+En la sección "Resultados del Procesamiento", la columna 'Acciones' ahora NO muestra el botón 'Ver Detalles'.
+
+En la sección "Monitoreo", en la tabla "Historial de Lotes", la columna 'Acciones' SÍ muestra el botón 'Ver Detalles' (icono azul claro con un ojo) junto al botón de descarga para cada lote.
+
+Comportamiento Esperado (RESULTADO BLINDADO):
+
+En la sección "Resultados del Procesamiento", el botón 'Ver Detalles' (icono azul claro con un ojo) debe ser restaurado y visible en la columna 'Acciones'.
+
+En la sección "Monitoreo", en la tabla "Historial de Lotes", el botón 'Ver Detalles' (icono azul claro con un ojo) debe desaparecer completamente de la visualización, dejando solo el botón de descarga.
+
+Todas estas acciones deben ser puramente de presentación en el frontend y no deben afectar ninguna lógica de backend, la generación de datos, o la función del botón de descarga en ninguna de las tablas.
+
+2. TIPO DE SOLUCIÓN REQUERIDA Y ÉNFASIS EN EFICIENCIA
+Tipo de Solución: "Snippets de código HTML (si las tablas se construyen directamente en los templates) o JavaScript (si las tablas se generan dinámicamente) para: 1. Revertir la eliminación del botón en la sección 'Resultados'. 2. Eliminar el botón en la sección 'Monitoreo - Historial de Lotes'. No se requiere modificación de lógica de backend Python."
+
+Formato de Entrega: "Directamente el código corregido con comentarios breves que expliquen la modificación y la ubicación sugerida (ej. 'dentro de la plantilla HTML/JS de la sección Resultados' y 'dentro de la plantilla HTML/JS de la sección Monitoreo')."
+
+Énfasis en Consumo de Créditos (IMPORTANTE PARA REPLIT):
+
+Prioriza soluciones con baja complejidad computacional.
+
