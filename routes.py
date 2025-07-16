@@ -1825,26 +1825,35 @@ def api_extract_results():
                     if os.path.isfile(file_path):
                         all_json_files.append(file_path)
         
-        # INTEGRIDAD TOTAL: Agrupar archivos por FECHA de lote (no por timestamp exacto)
+        # INTEGRIDAD TOTAL: Agrupar archivos por EJECUCIÓN de lote (proximidad temporal)
         if all_json_files:
-            batch_groups = {}
+            # Extraer todos los timestamps y agrupar por proximidad
+            file_timestamps = []
             for file_path in all_json_files:
                 filename = os.path.basename(file_path)
                 parts = filename.split('_')
-                if len(parts) >= 2:
-                    # Agrupar por fecha (BATCH_YYYYMMDD) sin timestamp exacto
-                    batch_date = f"{parts[0]}_{parts[1]}"
-                    if batch_date not in batch_groups:
-                        batch_groups[batch_date] = []
-                    batch_groups[batch_date].append(file_path)
+                if len(parts) >= 3:
+                    # Extraer timestamp completo (YYYYMMDD_HHMMSS)
+                    timestamp = f"{parts[1]}_{parts[2]}"
+                    file_timestamps.append((timestamp, file_path))
             
-            # Obtener el último lote COMPLETO por fecha (todos sus archivos)
+            # Agrupar archivos por proximidad temporal (mismo minuto de procesamiento)
+            batch_groups = {}
+            for timestamp, file_path in file_timestamps:
+                # Agrupar por minuto (YYYYMMDD_HHMM) - archivos procesados en el mismo minuto = mismo lote
+                batch_minute = timestamp[:13]  # YYYYMMDD_HHMM
+                if batch_minute not in batch_groups:
+                    batch_groups[batch_minute] = []
+                batch_groups[batch_minute].append(file_path)
+            
+            # Obtener el último lote COMPLETO por proximidad temporal de ejecución
             if batch_groups:
-                sorted_batches = sorted(batch_groups.keys(), key=lambda x: x.split('_')[1], reverse=True)
+                # Ordenar por timestamp de minuto
+                sorted_batches = sorted(batch_groups.keys(), reverse=True)
                 if sorted_batches:
-                    latest_batch_date = sorted_batches[0]
-                    json_files = batch_groups[latest_batch_date]
-                    logger.info(f"📥 INTEGRIDAD TOTAL: Recuperando TODOS los archivos del último lote por fecha: {latest_batch_date} ({len(json_files)} archivos)")
+                    latest_batch_minute = sorted_batches[0]
+                    json_files = batch_groups[latest_batch_minute]
+                    logger.info(f"📥 INTEGRIDAD TOTAL: Recuperando TODOS los archivos del último lote por ejecución: {latest_batch_minute} ({len(json_files)} archivos)")
         
         if not json_files:
             logger.info("📭 No hay archivos JSON disponibles")

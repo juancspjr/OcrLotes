@@ -1,0 +1,1530 @@
+INFO:routes:📝 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary4hkbbekxnUHHtbZr
+INFO:routes:✅ Procesamiento de lote iniciado. Request ID: BATCH_20250716_011339_f6bd85ce
+INFO:routes:⚙️ Configuración: profile=ultra_rapido, batch_size=5
+INFO:routes:📁 Archivos detectados en process_batch: 16
+INFO:routes:📁 Archivo guardado: 20250716-A--250529607@lid_María_20-20_20250716_011340_239.jpg
+INFO:routes:📁 Archivo guardado: 20250716-B--736060679@lid_José_11-15_20250716_011340_240.jpg
+INFO:routes:📁 Archivo guardado: 20250716-C--913824685@lid_Carlos_21-39_20250716_011340_241.jpg
+INFO:routes:📁 Archivo guardado: 20250716-D--252586731@lid_Miguel_01-29_20250716_011340_241.jpg
+INFO:routes:📁 Archivo guardado: 20250716-E--118022235@lid_Juan_08-42_20250716_011340_242.jpg
+INFO:routes:📁 Archivo guardado: 20250716-F--851744997@lid_Miguel_08-19_20250716_011340_242.jpg
+INFO:routes:📁 Archivo guardado: 20250716-G--621100063@lid_María_01-10_20250716_011340_242.jpg
+INFO:routes:📁 Archivo guardado: 20250716-H--969328920@lid_Miguel_18-59_20250716_011340_243.jpg
+INFO:routes:📁 Archivo guardado: 20250716-I--474805271@lid_María_00-15_20250716_011340_243.jpg
+INFO:routes:📁 Archivo guardado: 20250716-J--125980335@lid_Laura_05-58_20250716_011340_244.jpg
+INFO:routes:📁 Archivo guardado: 20250716-A--679208061@lid_María_21-44_20250716_011340_244.jpg
+INFO:routes:📁 Archivo guardado: 20250716-B--756885850@lid_Pedro_13-25_20250716_011340_244.jpg
+INFO:routes:📁 Archivo guardado: 20250716-C--143943480@lid_Ana_23-54_20250716_011340_245.jpg
+INFO:routes:📁 Archivo guardado: 20250716-D--280734661@lid_Miguel_03-09_20250716_011340_245.jpg
+INFO:routes:📁 Archivo guardado: 20250716-E--429830204@lid_María_23-05_20250716_011340_277.jpg
+INFO:routes:📁 Archivo guardado: 20250716-F--570900032@lid_María_06-58_20250716_011340_277.jpg
+INFO:main_ocr_process:Iniciando procesamiento por lotes: 16 archivos
+INFO:main_ocr_process:Inicializando ValidadorOCR (lazy loading)...
+INFO:validador_ocr:Análisis completado para data/inbox/20250716-A--250529607@lid_María_20-20_20250716_011340_239.jpg
+INFO:main_ocr_process:Inicializando MejoradorOCR (lazy loading)...
+INFO:mejora_ocr:Iniciando procesamiento con perfil: ultra_rapido
+INFO:mejora_ocr:Procesamiento completado en 0.008s
+INFO:main_ocr_process:Inicializando AplicadorOCR (lazy loading)...
+INFO:aplicador_ocr:Iniciando warm-up de modelos frecuentes...
+INFO:aplicador_ocr:✅ Reglas de extracción cargadas: 16 campos configurados
+INFO:aplicador_ocr:Warm-up de modelos completado correctamente
+INFO:aplicador_ocr:CACHÉ HIT: Resultado recuperado para hash b67040f3 en 0.000s
+INFO:aplicador_ocr:📋 Estructura empresarial aplicada: 51 elementos reorganizados
+INFO:aplicador_ocr:🏆 MANDATO COMPLETADO: Lógica de oro aplicada sobre caché - textos diferenciados
+INFO:aplicador_ocr:CACHÉ HIT adaptado: 251 caracteres disponibles
+INFO:main_ocr_process:🏦 MANDATO 4/X FASE 2: Banco origen extraído: MERCANTIL Monto → BANCO MERCANTIL
+INFO:main_ocr_process:🏆 MANDATO 4/X FASE 2: Monto venezolano normalizado: 104,54 → 104.54
+INFO:main_ocr_process:🏆 MANDATO 4/X FASE 2: Monto venezolano normalizado: 0,31 → 0.31
+INFO:main_ocr_process:🏆 MANDATO 4/X FASE 2: Monto venezolano normalizado: 104,85 → 104.85
+INFO:main_ocr_process:✅ MANDATO 4/X FASE 2: Monto extraído correctamente: 0.31
+INFO:main_ocr_process:🆔 MANDATO 4/X FASE 2: Cédula extraída: V - 27061025
+INFO:main_ocr_process:📱 MANDATO 5/X: Iniciando búsqueda directa de teléfonos venezolanos en texto: '7:17 PM . (y M U Fallall a 60 0412 - 5318244 TREBOL V - 27061025 - MERCANTIL Monto : Bs . 104,54 Comision : Bs . 0,31 Total : Bs . 104,85 Referencia : 490760890 Codigo autorizador : 282413 Concepto : ...'
+INFO:main_ocr_process:📱 MANDATO 5/X: Fase directa sin resultados, iniciando búsqueda con keywords
+INFO:main_ocr_process:Extracción posicional completada: 5/9 campos detectados
+INFO:main_ocr_process:✅ MANDATO 5/X FASES 2 Y 3: Correcciones aplicadas - banco_destino: '', telefono: '', pago_fecha: '', monto: '0.31'
+INFO:main_ocr_process:✅ Imagen procesada exitosamente: 20250716-A--250529607@lid_María_20-20_20250716_011340_239.jpg → BATCH_20250716_011340_7e9_20250716-A--250529607@lid_María_20-20_20250716_011340_239.jpg.json
+INFO:main_ocr_process:✅ Procesado: 20250716-A--250529607@lid_María_20-20_20250716_011340_239.jpg
+INFO:validador_ocr:Análisis completado para data/inbox/20250716-B--736060679@lid_José_11-15_20250716_011340_240.jpg
+INFO:mejora_ocr:Iniciando procesamiento con perfil: ultra_rapido
+INFO:mejora_ocr:Procesamiento completado en 0.01s
+INFO:aplicador_ocr:CACHÉ HIT: Resultado recuperado para hash be9edb76 en 0.000s
+INFO:aplicador_ocr:📋 Estructura empresarial aplicada: 28 elementos reorganizados
+INFO:aplicador_ocr:🏆 MANDATO COMPLETADO: Lógica de oro aplicada sobre caché - textos diferenciados
+INFO:aplicador_ocr:CACHÉ HIT adaptado: 179 caracteres disponibles
+INFO:main_ocr_process:🏦 MANDATO 4/X FASE 2: Banco origen extraído: BANCO MERCANTIL → BANCO MERCANTIL
+INFO:main_ocr_process:🏆 MANDATO 4/X FASE 2: Monto venezolano normalizado: 104,54 → 104.54
+INFO:main_ocr_process:✅ MANDATO 4/X FASE 2: Monto extraído correctamente: 104.54
+INFO:main_ocr_process:📱 MANDATO 5/X: Iniciando búsqueda directa de teléfonos venezolanos en texto: 'PagomovilBDV Personas 104,54 Bs Fecha : 20/06/ 2025 Operacion : 003039365064 Identificacion : 27061025 Origen : 0102 **** 8052 Destino : 04125318244 Banco : 0105 - BANCO MERCANTIL...'
+INFO:main_ocr_process:📱 MANDATO 5/X: Fase directa sin resultados, iniciando búsqueda con keywords
+INFO:main_ocr_process:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+INFO:main_ocr_process:📅 MANDATO 3 X FASE 2: Fecha operación extraída: 20/06/ 2025
+INFO:main_ocr_process:Extracción posicional completada: 6/9 campos detectados
+INFO:main_ocr_process:🏦 MANDATO 5/X FASE 2: Banco destino corregido: 'BANCO MERCANTIL' → BANCO MERCANTIL
+INFO:main_ocr_process:📅 MANDATO 5/X FASE 3: Fecha de pago corregida: '20/06/ 2025'
+INFO:main_ocr_process:✅ MANDATO 5/X FASES 2 Y 3: Correcciones aplicadas - banco_destino: 'BANCO MERCANTIL', telefono: '04125318244', pago_fecha: '20/06/ 2025', monto: '104.54'
+INFO:main_ocr_process:✅ Imagen procesada exitosamente: 20250716-B--736060679@lid_José_11-15_20250716_011340_240.jpg → BATCH_20250716_011340_9df_20250716-B--736060679@lid_José_11-15_20250716_011340_240.jpg.json
+INFO:main_ocr_process:✅ Procesado: 20250716-B--736060679@lid_José_11-15_20250716_011340_240.jpg
+INFO:validador_ocr:Análisis completado para data/inbox/20250716-C--913824685@lid_Carlos_21-39_20250716_011340_241.jpg
+INFO:mejora_ocr:Iniciando procesamiento con perfil: ultra_rapido
+INFO:mejora_ocr:Procesamiento completado en 0.011s
+INFO:aplicador_ocr:CACHÉ HIT: Resultado recuperado para hash d362dde5 en 0.000s
+INFO:aplicador_ocr:📋 Estructura empresarial aplicada: 31 elementos reorganizados
+INFO:aplicador_ocr:🏆 MANDATO COMPLETADO: Lógica de oro aplicada sobre caché - textos diferenciados
+INFO:aplicador_ocr:CACHÉ HIT adaptado: 194 caracteres disponibles
+INFO:main_ocr_process:🏦 MANDATO 4/X FASE 2: Banco origen extraído: BANCO MERCANTIL Concepto → BANCO MERCANTIL
+INFO:main_ocr_process:🏆 MANDATO 4/X FASE 2: Monto venezolano normalizado: 104,54 → 104.54
+INFO:main_ocr_process:✅ MANDATO 4/X FASE 2: Monto extraído correctamente: 104.54
+INFO:main_ocr_process:📱 MANDATO 5/X: Iniciando búsqueda directa de teléfonos venezolanos en texto: 'PagomovilBDV Personas 104,54 Bs Fecha : 20/06/ 2025 Operacion : 003039328429 dentificacion : 27061025 Origen : 0102 **** 2314 Destino : 04125318244 Banco : 0105 = BANCO MERCANTIL Concepto : pago...'
+INFO:main_ocr_process:📱 MANDATO 5/X: Fase directa sin resultados, iniciando búsqueda con keywords
+INFO:main_ocr_process:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+INFO:main_ocr_process:📅 MANDATO 3 X FASE 2: Fecha operación extraída: 20/06/ 2025
+INFO:main_ocr_process:Extracción posicional completada: 6/9 campos detectados
+INFO:main_ocr_process:🏦 MANDATO 5/X FASE 2: Banco destino corregido: 'BANCO MERCANTIL Concepto ' → BANCO MERCANTIL
+INFO:main_ocr_process:📅 MANDATO 5/X FASE 3: Fecha de pago corregida: '20/06/ 2025'
+INFO:main_ocr_process:✅ MANDATO 5/X FASES 2 Y 3: Correcciones aplicadas - banco_destino: 'BANCO MERCANTIL', telefono: '04125318244', pago_fecha: '20/06/ 2025', monto: '104.54'
+INFO:main_ocr_process:✅ Imagen procesada exitosamente: 20250716-C--913824685@lid_Carlos_21-39_20250716_011340_241.jpg → BATCH_20250716_011340_33c_20250716-C--913824685@lid_Carlos_21-39_20250716_011340_241.jpg.json
+INFO:main_ocr_process:✅ Procesado: 20250716-C--913824685@lid_Carlos_21-39_20250716_011340_241.jpg
+INFO:validador_ocr:Análisis completado para data/inbox/20250716-D--252586731@lid_Miguel_01-29_20250716_011340_241.jpg
+INFO:mejora_ocr:Iniciando procesamiento con perfil: ultra_rapido
+INFO:mejora_ocr:Procesamiento completado en 0.041s
+INFO:aplicador_ocr:CACHÉ HIT: Resultado recuperado para hash c2a4e16c en 0.001s
+INFO:aplicador_ocr:📋 Estructura empresarial aplicada: 31 elementos reorganizados
+INFO:aplicador_ocr:🏆 MANDATO COMPLETADO: Lógica de oro aplicada sobre caché - textos diferenciados
+INFO:aplicador_ocr:CACHÉ HIT adaptado: 194 caracteres disponibles
+INFO:main_ocr_process:🏦 MANDATO 4/X FASE 2: Banco origen extraído: BANCO MERCANTIL Concepto → BANCO MERCANTIL
+INFO:main_ocr_process:🏆 MANDATO 4/X FASE 2: Monto venezolano normalizado: 105,00 → 105.00
+INFO:main_ocr_process:✅ MANDATO 4/X FASE 2: Monto extraído correctamente: 105.00
+INFO:main_ocr_process:📱 MANDATO 5/X: Iniciando búsqueda directa de teléfonos venezolanos en texto: 'A PagomovilBDV Personas 105,00 Bs Fecha : 20/06/ 2025 Operacion : 003039298732 Identificacion : 27061025 Origen; 0102 **** 7105 Destino : 04125318244 Banco : 0105 = BANCO MERCANTIL Concepto : 61...'
+INFO:main_ocr_process:📱 MANDATO 5/X: Fase directa sin resultados, iniciando búsqueda con keywords
+INFO:main_ocr_process:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+INFO:main_ocr_process:📅 MANDATO 3 X FASE 2: Fecha operación extraída: 20/06/ 2025
+INFO:main_ocr_process:Extracción posicional completada: 6/9 campos detectados
+INFO:main_ocr_process:🏦 MANDATO 5/X FASE 2: Banco destino corregido: 'BANCO MERCANTIL Concepto ' → BANCO MERCANTIL
+INFO:main_ocr_process:📅 MANDATO 5/X FASE 3: Fecha de pago corregida: '20/06/ 2025'
+INFO:main_ocr_process:✅ MANDATO 5/X FASES 2 Y 3: Correcciones aplicadas - banco_destino: 'BANCO MERCANTIL', telefono: '04125318244', pago_fecha: '20/06/ 2025', monto: '105.00'
+INFO:main_ocr_process:✅ Imagen procesada exitosamente: 20250716-D--252586731@lid_Miguel_01-29_20250716_011340_241.jpg → BATCH_20250716_011340_c7b_20250716-D--252586731@lid_Miguel_01-29_20250716_011340_241.jpg.json
+INFO:main_ocr_process:✅ Procesado: 20250716-D--252586731@lid_Miguel_01-29_20250716_011340_241.jpg
+INFO:validador_ocr:Análisis completado para data/inbox/20250716-E--118022235@lid_Juan_08-42_20250716_011340_242.jpg
+INFO:mejora_ocr:Iniciando procesamiento con perfil: ultra_rapido
+INFO:mejora_ocr:Procesamiento completado en 0.018s
+INFO:aplicador_ocr:CACHÉ HIT: Resultado recuperado para hash 32f24c09 en 0.000s
+INFO:aplicador_ocr:📋 Estructura empresarial aplicada: 33 elementos reorganizados
+INFO:aplicador_ocr:🏆 MANDATO COMPLETADO: Lógica de oro aplicada sobre caché - textos diferenciados
+INFO:aplicador_ocr:CACHÉ HIT adaptado: 205 caracteres disponibles
+INFO:main_ocr_process:🏦 MANDATO 4/X FASE 2: Banco origen extraído: BANCO MERCANTIL Concepto → BANCO MERCANTIL
+INFO:main_ocr_process:🏆 MANDATO 4/X FASE 2: Monto venezolano normalizado: 313,62 → 313.62
+INFO:main_ocr_process:✅ MANDATO 4/X FASE 2: Monto extraído correctamente: 313.62
+INFO:main_ocr_process:📱 MANDATO 5/X: Iniciando búsqueda directa de teléfonos venezolanos en texto: 'PagomovilBDV Personas 313,62 Bs Fecha : 20/06/ 2025 Operacion : 003039284465 Identificacion : 27061025 Origen : 0102 **** 5335 Destino : 04125318244 Banco : 0105 = BANCO MERCANTIL Concepto : 0291 92 R...'
+INFO:main_ocr_process:📱 MANDATO 5/X: Fase directa sin resultados, iniciando búsqueda con keywords
+INFO:main_ocr_process:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+INFO:main_ocr_process:📅 MANDATO 3 X FASE 2: Fecha operación extraída: 20/06/ 2025
+INFO:main_ocr_process:Extracción posicional completada: 6/9 campos detectados
+INFO:main_ocr_process:🏦 MANDATO 5/X FASE 2: Banco destino corregido: 'BANCO MERCANTIL Concepto ' → BANCO MERCANTIL
+INFO:main_ocr_process:📅 MANDATO 5/X FASE 3: Fecha de pago corregida: '20/06/ 2025'
+INFO:main_ocr_process:✅ MANDATO 5/X FASES 2 Y 3: Correcciones aplicadas - banco_destino: 'BANCO MERCANTIL', telefono: '04125318244', pago_fecha: '20/06/ 2025', monto: '313.62'
+INFO:main_ocr_process:✅ Imagen procesada exitosamente: 20250716-E--118022235@lid_Juan_08-42_20250716_011340_242.jpg → BATCH_20250716_011340_b2e_20250716-E--118022235@lid_Juan_08-42_20250716_011340_242.jpg.json
+INFO:main_ocr_process:✅ Procesado: 20250716-E--118022235@lid_Juan_08-42_20250716_011340_242.jpg
+INFO:validador_ocr:Análisis completado para data/inbox/20250716-F--851744997@lid_Miguel_08-19_20250716_011340_242.jpg
+INFO:mejora_ocr:Iniciando procesamiento con perfil: ultra_rapido
+INFO:mejora_ocr:Procesamiento completado en 0.016s
+INFO:aplicador_ocr:CACHÉ HIT: Resultado recuperado para hash c13b518c en 0.000s
+INFO:aplicador_ocr:📋 Estructura empresarial aplicada: 32 elementos reorganizados
+INFO:aplicador_ocr:🏆 MANDATO COMPLETADO: Lógica de oro aplicada sobre caché - textos diferenciados
+INFO:aplicador_ocr:CACHÉ HIT adaptado: 202 caracteres disponibles
+INFO:main_ocr_process:🏦 MANDATO 4/X FASE 2: Banco origen extraído: BANCO MERCANTIL Numero celular → BANCO MERCANTIL
+INFO:main_ocr_process:🏆 MANDATO 4/X FASE 2: Monto venezolano normalizado: 313,62 → 313.62
+INFO:main_ocr_process:✅ MANDATO 4/X FASE 2: Monto extraído correctamente: 313.62
+INFO:main_ocr_process:🆔 MANDATO 4/X FASE 2: Cédula extraída: V 27061025
+INFO:main_ocr_process:📱 MANDATO 5/X: Iniciando búsqueda directa de teléfonos venezolanos en texto: 'Eldinero fue enviado Bs . 313,62 Dinero Rapido BBVA Provincial Banco : BANCO MERCANTIL Numero celular : 04125318244 Identificacion : V 27061025 Concepto : Pago Fecha : 20/06/ 2025 Referencia : 0000120...'
+INFO:main_ocr_process:📱 MANDATO 5/X: Fase directa sin resultados, iniciando búsqueda con keywords
+INFO:main_ocr_process:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+INFO:main_ocr_process:📅 MANDATO 3 X FASE 2: Fecha operación extraída: 20/06/ 2025
+INFO:main_ocr_process:Extracción posicional completada: 7/9 campos detectados
+INFO:main_ocr_process:🏦 MANDATO 5/X FASE 2: Banco destino corregido: 'BANCO MERCANTIL Numero celular ' → BANCO MERCANTIL
+INFO:main_ocr_process:📅 MANDATO 5/X FASE 3: Fecha de pago corregida: '20/06/ 2025'
+INFO:main_ocr_process:✅ MANDATO 5/X FASES 2 Y 3: Correcciones aplicadas - banco_destino: 'BANCO MERCANTIL', telefono: '04125318244', pago_fecha: '20/06/ 2025', monto: '313.62'
+INFO:main_ocr_process:✅ Imagen procesada exitosamente: 20250716-F--851744997@lid_Miguel_08-19_20250716_011340_242.jpg → BATCH_20250716_011341_e05_20250716-F--851744997@lid_Miguel_08-19_20250716_011340_242.jpg.json
+INFO:main_ocr_process:✅ Procesado: 20250716-F--851744997@lid_Miguel_08-19_20250716_011340_242.jpg
+INFO:validador_ocr:Análisis completado para data/inbox/20250716-G--621100063@lid_María_01-10_20250716_011340_242.jpg
+INFO:mejora_ocr:Iniciando procesamiento con perfil: ultra_rapido
+INFO:mejora_ocr:Procesamiento completado en 0.008s
+INFO:aplicador_ocr:CACHÉ HIT: Resultado recuperado para hash a8d82fad en 0.000s
+INFO:aplicador_ocr:📋 Estructura empresarial aplicada: 29 elementos reorganizados
+INFO:aplicador_ocr:🏆 MANDATO COMPLETADO: Lógica de oro aplicada sobre caché - textos diferenciados
+INFO:aplicador_ocr:CACHÉ HIT adaptado: 171 caracteres disponibles
+INFO:main_ocr_process:🏦 MANDATO 4/X FASE 2: Banco origen extraído: BANCO MERCANTIL → BANCO MERCANTIL
+INFO:main_ocr_process:🏆 MANDATO 4/X FASE 2: Monto venezolano normalizado: 104,52 → 104.52
+INFO:main_ocr_process:✅ MANDATO 4/X FASE 2: Monto extraído correctamente: 104.52
+INFO:main_ocr_process:📱 MANDATO 5/X: Iniciando búsqueda directa de teléfonos venezolanos en texto: 'Personas 104,52 Bs Fecha : 20/06/ 2025 Operacion : 003039243692 D - Identificacion : 27061025 Origen : 0102 ****: 2716 Destino : 04125318244 Banco : 0105 = BANCO MERCANTIL...'
+INFO:main_ocr_process:📱 MANDATO 5/X: Fase directa sin resultados, iniciando búsqueda con keywords
+INFO:main_ocr_process:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+INFO:main_ocr_process:📅 MANDATO 3 X FASE 2: Fecha operación extraída: 20/06/ 2025
+INFO:main_ocr_process:Extracción posicional completada: 6/9 campos detectados
+INFO:main_ocr_process:🏦 MANDATO 5/X FASE 2: Banco destino corregido: 'BANCO MERCANTIL' → BANCO MERCANTIL
+INFO:main_ocr_process:📅 MANDATO 5/X FASE 3: Fecha de pago corregida: '20/06/ 2025'
+INFO:main_ocr_process:✅ MANDATO 5/X FASES 2 Y 3: Correcciones aplicadas - banco_destino: 'BANCO MERCANTIL', telefono: '04125318244', pago_fecha: '20/06/ 2025', monto: '104.52'
+INFO:main_ocr_process:✅ Imagen procesada exitosamente: 20250716-G--621100063@lid_María_01-10_20250716_011340_242.jpg → BATCH_20250716_011341_d6a_20250716-G--621100063@lid_María_01-10_20250716_011340_242.jpg.json
+INFO:main_ocr_process:✅ Procesado: 20250716-G--621100063@lid_María_01-10_20250716_011340_242.jpg
+INFO:validador_ocr:Análisis completado para data/inbox/20250716-H--969328920@lid_Miguel_18-59_20250716_011340_243.jpg
+INFO:mejora_ocr:Iniciando procesamiento con perfil: ultra_rapido
+INFO:mejora_ocr:Procesamiento completado en 0.019s
+INFO:aplicador_ocr:CACHÉ HIT: Resultado recuperado para hash 0b06904e en 0.001s
+INFO:aplicador_ocr:📋 Estructura empresarial aplicada: 41 elementos reorganizados
+INFO:aplicador_ocr:🏆 MANDATO COMPLETADO: Lógica de oro aplicada sobre caché - textos diferenciados
+INFO:aplicador_ocr:CACHÉ HIT adaptado: 237 caracteres disponibles
+INFO:main_ocr_process:🏦 MANDATO 4/X FASE 2: Banco origen extraído: MERCANTIL FECHA → BANCO MERCANTIL
+INFO:main_ocr_process:🏆 MANDATO 4/X FASE 2: Monto venezolano normalizado: 313,62 → 313.62
+INFO:main_ocr_process:✅ MANDATO 4/X FASE 2: Monto extraído correctamente: 313.62
+INFO:main_ocr_process:🆔 MANDATO 4/X FASE 2: Cédula extraída: V - 27061025
+INFO:main_ocr_process:📱 MANDATO 5/X: Iniciando búsqueda directa de teléfonos venezolanos en texto: 'Bancamiga Banco Universal NUMERO DE REFERENCIA : 190018901378 MONTO DE LA OPERACION : Bs . 313,62 CI / RIF BENEFICIARIO : V - 27061025 TELF BENEFICIARIO : 04125318244 BANCO : MERCANTIL FECHA : 20/06/2...'
+INFO:main_ocr_process:📱 MANDATO 5/X: Fase directa sin resultados, iniciando búsqueda con keywords
+INFO:main_ocr_process:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+INFO:main_ocr_process:Extracción posicional completada: 7/9 campos detectados
+INFO:main_ocr_process:🏦 MANDATO 5/X FASE 2: Banco destino corregido: 'Banco Universal' → BANCO MERCANTIL
+INFO:main_ocr_process:✅ MANDATO 5/X FASES 2 Y 3: Correcciones aplicadas - banco_destino: 'BANCO MERCANTIL', telefono: '04125318244', pago_fecha: '20/06/25', monto: '313.62'
+INFO:main_ocr_process:✅ Imagen procesada exitosamente: 20250716-H--969328920@lid_Miguel_18-59_20250716_011340_243.jpg → BATCH_20250716_011341_eaf_20250716-H--969328920@lid_Miguel_18-59_20250716_011340_243.jpg.json
+INFO:main_ocr_process:✅ Procesado: 20250716-H--969328920@lid_Miguel_18-59_20250716_011340_243.jpg
+INFO:validador_ocr:Análisis completado para data/inbox/20250716-I--474805271@lid_María_00-15_20250716_011340_243.jpg
+INFO:mejora_ocr:Iniciando procesamiento con perfil: ultra_rapido
+INFO:mejora_ocr:Procesamiento completado en 0.023s
+INFO:aplicador_ocr:CACHÉ HIT: Resultado recuperado para hash f3883b61 en 0.000s
+INFO:aplicador_ocr:📋 Estructura empresarial aplicada: 32 elementos reorganizados
+INFO:aplicador_ocr:🏆 MANDATO COMPLETADO: Lógica de oro aplicada sobre caché - textos diferenciados
+INFO:aplicador_ocr:CACHÉ HIT adaptado: 198 caracteres disponibles
+INFO:main_ocr_process:🏦 MANDATO 4/X FASE 2: Banco origen extraído: BANCO MERCANTIL Concepto → BANCO MERCANTIL
+INFO:main_ocr_process:🏆 MANDATO 4/X FASE 2: Monto venezolano normalizado: 104,54 → 104.54
+INFO:main_ocr_process:✅ MANDATO 4/X FASE 2: Monto extraído correctamente: 104.54
+INFO:main_ocr_process:📱 MANDATO 5/X: Iniciando búsqueda directa de teléfonos venezolanos en texto: 'PagomévilBDV Personas 104,54 Bs Fecha : 20/06/ 2025 Operacion : 003039150652 Identificacion : 27061025 Origen : 0102 **** 7897 Destino : 04125318244 Banco : 0105 = BANCO MERCANTIL Concepto : pago 10...'
+INFO:main_ocr_process:📱 MANDATO 5/X: Fase directa sin resultados, iniciando búsqueda con keywords
+INFO:main_ocr_process:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+INFO:main_ocr_process:📅 MANDATO 3 X FASE 2: Fecha operación extraída: 20/06/ 2025
+INFO:main_ocr_process:Extracción posicional completada: 6/9 campos detectados
+INFO:main_ocr_process:🏦 MANDATO 5/X FASE 2: Banco destino corregido: 'BANCO MERCANTIL Concepto ' → BANCO MERCANTIL
+INFO:main_ocr_process:📅 MANDATO 5/X FASE 3: Fecha de pago corregida: '20/06/ 2025'
+INFO:main_ocr_process:✅ MANDATO 5/X FASES 2 Y 3: Correcciones aplicadas - banco_destino: 'BANCO MERCANTIL', telefono: '04125318244', pago_fecha: '20/06/ 2025', monto: '104.54'
+INFO:main_ocr_process:✅ Imagen procesada exitosamente: 20250716-I--474805271@lid_María_00-15_20250716_011340_243.jpg → BATCH_20250716_011341_1ae_20250716-I--474805271@lid_María_00-15_20250716_011340_243.jpg.json
+INFO:main_ocr_process:✅ Procesado: 20250716-I--474805271@lid_María_00-15_20250716_011340_243.jpg
+INFO:validador_ocr:Análisis completado para data/inbox/20250716-J--125980335@lid_Laura_05-58_20250716_011340_244.jpg
+INFO:mejora_ocr:Iniciando procesamiento con perfil: ultra_rapido
+INFO:mejora_ocr:Procesamiento completado en 0.011s
+INFO:aplicador_ocr:CACHÉ HIT: Resultado recuperado para hash e42f248f en 0.000s
+INFO:aplicador_ocr:📋 Estructura empresarial aplicada: 72 elementos reorganizados
+INFO:aplicador_ocr:🏆 MANDATO COMPLETADO: Lógica de oro aplicada sobre caché - textos diferenciados
+INFO:aplicador_ocr:CACHÉ HIT adaptado: 374 caracteres disponibles
+INFO:main_ocr_process:🏦 MANDATO 4/X FASE 2: Banco origen extraído: Mercantil → BANCO MERCANTIL
+INFO:main_ocr_process:🏆 MANDATO 4/X FASE 2: Monto venezolano normalizado: 210,00 → 210.00
+INFO:main_ocr_process:✅ MANDATO 4/X FASE 2: Monto extraído correctamente: 210.00
+INFO:main_ocr_process:🆔 MANDATO 4/X FASE 2: Cédula extraída: V -27.061.025
+INFO:main_ocr_process:📱 MANDATO 5/X: Iniciando búsqueda directa de teléfonos venezolanos en texto: '20/06/ 2025 - - 06:50:24 pm Mercantil de Tpago Operacion realizada Desde mi cuenta Se Envio (Bs .) Al beneficiario . Cuental de Ahorro 3976 210,00 0412 : -244 Banco, Mercantil, C . A . S . A . C . A ....'
+INFO:main_ocr_process:📱 MANDATO 5/X: Fase directa sin resultados, iniciando búsqueda con keywords
+INFO:main_ocr_process:📅 MANDATO 3 X FASE 2: Fecha operación extraída: 20/06/ 2025
+INFO:main_ocr_process:📝 MANDATO 4/X FASE 2: Concepto extraído: Tpago
+INFO:main_ocr_process:Extracción posicional completada: 6/9 campos detectados
+INFO:main_ocr_process:🏦 MANDATO 5/X FASE 2: Banco destino corregido: 'Banco Universal' → BANCO MERCANTIL
+INFO:main_ocr_process:📅 MANDATO 5/X FASE 3: Fecha de pago corregida: '20/06/ 2025'
+INFO:main_ocr_process:✅ MANDATO 5/X FASES 2 Y 3: Correcciones aplicadas - banco_destino: 'BANCO MERCANTIL', telefono: '', pago_fecha: '20/06/ 2025', monto: '210.00'
+INFO:main_ocr_process:✅ Imagen procesada exitosamente: 20250716-J--125980335@lid_Laura_05-58_20250716_011340_244.jpg → BATCH_20250716_011341_2c2_20250716-J--125980335@lid_Laura_05-58_20250716_011340_244.jpg.json
+INFO:main_ocr_process:✅ Procesado: 20250716-J--125980335@lid_Laura_05-58_20250716_011340_244.jpg
+INFO:validador_ocr:Análisis completado para data/inbox/20250716-A--679208061@lid_María_21-44_20250716_011340_244.jpg
+INFO:mejora_ocr:Iniciando procesamiento con perfil: ultra_rapido
+INFO:mejora_ocr:Procesamiento completado en 0.008s
+INFO:aplicador_ocr:CACHÉ HIT: Resultado recuperado para hash 10485a2c en 0.000s
+INFO:aplicador_ocr:📋 Estructura empresarial aplicada: 36 elementos reorganizados
+INFO:aplicador_ocr:🏆 MANDATO COMPLETADO: Lógica de oro aplicada sobre caché - textos diferenciados
+INFO:aplicador_ocr:CACHÉ HIT adaptado: 228 caracteres disponibles
+INFO:main_ocr_process:🏦 MANDATO 4/X FASE 2: Banco origen extraído: BANCO MERCANTIL Concepto → BANCO MERCANTIL
+INFO:main_ocr_process:🏆 MANDATO 4/X FASE 2: Monto venezolano normalizado: 104,34 → 104.34
+INFO:main_ocr_process:✅ MANDATO 4/X FASE 2: Monto extraído correctamente: 104.34
+INFO:main_ocr_process:📱 MANDATO 5/X: Iniciando búsqueda directa de teléfonos venezolanos en texto: 'Comprobante de operacion Personas 104,34 Bs Fecha : 20/06/ 2025 Operacion : 003039096498 Identificacion : 27061025 Origen : 0102 **** 2227 Destino : 04125318244 Banco : 0105 - BANCO MERCANTIL Concepto...'
+INFO:main_ocr_process:📱 MANDATO 5/X: Fase directa sin resultados, iniciando búsqueda con keywords
+INFO:main_ocr_process:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+INFO:main_ocr_process:📅 MANDATO 3 X FASE 2: Fecha operación extraída: 20/06/ 2025
+INFO:main_ocr_process:Extracción posicional completada: 6/9 campos detectados
+INFO:main_ocr_process:🏦 MANDATO 5/X FASE 2: Banco destino corregido: 'BANCO MERCANTIL Concepto ' → BANCO MERCANTIL
+INFO:main_ocr_process:📅 MANDATO 5/X FASE 3: Fecha de pago corregida: '20/06/ 2025'
+INFO:main_ocr_process:✅ MANDATO 5/X FASES 2 Y 3: Correcciones aplicadas - banco_destino: 'BANCO MERCANTIL', telefono: '04125318244', pago_fecha: '20/06/ 2025', monto: '104.34'
+INFO:main_ocr_process:✅ Imagen procesada exitosamente: 20250716-A--679208061@lid_María_21-44_20250716_011340_244.jpg → BATCH_20250716_011342_bd4_20250716-A--679208061@lid_María_21-44_20250716_011340_244.jpg.json
+INFO:main_ocr_process:✅ Procesado: 20250716-A--679208061@lid_María_21-44_20250716_011340_244.jpg
+INFO:validador_ocr:Análisis completado para data/inbox/20250716-B--756885850@lid_Pedro_13-25_20250716_011340_244.jpg
+INFO:mejora_ocr:Iniciando procesamiento con perfil: ultra_rapido
+INFO:mejora_ocr:Procesamiento completado en 0.01s
+INFO:aplicador_ocr:CACHÉ HIT: Resultado recuperado para hash 7e9fc935 en 0.000s
+INFO:aplicador_ocr:📋 Estructura empresarial aplicada: 26 elementos reorganizados
+INFO:aplicador_ocr:🏆 MANDATO COMPLETADO: Lógica de oro aplicada sobre caché - textos diferenciados
+INFO:aplicador_ocr:CACHÉ HIT adaptado: 161 caracteres disponibles
+INFO:main_ocr_process:🏦 MANDATO 4/X FASE 2: Banco origen extraído: BANESCO Concepto → BANCO BANESCO
+INFO:main_ocr_process:🏆 MANDATO 4/X FASE 2: Monto venezolano normalizado: 1.085,00 → 1085.00
+INFO:main_ocr_process:✅ MANDATO 4/X FASE 2: Monto extraído correctamente: 1085.00
+INFO:main_ocr_process:📱 MANDATO 5/X: Iniciando búsqueda directa de teléfonos venezolanos en texto: 'Personas 1.085,00 Bs Fecha : 15/07/ 2025 Operacion : 003215578991 Identificacion : 27623430 Origen : Destino : 04129255657 Banco : 0134 = BANESCO Concepto : pago...'
+INFO:main_ocr_process:📱 MANDATO 5/X: Fase directa sin resultados, iniciando búsqueda con keywords
+INFO:main_ocr_process:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04129255657
+INFO:main_ocr_process:📅 MANDATO 3 X FASE 2: Fecha operación extraída: 15/07/ 2025
+INFO:main_ocr_process:Extracción posicional completada: 6/9 campos detectados
+INFO:main_ocr_process:📅 MANDATO 5/X FASE 3: Fecha de pago corregida: '15/07/ 2025'
+INFO:main_ocr_process:✅ MANDATO 5/X FASES 2 Y 3: Correcciones aplicadas - banco_destino: '', telefono: '04129255657', pago_fecha: '15/07/ 2025', monto: '1085.00'
+INFO:main_ocr_process:✅ Imagen procesada exitosamente: 20250716-B--756885850@lid_Pedro_13-25_20250716_011340_244.jpg → BATCH_20250716_011342_de0_20250716-B--756885850@lid_Pedro_13-25_20250716_011340_244.jpg.json
+INFO:main_ocr_process:✅ Procesado: 20250716-B--756885850@lid_Pedro_13-25_20250716_011340_244.jpg
+INFO:validador_ocr:Análisis completado para data/inbox/20250716-C--143943480@lid_Ana_23-54_20250716_011340_245.jpg
+INFO:mejora_ocr:Iniciando procesamiento con perfil: ultra_rapido
+INFO:mejora_ocr:Procesamiento completado en 0.007s
+INFO:aplicador_ocr:CACHÉ HIT: Resultado recuperado para hash b5cbc748 en 0.000s
+INFO:aplicador_ocr:📋 Estructura empresarial aplicada: 45 elementos reorganizados
+INFO:aplicador_ocr:🏆 MANDATO COMPLETADO: Lógica de oro aplicada sobre caché - textos diferenciados
+INFO:aplicador_ocr:CACHÉ HIT adaptado: 260 caracteres disponibles
+INFO:main_ocr_process:🏦 MANDATO 4/X FASE 2: Banco origen extraído: BANCO MERCANTIL Concepto → BANCO MERCANTIL
+INFO:main_ocr_process:🏆 MANDATO 4/X FASE 2: Monto venezolano normalizado: 104,54 → 104.54
+INFO:main_ocr_process:✅ MANDATO 4/X FASE 2: Monto extraído correctamente: 104.54
+INFO:main_ocr_process:📱 MANDATO 5/X: Iniciando búsqueda directa de teléfonos venezolanos en texto: '7:19 @ C a - Comprobante de operacion PagomévilBDV Personas 104,54 Bs Fecha : 20/06/ 2025 Operacion : 003039403500 Identificacion : 27061025 Origen : 0102 **** 4259 Destino : 04125318244 Banco : 0105 ...'
+INFO:main_ocr_process:📱 MANDATO 5/X: Fase directa sin resultados, iniciando búsqueda con keywords
+INFO:main_ocr_process:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+INFO:main_ocr_process:📅 MANDATO 3 X FASE 2: Fecha operación extraída: 20/06/ 2025
+INFO:main_ocr_process:Extracción posicional completada: 6/9 campos detectados
+INFO:main_ocr_process:🏦 MANDATO 5/X FASE 2: Banco destino corregido: 'BANCO MERCANTIL Concepto ' → BANCO MERCANTIL
+INFO:main_ocr_process:📅 MANDATO 5/X FASE 3: Fecha de pago corregida: '20/06/ 2025'
+INFO:main_ocr_process:✅ MANDATO 5/X FASES 2 Y 3: Correcciones aplicadas - banco_destino: 'BANCO MERCANTIL', telefono: '04125318244', pago_fecha: '20/06/ 2025', monto: '104.54'
+INFO:main_ocr_process:✅ Imagen procesada exitosamente: 20250716-C--143943480@lid_Ana_23-54_20250716_011340_245.jpg → BATCH_20250716_011342_9ef_20250716-C--143943480@lid_Ana_23-54_20250716_011340_245.jpg.json
+INFO:main_ocr_process:✅ Procesado: 20250716-C--143943480@lid_Ana_23-54_20250716_011340_245.jpg
+INFO:validador_ocr:Análisis completado para data/inbox/20250716-D--280734661@lid_Miguel_03-09_20250716_011340_245.jpg
+INFO:mejora_ocr:Iniciando procesamiento con perfil: ultra_rapido
+INFO:mejora_ocr:Procesamiento completado en 0.007s
+INFO:aplicador_ocr:CACHÉ HIT: Resultado recuperado para hash 98b2fd04 en 0.000s
+INFO:aplicador_ocr:📋 Estructura empresarial aplicada: 47 elementos reorganizados
+INFO:aplicador_ocr:🏆 MANDATO COMPLETADO: Lógica de oro aplicada sobre caché - textos diferenciados
+INFO:aplicador_ocr:CACHÉ HIT adaptado: 272 caracteres disponibles
+INFO:main_ocr_process:🏦 MANDATO 4/X FASE 2: Banco origen extraído: PROVINCIAL Concepto → BANCO PROVINCIAL
+INFO:main_ocr_process:🏆 MANDATO 4/X FASE 2: Monto venezolano normalizado: 209,08 → 209.08
+INFO:main_ocr_process:✅ MANDATO 4/X FASE 2: Monto extraído correctamente: 209.08
+INFO:main_ocr_process:📱 MANDATO 5/X: Iniciando búsqueda directa de teléfonos venezolanos en texto: '718pm Val . 50 - Comprobante de operacion PagomovilBDV Personas 209,08 Bs Fecha : 20/06/ 2025 Operacion : 003039392904 - - dentificacion : 27061025 Origen : 0102 **** 3799 Destino : 04125318244 Banco ...'
+INFO:main_ocr_process:📱 MANDATO 5/X: Fase directa sin resultados, iniciando búsqueda con keywords
+INFO:main_ocr_process:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+INFO:main_ocr_process:📅 MANDATO 3 X FASE 2: Fecha operación extraída: 20/06/ 2025
+INFO:main_ocr_process:Extracción posicional completada: 6/9 campos detectados
+INFO:main_ocr_process:📅 MANDATO 5/X FASE 3: Fecha de pago corregida: '20/06/ 2025'
+INFO:main_ocr_process:✅ MANDATO 5/X FASES 2 Y 3: Correcciones aplicadas - banco_destino: '', telefono: '04125318244', pago_fecha: '20/06/ 2025', monto: '209.08'
+INFO:main_ocr_process:✅ Imagen procesada exitosamente: 20250716-D--280734661@lid_Miguel_03-09_20250716_011340_245.jpg → BATCH_20250716_011342_635_20250716-D--280734661@lid_Miguel_03-09_20250716_011340_245.jpg.json
+INFO:main_ocr_process:✅ Procesado: 20250716-D--280734661@lid_Miguel_03-09_20250716_011340_245.jpg
+INFO:validador_ocr:Análisis completado para data/inbox/20250716-E--429830204@lid_María_23-05_20250716_011340_277.jpg
+INFO:mejora_ocr:Iniciando procesamiento con perfil: ultra_rapido
+INFO:mejora_ocr:Procesamiento completado en 0.009s
+INFO:aplicador_ocr:CACHÉ HIT: Resultado recuperado para hash 0c5623aa en 0.000s
+INFO:aplicador_ocr:📋 Estructura empresarial aplicada: 30 elementos reorganizados
+INFO:aplicador_ocr:🏆 MANDATO COMPLETADO: Lógica de oro aplicada sobre caché - textos diferenciados
+INFO:aplicador_ocr:CACHÉ HIT adaptado: 172 caracteres disponibles
+INFO:main_ocr_process:🏦 MANDATO 4/X FASE 2: Banco origen extraído: BANCO MERCANTIL → BANCO MERCANTIL
+INFO:main_ocr_process:🏆 MANDATO 4/X FASE 2: Monto venezolano normalizado: 104,54 → 104.54
+INFO:main_ocr_process:✅ MANDATO 4/X FASE 2: Monto extraído correctamente: 104.54
+INFO:main_ocr_process:📱 MANDATO 5/X: Iniciando búsqueda directa de teléfonos venezolanos en texto: 'A Personas 104,54 Bs Fecha : 20/06/ 2025 Operacion; 003039387344 I - Identificacion : 2/ 061025 Origen : 0102 **** 2679 Destino : 04125318244 Banco : 0105 - BANCO MERCANTIL...'
+INFO:main_ocr_process:📱 MANDATO 5/X: Fase directa sin resultados, iniciando búsqueda con keywords
+INFO:main_ocr_process:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+INFO:main_ocr_process:📅 MANDATO 3 X FASE 2: Fecha operación extraída: 20/06/ 2025
+INFO:main_ocr_process:Extracción posicional completada: 6/9 campos detectados
+INFO:main_ocr_process:🏦 MANDATO 5/X FASE 2: Banco destino corregido: 'BANCO MERCANTIL' → BANCO MERCANTIL
+INFO:main_ocr_process:📅 MANDATO 5/X FASE 3: Fecha de pago corregida: '20/06/ 2025'
+INFO:main_ocr_process:✅ MANDATO 5/X FASES 2 Y 3: Correcciones aplicadas - banco_destino: 'BANCO MERCANTIL', telefono: '04125318244', pago_fecha: '20/06/ 2025', monto: '104.54'
+INFO:main_ocr_process:✅ Imagen procesada exitosamente: 20250716-E--429830204@lid_María_23-05_20250716_011340_277.jpg → BATCH_20250716_011342_daf_20250716-E--429830204@lid_María_23-05_20250716_011340_277.jpg.json
+INFO:main_ocr_process:✅ Procesado: 20250716-E--429830204@lid_María_23-05_20250716_011340_277.jpg
+INFO:validador_ocr:Análisis completado para data/inbox/20250716-F--570900032@lid_María_06-58_20250716_011340_277.jpg
+INFO:mejora_ocr:Iniciando procesamiento con perfil: ultra_rapido
+INFO:mejora_ocr:Procesamiento completado en 0.011s
+INFO:aplicador_ocr:CACHÉ HIT: Resultado recuperado para hash 1733d68f en 0.001s
+INFO:aplicador_ocr:📋 Estructura empresarial aplicada: 45 elementos reorganizados
+INFO:aplicador_ocr:🏆 MANDATO COMPLETADO: Lógica de oro aplicada sobre caché - textos diferenciados
+INFO:aplicador_ocr:CACHÉ HIT adaptado: 265 caracteres disponibles
+INFO:main_ocr_process:🏦 MANDATO 4/X FASE 2: Banco origen extraído: BANCO MERCANTIL Concepto → BANCO MERCANTIL
+INFO:main_ocr_process:🏆 MANDATO 4/X FASE 2: Monto venezolano normalizado: 104,54 → 104.54
+INFO:main_ocr_process:✅ MANDATO 4/X FASE 2: Monto extraído correctamente: 104.54
+INFO:main_ocr_process:📱 MANDATO 5/X: Iniciando búsqueda directa de teléfonos venezolanos en texto: '19:16 34 Comprobante de operacion PagomovilBDV Personas 104,54 Bs Fecha : 20/06/ 2025 Operacion : 003039376430 D Identificacion : 27061025 Origen : 0102 **** 2663 Destino : 04125318244 Banco : 0105 - ...'
+INFO:main_ocr_process:📱 MANDATO 5/X: Fase directa sin resultados, iniciando búsqueda con keywords
+INFO:main_ocr_process:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+INFO:main_ocr_process:📅 MANDATO 3 X FASE 2: Fecha operación extraída: 20/06/ 2025
+INFO:main_ocr_process:Extracción posicional completada: 6/9 campos detectados
+INFO:main_ocr_process:🏦 MANDATO 5/X FASE 2: Banco destino corregido: 'BANCO MERCANTIL Concepto ' → BANCO MERCANTIL
+INFO:main_ocr_process:📅 MANDATO 5/X FASE 3: Fecha de pago corregida: '20/06/ 2025'
+INFO:main_ocr_process:✅ MANDATO 5/X FASES 2 Y 3: Correcciones aplicadas - banco_destino: 'BANCO MERCANTIL', telefono: '04125318244', pago_fecha: '20/06/ 2025', monto: '104.54'
+INFO:main_ocr_process:✅ Imagen procesada exitosamente: 20250716-F--570900032@lid_María_06-58_20250716_011340_277.jpg → BATCH_20250716_011342_959_20250716-F--570900032@lid_María_06-58_20250716_011340_277.jpg.json
+INFO:main_ocr_process:✅ Procesado: 20250716-F--570900032@lid_María_06-58_20250716_011340_277.jpg
+DEBUG:routes:📝 Estado almacenado: BATCH_20250716_011339_f6bd85ce
+INFO:routes:💾 Almacenado request_id del último lote exitoso: BATCH_20250716_011339_f6bd85ce
+INFO:routes:✅ Lote procesado exitosamente: 16 archivos. Request ID: BATCH_20250716_011339_f6bd85ce
+INFO:routes:📥 INTEGRIDAD TOTAL: Recuperando TODOS los archivos del último lote por fecha: BATCH_20250716 (86 archivos)
+INFO:routes:📊 INTEGRIDAD TOTAL: Mostrando 86 archivos del lote BATCH_20250716_010155
+INFO:routes:📄 Texto tradicional usado: 265 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'F', 'id_whatsapp': '570900032@lid', 'nombre_usuario': 'María', 'hora_exacta': '06-58', 'numero_llegada': 21}
+DEBUG:routes:Archivo procesado: 20250716-F--570900032@lid_María_06-58_20250716_011340_277.jpg - 265 chars
+INFO:routes:📄 Texto tradicional usado: 172 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'E', 'id_whatsapp': '429830204@lid', 'nombre_usuario': 'María', 'hora_exacta': '23-05', 'numero_llegada': 34}
+DEBUG:routes:Archivo procesado: 20250716-E--429830204@lid_María_23-05_20250716_011340_277.jpg - 172 chars
+INFO:routes:📄 Texto tradicional usado: 272 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 209,08 → 209.08
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 209.08
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'D', 'id_whatsapp': '280734661@lid', 'nombre_usuario': 'Miguel', 'hora_exacta': '03-09', 'numero_llegada': 9}
+DEBUG:routes:Archivo procesado: 20250716-D--280734661@lid_Miguel_03-09_20250716_011340_245.jpg - 272 chars
+INFO:routes:📄 Texto tradicional usado: 260 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'C', 'id_whatsapp': '143943480@lid', 'nombre_usuario': 'Ana', 'hora_exacta': '23-54', 'numero_llegada': 12}
+DEBUG:routes:Archivo procesado: 20250716-C--143943480@lid_Ana_23-54_20250716_011340_245.jpg - 260 chars
+INFO:routes:📄 Texto tradicional usado: 161 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANESCO
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 1.085,00 → 1085.00
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 1085.00
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04129255657
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'B', 'id_whatsapp': '756885850@lid', 'nombre_usuario': 'Pedro', 'hora_exacta': '13-25', 'numero_llegada': 23}
+DEBUG:routes:Archivo procesado: 20250716-B--756885850@lid_Pedro_13-25_20250716_011340_244.jpg - 161 chars
+INFO:routes:📄 Texto tradicional usado: 228 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,34 → 104.34
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.34
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'A', 'id_whatsapp': '679208061@lid', 'nombre_usuario': 'María', 'hora_exacta': '21-44', 'numero_llegada': 34}
+DEBUG:routes:Archivo procesado: 20250716-A--679208061@lid_María_21-44_20250716_011340_244.jpg - 228 chars
+INFO:routes:📄 Texto tradicional usado: 374 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO MERCANTIL
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 210,00 → 210.00
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 210.00
+INFO:routes:🏦 BANCO DESTINO INFERIDO (intrabancario): BANCO MERCANTIL
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'J', 'id_whatsapp': '125980335@lid', 'nombre_usuario': 'Laura', 'hora_exacta': '05-58', 'numero_llegada': 44}
+DEBUG:routes:Archivo procesado: 20250716-J--125980335@lid_Laura_05-58_20250716_011340_244.jpg - 374 chars
+INFO:routes:📄 Texto tradicional usado: 198 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'I', 'id_whatsapp': '474805271@lid', 'nombre_usuario': 'María', 'hora_exacta': '00-15', 'numero_llegada': 32}
+DEBUG:routes:Archivo procesado: 20250716-I--474805271@lid_María_00-15_20250716_011340_243.jpg - 198 chars
+INFO:routes:📄 Texto tradicional usado: 237 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCAMIGA BANCO UNIVERSAL
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 313,62 → 313.62
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 313.62
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'H', 'id_whatsapp': '969328920@lid', 'nombre_usuario': 'Miguel', 'hora_exacta': '18-59', 'numero_llegada': 73}
+DEBUG:routes:Archivo procesado: 20250716-H--969328920@lid_Miguel_18-59_20250716_011340_243.jpg - 237 chars
+INFO:routes:📄 Texto tradicional usado: 171 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,52 → 104.52
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.52
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'G', 'id_whatsapp': '621100063@lid', 'nombre_usuario': 'María', 'hora_exacta': '01-10', 'numero_llegada': 71}
+DEBUG:routes:Archivo procesado: 20250716-G--621100063@lid_María_01-10_20250716_011340_242.jpg - 171 chars
+INFO:routes:📄 Texto tradicional usado: 202 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BBVA PROVINCIAL
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 313,62 → 313.62
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 313.62
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'F', 'id_whatsapp': '851744997@lid', 'nombre_usuario': 'Miguel', 'hora_exacta': '08-19', 'numero_llegada': 2}
+DEBUG:routes:Archivo procesado: 20250716-F--851744997@lid_Miguel_08-19_20250716_011340_242.jpg - 202 chars
+INFO:routes:📄 Texto tradicional usado: 205 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 313,62 → 313.62
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 313.62
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'E', 'id_whatsapp': '118022235@lid', 'nombre_usuario': 'Juan', 'hora_exacta': '08-42', 'numero_llegada': 6}
+DEBUG:routes:Archivo procesado: 20250716-E--118022235@lid_Juan_08-42_20250716_011340_242.jpg - 205 chars
+INFO:routes:📄 Texto tradicional usado: 194 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 105,00 → 105.00
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 105.00
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'D', 'id_whatsapp': '252586731@lid', 'nombre_usuario': 'Miguel', 'hora_exacta': '01-29', 'numero_llegada': 10}
+DEBUG:routes:Archivo procesado: 20250716-D--252586731@lid_Miguel_01-29_20250716_011340_241.jpg - 194 chars
+INFO:routes:📄 Texto tradicional usado: 194 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'C', 'id_whatsapp': '913824685@lid', 'nombre_usuario': 'Carlos', 'hora_exacta': '21-39', 'numero_llegada': 54}
+DEBUG:routes:Archivo procesado: 20250716-C--913824685@lid_Carlos_21-39_20250716_011340_241.jpg - 194 chars
+INFO:routes:📄 Texto tradicional usado: 179 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'B', 'id_whatsapp': '736060679@lid', 'nombre_usuario': 'José', 'hora_exacta': '11-15', 'numero_llegada': 38}
+DEBUG:routes:Archivo procesado: 20250716-B--736060679@lid_José_11-15_20250716_011340_240.jpg - 179 chars
+INFO:routes:📄 Texto tradicional usado: 251 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO MERCANTIL
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'A', 'id_whatsapp': '250529607@lid', 'nombre_usuario': 'María', 'hora_exacta': '20-20', 'numero_llegada': 2}
+DEBUG:routes:Archivo procesado: 20250716-A--250529607@lid_María_20-20_20250716_011340_239.jpg - 251 chars
+INFO:routes:📄 Texto tradicional usado: 265 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': '', 'id_whatsapp': '', 'nombre_usuario': '', 'hora_exacta': '', 'numero_llegada': 48}
+DEBUG:routes:Archivo procesado: 20250716---___20250716_010153_437.jpg - 265 chars
+INFO:routes:📄 Texto tradicional usado: 260 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': '', 'id_whatsapp': '', 'nombre_usuario': '', 'hora_exacta': '', 'numero_llegada': 67}
+DEBUG:routes:Archivo procesado: 20250716---___20250716_010153_436.jpg - 260 chars
+INFO:routes:📄 Texto tradicional usado: 228 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,34 → 104.34
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.34
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': '', 'id_whatsapp': '', 'nombre_usuario': '', 'hora_exacta': '', 'numero_llegada': 26}
+DEBUG:routes:Archivo procesado: 20250716---___20250716_010153_435.jpg - 228 chars
+INFO:routes:📄 Texto tradicional usado: 374 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO MERCANTIL
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 210,00 → 210.00
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 210.00
+INFO:routes:🏦 BANCO DESTINO INFERIDO (intrabancario): BANCO MERCANTIL
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': '', 'id_whatsapp': '', 'nombre_usuario': '', 'hora_exacta': '', 'numero_llegada': 40}
+DEBUG:routes:Archivo procesado: 20250716---___20250716_010153_434.jpg - 374 chars
+INFO:routes:📄 Texto tradicional usado: 171 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,52 → 104.52
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.52
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': '', 'id_whatsapp': '', 'nombre_usuario': '', 'hora_exacta': '', 'numero_llegada': 72}
+DEBUG:routes:Archivo procesado: 20250716---___20250716_010153_424.jpg - 171 chars
+INFO:routes:📄 Texto tradicional usado: 194 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 105,00 → 105.00
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 105.00
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': '', 'id_whatsapp': '', 'nombre_usuario': '', 'hora_exacta': '', 'numero_llegada': 70}
+DEBUG:routes:Archivo procesado: 20250716---___20250716_010153_423.jpg - 194 chars
+INFO:routes:📄 Texto tradicional usado: 179 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': '', 'id_whatsapp': '', 'nombre_usuario': '', 'hora_exacta': '', 'numero_llegada': 3}
+DEBUG:routes:Archivo procesado: 20250716---___20250716_010153_422.jpg - 179 chars
+INFO:routes:📄 Texto tradicional usado: 251 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO MERCANTIL
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': '', 'id_whatsapp': '', 'nombre_usuario': '', 'hora_exacta': '', 'numero_llegada': 55}
+DEBUG:routes:Archivo procesado: 20250716---___20250716_010153_420.jpg - 251 chars
+INFO:routes:📄 Texto tradicional usado: 194 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'D', 'id_whatsapp': '893119613@lid', 'nombre_usuario': 'José', 'hora_exacta': '20-48', 'numero_llegada': 47}
+DEBUG:routes:Archivo procesado: 20250716-D--893119613@lid_José_20-48_20250716_004721_451.jpg - 194 chars
+INFO:routes:📄 Texto tradicional usado: 179 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'C', 'id_whatsapp': '104085685@lid', 'nombre_usuario': 'Laura', 'hora_exacta': '08-09', 'numero_llegada': 51}
+DEBUG:routes:Archivo procesado: 20250716-C--104085685@lid_Laura_08-09_20250716_004721_451.jpg - 179 chars
+INFO:routes:📄 Texto tradicional usado: 272 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 209,08 → 209.08
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 209.08
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'I', 'id_whatsapp': '806466988@lid', 'nombre_usuario': 'Laura', 'hora_exacta': '01-50', 'numero_llegada': 13}
+DEBUG:routes:Archivo procesado: 20250716-I--806466988@lid_Laura_01-50_20250716_004721_453.jpg - 272 chars
+INFO:routes:📄 Texto tradicional usado: 172 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'J', 'id_whatsapp': '700422832@lid', 'nombre_usuario': 'Carlos', 'hora_exacta': '05-06', 'numero_llegada': 20}
+DEBUG:routes:Archivo procesado: 20250716-J--700422832@lid_Carlos_05-06_20250716_004721_454.jpg - 172 chars
+INFO:routes:📄 Texto tradicional usado: 251 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO MERCANTIL
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'C', 'id_whatsapp': '135804036@lid', 'nombre_usuario': 'Laura', 'hora_exacta': '23-23', 'numero_llegada': 34}
+DEBUG:routes:Archivo procesado: 20250716-C--135804036@lid_Laura_23-23_20250716_003216_668.jpg - 251 chars
+INFO:routes:📄 Texto tradicional usado: 172 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'A', 'id_whatsapp': '131571429@lid', 'nombre_usuario': 'Carlos', 'hora_exacta': '00-45', 'numero_llegada': 29}
+DEBUG:routes:Archivo procesado: 20250716-A--131571429@lid_Carlos_00-45_20250716_003216_665.jpg - 172 chars
+INFO:routes:📄 Texto tradicional usado: 194 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'E', 'id_whatsapp': '151951071@lid', 'nombre_usuario': 'Juan', 'hora_exacta': '23-35', 'numero_llegada': 82}
+DEBUG:routes:Archivo procesado: 20250716-E--151951071@lid_Juan_23-35_20250716_003216_669.jpg - 194 chars
+INFO:routes:📄 Texto tradicional usado: 265 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'B', 'id_whatsapp': '258152045@lid', 'nombre_usuario': 'Carmen', 'hora_exacta': '06-32', 'numero_llegada': 55}
+DEBUG:routes:Archivo procesado: 20250716-B--258152045@lid_Carmen_06-32_20250716_003216_667.jpg - 265 chars
+INFO:routes:📄 Texto tradicional usado: 184 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'I', 'id_whatsapp': '895246613@lid', 'nombre_usuario': 'María', 'hora_exacta': '07-05', 'numero_llegada': 63}
+DEBUG:routes:Archivo procesado: 20250716-I--895246613@lid_María_07-05_20250716_003216_670.png - 184 chars
+INFO:routes:📄 Texto tradicional usado: 172 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'H', 'id_whatsapp': '120546131@lid', 'nombre_usuario': 'María', 'hora_exacta': '00-35', 'numero_llegada': 91}
+DEBUG:routes:Archivo procesado: 20250716-H--120546131@lid_María_00-35_20250716_002933_187.png - 172 chars
+INFO:routes:📄 Texto tradicional usado: 265 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'B', 'id_whatsapp': '729600359@lid', 'nombre_usuario': 'Pedro', 'hora_exacta': '00-12', 'numero_llegada': 64}
+DEBUG:routes:Archivo procesado: 20250716-B--729600359@lid_Pedro_00-12_20250716_002933_183.jpg - 265 chars
+INFO:routes:📄 Texto tradicional usado: 264 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 522,70 → 522.70
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 522.70
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'G', 'id_whatsapp': '467630910@lid', 'nombre_usuario': 'Carmen', 'hora_exacta': '18-03', 'numero_llegada': 36}
+DEBUG:routes:Archivo procesado: 20250716-G--467630910@lid_Carmen_18-03_20250716_002933_187.png - 264 chars
+INFO:routes:📄 Texto tradicional usado: 272 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 209,08 → 209.08
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 209.08
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'J', 'id_whatsapp': '534469092@lid', 'nombre_usuario': 'Pedro', 'hora_exacta': '09-27', 'numero_llegada': 34}
+DEBUG:routes:Archivo procesado: 20250716-J--534469092@lid_Pedro_09-27_20250716_002933_188.jpg - 272 chars
+INFO:routes:📄 Texto tradicional usado: 251 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO MERCANTIL
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'C', 'id_whatsapp': '438808200@lid', 'nombre_usuario': 'Laura', 'hora_exacta': '03-52', 'numero_llegada': 33}
+DEBUG:routes:Archivo procesado: 20250716-C--438808200@lid_Laura_03-52_20250716_002933_185.jpg - 251 chars
+INFO:routes:📄 Texto tradicional usado: 179 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'D', 'id_whatsapp': '271295609@lid', 'nombre_usuario': 'Laura', 'hora_exacta': '09-13', 'numero_llegada': 8}
+DEBUG:routes:Archivo procesado: 20250716-D--271295609@lid_Laura_09-13_20250716_002933_185.jpg - 179 chars
+INFO:routes:📄 Texto tradicional usado: 194 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'E', 'id_whatsapp': '829417682@lid', 'nombre_usuario': 'Laura', 'hora_exacta': '05-21', 'numero_llegada': 80}
+DEBUG:routes:Archivo procesado: 20250716-E--829417682@lid_Laura_05-21_20250716_002933_186.jpg - 194 chars
+INFO:routes:📄 Texto tradicional usado: 264 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 522,70 → 522.70
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 522.70
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'G', 'id_whatsapp': '966808823@lid', 'nombre_usuario': 'Ana', 'hora_exacta': '21-15', 'numero_llegada': 80}
+DEBUG:routes:Archivo procesado: 20250716-G--966808823@lid_Ana_21-15_20250716_003216_669.png - 264 chars
+INFO:routes:📄 Texto tradicional usado: 171 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 200,00 → 200.00
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 200.00
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'F', 'id_whatsapp': '480267931@lid', 'nombre_usuario': 'Carmen', 'hora_exacta': '03-06', 'numero_llegada': 46}
+DEBUG:routes:Archivo procesado: 20250716-F--480267931@lid_Carmen_03-06_20250716_003216_669.png - 171 chars
+INFO:routes:📄 Texto tradicional usado: 172 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'H', 'id_whatsapp': '895055382@lid', 'nombre_usuario': 'Ana', 'hora_exacta': '12-46', 'numero_llegada': 40}
+DEBUG:routes:Archivo procesado: 20250716-H--895055382@lid_Ana_12-46_20250716_003216_670.png - 172 chars
+INFO:routes:📄 Texto tradicional usado: 272 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 209,08 → 209.08
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 209.08
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'J', 'id_whatsapp': '125369116@lid', 'nombre_usuario': 'María', 'hora_exacta': '06-40', 'numero_llegada': 64}
+DEBUG:routes:Archivo procesado: 20250716-J--125369116@lid_María_06-40_20250716_003216_670.jpg - 272 chars
+INFO:routes:📄 Texto tradicional usado: 179 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'D', 'id_whatsapp': '811212859@lid', 'nombre_usuario': 'Laura', 'hora_exacta': '05-08', 'numero_llegada': 80}
+DEBUG:routes:Archivo procesado: 20250716-D--811212859@lid_Laura_05-08_20250716_003216_668.jpg - 179 chars
+INFO:routes:📄 Texto tradicional usado: 171 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 200,00 → 200.00
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 200.00
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'F', 'id_whatsapp': '853953853@lid', 'nombre_usuario': 'Juan', 'hora_exacta': '12-10', 'numero_llegada': 1}
+DEBUG:routes:Archivo procesado: 20250716-F--853953853@lid_Juan_12-10_20250716_002541_717.png - 171 chars
+INFO:routes:📄 Texto tradicional usado: 184 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'I', 'id_whatsapp': '220447323@lid', 'nombre_usuario': 'Sofía', 'hora_exacta': '09-47', 'numero_llegada': 46}
+DEBUG:routes:Archivo procesado: 20250716-I--220447323@lid_Sofía_09-47_20250716_002541_718.png - 184 chars
+INFO:routes:📄 Texto tradicional usado: 194 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'E', 'id_whatsapp': '636619180@lid', 'nombre_usuario': 'Carlos', 'hora_exacta': '03-44', 'numero_llegada': 5}
+DEBUG:routes:Archivo procesado: 20250716-E--636619180@lid_Carlos_03-44_20250716_002541_717.jpg - 194 chars
+INFO:routes:📄 Texto tradicional usado: 251 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO MERCANTIL
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'C', 'id_whatsapp': '704312839@lid', 'nombre_usuario': 'Ana', 'hora_exacta': '22-54', 'numero_llegada': 82}
+DEBUG:routes:Archivo procesado: 20250716-C--704312839@lid_Ana_22-54_20250716_002541_716.jpg - 251 chars
+INFO:routes:📄 Texto tradicional usado: 179 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'D', 'id_whatsapp': '878536577@lid', 'nombre_usuario': 'José', 'hora_exacta': '00-51', 'numero_llegada': 20}
+DEBUG:routes:Archivo procesado: 20250716-D--878536577@lid_José_00-51_20250716_002541_716.jpg - 179 chars
+INFO:routes:📄 Texto tradicional usado: 265 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'B', 'id_whatsapp': '355530875@lid', 'nombre_usuario': 'Sofía', 'hora_exacta': '02-21', 'numero_llegada': 24}
+DEBUG:routes:Archivo procesado: 20250716-B--355530875@lid_Sofía_02-21_20250716_002541_716.jpg - 265 chars
+INFO:routes:📄 Texto tradicional usado: 172 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'A', 'id_whatsapp': '799614102@lid', 'nombre_usuario': 'Laura', 'hora_exacta': '06-24', 'numero_llegada': 60}
+DEBUG:routes:Archivo procesado: 20250716-A--799614102@lid_Laura_06-24_20250716_002541_715.jpg - 172 chars
+INFO:routes:📄 Texto tradicional usado: 272 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 209,08 → 209.08
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 209.08
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'J', 'id_whatsapp': '241247116@lid', 'nombre_usuario': 'Ana', 'hora_exacta': '16-12', 'numero_llegada': 11}
+DEBUG:routes:Archivo procesado: 20250716-J--241247116@lid_Ana_16-12_20250716_002541_719.jpg - 272 chars
+INFO:routes:📄 Texto tradicional usado: 171 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 200,00 → 200.00
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 200.00
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'F', 'id_whatsapp': '900608761@lid', 'nombre_usuario': 'Pedro', 'hora_exacta': '16-40', 'numero_llegada': 16}
+DEBUG:routes:Archivo procesado: 20250716-F--900608761@lid_Pedro_16-40_20250716_002933_186.png - 171 chars
+INFO:routes:📄 Texto tradicional usado: 172 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'A', 'id_whatsapp': '604085609@lid', 'nombre_usuario': 'Pedro', 'hora_exacta': '00-07', 'numero_llegada': 28}
+DEBUG:routes:Archivo procesado: 20250716-A--604085609@lid_Pedro_00-07_20250716_002933_182.jpg - 172 chars
+INFO:routes:📄 Texto tradicional usado: 184 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'I', 'id_whatsapp': '864954562@lid', 'nombre_usuario': 'Juan', 'hora_exacta': '21-53', 'numero_llegada': 33}
+DEBUG:routes:Archivo procesado: 20250716-I--864954562@lid_Juan_21-53_20250716_002933_188.png - 184 chars
+INFO:routes:📄 Texto tradicional usado: 251 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO MERCANTIL
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'C', 'id_whatsapp': '517166342@lid', 'nombre_usuario': 'Pedro', 'hora_exacta': '16-21', 'numero_llegada': 89}
+DEBUG:routes:Archivo procesado: 20250716-C--517166342@lid_Pedro_16-21_20250716_001737_808.jpg - 251 chars
+INFO:routes:📄 Texto tradicional usado: 164 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCARIBE
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 2.150,00 → 2150.00
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 2150.00
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04129255657
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'A', 'id_whatsapp': '979075259@lid', 'nombre_usuario': 'Ana', 'hora_exacta': '03-06', 'numero_llegada': 40}
+DEBUG:routes:Archivo procesado: 20250715-A--979075259@lid_Ana_03-06_20250715_234915_003.jpg - 164 chars
+INFO:routes:📄 Texto tradicional usado: 265 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'B', 'id_whatsapp': '616750661@lid', 'nombre_usuario': 'Juan2', 'hora_exacta': '19-35', 'numero_llegada': 80}
+DEBUG:routes:Archivo procesado: 20250716-B--616750661@lid_Juan2_19-35_20250716_001737_806.jpg - 265 chars
+INFO:routes:📄 Texto tradicional usado: 179 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'D', 'id_whatsapp': '397985551@lid', 'nombre_usuario': 'José', 'hora_exacta': '17-54', 'numero_llegada': 26}
+DEBUG:routes:Archivo procesado: 20250716-D--397985551@lid_José_17-54_20250716_001737_810.jpg - 179 chars
+INFO:routes:📄 Texto tradicional usado: 202 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 2.250,00 → 2250.00
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 2250.00
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'B', 'id_whatsapp': '333362429@lid', 'nombre_usuario': 'Ana', 'hora_exacta': '13-02', 'numero_llegada': 81}
+DEBUG:routes:Archivo procesado: 20250715-B--333362429@lid_Ana_13-02_20250715_234915_004.jpg - 202 chars
+INFO:routes:📄 Texto tradicional usado: 172 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'J', 'id_whatsapp': '886826606@lid', 'nombre_usuario': 'Carmen', 'hora_exacta': '01-52', 'numero_llegada': 48}
+DEBUG:routes:Archivo procesado: 20250716-J--886826606@lid_Carmen_01-52_20250716_001737_820.jpg - 172 chars
+INFO:routes:📄 Texto tradicional usado: 172 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'H', 'id_whatsapp': '170021753@lid', 'nombre_usuario': 'José', 'hora_exacta': '16-53', 'numero_llegada': 82}
+DEBUG:routes:Archivo procesado: 20250716-H--170021753@lid_José_16-53_20250716_002541_718.png - 172 chars
+INFO:routes:📄 Texto tradicional usado: 264 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 522,70 → 522.70
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 522.70
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'G', 'id_whatsapp': '663273335@lid', 'nombre_usuario': 'Laura', 'hora_exacta': '17-39', 'numero_llegada': 28}
+DEBUG:routes:Archivo procesado: 20250716-G--663273335@lid_Laura_17-39_20250716_002541_718.png - 264 chars
+INFO:routes:📄 Texto tradicional usado: 164 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCARIBE
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 2.150,00 → 2150.00
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 2150.00
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04129255657
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'I', 'id_whatsapp': '869744364@lid', 'nombre_usuario': 'Juan', 'hora_exacta': '18-05', 'numero_llegada': 23}
+DEBUG:routes:Archivo procesado: 20250715-I--869744364@lid_Juan_18-05_20250715_162355_966.jpg - 164 chars
+INFO:routes:📄 Texto tradicional usado: 251 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO MERCANTIL
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'J', 'id_whatsapp': '325508454@lid', 'nombre_usuario': 'Miguel', 'hora_exacta': '06-29', 'numero_llegada': 15}
+DEBUG:routes:Archivo procesado: 20250715-J--325508454@lid_Miguel_06-29_20250715_161418_291.jpg - 251 chars
+INFO:routes:📄 Texto tradicional usado: 171 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,52 → 104.52
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.52
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'J', 'id_whatsapp': '258800505@lid', 'nombre_usuario': 'Laura', 'hora_exacta': '09-42', 'numero_llegada': 21}
+DEBUG:routes:Archivo procesado: 20250715-J--258800505@lid_Laura_09-42_20250715_091420_494.jpg - 171 chars
+INFO:routes:📄 Texto tradicional usado: 194 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'E', 'id_whatsapp': '476069441@lid', 'nombre_usuario': 'Juan', 'hora_exacta': '14-17', 'numero_llegada': 5}
+DEBUG:routes:Archivo procesado: 20250716-E--476069441@lid_Juan_14-17_20250716_001737_812.jpg - 194 chars
+INFO:routes:📄 Texto tradicional usado: 272 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 209,08 → 209.08
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 209.08
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'I', 'id_whatsapp': '105406366@lid', 'nombre_usuario': 'Sofía', 'hora_exacta': '01-17', 'numero_llegada': 94}
+DEBUG:routes:Archivo procesado: 20250716-I--105406366@lid_Sofía_01-17_20250716_001737_819.jpg - 272 chars
+INFO:routes:📄 Texto tradicional usado: 194 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 105,00 → 105.00
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 105.00
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'G', 'id_whatsapp': '248932670@lid', 'nombre_usuario': 'María', 'hora_exacta': '13-56', 'numero_llegada': 43}
+DEBUG:routes:Archivo procesado: 20250715-G--248932670@lid_María_13-56_20250715_091420_492.jpg - 194 chars
+INFO:routes:📄 Texto tradicional usado: 239 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCAMIGA BANCO UNIVERSAL
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 313,62 → 313.62
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 313.62
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'H', 'id_whatsapp': '229573270@lid', 'nombre_usuario': 'Ana', 'hora_exacta': '16-29', 'numero_llegada': 5}
+DEBUG:routes:Archivo procesado: 20250715-H--229573270@lid_Ana_16-29_20250715_091420_486.jpg - 239 chars
+INFO:routes:📄 Texto tradicional usado: 205 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 313,62 → 313.62
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 313.62
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'H', 'id_whatsapp': '643294322@lid', 'nombre_usuario': 'Carlos', 'hora_exacta': '14-15', 'numero_llegada': 52}
+DEBUG:routes:Archivo procesado: 20250715-H--643294322@lid_Carlos_14-15_20250715_091420_493.jpg - 205 chars
+INFO:routes:📄 Texto tradicional usado: 260 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'I', 'id_whatsapp': '475692981@lid', 'nombre_usuario': 'Juan', 'hora_exacta': '23-36', 'numero_llegada': 44}
+DEBUG:routes:Archivo procesado: 20250715-I--475692981@lid_Juan_23-36_20250715_161418_291.jpg - 260 chars
+INFO:routes:📄 Texto tradicional usado: 298 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO NACIONAL DE CREDITO
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 105,00 → 105.00
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 105.00
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'I', 'id_whatsapp': '587114289@lid', 'nombre_usuario': 'Carmen', 'hora_exacta': '05-40', 'numero_llegada': 7}
+DEBUG:routes:Archivo procesado: 20250715-I--587114289@lid_Carmen_05-40_20250715_091420_487.jpg - 298 chars
+INFO:routes:📄 Texto tradicional usado: 202 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BBVA PROVINCIAL
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 313,62 → 313.62
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 313.62
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'I', 'id_whatsapp': '601102124@lid', 'nombre_usuario': 'Laura', 'hora_exacta': '10-44', 'numero_llegada': 9}
+DEBUG:routes:Archivo procesado: 20250715-I--601102124@lid_Laura_10-44_20250715_091420_494.jpg - 202 chars
+INFO:routes:📄 Texto tradicional usado: 260 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'I', 'id_whatsapp': '653556617@lid', 'nombre_usuario': 'José', 'hora_exacta': '01-42', 'numero_llegada': 91}
+DEBUG:routes:Archivo procesado: 20250715-I--653556617@lid_José_01-42_20250715_154017_075.jpg - 260 chars
+INFO:routes:📄 Texto tradicional usado: 194 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 105,00 → 105.00
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 105.00
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'J', 'id_whatsapp': '631800311@lid', 'nombre_usuario': 'José', 'hora_exacta': '04-25', 'numero_llegada': 15}
+DEBUG:routes:Archivo procesado: 20250715-J--631800311@lid_José_04-25_20250715_154017_076.jpg - 194 chars
+INFO:routes:📄 Texto tradicional usado: 171 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 200,00 → 200.00
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 200.00
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'A', 'id_whatsapp': '531568824@lid', 'nombre_usuario': 'Juan', 'hora_exacta': '06-36', 'numero_llegada': 3}
+DEBUG:routes:Archivo procesado: 20250716-A--531568824@lid_Juan_06-36_20250716_001737_803.png - 171 chars
+INFO:routes:📄 Texto tradicional usado: 264 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 522,70 → 522.70
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 522.70
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'F', 'id_whatsapp': '635154160@lid', 'nombre_usuario': 'Carlos', 'hora_exacta': '10-03', 'numero_llegada': 56}
+DEBUG:routes:Archivo procesado: 20250716-F--635154160@lid_Carlos_10-03_20250716_001737_813.png - 264 chars
+INFO:routes:📄 Texto tradicional usado: 184 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'H', 'id_whatsapp': '572020135@lid', 'nombre_usuario': 'José', 'hora_exacta': '23-00', 'numero_llegada': 25}
+DEBUG:routes:Archivo procesado: 20250716-H--572020135@lid_José_23-00_20250716_001737_817.png - 184 chars
+INFO:routes:📄 Texto tradicional usado: 172 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'G', 'id_whatsapp': '731842269@lid', 'nombre_usuario': 'Carmen', 'hora_exacta': '22-52', 'numero_llegada': 72}
+DEBUG:routes:Archivo procesado: 20250716-G--731842269@lid_Carmen_22-52_20250716_001737_815.png - 172 chars
+INFO:routes:📄 Texto tradicional usado: 164 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCARIBE
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 2.150,00 → 2150.00
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 2150.00
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04129255657
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'A', 'id_whatsapp': '108500772@lid', 'nombre_usuario': 'José', 'hora_exacta': '14-57', 'numero_llegada': 33}
+DEBUG:routes:Archivo procesado: 20250715-A--108500772@lid_José_14-57_20250715_233752_859.jpg - 164 chars
+INFO:routes:📄 Texto tradicional usado: 179 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'E', 'id_whatsapp': '859627427@lid', 'nombre_usuario': 'Miguel', 'hora_exacta': '12-29', 'numero_llegada': 87}
+DEBUG:routes:Archivo procesado: 20250715-E--859627427@lid_Miguel_12-29_20250715_091420_491.jpg - 179 chars
+INFO:routes:📄 Texto tradicional usado: 202 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 2.250,00 → 2250.00
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 2250.00
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'B', 'id_whatsapp': '433369098@lid', 'nombre_usuario': 'Sofía', 'hora_exacta': '12-57', 'numero_llegada': 2}
+DEBUG:routes:Archivo procesado: 20250715-B--433369098@lid_Sofía_12-57_20250715_233752_860.jpg - 202 chars
+INFO:routes:📄 Texto tradicional usado: 305 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO NACIONAL DE CREDITO
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 105,00 → 105.00
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 105.00
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'E', 'id_whatsapp': '158809479@lid', 'nombre_usuario': 'Sofía', 'hora_exacta': '13-28', 'numero_llegada': 17}
+DEBUG:routes:Archivo procesado: 20250715-E--158809479@lid_Sofía_13-28_20250715_091420_483.jpg - 305 chars
+INFO:routes:📄 Texto tradicional usado: 194 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'F', 'id_whatsapp': '597508194@lid', 'nombre_usuario': 'Juan', 'hora_exacta': '06-27', 'numero_llegada': 57}
+DEBUG:routes:Archivo procesado: 20250715-F--597508194@lid_Juan_06-27_20250715_091420_492.jpg - 194 chars
+INFO:routes:✅ JSON consolidado generado exitosamente: 86 archivos
+INFO:routes:📊 Estadísticas consolidadas: {'fecha_extraccion': '2025-07-16T01:13:42.839872', 'total_archivos': 86, 'version_sistema': '1.0', 'tipo_extraccion': 'consolidado_empresarial'}
+INFO:routes:📥 INTEGRIDAD TOTAL: Recuperando TODOS los archivos del último lote por fecha: BATCH_20250716 (86 archivos)
+INFO:routes:📊 INTEGRIDAD TOTAL: Mostrando 86 archivos del lote BATCH_20250716_010155
+INFO:routes:📄 Texto tradicional usado: 265 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'F', 'id_whatsapp': '570900032@lid', 'nombre_usuario': 'María', 'hora_exacta': '06-58', 'numero_llegada': 21}
+DEBUG:routes:Archivo procesado: 20250716-F--570900032@lid_María_06-58_20250716_011340_277.jpg - 265 chars
+INFO:routes:📄 Texto tradicional usado: 172 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'E', 'id_whatsapp': '429830204@lid', 'nombre_usuario': 'María', 'hora_exacta': '23-05', 'numero_llegada': 34}
+DEBUG:routes:Archivo procesado: 20250716-E--429830204@lid_María_23-05_20250716_011340_277.jpg - 172 chars
+INFO:routes:📄 Texto tradicional usado: 272 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 209,08 → 209.08
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 209.08
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'D', 'id_whatsapp': '280734661@lid', 'nombre_usuario': 'Miguel', 'hora_exacta': '03-09', 'numero_llegada': 9}
+DEBUG:routes:Archivo procesado: 20250716-D--280734661@lid_Miguel_03-09_20250716_011340_245.jpg - 272 chars
+INFO:routes:📄 Texto tradicional usado: 260 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'C', 'id_whatsapp': '143943480@lid', 'nombre_usuario': 'Ana', 'hora_exacta': '23-54', 'numero_llegada': 12}
+DEBUG:routes:Archivo procesado: 20250716-C--143943480@lid_Ana_23-54_20250716_011340_245.jpg - 260 chars
+INFO:routes:📄 Texto tradicional usado: 161 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANESCO
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 1.085,00 → 1085.00
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 1085.00
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04129255657
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'B', 'id_whatsapp': '756885850@lid', 'nombre_usuario': 'Pedro', 'hora_exacta': '13-25', 'numero_llegada': 23}
+DEBUG:routes:Archivo procesado: 20250716-B--756885850@lid_Pedro_13-25_20250716_011340_244.jpg - 161 chars
+INFO:routes:📄 Texto tradicional usado: 228 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,34 → 104.34
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.34
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'A', 'id_whatsapp': '679208061@lid', 'nombre_usuario': 'María', 'hora_exacta': '21-44', 'numero_llegada': 34}
+DEBUG:routes:Archivo procesado: 20250716-A--679208061@lid_María_21-44_20250716_011340_244.jpg - 228 chars
+INFO:routes:📄 Texto tradicional usado: 374 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO MERCANTIL
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 210,00 → 210.00
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 210.00
+INFO:routes:🏦 BANCO DESTINO INFERIDO (intrabancario): BANCO MERCANTIL
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'J', 'id_whatsapp': '125980335@lid', 'nombre_usuario': 'Laura', 'hora_exacta': '05-58', 'numero_llegada': 44}
+DEBUG:routes:Archivo procesado: 20250716-J--125980335@lid_Laura_05-58_20250716_011340_244.jpg - 374 chars
+INFO:routes:📄 Texto tradicional usado: 198 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'I', 'id_whatsapp': '474805271@lid', 'nombre_usuario': 'María', 'hora_exacta': '00-15', 'numero_llegada': 32}
+DEBUG:routes:Archivo procesado: 20250716-I--474805271@lid_María_00-15_20250716_011340_243.jpg - 198 chars
+INFO:routes:📄 Texto tradicional usado: 237 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCAMIGA BANCO UNIVERSAL
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 313,62 → 313.62
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 313.62
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'H', 'id_whatsapp': '969328920@lid', 'nombre_usuario': 'Miguel', 'hora_exacta': '18-59', 'numero_llegada': 73}
+DEBUG:routes:Archivo procesado: 20250716-H--969328920@lid_Miguel_18-59_20250716_011340_243.jpg - 237 chars
+INFO:routes:📄 Texto tradicional usado: 171 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,52 → 104.52
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.52
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'G', 'id_whatsapp': '621100063@lid', 'nombre_usuario': 'María', 'hora_exacta': '01-10', 'numero_llegada': 71}
+DEBUG:routes:Archivo procesado: 20250716-G--621100063@lid_María_01-10_20250716_011340_242.jpg - 171 chars
+INFO:routes:📄 Texto tradicional usado: 202 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BBVA PROVINCIAL
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 313,62 → 313.62
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 313.62
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'F', 'id_whatsapp': '851744997@lid', 'nombre_usuario': 'Miguel', 'hora_exacta': '08-19', 'numero_llegada': 2}
+DEBUG:routes:Archivo procesado: 20250716-F--851744997@lid_Miguel_08-19_20250716_011340_242.jpg - 202 chars
+INFO:routes:📄 Texto tradicional usado: 205 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 313,62 → 313.62
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 313.62
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'E', 'id_whatsapp': '118022235@lid', 'nombre_usuario': 'Juan', 'hora_exacta': '08-42', 'numero_llegada': 6}
+DEBUG:routes:Archivo procesado: 20250716-E--118022235@lid_Juan_08-42_20250716_011340_242.jpg - 205 chars
+INFO:routes:📄 Texto tradicional usado: 194 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 105,00 → 105.00
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 105.00
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'D', 'id_whatsapp': '252586731@lid', 'nombre_usuario': 'Miguel', 'hora_exacta': '01-29', 'numero_llegada': 10}
+DEBUG:routes:Archivo procesado: 20250716-D--252586731@lid_Miguel_01-29_20250716_011340_241.jpg - 194 chars
+INFO:routes:📄 Texto tradicional usado: 194 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'C', 'id_whatsapp': '913824685@lid', 'nombre_usuario': 'Carlos', 'hora_exacta': '21-39', 'numero_llegada': 54}
+DEBUG:routes:Archivo procesado: 20250716-C--913824685@lid_Carlos_21-39_20250716_011340_241.jpg - 194 chars
+INFO:routes:📄 Texto tradicional usado: 179 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'B', 'id_whatsapp': '736060679@lid', 'nombre_usuario': 'José', 'hora_exacta': '11-15', 'numero_llegada': 38}
+DEBUG:routes:Archivo procesado: 20250716-B--736060679@lid_José_11-15_20250716_011340_240.jpg - 179 chars
+INFO:routes:📄 Texto tradicional usado: 251 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO MERCANTIL
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'A', 'id_whatsapp': '250529607@lid', 'nombre_usuario': 'María', 'hora_exacta': '20-20', 'numero_llegada': 2}
+DEBUG:routes:Archivo procesado: 20250716-A--250529607@lid_María_20-20_20250716_011340_239.jpg - 251 chars
+INFO:routes:📄 Texto tradicional usado: 265 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': '', 'id_whatsapp': '', 'nombre_usuario': '', 'hora_exacta': '', 'numero_llegada': 48}
+DEBUG:routes:Archivo procesado: 20250716---___20250716_010153_437.jpg - 265 chars
+INFO:routes:📄 Texto tradicional usado: 260 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': '', 'id_whatsapp': '', 'nombre_usuario': '', 'hora_exacta': '', 'numero_llegada': 67}
+DEBUG:routes:Archivo procesado: 20250716---___20250716_010153_436.jpg - 260 chars
+INFO:routes:📄 Texto tradicional usado: 228 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,34 → 104.34
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.34
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': '', 'id_whatsapp': '', 'nombre_usuario': '', 'hora_exacta': '', 'numero_llegada': 26}
+DEBUG:routes:Archivo procesado: 20250716---___20250716_010153_435.jpg - 228 chars
+INFO:routes:📄 Texto tradicional usado: 374 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO MERCANTIL
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 210,00 → 210.00
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 210.00
+INFO:routes:🏦 BANCO DESTINO INFERIDO (intrabancario): BANCO MERCANTIL
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': '', 'id_whatsapp': '', 'nombre_usuario': '', 'hora_exacta': '', 'numero_llegada': 40}
+DEBUG:routes:Archivo procesado: 20250716---___20250716_010153_434.jpg - 374 chars
+INFO:routes:📄 Texto tradicional usado: 171 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,52 → 104.52
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.52
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': '', 'id_whatsapp': '', 'nombre_usuario': '', 'hora_exacta': '', 'numero_llegada': 72}
+DEBUG:routes:Archivo procesado: 20250716---___20250716_010153_424.jpg - 171 chars
+INFO:routes:📄 Texto tradicional usado: 194 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 105,00 → 105.00
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 105.00
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': '', 'id_whatsapp': '', 'nombre_usuario': '', 'hora_exacta': '', 'numero_llegada': 70}
+DEBUG:routes:Archivo procesado: 20250716---___20250716_010153_423.jpg - 194 chars
+INFO:routes:📄 Texto tradicional usado: 179 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': '', 'id_whatsapp': '', 'nombre_usuario': '', 'hora_exacta': '', 'numero_llegada': 3}
+DEBUG:routes:Archivo procesado: 20250716---___20250716_010153_422.jpg - 179 chars
+INFO:routes:📄 Texto tradicional usado: 251 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO MERCANTIL
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': '', 'id_whatsapp': '', 'nombre_usuario': '', 'hora_exacta': '', 'numero_llegada': 55}
+DEBUG:routes:Archivo procesado: 20250716---___20250716_010153_420.jpg - 251 chars
+INFO:routes:📄 Texto tradicional usado: 194 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'D', 'id_whatsapp': '893119613@lid', 'nombre_usuario': 'José', 'hora_exacta': '20-48', 'numero_llegada': 47}
+DEBUG:routes:Archivo procesado: 20250716-D--893119613@lid_José_20-48_20250716_004721_451.jpg - 194 chars
+INFO:routes:📄 Texto tradicional usado: 179 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'C', 'id_whatsapp': '104085685@lid', 'nombre_usuario': 'Laura', 'hora_exacta': '08-09', 'numero_llegada': 51}
+DEBUG:routes:Archivo procesado: 20250716-C--104085685@lid_Laura_08-09_20250716_004721_451.jpg - 179 chars
+INFO:routes:📄 Texto tradicional usado: 272 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 209,08 → 209.08
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 209.08
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'I', 'id_whatsapp': '806466988@lid', 'nombre_usuario': 'Laura', 'hora_exacta': '01-50', 'numero_llegada': 13}
+DEBUG:routes:Archivo procesado: 20250716-I--806466988@lid_Laura_01-50_20250716_004721_453.jpg - 272 chars
+INFO:routes:📄 Texto tradicional usado: 172 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'J', 'id_whatsapp': '700422832@lid', 'nombre_usuario': 'Carlos', 'hora_exacta': '05-06', 'numero_llegada': 20}
+DEBUG:routes:Archivo procesado: 20250716-J--700422832@lid_Carlos_05-06_20250716_004721_454.jpg - 172 chars
+INFO:routes:📄 Texto tradicional usado: 251 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO MERCANTIL
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'C', 'id_whatsapp': '135804036@lid', 'nombre_usuario': 'Laura', 'hora_exacta': '23-23', 'numero_llegada': 34}
+DEBUG:routes:Archivo procesado: 20250716-C--135804036@lid_Laura_23-23_20250716_003216_668.jpg - 251 chars
+INFO:routes:📄 Texto tradicional usado: 172 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'A', 'id_whatsapp': '131571429@lid', 'nombre_usuario': 'Carlos', 'hora_exacta': '00-45', 'numero_llegada': 29}
+DEBUG:routes:Archivo procesado: 20250716-A--131571429@lid_Carlos_00-45_20250716_003216_665.jpg - 172 chars
+INFO:routes:📄 Texto tradicional usado: 194 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'E', 'id_whatsapp': '151951071@lid', 'nombre_usuario': 'Juan', 'hora_exacta': '23-35', 'numero_llegada': 82}
+DEBUG:routes:Archivo procesado: 20250716-E--151951071@lid_Juan_23-35_20250716_003216_669.jpg - 194 chars
+INFO:routes:📄 Texto tradicional usado: 265 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'B', 'id_whatsapp': '258152045@lid', 'nombre_usuario': 'Carmen', 'hora_exacta': '06-32', 'numero_llegada': 55}
+DEBUG:routes:Archivo procesado: 20250716-B--258152045@lid_Carmen_06-32_20250716_003216_667.jpg - 265 chars
+INFO:routes:📄 Texto tradicional usado: 184 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'I', 'id_whatsapp': '895246613@lid', 'nombre_usuario': 'María', 'hora_exacta': '07-05', 'numero_llegada': 63}
+DEBUG:routes:Archivo procesado: 20250716-I--895246613@lid_María_07-05_20250716_003216_670.png - 184 chars
+INFO:routes:📄 Texto tradicional usado: 172 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'H', 'id_whatsapp': '120546131@lid', 'nombre_usuario': 'María', 'hora_exacta': '00-35', 'numero_llegada': 91}
+DEBUG:routes:Archivo procesado: 20250716-H--120546131@lid_María_00-35_20250716_002933_187.png - 172 chars
+INFO:routes:📄 Texto tradicional usado: 265 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'B', 'id_whatsapp': '729600359@lid', 'nombre_usuario': 'Pedro', 'hora_exacta': '00-12', 'numero_llegada': 64}
+DEBUG:routes:Archivo procesado: 20250716-B--729600359@lid_Pedro_00-12_20250716_002933_183.jpg - 265 chars
+INFO:routes:📄 Texto tradicional usado: 264 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 522,70 → 522.70
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 522.70
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'G', 'id_whatsapp': '467630910@lid', 'nombre_usuario': 'Carmen', 'hora_exacta': '18-03', 'numero_llegada': 36}
+DEBUG:routes:Archivo procesado: 20250716-G--467630910@lid_Carmen_18-03_20250716_002933_187.png - 264 chars
+INFO:routes:📄 Texto tradicional usado: 272 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 209,08 → 209.08
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 209.08
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'J', 'id_whatsapp': '534469092@lid', 'nombre_usuario': 'Pedro', 'hora_exacta': '09-27', 'numero_llegada': 34}
+DEBUG:routes:Archivo procesado: 20250716-J--534469092@lid_Pedro_09-27_20250716_002933_188.jpg - 272 chars
+INFO:routes:📄 Texto tradicional usado: 251 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO MERCANTIL
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'C', 'id_whatsapp': '438808200@lid', 'nombre_usuario': 'Laura', 'hora_exacta': '03-52', 'numero_llegada': 33}
+DEBUG:routes:Archivo procesado: 20250716-C--438808200@lid_Laura_03-52_20250716_002933_185.jpg - 251 chars
+INFO:routes:📄 Texto tradicional usado: 179 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'D', 'id_whatsapp': '271295609@lid', 'nombre_usuario': 'Laura', 'hora_exacta': '09-13', 'numero_llegada': 8}
+DEBUG:routes:Archivo procesado: 20250716-D--271295609@lid_Laura_09-13_20250716_002933_185.jpg - 179 chars
+INFO:routes:📄 Texto tradicional usado: 194 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'E', 'id_whatsapp': '829417682@lid', 'nombre_usuario': 'Laura', 'hora_exacta': '05-21', 'numero_llegada': 80}
+DEBUG:routes:Archivo procesado: 20250716-E--829417682@lid_Laura_05-21_20250716_002933_186.jpg - 194 chars
+INFO:routes:📄 Texto tradicional usado: 264 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 522,70 → 522.70
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 522.70
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'G', 'id_whatsapp': '966808823@lid', 'nombre_usuario': 'Ana', 'hora_exacta': '21-15', 'numero_llegada': 80}
+DEBUG:routes:Archivo procesado: 20250716-G--966808823@lid_Ana_21-15_20250716_003216_669.png - 264 chars
+INFO:routes:📄 Texto tradicional usado: 171 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 200,00 → 200.00
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 200.00
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'F', 'id_whatsapp': '480267931@lid', 'nombre_usuario': 'Carmen', 'hora_exacta': '03-06', 'numero_llegada': 46}
+DEBUG:routes:Archivo procesado: 20250716-F--480267931@lid_Carmen_03-06_20250716_003216_669.png - 171 chars
+INFO:routes:📄 Texto tradicional usado: 172 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'H', 'id_whatsapp': '895055382@lid', 'nombre_usuario': 'Ana', 'hora_exacta': '12-46', 'numero_llegada': 40}
+DEBUG:routes:Archivo procesado: 20250716-H--895055382@lid_Ana_12-46_20250716_003216_670.png - 172 chars
+INFO:routes:📄 Texto tradicional usado: 272 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 209,08 → 209.08
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 209.08
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'J', 'id_whatsapp': '125369116@lid', 'nombre_usuario': 'María', 'hora_exacta': '06-40', 'numero_llegada': 64}
+DEBUG:routes:Archivo procesado: 20250716-J--125369116@lid_María_06-40_20250716_003216_670.jpg - 272 chars
+INFO:routes:📄 Texto tradicional usado: 179 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'D', 'id_whatsapp': '811212859@lid', 'nombre_usuario': 'Laura', 'hora_exacta': '05-08', 'numero_llegada': 80}
+DEBUG:routes:Archivo procesado: 20250716-D--811212859@lid_Laura_05-08_20250716_003216_668.jpg - 179 chars
+INFO:routes:📄 Texto tradicional usado: 171 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 200,00 → 200.00
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 200.00
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'F', 'id_whatsapp': '853953853@lid', 'nombre_usuario': 'Juan', 'hora_exacta': '12-10', 'numero_llegada': 1}
+DEBUG:routes:Archivo procesado: 20250716-F--853953853@lid_Juan_12-10_20250716_002541_717.png - 171 chars
+INFO:routes:📄 Texto tradicional usado: 184 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'I', 'id_whatsapp': '220447323@lid', 'nombre_usuario': 'Sofía', 'hora_exacta': '09-47', 'numero_llegada': 46}
+DEBUG:routes:Archivo procesado: 20250716-I--220447323@lid_Sofía_09-47_20250716_002541_718.png - 184 chars
+INFO:routes:📄 Texto tradicional usado: 194 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'E', 'id_whatsapp': '636619180@lid', 'nombre_usuario': 'Carlos', 'hora_exacta': '03-44', 'numero_llegada': 5}
+DEBUG:routes:Archivo procesado: 20250716-E--636619180@lid_Carlos_03-44_20250716_002541_717.jpg - 194 chars
+INFO:routes:📄 Texto tradicional usado: 251 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO MERCANTIL
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'C', 'id_whatsapp': '704312839@lid', 'nombre_usuario': 'Ana', 'hora_exacta': '22-54', 'numero_llegada': 82}
+DEBUG:routes:Archivo procesado: 20250716-C--704312839@lid_Ana_22-54_20250716_002541_716.jpg - 251 chars
+INFO:routes:📄 Texto tradicional usado: 179 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'D', 'id_whatsapp': '878536577@lid', 'nombre_usuario': 'José', 'hora_exacta': '00-51', 'numero_llegada': 20}
+DEBUG:routes:Archivo procesado: 20250716-D--878536577@lid_José_00-51_20250716_002541_716.jpg - 179 chars
+INFO:routes:📄 Texto tradicional usado: 265 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'B', 'id_whatsapp': '355530875@lid', 'nombre_usuario': 'Sofía', 'hora_exacta': '02-21', 'numero_llegada': 24}
+DEBUG:routes:Archivo procesado: 20250716-B--355530875@lid_Sofía_02-21_20250716_002541_716.jpg - 265 chars
+INFO:routes:📄 Texto tradicional usado: 172 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'A', 'id_whatsapp': '799614102@lid', 'nombre_usuario': 'Laura', 'hora_exacta': '06-24', 'numero_llegada': 60}
+DEBUG:routes:Archivo procesado: 20250716-A--799614102@lid_Laura_06-24_20250716_002541_715.jpg - 172 chars
+INFO:routes:📄 Texto tradicional usado: 272 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 209,08 → 209.08
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 209.08
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'J', 'id_whatsapp': '241247116@lid', 'nombre_usuario': 'Ana', 'hora_exacta': '16-12', 'numero_llegada': 11}
+DEBUG:routes:Archivo procesado: 20250716-J--241247116@lid_Ana_16-12_20250716_002541_719.jpg - 272 chars
+INFO:routes:📄 Texto tradicional usado: 171 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 200,00 → 200.00
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 200.00
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'F', 'id_whatsapp': '900608761@lid', 'nombre_usuario': 'Pedro', 'hora_exacta': '16-40', 'numero_llegada': 16}
+DEBUG:routes:Archivo procesado: 20250716-F--900608761@lid_Pedro_16-40_20250716_002933_186.png - 171 chars
+INFO:routes:📄 Texto tradicional usado: 172 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'A', 'id_whatsapp': '604085609@lid', 'nombre_usuario': 'Pedro', 'hora_exacta': '00-07', 'numero_llegada': 28}
+DEBUG:routes:Archivo procesado: 20250716-A--604085609@lid_Pedro_00-07_20250716_002933_182.jpg - 172 chars
+INFO:routes:📄 Texto tradicional usado: 184 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'I', 'id_whatsapp': '864954562@lid', 'nombre_usuario': 'Juan', 'hora_exacta': '21-53', 'numero_llegada': 33}
+DEBUG:routes:Archivo procesado: 20250716-I--864954562@lid_Juan_21-53_20250716_002933_188.png - 184 chars
+INFO:routes:📄 Texto tradicional usado: 251 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO MERCANTIL
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'C', 'id_whatsapp': '517166342@lid', 'nombre_usuario': 'Pedro', 'hora_exacta': '16-21', 'numero_llegada': 89}
+DEBUG:routes:Archivo procesado: 20250716-C--517166342@lid_Pedro_16-21_20250716_001737_808.jpg - 251 chars
+INFO:routes:📄 Texto tradicional usado: 164 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCARIBE
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 2.150,00 → 2150.00
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 2150.00
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04129255657
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'A', 'id_whatsapp': '979075259@lid', 'nombre_usuario': 'Ana', 'hora_exacta': '03-06', 'numero_llegada': 40}
+DEBUG:routes:Archivo procesado: 20250715-A--979075259@lid_Ana_03-06_20250715_234915_003.jpg - 164 chars
+INFO:routes:📄 Texto tradicional usado: 265 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'B', 'id_whatsapp': '616750661@lid', 'nombre_usuario': 'Juan2', 'hora_exacta': '19-35', 'numero_llegada': 80}
+DEBUG:routes:Archivo procesado: 20250716-B--616750661@lid_Juan2_19-35_20250716_001737_806.jpg - 265 chars
+INFO:routes:📄 Texto tradicional usado: 179 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'D', 'id_whatsapp': '397985551@lid', 'nombre_usuario': 'José', 'hora_exacta': '17-54', 'numero_llegada': 26}
+DEBUG:routes:Archivo procesado: 20250716-D--397985551@lid_José_17-54_20250716_001737_810.jpg - 179 chars
+INFO:routes:📄 Texto tradicional usado: 202 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 2.250,00 → 2250.00
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 2250.00
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'B', 'id_whatsapp': '333362429@lid', 'nombre_usuario': 'Ana', 'hora_exacta': '13-02', 'numero_llegada': 81}
+DEBUG:routes:Archivo procesado: 20250715-B--333362429@lid_Ana_13-02_20250715_234915_004.jpg - 202 chars
+INFO:routes:📄 Texto tradicional usado: 172 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'J', 'id_whatsapp': '886826606@lid', 'nombre_usuario': 'Carmen', 'hora_exacta': '01-52', 'numero_llegada': 48}
+DEBUG:routes:Archivo procesado: 20250716-J--886826606@lid_Carmen_01-52_20250716_001737_820.jpg - 172 chars
+INFO:routes:📄 Texto tradicional usado: 172 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'H', 'id_whatsapp': '170021753@lid', 'nombre_usuario': 'José', 'hora_exacta': '16-53', 'numero_llegada': 82}
+DEBUG:routes:Archivo procesado: 20250716-H--170021753@lid_José_16-53_20250716_002541_718.png - 172 chars
+INFO:routes:📄 Texto tradicional usado: 264 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 522,70 → 522.70
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 522.70
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'G', 'id_whatsapp': '663273335@lid', 'nombre_usuario': 'Laura', 'hora_exacta': '17-39', 'numero_llegada': 28}
+DEBUG:routes:Archivo procesado: 20250716-G--663273335@lid_Laura_17-39_20250716_002541_718.png - 264 chars
+INFO:routes:📄 Texto tradicional usado: 164 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCARIBE
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 2.150,00 → 2150.00
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 2150.00
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04129255657
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'I', 'id_whatsapp': '869744364@lid', 'nombre_usuario': 'Juan', 'hora_exacta': '18-05', 'numero_llegada': 23}
+DEBUG:routes:Archivo procesado: 20250715-I--869744364@lid_Juan_18-05_20250715_162355_966.jpg - 164 chars
+INFO:routes:📄 Texto tradicional usado: 251 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO MERCANTIL
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'J', 'id_whatsapp': '325508454@lid', 'nombre_usuario': 'Miguel', 'hora_exacta': '06-29', 'numero_llegada': 15}
+DEBUG:routes:Archivo procesado: 20250715-J--325508454@lid_Miguel_06-29_20250715_161418_291.jpg - 251 chars
+INFO:routes:📄 Texto tradicional usado: 171 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,52 → 104.52
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.52
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'J', 'id_whatsapp': '258800505@lid', 'nombre_usuario': 'Laura', 'hora_exacta': '09-42', 'numero_llegada': 21}
+DEBUG:routes:Archivo procesado: 20250715-J--258800505@lid_Laura_09-42_20250715_091420_494.jpg - 171 chars
+INFO:routes:📄 Texto tradicional usado: 194 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'E', 'id_whatsapp': '476069441@lid', 'nombre_usuario': 'Juan', 'hora_exacta': '14-17', 'numero_llegada': 5}
+DEBUG:routes:Archivo procesado: 20250716-E--476069441@lid_Juan_14-17_20250716_001737_812.jpg - 194 chars
+INFO:routes:📄 Texto tradicional usado: 272 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 209,08 → 209.08
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 209.08
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'I', 'id_whatsapp': '105406366@lid', 'nombre_usuario': 'Sofía', 'hora_exacta': '01-17', 'numero_llegada': 94}
+DEBUG:routes:Archivo procesado: 20250716-I--105406366@lid_Sofía_01-17_20250716_001737_819.jpg - 272 chars
+INFO:routes:📄 Texto tradicional usado: 194 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 105,00 → 105.00
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 105.00
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'G', 'id_whatsapp': '248932670@lid', 'nombre_usuario': 'María', 'hora_exacta': '13-56', 'numero_llegada': 43}
+DEBUG:routes:Archivo procesado: 20250715-G--248932670@lid_María_13-56_20250715_091420_492.jpg - 194 chars
+INFO:routes:📄 Texto tradicional usado: 239 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCAMIGA BANCO UNIVERSAL
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 313,62 → 313.62
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 313.62
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'H', 'id_whatsapp': '229573270@lid', 'nombre_usuario': 'Ana', 'hora_exacta': '16-29', 'numero_llegada': 5}
+DEBUG:routes:Archivo procesado: 20250715-H--229573270@lid_Ana_16-29_20250715_091420_486.jpg - 239 chars
+INFO:routes:📄 Texto tradicional usado: 205 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 313,62 → 313.62
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 313.62
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'H', 'id_whatsapp': '643294322@lid', 'nombre_usuario': 'Carlos', 'hora_exacta': '14-15', 'numero_llegada': 52}
+DEBUG:routes:Archivo procesado: 20250715-H--643294322@lid_Carlos_14-15_20250715_091420_493.jpg - 205 chars
+INFO:routes:📄 Texto tradicional usado: 260 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'I', 'id_whatsapp': '475692981@lid', 'nombre_usuario': 'Juan', 'hora_exacta': '23-36', 'numero_llegada': 44}
+DEBUG:routes:Archivo procesado: 20250715-I--475692981@lid_Juan_23-36_20250715_161418_291.jpg - 260 chars
+INFO:routes:📄 Texto tradicional usado: 298 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO NACIONAL DE CREDITO
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 105,00 → 105.00
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 105.00
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'I', 'id_whatsapp': '587114289@lid', 'nombre_usuario': 'Carmen', 'hora_exacta': '05-40', 'numero_llegada': 7}
+DEBUG:routes:Archivo procesado: 20250715-I--587114289@lid_Carmen_05-40_20250715_091420_487.jpg - 298 chars
+INFO:routes:📄 Texto tradicional usado: 202 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BBVA PROVINCIAL
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 313,62 → 313.62
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 313.62
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'I', 'id_whatsapp': '601102124@lid', 'nombre_usuario': 'Laura', 'hora_exacta': '10-44', 'numero_llegada': 9}
+DEBUG:routes:Archivo procesado: 20250715-I--601102124@lid_Laura_10-44_20250715_091420_494.jpg - 202 chars
+INFO:routes:📄 Texto tradicional usado: 260 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'I', 'id_whatsapp': '653556617@lid', 'nombre_usuario': 'José', 'hora_exacta': '01-42', 'numero_llegada': 91}
+DEBUG:routes:Archivo procesado: 20250715-I--653556617@lid_José_01-42_20250715_154017_075.jpg - 260 chars
+INFO:routes:📄 Texto tradicional usado: 194 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 105,00 → 105.00
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 105.00
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'J', 'id_whatsapp': '631800311@lid', 'nombre_usuario': 'José', 'hora_exacta': '04-25', 'numero_llegada': 15}
+DEBUG:routes:Archivo procesado: 20250715-J--631800311@lid_José_04-25_20250715_154017_076.jpg - 194 chars
+INFO:routes:📄 Texto tradicional usado: 171 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 200,00 → 200.00
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 200.00
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'A', 'id_whatsapp': '531568824@lid', 'nombre_usuario': 'Juan', 'hora_exacta': '06-36', 'numero_llegada': 3}
+DEBUG:routes:Archivo procesado: 20250716-A--531568824@lid_Juan_06-36_20250716_001737_803.png - 171 chars
+INFO:routes:📄 Texto tradicional usado: 264 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 522,70 → 522.70
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 522.70
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'F', 'id_whatsapp': '635154160@lid', 'nombre_usuario': 'Carlos', 'hora_exacta': '10-03', 'numero_llegada': 56}
+DEBUG:routes:Archivo procesado: 20250716-F--635154160@lid_Carlos_10-03_20250716_001737_813.png - 264 chars
+INFO:routes:📄 Texto tradicional usado: 184 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'H', 'id_whatsapp': '572020135@lid', 'nombre_usuario': 'José', 'hora_exacta': '23-00', 'numero_llegada': 25}
+DEBUG:routes:Archivo procesado: 20250716-H--572020135@lid_José_23-00_20250716_001737_817.png - 184 chars
+INFO:routes:📄 Texto tradicional usado: 172 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'G', 'id_whatsapp': '731842269@lid', 'nombre_usuario': 'Carmen', 'hora_exacta': '22-52', 'numero_llegada': 72}
+DEBUG:routes:Archivo procesado: 20250716-G--731842269@lid_Carmen_22-52_20250716_001737_815.png - 172 chars
+INFO:routes:📄 Texto tradicional usado: 164 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCARIBE
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 2.150,00 → 2150.00
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 2150.00
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04129255657
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'A', 'id_whatsapp': '108500772@lid', 'nombre_usuario': 'José', 'hora_exacta': '14-57', 'numero_llegada': 33}
+DEBUG:routes:Archivo procesado: 20250715-A--108500772@lid_José_14-57_20250715_233752_859.jpg - 164 chars
+INFO:routes:📄 Texto tradicional usado: 179 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'E', 'id_whatsapp': '859627427@lid', 'nombre_usuario': 'Miguel', 'hora_exacta': '12-29', 'numero_llegada': 87}
+DEBUG:routes:Archivo procesado: 20250715-E--859627427@lid_Miguel_12-29_20250715_091420_491.jpg - 179 chars
+INFO:routes:📄 Texto tradicional usado: 202 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 2.250,00 → 2250.00
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 2250.00
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'B', 'id_whatsapp': '433369098@lid', 'nombre_usuario': 'Sofía', 'hora_exacta': '12-57', 'numero_llegada': 2}
+DEBUG:routes:Archivo procesado: 20250715-B--433369098@lid_Sofía_12-57_20250715_233752_860.jpg - 202 chars
+INFO:routes:📄 Texto tradicional usado: 305 caracteres
+INFO:routes:🏦 PRIMER BANCO DETECTADO: BANCO NACIONAL DE CREDITO
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 105,00 → 105.00
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 105.00
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'E', 'id_whatsapp': '158809479@lid', 'nombre_usuario': 'Sofía', 'hora_exacta': '13-28', 'numero_llegada': 17}
+DEBUG:routes:Archivo procesado: 20250715-E--158809479@lid_Sofía_13-28_20250715_091420_483.jpg - 305 chars
+INFO:routes:📄 Texto tradicional usado: 194 caracteres
+INFO:routes:🏦 ACRÓNIMO INCRUSTADO detectado: PAGOMOVILBDV → BANCO DE VENEZUELA
+INFO:routes:🏆 MANDATO FASE 2: Monto venezolano normalizado en routes.py: 104,54 → 104.54
+INFO:routes:✅ MANDATO FASE 2: Monto extraído y normalizado en routes.py: 104.54
+INFO:routes:📱 TELÉFONO VENEZOLANO VÁLIDO (nacional): 04125318244
+DEBUG:routes:🎯 Parámetros de seguimiento extraídos: {'codigo_sorteo': 'F', 'id_whatsapp': '597508194@lid', 'nombre_usuario': 'Juan', 'hora_exacta': '06-27', 'numero_llegada': 57}
+DEBUG:routes:Archivo procesado: 20250715-F--597508194@lid_Juan_06-27_20250715_091420_492.jpg - 194 chars
+INFO:routes:✅ JSON consolidado generado exitosamente: 86 archivos
+INFO:routes:📊 Estadísticas consolidadas: {'fecha_extraccion': '2025-07-16T01:13:43.862959', 'total_archivos': 86, 'version_sistema': '1.0', 'tipo_extraccion': 'consolidado_empresarial'}

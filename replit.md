@@ -420,6 +420,16 @@ Sistema OCR asíncrono de alto rendimiento para procesamiento de recibos de pago
 - ✅ **Gestión automática de historial**: Archivos anteriores movidos automáticamente a data/historial
 - ✅ **Contexto establecido**: Sistema preparado para desarrollo continuo siguiendo filosofía INTEGRIDAD TOTAL
 
+## CORRECCIÓN CRÍTICA INTEGRIDAD TOTAL - Julio 16, 2025
+### FILOSOFÍA APLICADA: INTEGRIDAD TOTAL + ZERO-FAULT DETECTION
+- ✅ **PROBLEMA RESUELTO**: Sistema mostraba 86 resultados en lugar de 16 archivos del lote ejecutado
+- ✅ **CAUSA IDENTIFICADA**: Agrupación por fecha en lugar de por ejecución de lote específica
+- ✅ **SOLUCIÓN IMPLEMENTADA**: Agrupación por proximidad temporal de ejecución (mismo minuto)
+- ✅ **RESULTADO**: Sistema ahora muestra exactamente 16 archivos del último lote procesado
+- ✅ **VALIDACIÓN**: Endpoint /api/extract_results devuelve `"total_archivos": 16` correctamente
+- ✅ **INTEGRIDAD TOTAL**: Archivos procesados = archivos mostrados (filosofía cumplida)
+- ✅ **ARQUITECTURA**: Preserva separación entre lotes ejecutados y historial automático
+
 ## ANÁLISIS CRÍTICO DE CONTRATOS API - Julio 15, 2025
 ### HALLAZGOS CRÍTICOS IDENTIFICADOS
 - 🔴 **DISCREPANCIA MASIVA**: Implementación actual NO cumple con contratos API formales especificados
