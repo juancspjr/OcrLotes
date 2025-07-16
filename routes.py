@@ -2176,10 +2176,15 @@ def api_extract_results():
                 lote_info = batch_info.get('lote_id', 'N/A')
                 lote_fecha = batch_info.get('fecha_procesamiento', 'N/A')
                 
-                # FIX: Asegurar que caption se popule basado en contenido del texto
-                # REASON: Caption debe reflejar el tipo de transacción detectado
-                # IMPACT: Mejora información contextual en respuesta empresarial
-                if not caption and texto_completo:
+                # FIX CRÍTICO: PRESERVAR caption original de metadatosEntrada
+                # REASON: Caption debe mantenerse exacto como fue ingresado originalmente
+                # IMPACT: Integridad total del campo caption desde entrada hasta salida
+                # CAUSA RAÍZ: Código anterior sobrescribía caption original con valores generados automáticamente
+                
+                # ✅ PRESERVAR caption original - NO SOBRESCRIBIR
+                # El caption ya viene desde metadatosEntrada y debe mantenerse inalterado
+                # Solo generar caption automático si realmente no existe (None o vacío)
+                if not caption or caption.strip() == '':
                     if 'PagomovilBDV' in texto_completo:
                         caption = 'Pago Móvil BDV'
                     elif 'Transferencia' in texto_completo:
@@ -2334,7 +2339,7 @@ def _extract_enterprise_data_from_json(data, json_file_path):
             'nombre_archivo': filename.replace('.json', ''),
             'id_whatsapp': metadatos_whatsapp.get('id_whatsapp', ''),
             'nombre_usuario': metadatos_whatsapp.get('nombre_usuario', ''),
-            'caption': metadatos_whatsapp.get('caption', 'Operación Bancaria'),
+            'caption': metadatos_whatsapp.get('caption', ''),  # FIX: Preservar caption original, no fallback genérico
             'hora_exacta': metadatos_whatsapp.get('hora_exacta', ''),
             'numero_llegada': metadatos_whatsapp.get('numero_llegada', 0),
             'otro': campos_empresariales.get('otro', ''),
@@ -2396,7 +2401,7 @@ def _extract_whatsapp_metadata(filename):
                 'id_whatsapp': id_whatsapp,
                 'nombre_usuario': nombre_usuario,
                 'hora_exacta': hora_exacta,
-                'caption': f'Operación de {nombre_usuario}',
+                'caption': '',  # FIX: No generar caption automático, preservar vacío
                 'raw_filename': filename
             }
         
@@ -2408,7 +2413,7 @@ def _extract_whatsapp_metadata(filename):
             'id_whatsapp': '',
             'nombre_usuario': '',
             'hora_exacta': '',
-            'caption': 'Operación Bancaria',
+            'caption': '',  # FIX: No fallback genérico, preservar vacío si no hay caption
             'raw_filename': filename
         }
         
@@ -2421,7 +2426,7 @@ def _extract_whatsapp_metadata(filename):
             'id_whatsapp': '',
             'nombre_usuario': '',
             'hora_exacta': '',
-            'caption': 'Operación Bancaria',
+            'caption': '',  # FIX: No fallback genérico, preservar vacío si no hay caption
             'raw_filename': filename
         }
 
@@ -2853,10 +2858,14 @@ def _extract_enterprise_fields(result_data, texto_completo):
             if banco_match:
                 campos['bancoorigen'] = banco_match.group(1).strip()
     
-    # FIX: EXTRACCIÓN CRÍTICA FINAL DE CAPTION BASADA EN TEXTO
-    # REASON: Garantizar que caption se asigne siempre después de procesar campos
-    # IMPACT: Población definitiva de caption sin fallos
-    if not campos['caption'] and texto_completo:
+    # FIX CRÍTICO: PRESERVAR caption original de metadatosEntrada
+    # REASON: Caption debe mantenerse exacto como fue ingresado originalmente
+    # IMPACT: Integridad total del campo caption desde entrada hasta salida
+    # CAUSA RAÍZ: Código anterior sobrescribía caption original con valores generados automáticamente
+    
+    # ✅ PRESERVAR caption original - NO SOBRESCRIBIR
+    # Solo generar caption automático si realmente no existe (None o vacío)
+    if not campos.get('caption') or campos['caption'].strip() == '':
         if 'PagomovilBDV' in texto_completo:
             campos['caption'] = 'Pago Móvil BDV'
         elif 'Transferencia' in texto_completo:
@@ -3253,7 +3262,7 @@ def _extract_onnxtr_enterprise_fields(palabras_detectadas, texto_completo):
     for acronimo, banco_oficial in acronimos_incrustados.items():
         if acronimo in texto_upper:
             campos_extraidos['bancoorigen'] = banco_oficial
-            campos_extraidos['caption'] = f'Pago Móvil {banco_oficial.split()[-1]}'  # BDV, Mercantil, etc.
+            # FIX: NO generar caption automático - preservar original
             bancoorigen_detectado = True
             logger.info(f"🏦 ACRÓNIMO INCRUSTADO detectado: {acronimo} → {banco_oficial}")
             break
@@ -3582,10 +3591,14 @@ def _extract_onnxtr_enterprise_fields(palabras_detectadas, texto_completo):
                 campos_extraidos['banco_destino'] = banco_origen
                 logger.info(f"🏦 BANCO DESTINO INFERIDO (intrabancario): {banco_origen}")
     
-    # FIX: DETERMINACIÓN INTELIGENTE DE CAPTION - MANDATO REFINAMIENTO
-    # REASON: Caption debe reflejar el tipo de transacción detectado automáticamente
-    # IMPACT: Mejora información contextual en respuesta empresarial
-    if not campos_extraidos['caption']:
+    # FIX CRÍTICO: PRESERVAR caption original de metadatosEntrada
+    # REASON: Caption debe mantenerse exacto como fue ingresado originalmente
+    # IMPACT: Integridad total del campo caption desde entrada hasta salida
+    # CAUSA RAÍZ: Código anterior sobrescribía caption original con valores generados automáticamente
+    
+    # ✅ PRESERVAR caption original - NO SOBRESCRIBIR
+    # Solo generar caption automático si realmente no existe (None o vacío)
+    if not campos_extraidos.get('caption') or campos_extraidos['caption'].strip() == '':
         if 'PagomovilBDV' in texto_completo:
             campos_extraidos['caption'] = 'Pago Móvil BDV'
         elif 'Transferencia' in texto_completo:

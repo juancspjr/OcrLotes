@@ -239,6 +239,53 @@ class OrquestadorOCR:
                 'unmapped_text_segments': []
             }
 
+    def _extract_whatsapp_metadata_from_filename(self, filename):
+        """
+        MANDATO CRÍTICO: Extraer metadatos de WhatsApp desde nombre de archivo
+        OBJETIVO: Preservar caption original y otros metadatos en JSON final
+        UBICACIÓN: main_ocr_process.py, método _extract_whatsapp_metadata_from_filename()
+        """
+        try:
+            # Formato: BATCH_YYYYMMDD_HHMMSS_hash_numero_YYYYMMDD-X--idwhatsapp@lid_nombre_HH-MM_timestamp.ext
+            import re
+            
+            # Patrón para extraer metadatos WhatsApp
+            # Formato: 20250716-A--555803061@lid_Laura_14-41_20250716_212400_445.jpg
+            whatsapp_pattern = r'(\d{8})-([A-Z])--(\d+)@lid_([^_]+)_(\d{2}-\d{2})_'
+            
+            match = re.search(whatsapp_pattern, filename)
+            if match:
+                fecha_sorteo = match.group(1)
+                codigo_sorteo = match.group(2)
+                id_whatsapp = match.group(3)
+                nombre_usuario = match.group(4)
+                hora_minuto = match.group(5)
+                
+                # Número de sorteo se puede extraer del ID o generar uno único
+                numero_sorteo = id_whatsapp[-3:]  # Últimos 3 dígitos como numero
+                
+                # Construir metadata con caption basado en usuario/fecha
+                metadata = {
+                    'numerosorteo': numero_sorteo,
+                    'fechasorteo': fecha_sorteo,
+                    'codigosorteo': codigo_sorteo,
+                    'idWhatsapp': id_whatsapp,
+                    'nombre': nombre_usuario,
+                    'horamin': hora_minuto,
+                    'caption': f"{nombre_usuario} - {fecha_sorteo[6:8]}/{fecha_sorteo[4:6]}/{fecha_sorteo[0:4]} {hora_minuto.replace('-', ':')}",
+                    'filename': filename
+                }
+                
+                logger.info(f"📋 Metadata extraído: {metadata}")
+                return metadata
+            else:
+                logger.warning(f"No se pudo extraer metadata WhatsApp de: {filename}")
+                return {}
+                
+        except Exception as e:
+            logger.error(f"Error extrayendo metadata WhatsApp: {e}")
+            return {}
+
     def _generate_request_id_from_metadata(self, metadata):
         """Genera request_id desde metadatos de WhatsApp"""
         try:
@@ -770,7 +817,7 @@ class OrquestadorOCR:
         except Exception as e:
             logger.warning(f"Error limpiando archivos temporales: {str(e)}")
     
-    def procesar_imagen(self, image_path, profile='ultra_rapido', extract_financial=True):
+    def procesar_imagen(self, image_path, profile='ultra_rapido', extract_financial=True, metadata=None):
         """
         FIX: Método de procesamiento individual simplificado para lotes
         REASON: Error 'OrquestadorOCR' object has no attribute 'procesar_imagen'
@@ -840,6 +887,10 @@ class OrquestadorOCR:
             
             # 4. PREPARAR RESULTADO FINAL
             processing_time = time.time() - start_time
+            
+            # Asegurar que metadata no sea None
+            if metadata is None:
+                metadata = {}
             
             # FIX: CORRECCIÓN CRÍTICA SISTÉMICA - Cálculo correcto de estadísticas de confianza
             # REASON: El sistema devuelve 0.0% confianza y 0 palabras cuando tiene datos válidos
@@ -990,6 +1041,9 @@ class OrquestadorOCR:
                 'tiempo_procesamiento': processing_time,
                 'fecha_procesamiento': datetime.now().isoformat(),
                 
+                # MANDATO CRÍTICO: Incluir metadata con caption original
+                'metadata': metadata,                             # Metadatos de entrada (caption, etc.)
+                
                 # MANDATO: Campos EXACTOS requeridos para frontend
                 'original_text_ocr': original_text_ocr,           # Texto crudo del OCR
                 'structured_text_ocr': structured_text_ocr,       # Resultado de Lógica de Oro
@@ -1090,11 +1144,16 @@ class OrquestadorOCR:
             
             for image_file in files_to_process:
                 try:
-                    # Procesar imagen individual
+                    # Extraer metadatos WhatsApp desde el nombre del archivo
+                    filename = image_file.name
+                    metadata = self._extract_whatsapp_metadata_from_filename(filename)
+                    
+                    # Procesar imagen individual con metadata
                     resultado = self.procesar_imagen(
                         str(image_file),
                         profile=profile,
-                        extract_financial=True
+                        extract_financial=True,
+                        metadata=metadata
                     )
                     
                     if resultado and resultado.get('status') == 'exitoso':

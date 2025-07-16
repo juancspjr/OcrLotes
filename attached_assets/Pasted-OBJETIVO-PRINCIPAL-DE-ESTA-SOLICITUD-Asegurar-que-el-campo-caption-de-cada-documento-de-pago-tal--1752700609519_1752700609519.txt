@@ -1,0 +1,66 @@
+OBJETIVO PRINCIPAL DE ESTA SOLICITUD: "Asegurar que el campo caption de cada documento de pago, tal como es ingresado originalmente en 'Archivos en Cola' (mediante metadatosEntrada), se mantenga inalterado y se propague correctamente a través de todo el proceso de OCR, apareciendo de forma consistente en los 'Resultados del Procesamiento' (JSONs) y en el 'Historial de Lotes' sin modificaciones o valores genéricos."
+
+1. CONTEXTO MÍNIMO Y RELEVANTE DEL PROBLEMA (Indispensable para el Diagnóstico)
+
+Ubicación/Sección del Código Afectado: "La lógica de procesamiento del API Gateway / Backend Service (CO-01) y el OCR Worker Service (CO-04) que maneja la metadatosEntrada del 
+
+Documento de Pago y construye el 
+
+Resultado OCR y el 
+
+Resultado Consolidado del Lote. Esto incluye:
+
+La función que recibe la información del archivo en Archivos en Cola (donde se define la caption inicial).
+
+La lógica que pasa la 
+
+metadatosEntradaOriginales  al OCR Worker y que integra los resultados.
+
+La formación de los objetos JSON de 'Resultados del Procesamiento' (ej. resultados_ocr_2025-07-16 (1).json, resultados_BATCH_20250716_200312.json, resultados_ocr_2025-07-16(3).json).
+
+La preparación de los datos para la tabla 'Historial de Lotes' en routes.py y su renderizado en monitoring-dashboard.js."
+
+Extracto de Código Actual Relevante (¡SOLO LAS LÍNEAS DIRECTAMENTE INVOLUCRADAS!):
+
+Python
+
+# IMPORTANTE: No tengo acceso directo a tu código.
+# Agente Replit, rastrea la variable 'caption' o el campo 'metadatosEntrada.caption'.
+# 1. ¿Dónde se recibe la 'caption' cuando un archivo se pone en cola? (ej. endpoint de subida)
+# 2. ¿Cómo se pasa esa 'caption' al OCR Worker Service?
+# 3. ¿Cómo se re-integra esa 'caption' en el 'Resultado OCR' y 'Resultado Consolidado del Lote'?
+#    Debe estar en 'metadatosEntradaOriginales' dentro del 'Resultado OCR'. 
+#    Revisa el código donde se crean los diccionarios o clases de 'Resultado OCR' y 'Resultado Consolidado del Lote'.
+# 4. Verifica la lógica que genera los JSON de resultados y la que alimenta la tabla del historial.
+Comportamiento Actual Observado:
+
+Origen: El usuario asigna un caption específico (ej. "prueba 3 ejemplo") a un archivo en "Archivos en Cola".
+
+Resultados del Procesamiento (JSON): El caption en el archivos_procesados del JSON de resultados (ej. resultados_ocr_2025-07-16 (1).json, resultados_BATCH_20250716_200312.json, resultados_ocr_2025-07-16(3).json) aparece con un valor diferente y genérico (ej. "Operación Bancaria", "Pago Móvil BDV", "Transacción Financiera").
+
+Historial de Lotes (Tabla): El caption mostrado en la tabla "Historial de Lotes" (visible en image_6f9ea0.png y image_8d36bd.png, aunque no directamente visible, se infiere del comportamiento) es nuevamente diferente (ej. "Operación de Carmen", "Operación de Laura", "Operación de Carlos", "Operación de José").
+
+Comportamiento Esperado (RESULTADO BLINDADO): "El campo caption debe mantener su valor original desde el momento en que es ingresado en 'Archivos en Cola' y ser propagado sin cambios a través de:
+
+Los resultados individuales en el JSON de 'Resultados del Procesamiento'.
+
+La visualización en la tabla 'Historial de Lotes'."
+
+2. TIPO DE SOLUCIÓN REQUERIDA Y ÉNFASIS EN EFICIENCIA
+
+Tipo de Solución: "Investigación del flujo de datos de caption desde la entrada (metadatosEntrada ) hasta la salida (
+
+Resultado OCR y 
+
+Resultado Consolidado del Lote, y luego la interfaz de usuario). Corrección de snippet(s) de código Python (backend) para asegurar la persistencia y propagación de la 
+
+caption original. Si aplica, ajuste en frontend para asegurar que se muestre la caption correcta."
+
+Formato de Entrega: "Directamente el código corregido con comentarios detallados, indicando el archivo (.py o .js) y la función/sección donde aplicar la modificación. Explicación de la causa raíz encontrada (dónde se perdía/modificaba el caption)."
+
+Énfasis en Consumo de Créditos (IMPORTANTE PARA REPLIT):
+
+Prioriza una investigación eficiente y dirigida a la caption.
+
+La solución debe ser de baja complejidad, enfocándose en la Integridad Total del dato, no en refactorizaciones de lógica de negocio del caption.
+

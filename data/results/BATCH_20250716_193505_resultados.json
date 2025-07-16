@@ -1,0 +1,146 @@
+{
+  "metadata": {
+    "fecha_extraccion": "2025-07-16T19:36:01.327420",
+    "total_archivos": 5,
+    "version_sistema": "1.0",
+    "tipo_extraccion": "lote_especifico",
+    "lote_id": "BATCH_20250716_193505"
+  },
+  "archivos_procesados": [
+    {
+      "nombre_archivo": "BATCH_20250716_193505_05ae0818_659_20250716-A--304400500@lid_Laura_15-19_20250716_193505_756.png",
+      "id_whatsapp": "304400500",
+      "nombre_usuario": "Laura",
+      "caption": "Operación de Laura",
+      "hora_exacta": "15-19",
+      "numero_llegada": 659,
+      "otro": "",
+      "referencia": "003039965664",
+      "bancoorigen": "BANCO DE VENEZUELA",
+      "monto": "522.70",
+      "datosbeneficiario": {
+        "cedula": "00303996",
+        "telefono": "04125318244",
+        "banco_destino": "BANCO MERCANTIL"
+      },
+      "pago_fecha": "20/06/2025",
+      "concepto": "Comprobante de operacion",
+      "texto_total_ocr": "8:21 a - a Comprobante de operacion Personas 522,70 Bs Fecha : 20/06/ 2025 Operacion : 003039965664 Identificacion : 2/ 061025 Origen : 0102 **** 5071 Destino : 04125318244 Bancoc 0105 - BANCO MERCANIIL Concepto : 4 15 D 107 Crear Acceso directo - X",
+      "lote_fecha": "2025-07-16 19:36:01",
+      "extraction_stats": {
+        "confidence": 0.882,
+        "total_words": 35,
+        "processing_time": 0
+      },
+      "lote_id": "BATCH_20250716_193505"
+    },
+    {
+      "nombre_archivo": "BATCH_20250716_193505_05ae0818_687_20250716-B--925390628@lid_María_14-12_20250716_193505_757.png",
+      "id_whatsapp": "925390628",
+      "nombre_usuario": "María",
+      "caption": "Operación de María",
+      "hora_exacta": "14-12",
+      "numero_llegada": 687,
+      "otro": "",
+      "referencia": "000012071",
+      "bancoorigen": "BBVA PROVINCIAL",
+      "monto": "313.62",
+      "datosbeneficiario": {
+        "cedula": "27061025",
+        "telefono": "04125318244",
+        "banco_destino": ""
+      },
+      "pago_fecha": "20/06/2025",
+      "concepto": "Eldinero fue enviado",
+      "texto_total_ocr": "Eldinero fue enviado Bs . 313,62 Dinero Rapido BBVA Provincial Banco : BANCO MERCANTIL Numero celular : 04125318244 Identificacion : V 27061025 Concepto : Pago Fecha : 20/06/ 2025 Referencia : 000012071",
+      "lote_fecha": "2025-07-16 19:36:01",
+      "extraction_stats": {
+        "confidence": 0.922,
+        "total_words": 23,
+        "processing_time": 0
+      },
+      "lote_id": "BATCH_20250716_193505"
+    },
+    {
+      "nombre_archivo": "BATCH_20250716_193505_05ae0818_552_20250716-C--720861572@lid_Sofía_07-36_20250716_193505_757.png",
+      "id_whatsapp": "720861572",
+      "nombre_usuario": "Sofía",
+      "caption": "Operación de Sofía",
+      "hora_exacta": "07-36",
+      "numero_llegada": 552,
+      "otro": "",
+      "referencia": "33965664",
+      "bancoorigen": "BANCO DE VENEZUELA",
+      "monto": "8.27",
+      "datosbeneficiario": {
+        "cedula": "33965664",
+        "telefono": "",
+        "banco_destino": ""
+      },
+      "pago_fecha": "",
+      "concepto": "27 Comprobante de",
+      "texto_total_ocr": "8.27 Comprobante de operacion PagamovilBDV Personas 522.70 8s Fecha : 2025 Operaciér : SC3S : 33965664 dentifcacion : Origen : Banco : SANCO Carrcepta : A : 37 Cruar Accusa dircto",
+      "lote_fecha": "2025-07-16 19:36:01",
+      "extraction_stats": {
+        "confidence": 0.733,
+        "total_words": 24,
+        "processing_time": 0
+      },
+      "lote_id": "BATCH_20250716_193505"
+    },
+    {
+      "nombre_archivo": "BATCH_20250716_193505_05ae0818_383_20250716-D--812805748@lid_Sofía_18-02_20250716_193505_758.png",
+      "id_whatsapp": "812805748",
+      "nombre_usuario": "Sofía",
+      "caption": "Operación de Sofía",
+      "hora_exacta": "18-02",
+      "numero_llegada": 383,
+      "otro": "",
+      "referencia": "002501174438",
+      "bancoorigen": "BANCO DE VENEZUELA",
+      "monto": "200.00",
+      "datosbeneficiario": {
+        "cedula": "26714848",
+        "telefono": "",
+        "banco_destino": "BANCO DE VENEZUELA Concepto"
+      },
+      "pago_fecha": "01/04/2025",
+      "concepto": "00 Bs Fecha",
+      "texto_total_ocr": "Personas 200,00 Bs Fecha : 01/04/ 2025 Operacion : 002501174438 Identificacion : 26714848 Origen : Destino : 04247504 /16 Banco : 0102 = BANCO DE VENEZUELA Concepto : pago",
+      "lote_fecha": "2025-07-16 19:36:01",
+      "extraction_stats": {
+        "confidence": 0.938,
+        "total_words": 20,
+        "processing_time": 0
+      },
+      "lote_id": "BATCH_20250716_193505"
+    },
+    {
+      "nombre_archivo": "BATCH_20250716_193505_05ae0818_588_20250716-E--304009676@lid_Ana_19-49_20250716_193505_758.png",
+      "id_whatsapp": "304009676",
+      "nombre_usuario": "Ana",
+      "caption": "Operación de Ana",
+      "hora_exacta": "19-49",
+      "numero_llegada": 588,
+      "otro": "",
+      "referencia": "003039387344",
+      "bancoorigen": "BANCO DE VENEZUELA",
+      "monto": "104.54",
+      "datosbeneficiario": {
+        "cedula": "27061025",
+        "telefono": "04125318244",
+        "banco_destino": "BANCO MERCANTIL"
+      },
+      "pago_fecha": "20/06/2025",
+      "concepto": "PagomovilBDV Personas 104",
+      "texto_total_ocr": "A PagomovilBDV Personas 104,54 Bs Fecha : 20/06/ 2025 Operacion : 003039387344 D Identificacion : 27061025 Origen : 0102 ****2 2679 Destino : 04125318244 Banco : 0105 = BANCO MERCANTIL",
+      "lote_fecha": "2025-07-16 19:36:01",
+      "extraction_stats": {
+        "confidence": 0.941,
+        "total_words": 22,
+        "processing_time": 0
+      },
+      "lote_id": "BATCH_20250716_193505"
+    }
+  ]
+}
