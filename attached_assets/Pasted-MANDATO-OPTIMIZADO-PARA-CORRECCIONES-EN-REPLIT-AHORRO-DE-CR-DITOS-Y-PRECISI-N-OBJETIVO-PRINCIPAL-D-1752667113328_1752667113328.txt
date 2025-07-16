@@ -1,0 +1,57 @@
+MANDATO OPTIMIZADO PARA CORRECCIONES EN REPLIT (AHORRO DE CRÉDITOS Y PRECISIÓN)
+OBJETIVO PRINCIPAL DE ESTA SOLICITUD: "Implementar un nuevo campo 'Orden de Llegada' en la tabla 'Historial de Lotes' de la sección 'Monitoreo' y ordenar los lotes en esta tabla de forma descendente por dicho campo, asegurando que el último lote procesado/llegado se muestre siempre en la primera posición."
+
+1. CONTEXTO MÍNIMO Y RELEVANTE DEL PROBLEMA (Indispensable para el Diagnóstico)
+Ubicación/Sección del Código Afectado: "La lógica de la sección 'Monitoreo', específicamente donde se recuperan y se preparan los datos para la tabla 'Historial de Lotes' (probablemente en el backend Python CO-01, ej. routes.py o un servicio de datos que provea la lista de lotes), y donde se construye y renderiza esta tabla en el frontend JavaScript, ej. static/js/modules/monitoring-dashboard.js."
+
+El campo 
+
+timestampCreacion (o lote_fecha del JSON de resultados) de la Entidad Lote  es el dato clave que define el "Orden de Llegada".
+
+Extracto de Código Actual Relevante (¡SOLO LAS LÍNEAS DIRECTAMENTE INVOLUCRADAS!):
+
+Python
+
+# IMPORTANTE: No tengo acceso directo a tu código.
+# Agente Replit, busca la función o endpoint en el backend
+# que recupera la lista de lotes para el historial de monitoreo.
+# Podría ser similar a:
+# @app.route('/api/batches/history', methods=['GET'])
+# def get_batch_history():
+#     # ... lógica para obtener datos de lotes, quizás desde la memoria o una fuente temporal
+#     # Asegúrate de que los datos de cada lote incluyan un campo de tiempo de creación/llegada.
+#     # Ejemplo de estructura de datos que se envía al frontend:
+#     # [
+#     #   {"id": "BATCH_...", "fecha": "...", "archivos": N, "tiempo": "...", ...},
+#     #   ...
+#     # ]
+
+# Agente Replit, también busca el código JavaScript en el frontend (static/js/modules/monitoring-dashboard.js)
+# que construye la tabla 'Historial de Lotes' a partir de los datos recibidos del backend.
+# Podría haber código similar a:
+# fetch('/api/batches/history').then(response => response.json()).then(data => {
+#     // ... lógica de renderizado de la tabla, posiblemente iterando sobre data.batches
+#     // Se deberá añadir una nueva columna para el 'Orden de Llegada' y aplicar el ordenamiento.
+# });
+Comportamiento Actual Observado: "La tabla 'Historial de Lotes' en la sección 'Monitoreo' (visible en) no presenta un orden cronológico discernible para los lotes. No existe un campo explícito que indique el orden de llegada de los lotes."
+
+Comportamiento Esperado (RESULTADO BLINDADO): "La tabla 'Historial de Lotes' debe:
+
+Incluir una nueva columna visible titulada 'Orden de Llegada'.
+
+
+Mostrar los lotes ordenados por su tiempo de creación/llegada de forma descendente, de modo que el lote más reciente (el último en llegar/ser creado según su timestampCreacion  o similar) aparezca en la 
+
+primera fila de la tabla y los lotes más antiguos sigan en orden descendente."
+
+2. TIPO DE SOLUCIÓN REQUERIDA Y ÉNFASIS EN EFICIENCIA
+Tipo de Solución: "Snippet(s) de código Python corregido(s) en el backend (CO-01) para asegurar que los datos de historial de lotes incluyan la información de tiempo de creación/llegada y sean potencialmente pre-ordenados o preparados para ello. Además, snippet(s) de código JavaScript corregido(s) en el frontend para renderizar la nueva columna 'Orden de Llegada' y aplicar la lógica de ordenamiento descendente en la tabla."
+
+Formato de Entrega: "Directamente el código corregido con comentarios breves, indicando el archivo (.py o .js) y la función/sección donde aplicar la modificación."
+
+Énfasis en Consumo de Créditos (IMPORTANTE PARA REPLIT):
+
+Prioriza soluciones con baja complejidad computacional. El ordenamiento debe ser eficiente, preferiblemente realizado una vez en el backend o de forma optimizada en el frontend si el conjunto de datos es pequeño.
+
+Si se realiza en el frontend, considera técnicas que no ralenticen la interfaz del usuario.
+

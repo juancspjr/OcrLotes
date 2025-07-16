@@ -287,6 +287,9 @@ window.OCRSystem = window.OCRSystem || {};
 
             return `
                 <tr class="batch-row" data-batch-id="${batch.id}">
+                    <td class="text-center">
+                        <span class="badge bg-primary">${batch.ordenLlegada}</span>
+                    </td>
                     <td>
                         <span class="font-monospace small">${this.truncateText(batch.id, 20)}</span>
                     </td>

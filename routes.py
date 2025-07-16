@@ -1870,10 +1870,14 @@ def api_get_batch_history():
         batches = list(batch_files.values())
         batches.sort(key=lambda x: x['date'], reverse=True)
         
-        # Añadir numeración secuencial y total de archivos
+        # Añadir numeración secuencial, orden de llegada y total de archivos
         for index, batch in enumerate(batches):
             batch['number'] = len(batches) - index  # Numeración inversa
             batch['totalFiles'] = len(batch['files'])
+            # MANDATO: Añadir campo "Orden de Llegada" - último en llegar primero
+            batch['ordenLlegada'] = index + 1  # 1 = más reciente, 2 = segundo más reciente, etc.
+            # Añadir timestamp de creación parseado para mejor visualización
+            batch['timestampCreacion'] = batch['date']
         
         logger.info(f"📊 Historial de lotes: {len(batches)} lotes encontrados")
         
