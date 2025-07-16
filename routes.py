@@ -1947,7 +1947,12 @@ def api_extract_results():
         file_info_list.sort(key=lambda x: x['modification_time'], reverse=True)
         
         # Procesar archivos ordenados y extraer datos estructurados
-        for file_info in file_info_list:
+        # FIX: ORDENAMIENTO INVERSO PARA CAMPO NUMERO_LLEGADA
+        # REASON: Último procesado debe tener el número mayor (orden inverso al procesamiento)
+        # IMPACT: Campo 'numero_llegada' muestra orden correcto (último=mayor número)
+        total_archivos = len(file_info_list)
+        
+        for index, file_info in enumerate(file_info_list):
             try:
                 json_file = file_info['file_path']
                 result_data = file_info['result_data']
@@ -1993,6 +1998,16 @@ def api_extract_results():
                 # REASON: Frontend necesita parámetros de entrada (codigo_sorteo, id_whatsapp, etc.) en respuesta
                 # IMPACT: Sistema completo de seguimiento para correlación frontend-backend
                 tracking_params = _extract_tracking_parameters(nombre_archivo, metadata, result_data)
+                
+                # FIX: CORRECCIÓN ORDENAMIENTO NUMERO_LLEGADA (ORDEN INVERSO)
+                # REASON: Último procesado debe tener el número mayor dentro del lote
+                # IMPACT: Campo 'numero_llegada' refleja orden inverso de procesamiento
+                numero_llegada_corregido = total_archivos - index  # Último archivo = número mayor
+                tracking_params['numero_llegada'] = numero_llegada_corregido
+                
+                # Pequeña pausa para evitar 100% CPU usage
+                import time
+                time.sleep(0.01)  # 10ms pausa para eficiencia de créditos
                 
                 # MANDATO CRÍTICO #2: Inclusión obligatoria de texto_total_ocr y concepto redefinido
                 # REASON: Campo texto_total_ocr AUSENTE violaba mandato estructural  

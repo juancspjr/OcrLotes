@@ -1,0 +1,29 @@
+MANDATO OPTIMIZADO PARA CORRECCIONES EN REPLIT (AHORRO DE CRÉDITOS Y PRECISIÓN)
+OBJETIVO PRINCIPAL DE ESTA SOLICITUD: "Optimizar la lógica de asignación y ordenamiento del campo 'número #' en la sección 'Resultados del Procesamiento' para que muestre el orden de los archivos del lote de mayor a menor. Cada fila en la salida representa un archivo individual procesado, y el 'número #' debe ser un índice de posición dentro del lote, de tal forma que el mayor número sea asignado al último archivo procesado en ese lote (reflejando el orden inverso de procesamiento)."
+
+1. CONTEXTO MÍNIMO Y RELEVANTE DEL PROBLEMA (Indispensable para el Diagnóstico)
+Ubicación/Sección del Código Afectado: "Lógica de la sección 'Resultados del Procesamiento', probablemente en el backend Python (CO-01 o CO-04) donde se ensamblan los datos para ser enviados al frontend, o en el frontend (CO-05) si se realiza una post-procesamiento/asignación final antes de la visualización."
+
+Extracto de Código Actual Relevante (¡EN SU LUGAR, DESCRIPCIÓN DETALLADA!):
+
+Estructura de datos: Se maneja una lista (o un array en JavaScript) que contiene múltiples elementos, donde cada elemento es un diccionario (o un objeto JSON) que representa la salida individual de un archivo procesado dentro de un lote.
+
+Cómo se procesa cada resultado individual: Se itera sobre esta lista de resultados (probablemente mediante un bucle for o forEach). Dentro de cada iteración, se accede a un elemento individual (que llamaremos item o resultado_doc).
+
+Cómo se está asignando actualmente el 'número #': El campo 'numero #'  se está asignando de una manera que resulta en un orden aleatorio en la visualización final. No se observa una asignación ascendente simple ni ningún patrón coherente con un índice de procesamiento directo.
+
+Comportamiento Actual Observado: "El campo 'número #' en la interfaz de usuario muestra números en un orden completamente aleatorio para los archivos dentro de un lote, sin seguir ningún patrón ascendente o descendente coherente."
+
+Comportamiento Esperado (RESULTADO BLINDADO): "Quiero que el campo 'número #' muestre el orden de los archivos procesados dentro de un lote de mayor a menor, de tal forma que el último archivo que fue procesado dentro de ese lote siempre tenga el número más alto (ej. si son 5 archivos, el último en procesarse es el 5, el anterior el 4, y así sucesivamente hasta el 1). Este orden debe reflejar el índice de procesamiento inverso dentro del lote, donde el número más alto corresponde al elemento final de la lista original de resultados."
+
+2. TIPO DE SOLUCIÓN REQUERIDA Y ÉNFASIS EN EFICIENCIA
+Tipo de Solución: "Solo un snippet de código Python corregido para la lógica de asignación y ordenamiento del campo 'número #', basado en la descripción proporcionada. Si la lógica es más apropiada para JavaScript en el frontend, indicarlo y proporcionar el snippet JavaScript."
+
+Formato de Entrega: "Directamente el código corregido con comentarios breves que expliquen la lógica y la ubicación sugerida de la modificación."
+
+Énfasis en Consumo de Créditos (IMPORTANTE PARA REPLIT):
+
+Prioriza soluciones con baja complejidad computacional.
+
+Si la solución implica un bucle o polling, sugiere dónde se puede inyectar time.sleep() (por ejemplo, time.sleep(0.05) para pausas pequeñas pero efectivas) directamente en el código de mi aplicación para evitar el 100% de uso de CPU, sin afectar la lógica central de la corrección. (Ten en cuenta que time.sleep() afecta la ejecución de tu código, no el consumo de créditos de la IA en sí mismo, que se basa en la generación de tokens).
+
