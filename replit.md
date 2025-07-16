@@ -17,7 +17,12 @@ Sistema OCR asíncrono de alto rendimiento para procesamiento de recibos de pago
 - **Frontend**: Dashboard web con Bootstrap
 
 ## Cambios Recientes
-- ✅ Migración completada de Replit Agent a Replit
+- ✅ Migración completada de Replit Agent a Replit (Julio 16, 2025)
+- ✅ CORRECCIÓN CRÍTICA: Problema de discrepancias en Historial de Lotes resuelto
+- ✅ Backend: Campos successCount y errorCount añadidos al endpoint /api/batches/history
+- ✅ Frontend: Valores "undefined" eliminados en columnas Exitosos y Errores
+- ✅ Conteo de archivos corregido: excluye archivos de resumen _resultados.json
+- ✅ Integridad de datos validada con logging detallado por lote
 - ✅ Interface Excellence implementation completada
 - ✅ Enhanced filename visibility implementada
 - ✅ Professional external environment styling aplicado

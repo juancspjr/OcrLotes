@@ -306,10 +306,10 @@ window.OCRSystem = window.OCRSystem || {};
                         <span class="badge bg-info">${batch.totalFiles}</span>
                     </td>
                     <td class="text-center">
-                        <span class="badge bg-success">${batch.successCount}</span>
+                        <span class="badge bg-success">${batch.successCount || 0}</span>
                     </td>
                     <td class="text-center">
-                        <span class="badge bg-danger">${batch.errorCount}</span>
+                        <span class="badge bg-danger">${batch.errorCount || 0}</span>
                     </td>
                     <td class="text-center">
                         <span class="text-muted">${processingTime}</span>

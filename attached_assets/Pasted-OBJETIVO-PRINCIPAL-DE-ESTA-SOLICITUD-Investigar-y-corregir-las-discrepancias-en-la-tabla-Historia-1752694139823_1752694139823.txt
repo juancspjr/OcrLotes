@@ -1,0 +1,58 @@
+OBJETIVO PRINCIPAL DE ESTA SOLICITUD: "Investigar y corregir las discrepancias en la tabla 'Historial de Lotes' de la sección 'Monitoreo' para asegurar que cada lote muestre con Integridad Total la información precisa de su procesamiento (ej. cantidad real de archivos procesados, conteos de exitosos/errores) y que el lote_id sea correctamente utilizado y consistente desde su origen ('Resultados del Procesamiento') hasta el historial. Además, resolver cualquier 'acción rara de actualización' al descargar un lote, que pueda ser síntoma de esta inconsistencia."
+
+1. CONTEXTO MÍNIMO Y RELEVANTE DEL PROBLEMA (Indispensable para el Diagnóstico)
+Ubicación/Sección del Código Afectado: "La lógica completa de transferencia y gestión de datos de lotes desde su procesamiento inicial (donde se generan los 'Resultados del Procesamiento') hasta su persistencia/visualización en la tabla 'Historial de Lotes' de la sección 'Monitoreo'. Esto incluye:
+
+Backend Python (CO-01): Funciones que procesan y consolidan los datos del lote, los transfieren al historial y el endpoint que sirve los datos para /api/batches/history (ej. routes.py).
+
+Fuentes de Datos: Donde se guarda la información consolidada del lote (memoria, archivos temporales, o sistema de archivos como CO-06).
+
+Frontend JavaScript: static/js/modules/monitoring-dashboard.js y templates/interface_excellence_dashboard.html donde se renderiza la tabla y se manejan las descargas."
+
+El MODELO DE DOMINIO CONCEPTUAL.docx (especialmente la entidad Lote y Resultado Consolidado del Lote) y el resultados_ocr_2025-07-16 (1).json son referencias clave para la estructura de datos esperada (ej., metadata.total_archivos, archivos_procesados array, imagenesProcesadasConExito, imagenesConFallo).
+
+Extracto de Código Actual Relevante (¡SOLO LAS LÍNEAS DIRECTAMENTE INVOLUCRADAS!):
+
+Python
+
+# IMPORTANTE: No tengo acceso directo a tu código.
+# Agente Replit, tu tarea principal es rastrear el flujo de datos.
+# Busca la función o lógica que se encarga de:
+# 1. Consolidar los resultados de un lote COMPLETO (ej. conteo total de archivos, exitosos, errores).
+# 2. Almacenar o pasar esta información consolidada al historial de lotes.
+# 3. La función o endpoint que consulta estos datos para mostrarlos en el 'Historial de Lotes'.
+# 4. Donde se definen o acceden los campos 'Exitosos' y 'Errores' en la respuesta del backend para el historial.
+# 5. La lógica de frontend (JavaScript) que procesa los datos del historial y renderiza las columnas de la tabla,
+#    especialmente 'Archivos', 'Exitosos' y 'Errores'.
+# 6. La lógica de descarga de JSON (recientemente ajustada) y cualquier efecto secundario visible.
+Comportamiento Actual Observado:
+
+Discrepancia de Conteo: Un lote que se sabe que tiene X cantidad de archivos en "Resultados del Procesamiento" (ej. 7 archivos) aparece con una cantidad diferente (ej. 1 o 2) en la columna "Archivos" de la tabla "Historial de Lotes".
+
+Inconsistencia de IDs: Hay una sospecha de que el lote_id asignado para un lote en "Resultados del Procesamiento" no se está usando o arrastrando correctamente para identificar el mismo lote en el "Historial", causando un "enredo" en los datos.
+
+Contadores "undefined": Las columnas "Exitosos" y "Errores" en la tabla "Historial de Lotes" muestran consistentemente el valor "undefined" en lugar de los conteos numéricos correctos.
+
+Comportamiento Anómalo en Descarga: Al descargar un lote del historial, se observa una "acción rara de actualización" que sugiere un problema subyacente en la coherencia de los datos o en el manejo del estado.
+
+Comportamiento Esperado (RESULTADO BLINDADO): "Se espera que cada fila en la tabla 'Historial de Lotes' represente fielmente la información completa y correcta de su lote original. Esto implica:
+
+Conteo de Archivos Correcto: La columna 'Archivos' debe mostrar la cantidad total exacta de archivos que tenía ese lote cuando fue procesado (ej. si fueron 7, que se muestren 7).
+
+Consistencia de ID: El lote_id de cada entrada en el historial debe corresponder inequívocamente al lote_id original del procesamiento, garantizando la trazabilidad.
+
+Contadores Definidos y Correctos: Las columnas 'Exitosos' y 'Errores' deben mostrar los conteos numéricos reales (ej., 5 y 2 respectivamente, no 'undefined').
+
+Descarga sin Comportamientos Anómalos: La descarga de un lote del historial debe ocurrir sin efectos secundarios visuales o de actualización extraños, confirmando la estabilidad de los datos."
+
+2. TIPO DE SOLUCIÓN REQUERIDA Y ÉNFASIS EN EFICIENCIA
+Tipo de Solución: "Investigación profunda del flujo de datos del lote (desde procesamiento hasta historial), y corrección de snippet(s) de código Python (backend) para asegurar la captura, consolidación y transferencia correcta de toda la información del lote (incluyendo conteos y uso consistente del lote_id). También, corrección de snippet(s) de código JavaScript (frontend) para el correcto renderizado de estos datos en la tabla."
+
+Formato de Entrega: "Directamente el código corregido con comentarios detallados, indicando el archivo (.py o .js), la función/sección, y una explicación clara de la causa raíz encontrada y la solución aplicada. Si se necesita un cambio en la estructura de almacenamiento de datos temporal, indicarlo."
+
+Énfasis en Consumo de Créditos (IMPORTANTE PARA REPLIT):
+
+Prioriza una investigación eficiente y dirigida. Si es necesario, divide la investigación en pasos lógicos (ej. "primero, rastreo el lote_id; segundo, rastreo el conteo de archivos").
+
+La solución debe ser computacionalmente ligera, sin re-procesamientos innecesarios de datos ya consolidados.
+

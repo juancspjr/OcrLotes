@@ -1873,11 +1873,86 @@ def api_get_batch_history():
         # Añadir numeración secuencial, orden de llegada y total de archivos
         for index, batch in enumerate(batches):
             batch['number'] = len(batches) - index  # Numeración inversa
-            batch['totalFiles'] = len(batch['files'])
+            # FIX: CORRECCIÓN CRÍTICA - Contar solo archivos procesados, no archivos de resumen
+            # REASON: totalFiles mostraba cantidad incorrecta incluyendo archivos _resultados.json
+            # IMPACT: Columna "Archivos" ahora muestra cantidad real de archivos procesados
+            actual_processed_files = [f for f in batch['files'] if not f.endswith('_resultados.json')]
+            batch['totalFiles'] = len(actual_processed_files)
             # MANDATO: Añadir campo "Orden de Llegada" - último en llegar primero
             batch['ordenLlegada'] = index + 1  # 1 = más reciente, 2 = segundo más reciente, etc.
             # Añadir timestamp de creación parseado para mejor visualización
             batch['timestampCreacion'] = batch['date']
+            
+            # FIX: CORRECCIÓN CRÍTICA - Calcular successCount y errorCount para cada lote
+            # REASON: Frontend requiere campos successCount y errorCount que no existían
+            # IMPACT: Elimina valores "undefined" en columnas Exitosos y Errores del historial
+            # CAUSA RAÍZ: Backend no calculaba contadores de éxito/error por lote
+            success_count = 0
+            error_count = 0
+            
+            # Analizar cada archivo del lote para determinar éxito/error
+            for file_name in batch['files']:
+                # Si es un archivo "_resultados.json", contiene resumen del lote
+                if file_name.endswith('_resultados.json'):
+                    continue  # No contar archivos de resumen
+                
+                # Si es un archivo JSON individual procesado, verificar si tiene datos OCR
+                if file_name.endswith('.json'):
+                    file_path = os.path.join(results_dir, file_name)
+                    historial_path = os.path.join('data/historial', file_name)
+                    
+                    # Buscar archivo en directorio activo o historial
+                    actual_path = file_path if os.path.exists(file_path) else (historial_path if os.path.exists(historial_path) else None)
+                    
+                    if actual_path:
+                        try:
+                            with open(actual_path, 'r', encoding='utf-8') as f:
+                                file_data = json.load(f)
+                            
+                            # Verificar si el archivo tiene datos OCR válidos
+                            has_valid_ocr = False
+                            if isinstance(file_data, dict):
+                                # Verificar texto extraído
+                                texto_completo = file_data.get('datos_extraidos', {}).get('texto_completo', '') or \
+                                               file_data.get('texto_extraido', '') or \
+                                               file_data.get('texto_completo', '')
+                                
+                                # Verificar coordenadas
+                                palabras_detectadas = file_data.get('datos_extraidos', {}).get('palabras_detectadas', []) or \
+                                                    file_data.get('coordenadas_palabras', []) or \
+                                                    file_data.get('palabras_detectadas', [])
+                                
+                                has_valid_ocr = len(texto_completo.strip()) > 0 and len(palabras_detectadas) > 0
+                            
+                            if has_valid_ocr:
+                                success_count += 1
+                            else:
+                                error_count += 1
+                                
+                        except Exception as e:
+                            logger.debug(f"Error analizando archivo {file_name} para contadores: {e}")
+                            error_count += 1  # Archivo con error cuenta como error
+                    else:
+                        error_count += 1  # Archivo no encontrado cuenta como error
+            
+            # Asignar contadores calculados al lote
+            batch['successCount'] = success_count
+            batch['errorCount'] = error_count
+            
+            # Calcular tasa de éxito
+            total_processed = success_count + error_count
+            if total_processed > 0:
+                batch['successRate'] = round((success_count / total_processed) * 100, 1)
+            else:
+                batch['successRate'] = 0
+                
+            logger.debug(f"Lote {batch['id']}: Total={batch['totalFiles']}, Exitosos={success_count}, Errores={error_count}")
+            
+            # VALIDACIÓN: Verificar integridad de datos del lote
+            if batch['totalFiles'] != (success_count + error_count):
+                logger.warning(f"⚠️ Discrepancia en lote {batch['id']}: totalFiles={batch['totalFiles']}, procesados={success_count + error_count}")
+                # Corregir totalFiles para que coincida con archivos realmente analizados
+                batch['totalFiles'] = success_count + error_count
         
         logger.info(f"📊 Historial de lotes: {len(batches)} lotes encontrados")
         
