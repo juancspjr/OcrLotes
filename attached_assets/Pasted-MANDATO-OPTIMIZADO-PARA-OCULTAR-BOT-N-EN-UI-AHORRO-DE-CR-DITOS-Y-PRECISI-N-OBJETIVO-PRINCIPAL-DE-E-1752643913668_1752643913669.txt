@@ -1,0 +1,26 @@
+MANDATO OPTIMIZADO PARA OCULTAR BOTÓN EN UI (AHORRO DE CRÉDITOS Y PRECISIÓN)
+OBJETIVO PRINCIPAL DE ESTA SOLICITUD: "Eliminar la visualización del botón 'Ver Detalles' (el icono azul claro con un ojo) de la columna 'Acciones' en la tabla 'Resultados del Procesamiento' de la interfaz de usuario, manteniendo intacta la funcionalidad del botón de descarga ('Descargar JSON') y sin afectar ninguna lógica de backend."
+
+1. CONTEXTO MÍNIMO Y RELEVANTE DEL PROBLEMA (Indispensable para el Diagnóstico)
+Ubicación/Sección del Código Afectado: "Lógica de la sección 'Resultados del Procesamiento' en el Frontend Dashboard Service (CO-05), específicamente el código HTML (plantilla) y/o JavaScript que es responsable de construir y renderizar la columna 'Acciones' con los botones para cada fila de resultados."
+
+Extracto de Código Actual Relevante (¡EN SU LUGAR, DESCRIPCIÓN DETALLADA!):
+
+Estructura de la Interfaz: En la tabla 'Resultados del Procesamiento', cada fila de datos tiene una columna 'Acciones'. Dentro de esta columna, hay al menos dos botones: uno con un icono de ojo (azul claro) y otro con un icono de descarga (verde).
+
+Comportamiento del Botón: El botón azul claro con el icono de ojo es para "ver detalles" y se clickea para acceder a información adicional (que ahora se desea eliminar).
+
+
+Comportamiento Actual Observado: "Para cada fila en la tabla 'Resultados del Procesamiento', se visualizan dos botones en la columna 'Acciones': un botón azul claro con un icono de ojo (para ver detalles) y un botón verde con un icono de descarga (para descargar JSON)." 
+
+Comportamiento Esperado (RESULTADO BLINDADO): "Para cada fila en la tabla 'Resultados del Procesamiento', solamente debe ser visible el botón de descarga (el icono verde) en la columna 'Acciones'. El botón 'Ver Detalles' (el icono azul claro con el ojo) y su funcionalidad asociada deben ser eliminados completamente de la interfaz de usuario. Es fundamental que esta acción sea puramente de presentación en el frontend y no afecte ninguna lógica de backend, la generación de datos, o la función del botón de descarga."
+
+2. TIPO DE SOLUCIÓN REQUERIDA Y ÉNFASIS EN EFICIENCIA
+Tipo de Solución: "Snippet de código HTML (si la columna se construye directamente en el template) o JavaScript (si la columna se genera dinámicamente) para remover el botón 'Ver Detalles' de la visualización. No se requiere modificación de lógica de backend Python."
+
+Formato de Entrega: "Directamente el código corregido con comentarios breves que expliquen la modificación y la ubicación sugerida (ej. 'dentro de la plantilla HTML de resultados' o 'en la función JavaScript que renderiza la tabla de acciones')."
+
+Énfasis en Consumo de Créditos (IMPORTANTE PARA REPLIT):
+
+Prioriza soluciones con baja complejidad computacional.
+
