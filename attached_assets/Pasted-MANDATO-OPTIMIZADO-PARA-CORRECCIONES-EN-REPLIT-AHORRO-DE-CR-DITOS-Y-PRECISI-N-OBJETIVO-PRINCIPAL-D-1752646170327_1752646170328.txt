@@ -1,0 +1,55 @@
+MANDATO OPTIMIZADO PARA CORRECCIONES EN REPLIT (AHORRO DE CRÉDITOS Y PRECISIÓN)
+OBJETIVO PRINCIPAL DE ESTA SOLICITUD: "Optimizar la funcionalidad de 'Descargar JSON' en la tabla 'Historial de Lotes' de la sección 'Monitoreo' para que, en lugar de generar un nuevo JSON de resultados por cada descarga, se reutilice y sirva el archivo JSON previamente guardado y asociado a ese lote en el Servicio de Almacenamiento de Archivos (CO-06), si ya existe. Si no existe, deberá generarse, guardarse y luego servirse."
+
+1. CONTEXTO MÍNIMO Y RELEVANTE DEL PROBLEMA (Indispensable para el Diagnóstico)
+Ubicación/Sección del Código Afectado: "La lógica del API Gateway / Backend Service (CO-01), específicamente el endpoint o función en Python (probablemente en routes.py o un archivo similar que maneje las rutas) que es activado cuando se hace clic en el botón 'Descargar JSON' de un lote en la sección 'Monitoreo - Historial de Lotes'."
+
+Extracto de Código Actual Relevante (¡SOLO LAS LÍNEAS DIRECTAMENTE INVOLUCRADAS!):
+
+Python
+
+# IMPORTANTE: No tengo acceso directo a tu código.
+# Por favor, Agente Replit, busca la función o endpoint
+# que maneja la descarga del JSON de resultados por ID de lote.
+# Se espera una estructura similar a:
+#
+# @app.route('/download_batch_results/<string:lote_id>', methods=['GET'])
+# def download_batch_results(lote_id):
+#     # Aquí debería estar la lógica actual que posiblemente:
+#     # 1. Consulta una base de datos o fuente interna para obtener los datos brutos del lote.
+#     # 2. Compila esos datos en una estructura JSON similar a 'resultados_ocr_2025-07-16 (1).json'.
+#     # 3. Usa jsonify o Response para servir el JSON al usuario.
+#     # Por ejemplo:
+#     # data_del_lote = obtener_datos_de_lote(lote_id)
+#     # json_a_servir = generar_json_desde_datos(data_del_lote)
+#     # return Response(json_a_servir, mimetype='application/json', ...)
+Descripción Adicional: El JSON de ejemplo provisto (resultados_ocr_2025-07-16 (1).json) tiene una estructura con metadata y un array de archivos_procesados, y un campo clave lote_id dentro de cada archivo procesado.
+
+Comportamiento Actual Observado: "Cuando se hace clic en el botón 'Descargar JSON' para un lote en la sección 'Monitoreo - Historial de Lotes', el sistema genera (o parece regenerar) el archivo JSON de resultados de ese lote en tiempo real y lo descarga al usuario. No hay evidencia de que se esté buscando una versión previamente guardada."
+
+Comportamiento Esperado (RESULTADO BLINDADO): "Al hacer clic en 'Descargar JSON' para un lote, el backend debe:
+
+Intentar buscar un archivo JSON previamente guardado para ese lote_id en una ubicación de almacenamiento definida (CO-06). Se propone una convención de nombre de archivo como [lote_id]_resultados.json.
+
+Si el archivo existe: Recuperarlo y servirlo directamente al usuario.
+
+Si el archivo NO existe:
+
+Generar el JSON de resultados completo para el lote_id solicitado.
+
+Guardar este JSON recién generado en la ubicación de almacenamiento definida (CO-06) con la convención de nombre establecida.
+
+Servir este JSON recién guardado al usuario.
+Este proceso debe asegurar la Integridad Total de los datos, reduciendo la carga de procesamiento por generación redundante."
+
+2. TIPO DE SOLUCIÓN REQUERIDA Y ÉNFASIS EN EFICIENCIA
+Tipo de Solución: "Snippet(s) de código Python corregido(s) para la lógica de backend (CO-01) que maneja el endpoint de descarga de JSON. Esto incluirá lógica de verificación de existencia de archivo, lectura/escritura en el sistema de archivos (CO-06) y servir la respuesta."
+
+Formato de Entrega: "Directamente el código corregido con comentarios breves que expliquen la lógica y la ubicación sugerida de la modificación (ej. 'dentro de la función download_batch_results(lote_id) en routes.py')."
+
+Énfasis en Consumo de Créditos (IMPORTANTE PARA REPLIT):
+
+Prioriza soluciones con baja complejidad computacional. La lectura de archivos existentes es preferible a la regeneración completa.
+
+Si la generación de JSON es inherentemente pesada, considera optimizaciones para esa parte, aunque el foco principal es la reutilización.
+

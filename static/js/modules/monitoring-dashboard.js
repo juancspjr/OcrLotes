@@ -24,7 +24,119 @@ window.OCRSystem = window.OCRSystem || {};
 
         init() {
             this.setupAutoRefresh();
+            this.setupEventListeners();
             console.log('📈 Monitoring Dashboard inicializado');
+        }
+
+        /**
+         * Configurar event listeners
+         */
+        setupEventListeners() {
+            // Event listener para botones de descarga de lotes
+            document.addEventListener('click', (event) => {
+                if (event.target.classList.contains('download-batch-btn') || 
+                    event.target.closest('.download-batch-btn')) {
+                    
+                    const button = event.target.classList.contains('download-batch-btn') ? 
+                        event.target : event.target.closest('.download-batch-btn');
+                    
+                    const batchId = button.getAttribute('data-batch-id');
+                    if (batchId) {
+                        this.downloadBatch(batchId);
+                    }
+                }
+            });
+        }
+
+        /**
+         * MANDATO: Descargar lote específico con reutilización de JSON
+         * OBJETIVO: Implementar descarga eficiente usando endpoint optimizado
+         * UBICACIÓN: static/js/modules/monitoring-dashboard.js
+         */
+        async downloadBatch(batchId) {
+            try {
+                console.log(`📥 Descargando lote: ${batchId}`);
+                
+                // Mostrar indicador de descarga
+                this.showDownloadProgress(batchId, true);
+                
+                // Llamar al endpoint optimizado de descarga
+                const response = await fetch(`/api/batches/download/${batchId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                // Obtener datos del lote
+                const batchData = await response.json();
+                
+                // Crear descarga automática
+                const dataStr = JSON.stringify(batchData, null, 2);
+                const dataBlob = new Blob([dataStr], { type: 'application/json' });
+                const url = URL.createObjectURL(dataBlob);
+                
+                // Crear enlace de descarga
+                const downloadLink = document.createElement('a');
+                downloadLink.href = url;
+                downloadLink.download = `resultados_${batchId}.json`;
+                downloadLink.style.display = 'none';
+                
+                // Activar descarga
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
+                
+                // Liberar memoria
+                URL.revokeObjectURL(url);
+                
+                console.log(`✅ Lote ${batchId} descargado exitosamente`);
+                
+                // Mostrar notificación de éxito
+                if (window.OCRSystem.Main) {
+                    window.OCRSystem.Main.showNotification(
+                        `Lote ${batchId.substring(0, 20)}... descargado exitosamente`, 
+                        'success'
+                    );
+                }
+                
+            } catch (error) {
+                console.error(`❌ Error descargando lote ${batchId}:`, error);
+                
+                // Mostrar error al usuario
+                if (window.OCRSystem.Main) {
+                    window.OCRSystem.Main.showNotification(
+                        `Error descargando lote: ${error.message}`, 
+                        'error'
+                    );
+                } else {
+                    alert(`Error descargando lote: ${error.message}`);
+                }
+            } finally {
+                // Ocultar indicador de descarga
+                this.showDownloadProgress(batchId, false);
+            }
+        }
+
+        /**
+         * Mostrar/ocultar progreso de descarga
+         */
+        showDownloadProgress(batchId, show) {
+            const button = document.querySelector(`[data-batch-id="${batchId}"]`);
+            if (button) {
+                if (show) {
+                    button.disabled = true;
+                    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                } else {
+                    button.disabled = false;
+                    button.innerHTML = '<i class="fas fa-download"></i>';
+                }
+            }
         }
 
         /**

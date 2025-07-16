@@ -1674,6 +1674,124 @@ def api_extract_all_results():
             'message': f'Error generando historial: {str(e)}'
         }), 500
 
+@app.route('/api/batches/download/<string:batch_id>', methods=['GET'])
+def api_download_batch_results(batch_id):
+    """
+    MANDATO: Endpoint optimizado para descargar JSON de lotes específicos con reutilización
+    OBJETIVO: Reutilizar archivo JSON previamente guardado si existe, generar y guardar si no existe
+    UBICACIÓN: routes.py, función api_download_batch_results()
+    AHORRO CRÉDITOS: Evita regeneración innecesaria, lee archivos existentes primero
+    """
+    try:
+        from config import get_async_directories
+        
+        directories = get_async_directories()
+        results_dir = directories['results']
+        historial_dir = directories.get('historial', 'data/historial')
+        
+        # Convención de nombre: [lote_id]_resultados.json
+        cached_json_filename = f"{batch_id}_resultados.json"
+        cached_json_path = os.path.join(results_dir, cached_json_filename)
+        
+        # PASO 1: Intentar buscar archivo JSON previamente guardado
+        if os.path.exists(cached_json_path):
+            logger.info(f"📁 REUTILIZACIÓN: Archivo JSON encontrado para lote {batch_id}")
+            try:
+                with open(cached_json_path, 'r', encoding='utf-8') as f:
+                    cached_data = json.load(f)
+                
+                response = jsonify(cached_data)
+                response.headers['Content-Type'] = 'application/json; charset=utf-8'
+                response.headers['Content-Disposition'] = f'attachment; filename=resultados_{batch_id}.json'
+                
+                logger.info(f"✅ REUTILIZACIÓN: JSON servido desde caché para lote {batch_id}")
+                return response
+                
+            except (json.JSONDecodeError, IOError) as e:
+                logger.warning(f"⚠️ Error leyendo JSON cacheado {cached_json_path}: {e}")
+                # Continuar con generación si el archivo está corrupto
+        
+        # PASO 2: Si no existe, generar JSON completo para el lote
+        logger.info(f"🔄 GENERACIÓN: Creando JSON para lote {batch_id}")
+        
+        # Buscar archivos del lote específico
+        batch_files = []
+        
+        # Buscar en directorio results
+        if os.path.exists(results_dir):
+            for file in os.listdir(results_dir):
+                if file.endswith('.json') and file.startswith(batch_id):
+                    batch_files.append(os.path.join(results_dir, file))
+        
+        # Buscar en directorio historial
+        if os.path.exists(historial_dir):
+            for file in os.listdir(historial_dir):
+                if file.endswith('.json') and file.startswith(batch_id):
+                    batch_files.append(os.path.join(historial_dir, file))
+        
+        if not batch_files:
+            logger.warning(f"❌ No se encontraron archivos para el lote {batch_id}")
+            return jsonify({
+                'status': 'error',
+                'message': f'No se encontraron archivos para el lote {batch_id}',
+                'error_code': 'BATCH_NOT_FOUND'
+            }), 404
+        
+        # Generar JSON consolidado con estructura empresarial
+        consolidated_results = {
+            'metadata': {
+                'fecha_extraccion': datetime.now().isoformat(),
+                'total_archivos': len(batch_files),
+                'version_sistema': '1.0',
+                'tipo_extraccion': 'lote_especifico',
+                'lote_id': batch_id
+            },
+            'archivos_procesados': []
+        }
+        
+        for json_file in batch_files:
+            try:
+                with open(json_file, 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+                
+                # Extraer datos empresariales usando la misma lógica que extract_results
+                archivo_resultado = _extract_enterprise_data_from_json(data, json_file)
+                archivo_resultado['lote_id'] = batch_id
+                
+                consolidated_results['archivos_procesados'].append(archivo_resultado)
+                
+            except Exception as e:
+                logger.error(f"Error procesando archivo {json_file}: {e}")
+                continue
+        
+        # PASO 3: Guardar JSON generado para reutilización futura
+        try:
+            os.makedirs(results_dir, exist_ok=True)
+            with open(cached_json_path, 'w', encoding='utf-8') as f:
+                json.dump(consolidated_results, f, ensure_ascii=False, indent=2)
+            
+            logger.info(f"💾 CACHÉ: JSON guardado para reutilización futura: {cached_json_path}")
+            
+        except Exception as e:
+            logger.warning(f"⚠️ Error guardando JSON en caché: {e}")
+            # Continuar sirviendo el JSON aunque no se pueda guardar
+        
+        # PASO 4: Servir JSON recién generado
+        response = jsonify(consolidated_results)
+        response.headers['Content-Type'] = 'application/json; charset=utf-8'
+        response.headers['Content-Disposition'] = f'attachment; filename=resultados_{batch_id}.json'
+        
+        logger.info(f"✅ GENERACIÓN: JSON servido para lote {batch_id} ({len(batch_files)} archivos)")
+        return response
+        
+    except Exception as e:
+        logger.error(f"❌ Error crítico en descarga de lote {batch_id}: {e}")
+        return jsonify({
+            'status': 'error',
+            'message': f'Error descargando lote {batch_id}: {str(e)}',
+            'error_code': 'BATCH_DOWNLOAD_ERROR'
+        }), 500
+
 @app.route('/api/batches/history', methods=['GET'])
 def api_get_batch_history():
     """
@@ -2112,6 +2230,121 @@ def api_extract_results():
             'message': f'Error extrayendo resultados consolidados: {str(e)}',
             'error_code': 'EXTRACT_CONSOLIDATED_ERROR'
         }), 500
+
+def _extract_enterprise_data_from_json(data, json_file_path):
+    """
+    MANDATO: Función auxiliar para extraer datos empresariales desde archivo JSON
+    OBJETIVO: Reutilizar lógica existente para extraer campos empresariales
+    UBICACIÓN: routes.py, función _extract_enterprise_data_from_json()
+    """
+    try:
+        filename = os.path.basename(json_file_path)
+        
+        # Extraer metadatos de WhatsApp desde el nombre del archivo
+        metadatos_whatsapp = _extract_whatsapp_metadata(filename)
+        
+        # Usar la función existente para extraer campos empresariales
+        datos_extraidos = data.get('datos_extraidos', {})
+        texto_completo = datos_extraidos.get('texto_completo', '')
+        
+        # Extraer campos empresariales usando la función existente
+        campos_empresariales = _extract_enterprise_fields(data, texto_completo)
+        
+        # Construir estructura empresarial final
+        archivo_resultado = {
+            'nombre_archivo': filename.replace('.json', ''),
+            'id_whatsapp': metadatos_whatsapp.get('id_whatsapp', ''),
+            'nombre_usuario': metadatos_whatsapp.get('nombre_usuario', ''),
+            'caption': metadatos_whatsapp.get('caption', 'Operación Bancaria'),
+            'hora_exacta': metadatos_whatsapp.get('hora_exacta', ''),
+            'numero_llegada': metadatos_whatsapp.get('numero_llegada', 0),
+            'otro': campos_empresariales.get('otro', ''),
+            'referencia': campos_empresariales.get('referencia', ''),
+            'bancoorigen': campos_empresariales.get('bancoorigen', ''),
+            'monto': campos_empresariales.get('monto', ''),
+            'datosbeneficiario': {
+                'cedula': campos_empresariales.get('cedula', ''),
+                'telefono': campos_empresariales.get('telefono', ''),
+                'banco_destino': campos_empresariales.get('banco_destino', '')
+            },
+            'pago_fecha': campos_empresariales.get('pago_fecha', ''),
+            'concepto': campos_empresariales.get('concepto', ''),
+            'texto_total_ocr': campos_empresariales.get('texto_total_ocr', texto_completo),
+            'lote_fecha': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            'extraction_stats': {
+                'confidence': campos_empresariales.get('confidence', 0),
+                'total_words': campos_empresariales.get('total_words', 0),
+                'processing_time': data.get('processing_time', 0)
+            }
+        }
+        
+        return archivo_resultado
+        
+    except Exception as e:
+        logger.error(f"Error extrayendo datos empresariales de {json_file_path}: {e}")
+        return {
+            'nombre_archivo': os.path.basename(json_file_path).replace('.json', ''),
+            'error': str(e),
+            'status': 'error_extraccion'
+        }
+
+def _extract_whatsapp_metadata(filename):
+    """
+    MANDATO: Extraer metadatos de WhatsApp desde nombre de archivo
+    OBJETIVO: Reutilizar parsing existente para nombres de archivos WhatsApp
+    UBICACIÓN: routes.py, función _extract_whatsapp_metadata()
+    """
+    try:
+        # Formato: BATCH_YYYYMMDD_HHMMSS_hash_numero_YYYYMMDD-X--idwhatsapp@lid_nombre_HH-MM_timestamp.ext
+        import re
+        
+        # Patrón para extraer metadatos WhatsApp
+        whatsapp_pattern = r'(\d+)_(\d{8})-([A-Z])--(\d+)@lid_([^_]+)_(\d{2}-\d{2})_'
+        
+        match = re.search(whatsapp_pattern, filename)
+        if match:
+            numero_llegada = match.group(1)
+            fecha_sorteo = match.group(2)
+            codigo_sorteo = match.group(3)
+            id_whatsapp = match.group(4)
+            nombre_usuario = match.group(5)
+            hora_exacta = match.group(6)
+            
+            return {
+                'numero_llegada': int(numero_llegada),
+                'fecha_sorteo': fecha_sorteo,
+                'codigo_sorteo': codigo_sorteo,
+                'id_whatsapp': id_whatsapp,
+                'nombre_usuario': nombre_usuario,
+                'hora_exacta': hora_exacta,
+                'caption': f'Operación de {nombre_usuario}',
+                'raw_filename': filename
+            }
+        
+        # Fallback para nombres simples
+        return {
+            'numero_llegada': 0,
+            'fecha_sorteo': '',
+            'codigo_sorteo': '',
+            'id_whatsapp': '',
+            'nombre_usuario': '',
+            'hora_exacta': '',
+            'caption': 'Operación Bancaria',
+            'raw_filename': filename
+        }
+        
+    except Exception as e:
+        logger.warning(f"Error extrayendo metadatos WhatsApp de {filename}: {e}")
+        return {
+            'numero_llegada': 0,
+            'fecha_sorteo': '',
+            'codigo_sorteo': '',
+            'id_whatsapp': '',
+            'nombre_usuario': '',
+            'hora_exacta': '',
+            'caption': 'Operación Bancaria',
+            'raw_filename': filename
+        }
 
 def _extract_batch_info(json_file_path):
     """
