@@ -186,15 +186,27 @@ def process_batch(image_paths, directories):
             shutil.move(img_path, processing_path)
             processing_paths.append(processing_path)
             
-            # Leer caption si existe
-            caption_path = img_path.replace('.png', '.caption.txt').replace('.jpg', '.caption.txt')
+            # ✅ PRESERVAR CAPTION ORIGINAL DE METADATOS
+            # REASON: El caption original está en metadata.json, no en .caption.txt
+            # IMPACT: Garantiza que se use el caption exacto ingresado por el usuario
+            metadata_path = img_path.replace('.png', '.metadata.json').replace('.jpg', '.metadata.json').replace('.jpeg', '.metadata.json')
             caption_text = ""
-            if os.path.exists(caption_path):
-                with open(caption_path, 'r', encoding='utf-8') as f:
-                    caption_text = f.read().strip()
-                # Mover caption también
-                new_caption_path = processing_path.replace('.png', '.caption.txt').replace('.jpg', '.caption.txt')
-                shutil.move(caption_path, new_caption_path)
+            
+            if os.path.exists(metadata_path):
+                try:
+                    with open(metadata_path, 'r', encoding='utf-8') as f:
+                        metadata_json = json.load(f)
+                        # Usar caption original de metadatosEntrada (fuente de verdad)
+                        caption_text = metadata_json.get('caption', '') or metadata_json.get('texto_mensaje_whatsapp', '')
+                        logger.info(f"✅ Caption original cargado desde metadata: '{caption_text}'")
+                        
+                        # Mover metadata también
+                        new_metadata_path = processing_path.replace('.png', '.metadata.json').replace('.jpg', '.metadata.json').replace('.jpeg', '.metadata.json')
+                        shutil.move(metadata_path, new_metadata_path)
+                except Exception as e:
+                    logger.error(f"Error leyendo metadata para caption: {e}")
+            else:
+                logger.warning(f"No se encontró metadata.json para {img_path}")
             
             caption_texts.append(caption_text)
             

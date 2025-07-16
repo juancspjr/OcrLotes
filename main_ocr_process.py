@@ -244,6 +244,10 @@ class OrquestadorOCR:
         MANDATO CRÍTICO: Extraer metadatos de WhatsApp desde nombre de archivo
         OBJETIVO: Preservar caption original y otros metadatos en JSON final
         UBICACIÓN: main_ocr_process.py, método _extract_whatsapp_metadata_from_filename()
+        
+        ✅ CORRECCIÓN CRÍTICA: NO GENERAR caption automáticamente
+        ✅ PRIORIDAD: Usar caption original de metadatosEntrada si existe
+        ✅ FALLBACK: Solo generar caption si no existe caption original
         """
         try:
             # Formato: BATCH_YYYYMMDD_HHMMSS_hash_numero_YYYYMMDD-X--idwhatsapp@lid_nombre_HH-MM_timestamp.ext
@@ -264,7 +268,29 @@ class OrquestadorOCR:
                 # Número de sorteo se puede extraer del ID o generar uno único
                 numero_sorteo = id_whatsapp[-3:]  # Últimos 3 dígitos como numero
                 
-                # Construir metadata con caption basado en usuario/fecha
+                # ✅ PRESERVACIÓN DEL CAPTION ORIGINAL
+                # BUSCAR caption original en archivo metadata.json correspondiente
+                import os
+                import json
+                
+                # Construir ruta del archivo metadata.json
+                base_filename = filename.replace('.jpg', '').replace('.png', '').replace('.jpeg', '')
+                metadata_path = f"data/inbox/{base_filename}.metadata.json"
+                
+                original_caption = ""
+                try:
+                    if os.path.exists(metadata_path):
+                        with open(metadata_path, 'r', encoding='utf-8') as f:
+                            metadata_json = json.load(f)
+                            # Usar caption original de metadatosEntrada (fuente de verdad)
+                            original_caption = metadata_json.get('caption', '') or metadata_json.get('texto_mensaje_whatsapp', '')
+                            logger.info(f"📋 Caption original encontrado: '{original_caption}' en {metadata_path}")
+                    else:
+                        logger.warning(f"📋 No se encontró metadata.json en {metadata_path}")
+                except Exception as e:
+                    logger.warning(f"📋 Error leyendo metadata.json: {e}")
+                
+                # Construir metadata preservando caption original
                 metadata = {
                     'numerosorteo': numero_sorteo,
                     'fechasorteo': fecha_sorteo,
@@ -272,11 +298,11 @@ class OrquestadorOCR:
                     'idWhatsapp': id_whatsapp,
                     'nombre': nombre_usuario,
                     'horamin': hora_minuto,
-                    'caption': f"{nombre_usuario} - {fecha_sorteo[6:8]}/{fecha_sorteo[4:6]}/{fecha_sorteo[0:4]} {hora_minuto.replace('-', ':')}",
+                    'caption': original_caption,  # ✅ USAR CAPTION ORIGINAL, NO GENERAR
                     'filename': filename
                 }
                 
-                logger.info(f"📋 Metadata extraído: {metadata}")
+                logger.info(f"📋 Metadata extraído con caption original: {metadata}")
                 return metadata
             else:
                 logger.warning(f"No se pudo extraer metadata WhatsApp de: {filename}")

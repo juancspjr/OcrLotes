@@ -2160,7 +2160,52 @@ def api_extract_results():
                 
                 # Extraer metadatos WhatsApp si están disponibles
                 metadata = result_data.get('metadata', {})
-                caption = metadata.get('caption', '')
+                
+                # ✅ PRESERVAR CAPTION ORIGINAL DE METADATOS - CORRECCIÓN CRÍTICA
+                # REASON: Caption debe mantenerse exacto como fue ingresado por el usuario
+                # IMPACT: Integridad total del campo caption desde entrada hasta salida
+                # CAUSA RAÍZ: Sistema estaba sobrescribiendo caption original con valores generados
+                
+                # BUSCAR caption original en múltiples ubicaciones posibles
+                caption_original = ""
+                
+                # Prioridad 1: metadata.fuente_whatsapp.caption (ubicación principal)
+                if metadata.get('fuente_whatsapp', {}).get('caption'):
+                    caption_original = metadata['fuente_whatsapp']['caption']
+                    logger.info(f"📋 Caption original encontrado en fuente_whatsapp: '{caption_original}'")
+                
+                # Prioridad 2: metadata.caption (ubicación alternativa)
+                elif metadata.get('caption'):
+                    caption_original = metadata['caption']
+                    logger.info(f"📋 Caption original encontrado en metadata: '{caption_original}'")
+                
+                # Prioridad 3: buscar en datos extraídos
+                elif result_data.get('extracted_fields', {}).get('caption'):
+                    caption_original = result_data['extracted_fields']['caption']
+                    logger.info(f"📋 Caption original encontrado en extracted_fields: '{caption_original}'")
+                
+                # Solo si NO hay caption original, generar uno automático
+                if not caption_original or caption_original.strip() == '':
+                    # Extraer texto completo para análisis automático
+                    texto_completo = _extract_full_text(result_data)
+                    
+                    if 'PagomovilBDV' in texto_completo:
+                        caption_original = 'Pago Móvil BDV'
+                    elif 'Transferencia' in texto_completo:
+                        caption_original = 'Transferencia Bancaria'
+                    elif 'Envio' in texto_completo:
+                        caption_original = 'Envío de Dinero'
+                    elif 'Operacion' in texto_completo and 'Banco' in texto_completo:
+                        caption_original = 'Operación Bancaria'
+                    elif any(term in texto_completo for term in ['Bs', 'bolivares', 'Banco']):
+                        caption_original = 'Transacción Financiera'
+                    
+                    logger.info(f"📋 Caption generado automáticamente: '{caption_original}'")
+                else:
+                    logger.info(f"📋 Caption original preservado intacto: '{caption_original}'")
+                
+                # Asignar caption final (preservando original)
+                caption = caption_original
                 
                 # Extraer texto completo para análisis
                 texto_completo = _extract_full_text(result_data)
@@ -2175,26 +2220,6 @@ def api_extract_results():
                 # IMPACT: Campo 'lote' visible en lista de procesamientos
                 lote_info = batch_info.get('lote_id', 'N/A')
                 lote_fecha = batch_info.get('fecha_procesamiento', 'N/A')
-                
-                # FIX CRÍTICO: PRESERVAR caption original de metadatosEntrada
-                # REASON: Caption debe mantenerse exacto como fue ingresado originalmente
-                # IMPACT: Integridad total del campo caption desde entrada hasta salida
-                # CAUSA RAÍZ: Código anterior sobrescribía caption original con valores generados automáticamente
-                
-                # ✅ PRESERVAR caption original - NO SOBRESCRIBIR
-                # El caption ya viene desde metadatosEntrada y debe mantenerse inalterado
-                # Solo generar caption automático si realmente no existe (None o vacío)
-                if not caption or caption.strip() == '':
-                    if 'PagomovilBDV' in texto_completo:
-                        caption = 'Pago Móvil BDV'
-                    elif 'Transferencia' in texto_completo:
-                        caption = 'Transferencia Bancaria'
-                    elif 'Envio' in texto_completo:
-                        caption = 'Envío de Dinero'
-                    elif 'Operacion' in texto_completo and 'Banco' in texto_completo:
-                        caption = 'Operación Bancaria'
-                    elif any(term in texto_completo for term in ['Bs', 'bolivares', 'Banco']):
-                        caption = 'Transacción Financiera'
                 
                 # MANDATO CRÍTICO BACKEND #1: Extracción de parámetros de seguimiento desde metadata/filename
                 # REASON: Frontend necesita parámetros de entrada (codigo_sorteo, id_whatsapp, etc.) en respuesta

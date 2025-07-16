@@ -1,0 +1,118 @@
+{
+  "metadata": {
+    "fecha_extraccion": "2025-07-16T21:28:09.128560",
+    "total_archivos": 4,
+    "version_sistema": "1.0",
+    "tipo_extraccion": "consolidado_empresarial"
+  },
+  "archivos_procesados": [
+    {
+      "nombre_archivo": "20250716-D--701865738@lid_Pedro_14-22_20250716_212741_458.jpg",
+      "id_whatsapp": "701865738@lid",
+      "nombre_usuario": "Pedro",
+      "caption": "Pedro - 16/07/2025 14:22",
+      "hora_exacta": "14-22",
+      "numero_llegada": 4,
+      "otro": "",
+      "referencia": "003039243692",
+      "bancoorigen": "BANCO DE VENEZUELA",
+      "monto": "104.52",
+      "datosbeneficiario": {
+        "cedula": "27061025",
+        "telefono": "04125318244",
+        "banco_destino": "BANCO MERCANTIL"
+      },
+      "pago_fecha": "20/06/2025",
+      "concepto": "52 Bs Fecha",
+      "texto_total_ocr": "Personas 104,52 Bs Fecha : 20/06/ 2025 Operacion : 003039243692 D - Identificacion : 27061025 Origen : 0102 ****: 2716 Destino : 04125318244 Banco : 0105 = BANCO MERCANTIL",
+      "lote_id": "BATCH_20250716_212741",
+      "lote_fecha": "2025-07-16 21:27:41",
+      "extraction_stats": {
+        "confidence": 0.918,
+        "total_words": 21,
+        "processing_time": 0.09241032600402832
+      }
+    },
+    {
+      "nombre_archivo": "20250716-C--618991099@lid_Carmen_16-16_20250716_212741_457.jpg",
+      "id_whatsapp": "618991099@lid",
+      "nombre_usuario": "Carmen",
+      "caption": "Carmen - 16/07/2025 16:16",
+      "hora_exacta": "16-16",
+      "numero_llegada": 3,
+      "otro": "",
+      "referencia": "003039387344",
+      "bancoorigen": "BANCO DE VENEZUELA",
+      "monto": "104.54",
+      "datosbeneficiario": {
+        "cedula": "00303938",
+        "telefono": "04125318244",
+        "banco_destino": "BANCO MERCANTIL"
+      },
+      "pago_fecha": "20/06/2025",
+      "concepto": "54 Bs Fecha",
+      "texto_total_ocr": "A Personas 104,54 Bs Fecha : 20/06/ 2025 Operacion; 003039387344 I - Identificacion : 2/ 061025 Origen : 0102 **** 2679 Destino : 04125318244 Banco : 0105 - BANCO MERCANTIL",
+      "lote_id": "BATCH_20250716_212741",
+      "lote_fecha": "2025-07-16 21:27:41",
+      "extraction_stats": {
+        "confidence": 0.923,
+        "total_words": 22,
+        "processing_time": 0.10427284240722656
+      }
+    },
+    {
+      "nombre_archivo": "20250716-B--840853931@lid_Laura_11-21_20250716_212741_457.jpg",
+      "id_whatsapp": "840853931@lid",
+      "nombre_usuario": "Laura",
+      "caption": "Laura - 16/07/2025 11:21",
+      "hora_exacta": "11-21",
+      "numero_llegada": 2,
+      "otro": "",
+      "referencia": "003039298732",
+      "bancoorigen": "BANCO DE VENEZUELA",
+      "monto": "105.00",
+      "datosbeneficiario": {
+        "cedula": "27061025",
+        "telefono": "04125318244",
+        "banco_destino": "BANCO MERCANTIL Concepto"
+      },
+      "pago_fecha": "20/06/2025",
+      "concepto": "PagomovilBDV Personas 105",
+      "texto_total_ocr": "A PagomovilBDV Personas 105,00 Bs Fecha : 20/06/ 2025 Operacion : 003039298732 Identificacion : 27061025 Origen; 0102 **** 7105 Destino : 04125318244 Banco : 0105 = BANCO MERCANTIL Concepto : 61",
+      "lote_id": "BATCH_20250716_212741",
+      "lote_fecha": "2025-07-16 21:27:41",
+      "extraction_stats": {
+        "confidence": 0.872,
+        "total_words": 22,
+        "processing_time": 0.22586631774902344
+      }
+    },
+    {
+      "nombre_archivo": "20250716-D--958741800@lid_Carmen_12-18_20250716_212741_456.jpg",
+      "id_whatsapp": "958741800@lid",
+      "nombre_usuario": "Carmen",
+      "caption": "Carmen - 16/07/2025 12:18",
+      "hora_exacta": "12-18",
+      "numero_llegada": 1,
+      "otro": "",
+      "referencia": "490760890",
+      "bancoorigen": "BANCO MERCANTIL",
+      "monto": "104.54",
+      "datosbeneficiario": {
+        "cedula": "5318244",
+        "telefono": "",
+        "banco_destino": ""
+      },
+      "pago_fecha": "",
+      "concepto": "5318244 TREBOL V",
+      "texto_total_ocr": "7:17 PM . (y M U Fallall a 60 0412 - 5318244 TREBOL V - 27061025 - MERCANTIL Monto : Bs . 104,54 Comision : Bs . 0,31 Total : Bs . 104,85 Referencia : 490760890 Codigo autorizador : 282413 Concepto : 90 a Emitir Pago CUENTAS TARJETAS BNC PAGOS DIVISAS",
+      "lote_id": "BATCH_20250716_212741",
+      "lote_fecha": "2025-07-16 21:27:41",
+      "extraction_stats": {
+        "confidence": 0.911,
+        "total_words": 37,
+        "processing_time": 0.13730788230895996
+      }
+    }
+  ]
+}
