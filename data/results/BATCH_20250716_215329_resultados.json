@@ -1,0 +1,92 @@
+{
+  "metadata": {
+    "fecha_extraccion": "2025-07-16T21:53:47.488841",
+    "total_archivos": 3,
+    "version_sistema": "1.0",
+    "tipo_extraccion": "lote_especifico",
+    "lote_id": "BATCH_20250716_215329"
+  },
+  "archivos_procesados": [
+    {
+      "nombre_archivo": "BATCH_20250716_215329_407846ac_068_20250716-J--485055172@lid_Miguel_21-59_20250716_215329_582.png",
+      "id_whatsapp": "485055172",
+      "nombre_usuario": "Miguel",
+      "caption": "",
+      "hora_exacta": "21-59",
+      "numero_llegada": 68,
+      "otro": "",
+      "referencia": "003039387344",
+      "bancoorigen": "BANCO DE VENEZUELA",
+      "monto": "104.54",
+      "datosbeneficiario": {
+        "cedula": "27061025",
+        "telefono": "04125318244",
+        "banco_destino": "BANCO MERCANTIL"
+      },
+      "pago_fecha": "20/06/2025",
+      "concepto": "PagomovilBDV Personas 104",
+      "texto_total_ocr": "A PagomovilBDV Personas 104,54 Bs Fecha : 20/06/ 2025 Operacion : 003039387344 I Identificacion : 27061025 Origen : 0102 ****2 2679 Destino : 04125318244 Banco : 0105 = BANCO MERCANTIL",
+      "lote_fecha": "2025-07-16 21:53:47",
+      "extraction_stats": {
+        "confidence": 0.936,
+        "total_words": 22,
+        "processing_time": 0
+      },
+      "lote_id": "BATCH_20250716_215329"
+    },
+    {
+      "nombre_archivo": "BATCH_20250716_215329_407846ac_446_20250716-B--978410189@lid_Ana_18-09_20250716_215329_583.png",
+      "id_whatsapp": "978410189",
+      "nombre_usuario": "Ana",
+      "caption": "",
+      "hora_exacta": "18-09",
+      "numero_llegada": 446,
+      "otro": "",
+      "referencia": "48311146148",
+      "bancoorigen": "BANCO MERCANTIL",
+      "monto": "210.00",
+      "datosbeneficiario": {
+        "cedula": "27.061.025",
+        "telefono": "",
+        "banco_destino": "BANCO MERCANTIL"
+      },
+      "pago_fecha": "20/06/2025",
+      "concepto": "Nro",
+      "texto_total_ocr": "20/06/ 2025 - 06:50:24 pm Mercantil Envio de Tpago Operacion realizada Desde mi cuenta Se Envio (Bs .) AI beneficiario Cuental de Ahorro 3976 210,00 0412 244 Banco Mercantil, C . A . S . A . C . A, Banco Universal Bingo trebol V -27.061.025 Concepto Nro . Referencia Fecha y hora 106 93 48311146148 20/06/ 2025 - 06:50:20 informacion : mestrada : en : pagina : es confidencial",
+      "lote_fecha": "2025-07-16 21:53:47",
+      "extraction_stats": {
+        "confidence": 0.88,
+        "total_words": 52,
+        "processing_time": 0
+      },
+      "lote_id": "BATCH_20250716_215329"
+    },
+    {
+      "nombre_archivo": "BATCH_20250716_215329_407846ac_882_20250716-C--246154488@lid_Ana_16-43_20250716_215329_583.jpg",
+      "id_whatsapp": "246154488",
+      "nombre_usuario": "Ana",
+      "caption": "",
+      "hora_exacta": "16-43",
+      "numero_llegada": 882,
+      "otro": "",
+      "referencia": "003200542462",
+      "bancoorigen": "BANCARIBE",
+      "monto": "2150.00",
+      "datosbeneficiario": {
+        "cedula": "27623430",
+        "telefono": "04129255657",
+        "banco_destino": ""
+      },
+      "pago_fecha": "13/07/2025",
+      "concepto": "00 Bs Fecha",
+      "texto_total_ocr": "Personas 2.150,00 Bs Fecha : 13/07/ 2025 Operacion : 003200542462 Identificacion : 27623430 Origen : Destino : 04129255657 Banco : 0114 = BANCARIBE Concepto : pagos",
+      "lote_fecha": "2025-07-16 21:53:47",
+      "extraction_stats": {
+        "confidence": 0.914,
+        "total_words": 18,
+        "processing_time": 0
+      },
+      "lote_id": "BATCH_20250716_215329"
+    }
+  ]
+}

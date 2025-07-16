@@ -440,6 +440,14 @@ Sistema OCR asíncrono de alto rendimiento para procesamiento de recibos de pago
 - ✅ **Gestión automática de historial**: Archivos anteriores movidos automáticamente a data/historial
 - ✅ **Contexto establecido**: Sistema preparado para desarrollo continuo siguiendo filosofía INTEGRIDAD TOTAL
 
+### CORRECCIÓN CRÍTICA FINAL - Caption Preservation Bug Resuelto (Julio 16, 2025 22:09 UTC)
+- ✅ **PROBLEMA RESUELTO**: Captions originales no aparecían en JSON consolidado (campos vacíos)
+- ✅ **CAUSA RAÍZ**: Código buscaba en ubicaciones incorrectas (`metadata.fuente_whatsapp.caption` vs `metadata.caption`)
+- ✅ **SOLUCIÓN IMPLEMENTADA**: Corrección en routes.py para leer directamente desde `metadata.caption`
+- ✅ **RESULTADO VERIFICADO**: Captions originales ("Pago Móvil1", "Pago Móvil2", "Pago Móvil3") ahora aparecen correctamente
+- ✅ **TESTING CONFIRMADO**: JSON consolidado muestra captions preservados en `/api/extract_results`
+- ✅ **INTEGRIDAD TOTAL**: Caption preservation funcionando end-to-end desde entrada hasta salida final
+
 ## CORRECCIÓN CRÍTICA INTEGRIDAD TOTAL - Julio 16, 2025
 ### FILOSOFÍA APLICADA: INTEGRIDAD TOTAL + ZERO-FAULT DETECTION
 - ✅ **PROBLEMA RESUELTO**: Sistema mostraba 86 resultados en lugar de 16 archivos del lote ejecutado

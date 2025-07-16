@@ -2161,51 +2161,36 @@ def api_extract_results():
                 # Extraer metadatos WhatsApp si están disponibles
                 metadata = result_data.get('metadata', {})
                 
-                # ✅ PRESERVAR CAPTION ORIGINAL DE METADATOS - CORRECCIÓN CRÍTICA
+                # ✅ PRESERVAR CAPTION ORIGINAL DE METADATOS - CORRECCIÓN CRÍTICA FINAL
                 # REASON: Caption debe mantenerse exacto como fue ingresado por el usuario
                 # IMPACT: Integridad total del campo caption desde entrada hasta salida
                 # CAUSA RAÍZ: Sistema estaba sobrescribiendo caption original con valores generados
                 
-                # BUSCAR caption original en múltiples ubicaciones posibles
-                caption_original = ""
+                # BUSCAR caption original en la ubicación correcta (metadata.caption)
+                caption_original = metadata.get('caption', '').strip()
                 
-                # Prioridad 1: metadata.fuente_whatsapp.caption (ubicación principal)
-                if metadata.get('fuente_whatsapp', {}).get('caption'):
-                    caption_original = metadata['fuente_whatsapp']['caption']
-                    logger.info(f"📋 Caption original encontrado en fuente_whatsapp: '{caption_original}'")
-                
-                # Prioridad 2: metadata.caption (ubicación alternativa)
-                elif metadata.get('caption'):
-                    caption_original = metadata['caption']
-                    logger.info(f"📋 Caption original encontrado en metadata: '{caption_original}'")
-                
-                # Prioridad 3: buscar en datos extraídos
-                elif result_data.get('extracted_fields', {}).get('caption'):
-                    caption_original = result_data['extracted_fields']['caption']
-                    logger.info(f"📋 Caption original encontrado en extracted_fields: '{caption_original}'")
-                
-                # Solo si NO hay caption original, generar uno automático
-                if not caption_original or caption_original.strip() == '':
+                if caption_original:
+                    logger.info(f"📋 Caption original preservado desde metadata: '{caption_original}'")
+                    caption = caption_original
+                else:
+                    # Solo generar caption automático si realmente no existe
                     # Extraer texto completo para análisis automático
                     texto_completo = _extract_full_text(result_data)
                     
                     if 'PagomovilBDV' in texto_completo:
-                        caption_original = 'Pago Móvil BDV'
+                        caption = 'Pago Móvil BDV'
                     elif 'Transferencia' in texto_completo:
-                        caption_original = 'Transferencia Bancaria'
+                        caption = 'Transferencia Bancaria'
                     elif 'Envio' in texto_completo:
-                        caption_original = 'Envío de Dinero'
+                        caption = 'Envío de Dinero'
                     elif 'Operacion' in texto_completo and 'Banco' in texto_completo:
-                        caption_original = 'Operación Bancaria'
+                        caption = 'Operación Bancaria'
                     elif any(term in texto_completo for term in ['Bs', 'bolivares', 'Banco']):
-                        caption_original = 'Transacción Financiera'
+                        caption = 'Transacción Financiera'
+                    else:
+                        caption = 'Documento Procesado'
                     
-                    logger.info(f"📋 Caption generado automáticamente: '{caption_original}'")
-                else:
-                    logger.info(f"📋 Caption original preservado intacto: '{caption_original}'")
-                
-                # Asignar caption final (preservando original)
-                caption = caption_original
+                    logger.info(f"📋 Caption generado automáticamente (no existía original): '{caption}'")
                 
                 # Extraer texto completo para análisis
                 texto_completo = _extract_full_text(result_data)

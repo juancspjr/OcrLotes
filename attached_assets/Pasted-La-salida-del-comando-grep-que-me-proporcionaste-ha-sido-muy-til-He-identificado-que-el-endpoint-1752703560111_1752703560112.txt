@@ -1,0 +1,248 @@
+La salida del comando 
+
+grep que me proporcionaste ha sido muy útil. He identificado que el endpoint responsable de cargar los datos del historial de lotes es 
+
+/api/batches/history, manejado por la función api_get_batch_history en routes.py.
+
+La razón por la cual el campo 
+
+caption no aparece en el historial es que, aunque el JSON de los resultados individuales (como los que subiste anteriormente) contiene el caption, la función api_get_batch_history no está extrayendo explícitamente este campo de cada archivo JSON individual cuando construye la lista de lotes para el historial. Actualmente, se enfoca en calcular contadores de éxito y error, pero no en detalles específicos de cada archivo como el 
+
+caption.
+
+Para solucionar esto, necesitamos modificar la función api_get_batch_history para que, al iterar sobre los archivos JSON individuales dentro de cada lote, también lea el caption (y otros campos relevantes si lo deseas para el historial) y los incluya en la respuesta JSON que envía al frontend.
+
+Aquí te proporciono el código que debes sustituir o insertar en tu archivo routes.py. Busca la función 
+
+api_get_batch_history (alrededor de la línea 1795). La modificación se realizará dentro del bucle donde se procesan los archivos individuales de cada lote (aproximadamente entre las líneas 1894 y 1940).
+
+Este código añadirá una nueva clave files_details a cada objeto de lote en el historial. Esta clave será una lista que contendrá un diccionario por cada archivo procesado en el lote, incluyendo el caption, nombre_usuario, hora_exacta, monto y referencia.
+
+Ubicación/Sección del Código Afectado: routes.py, dentro de la función api_get_batch_history, específicamente donde se itera sobre file_name dentro de batch['files'].
+
+Extracto de Código Actual Relevante (a modificar/expandir):
+Busca este bloque:
+
+Python
+
+# Analizar cada archivo del lote para determinar éxito/error
+for file_name in batch['files']:
+    # Si es un archivo "_resultados.json", contiene resumen del lote
+    if file_name.endswith('_resultados.json'):
+        continue  # No contar archivos de resumen
+
+    # Si es un archivo JSON individual procesado, verificar si tiene datos OCR
+    if file_name.endswith('.json'):
+        file_path = os.path.join(results_dir, file_name)
+        historial_path = os.path.join('data/historial', file_name)
+
+        # Buscar archivo en directorio activo o historial
+        actual_path = file_path if os.path.exists(file_path) else (historial_path if os.path.exists(historial_path) else None)
+        
+        # ... (continúa el código para success_count y error_count)
+
+
+Código Corregido/Añadido:
+Debes añadir la inicialización de batch_files_details y el código para extraer los detalles del archivo dentro del bucle.
+
+Python
+
+import os
+import json
+from flask import jsonify # Asegúrate de que esto ya está importado
+from datetime import datetime # Asegúrate de que esto ya está importado
+from pathlib import Path # Asegúrate de que esto ya está importado
+# from config import get_async_directories # Asegúrate de que esto ya está importado
+# import glob # Asegúrate de que esto ya está importado
+
+# ... (código existente antes de api_get_batch_history)
+
+@app.route('/api/batches/history', methods=['GET'])
+def api_get_batch_history():
+    """
+    FIX: Endpoint para obtener historial completo de lotes con numeración correcta
+    REASON: Usuario necesita ver todos los lotes procesados con numeración secuencial
+    IMPACT: Dropdown de lotes muestra historial completo con números de lote
+    """
+    try:
+        from config import get_async_directories
+        import glob
+
+        directories = get_async_directories()
+        results_dir = directories['results']
+        
+        # Obtener todos los archivos JSON de resultados
+        batch_files = {}
+        
+        # Buscar en directorio results activo
+        if os.path.exists(results_dir):
+            for file in os.listdir(results_dir):
+                if file.endswith('.json') and 'BATCH_' in file:
+                    file_path = os.path.join(results_dir, file)
+                    if os.path.isfile(file_path):
+                        # Extraer batch_prefix del nombre del archivo - CORREGIDO PARA MOSTRAR TODOS LOS ARCHIVOS
+                        try:
+                            # Ejemplo de extracción de prefijo de lote y fecha
+                            # Asegúrate de que tu lógica de extracción aquí sea correcta para tu naming de archivos
+                            parts = file.split('_')
+                            if len(parts) >= 3 and parts[0] == 'BATCH':
+                                batch_id = f"{parts[0]}_{parts[1]}_{parts[2]}" # Ej: BATCH_20250716_200312
+                                
+                                # Intentar parsear la fecha del batch_id
+                                try:
+                                    batch_date_str = parts[1] # Ej: 20250716
+                                    batch_time_str = parts[2] # Ej: 200312
+                                    batch_datetime_obj = datetime.strptime(f"{batch_date_str}_{batch_time_str}", "%Y%m%d_%H%M%S")
+                                    batch_date = batch_datetime_obj.isoformat() # Usar ISO format para consistencia
+                                except ValueError:
+                                    batch_date = None # No se pudo parsear la fecha
+                            else:
+                                # Fallback para archivos sin prefijo BATCH_
+                                batch_id = file.split('.json')[0]
+                                batch_date = None
+
+                            if batch_id not in batch_files:
+                                batch_files[batch_id] = {
+                                    'id': batch_id,
+                                    'date': batch_date,
+                                    'files': []
+                                }
+                            batch_files[batch_id]['files'].append(file)
+                        except (ValueError, IndexError):
+                            continue
+        
+        # Convertir a lista y ordenar por fecha (más reciente primero)
+        batches = list(batch_files.values())
+        batches.sort(key=lambda x: x['date'] if x['date'] else '', reverse=True) # Ordenar por fecha, los None al final
+
+        # Añadir numeración secuencial, orden de llegada y total de archivos
+        for index, batch in enumerate(batches):
+            batch['number'] = len(batches) - index  # Numeración inversa
+            
+            # FIX: CORRECCIÓN CRÍTICA - Contar solo archivos procesados, no archivos de resumen
+            # REASON: totalFiles mostraba cantidad incorrecta incluyendo archivos _resultados.json
+            # IMPACT: Columna "Archivos" ahora muestra cantidad real de archivos procesados
+            actual_processed_files = [f for f in batch['files'] if not f.endswith('_resultados.json')]
+            batch['totalFiles'] = len(actual_processed_files)
+            
+            # MANDATO: Añadir campo "Orden de Llegada" - último en llegar primero
+            batch['ordenLlegada'] = index + 1  # 1 = más reciente, 2 = segundo más reciente, etc.
+            
+            # Añadir timestamp de creación parseado para mejor visualización
+            batch['timestampCreacion'] = batch['date']
+            
+            # FIX: CORRECCIÓN CRÍTICA - Calcular successCount y errorCount para cada lote
+            # REASON: Frontend requiere campos successCount y errorCount que no existían
+            # IMPACT: Elimina valores "undefined" en columnas Exitosos y Errores del historial
+            # CAUSA RAÍZ: Backend no calculaba contadores de éxito/error por lote
+            success_count = 0
+            error_count = 0
+            
+            # NUEVO: Lista para almacenar detalles de cada archivo en el lote, incluyendo caption
+            batch_files_details = [] 
+
+            # Analizar cada archivo del lote para determinar éxito/error y extraer detalles
+            for file_name in batch['files']:
+                # Si es un archivo "_resultados.json", contiene resumen del lote
+                if file_name.endswith('_resultados.json'):
+                    continue  # No contar archivos de resumen
+
+                # Si es un archivo JSON individual procesado, verificar si tiene datos OCR
+                if file_name.endswith('.json'):
+                    file_path = os.path.join(results_dir, file_name)
+                    historial_dir_path = Path(directories.get('historial', 'data/historial'))
+                    historial_path = historial_dir_path / file_name
+                    
+                    # Buscar archivo en directorio activo o historial
+                    actual_path = None
+                    if os.path.exists(file_path):
+                        actual_path = file_path
+                    elif os.path.exists(historial_path):
+                        actual_path = historial_path
+
+                    if actual_path:
+                        try:
+                            with open(actual_path, 'r', encoding='utf-8') as f:
+                                result_data = json.load(f)
+                            
+                            # Comprobar si hay datos OCR (ej. si el campo 'texto_total_ocr' existe y no está vacío)
+                            if result_data.get('texto_total_ocr'):
+                                success_count += 1
+                            else:
+                                error_count += 1
+                            
+                            # *** NUEVO: Extraer detalles para el historial, incluyendo 'caption' ***
+                            file_detail = {
+                                'nombre_archivo': result_data.get('nombre_archivo', file_name),
+                                'nombre_usuario': result_data.get('nombre_usuario', 'N/A'),
+                                'hora_exacta': result_data.get('hora_exacta', 'N/A'),
+                                'caption': result_data.get('caption', 'Sin Caption'), # <--- ESTO ES LO QUE SE AÑADE
+                                'monto': result_data.get('monto', 'N/A'),
+                                'referencia': result_data.get('referencia', 'N/A'),
+                                'bancoorigen': result_data.get('bancoorigen', 'N/A'),
+                                'concepto': result_data.get('concepto', 'N/A'),
+                                'id_whatsapp': result_data.get('id_whatsapp', 'N/A'),
+                                'lote_id': result_data.get('lote_id', 'N/A'),
+                                'pago_fecha': result_data.get('pago_fecha', 'N/A'),
+                                'estado_procesamiento': 'Exitoso' if result_data.get('texto_total_ocr') else 'Con Errores'
+                            }
+                            batch_files_details.append(file_detail)
+
+                        except (json.JSONDecodeError, IOError) as e:
+                            logger.warning(f"⚠️ Error leyendo archivo JSON en historial {actual_path}: {e}")
+                            error_count += 1 # Contar como error si no se puede leer el JSON o está corrupto
+                            # Añadir un detalle de archivo con error
+                            batch_files_details.append({
+                                'nombre_archivo': file_name,
+                                'caption': 'Error de lectura',
+                                'estado_procesamiento': 'Error de Lectura',
+                                'nombre_usuario': 'N/A', 'hora_exacta': 'N/A', 'monto': 'N/A', 
+                                'referencia': 'N/A', 'bancoorigen': 'N/A', 'concepto': 'N/A',
+                                'id_whatsapp': 'N/A', 'lote_id': 'N/A', 'pago_fecha': 'N/A'
+                            })
+                    else:
+                        logger.warning(f"Archivo no encontrado en results_dir ni historial_dir: {file_name}")
+                        error_count += 1 # Contar como error si el archivo no se encuentra
+                        batch_files_details.append({
+                            'nombre_archivo': file_name,
+                            'caption': 'Archivo no encontrado',
+                            'estado_procesamiento': 'Archivo No Encontrado',
+                            'nombre_usuario': 'N/A', 'hora_exacta': 'N/A', 'monto': 'N/A', 
+                            'referencia': 'N/A', 'bancoorigen': 'N/A', 'concepto': 'N/A',
+                            'id_whatsapp': 'N/A', 'lote_id': 'N/A', 'pago_fecha': 'N/A'
+                        })
+            
+            batch['successCount'] = success_count
+            batch['errorCount'] = error_count
+            # NUEVO: Añadir los detalles de los archivos al objeto del lote
+            batch['files_details'] = batch_files_details 
+
+            if batch['totalFiles'] != (success_count + error_count):
+                logger.warning(f"⚠️ Discrepancia en lote {batch['id']}: totalFiles={batch['totalFiles']}, procesados={success_count + error_count}")
+                # Corregir totalFiles para que coincida con archivos realmente analizados
+                batch['totalFiles'] = success_count + error_count
+        
+        logger.info(f"📊 Historial de lotes: {len(batches)} lotes encontrados")
+        
+        return jsonify({
+            'status': 'success',
+            'batches': batches,
+            'total_batches': len(batches)
+        })
+        
+    except Exception as e:
+        logger.error(f"Error obteniendo historial de lotes: {e}")
+        return jsonify({
+            'status': 'error',
+            'message': f'Error obteniendo historial: {str(e)}'
+        }), 500
+
+# ... (resto del código)
+Pasos a seguir después de aplicar el cambio:
+
+Guarda los cambios en tu archivo routes.py.
+
+Reinicia tu aplicación en Replit.
+
+Verifica el historial en tu interfaz de usuario. El campo caption debería ahora mostrar el valor correcto para cada archivo procesado.
+
