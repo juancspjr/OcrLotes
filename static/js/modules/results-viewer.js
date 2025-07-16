@@ -288,7 +288,7 @@ window.OCRSystem = window.OCRSystem || {};
             if (this.filteredResults.length === 0) {
                 this.resultsTable.innerHTML = `
                     <tr id="emptyResultsMessage">
-                        <td colspan="9" class="text-center text-muted py-5">
+                        <td colspan="8" class="text-center text-muted py-5">
                             <i class="fas fa-search fa-2x mb-2"></i><br>
                             ${this.results.length === 0 ? 'No hay resultados para mostrar' : 'No hay resultados que coincidan con los filtros'}
                         </td>
@@ -395,11 +395,7 @@ window.OCRSystem = window.OCRSystem || {};
                         </div>
                         <small class="text-muted">${result.caption}</small>
                     </td>
-                    <td>
-                        <div class="result-codigo" title="Código: ${result.codigo_sorteo}">
-                            ${result.codigo_sorteo || '?'}
-                        </div>
-                    </td>
+                    <!-- COLUMNA 'CÓDIGO' OCULTA POR SOLICITUD DEL USUARIO -->
                     <td>
                         <div class="result-usuario" title="${result.nombre_usuario}">
                             ${result.nombre_usuario || '-'}

@@ -1,0 +1,29 @@
+MANDATO OPTIMIZADO PARA OCULTAR CAMPO EN UI (AHORRO DE CRÉDITOS Y PRECISIÓN)
+OBJETIVO PRINCIPAL DE ESTA SOLICITUD: "Ocultar por completo el campo 'Código' (identificado visualmente por un icono '?' en la cabecera de la columna) de la tabla 'Resultados del Procesamiento' en la interfaz de usuario, sin afectar la estructura de datos subyacente ni la lógica de backend."
+
+1. CONTEXTO MÍNIMO Y RELEVANTE DEL PROBLEMA (Indispensable para el Diagnóstico)
+Ubicación/Sección del Código Afectado: "Lógica de la sección 'Resultados del Procesamiento' en el Frontend Dashboard Service (CO-05), específicamente el código HTML (plantilla) y/o JavaScript que es responsable de construir y renderizar la tabla de resultados. Esto incluye la definición de la columna y la forma en que se insertan los datos para la misma."
+
+Extracto de Código Actual Relevante (¡EN SU LUGAR, DESCRIPCIÓN DETALLADA!):
+
+Estructura de la Interfaz: Existe una tabla HTML donde se muestran los "Resultados del Procesamiento". Esta tabla tiene una cabecera (<thead>) y un cuerpo (<tbody>).
+
+Columna "Código": Dentro de la cabecera, hay una columna (<th>) con el texto "Código" y un icono de interrogación ('?'). En el cuerpo de la tabla, las filas (<tr>) contienen celdas (<td>) que corresponden a esta columna, mostrando el icono '?' para cada resultado.
+
+Origen del Dato (Asunción): El dato asociado a esta columna es probablemente parte del objeto de resultado individual que se recibe del backend (CO-01), aunque la intención es solo ocultar su visualización.
+
+Comportamiento Actual Observado: "La columna titulada 'Código', con su correspondiente icono de interrogación en la cabecera y en cada fila de datos, es visible en la tabla 'Resultados del Procesamiento' de la interfaz de usuario."
+
+Comportamiento Esperado (RESULTADO BLINDADO): "La columna completa identificada como 'Código' (incluyendo su cabecera <th> y todas las celdas <td> correspondientes en cada fila) debe desaparecer completamente de la visualización en la tabla 'Resultados del Procesamiento'. Ningún rastro de esta columna debe ser visible para el usuario. Es fundamental que esta acción NO altere los datos JSON que se envían desde el backend (CO-01) ni afecte ninguna lógica de procesamiento interna; es una modificación puramente de presentación."
+
+2. TIPO DE SOLUCIÓN REQUERIDA Y ÉNFASIS EN EFICIENCIA
+Tipo de Solución: "Snippet de código HTML (si la tabla se construye directamente en el template) o JavaScript (si la tabla se genera dinámicamente) para ocultar o remover la columna 'Código'. No se requiere modificación de lógica de backend Python."
+
+Formato de Entrega: "Directamente el código corregido con comentarios breves que expliquen la modificación y la ubicación sugerida (ej. 'dentro de la plantilla HTML de resultados' o 'en la función JavaScript que renderiza la tabla')."
+
+Énfasis en Consumo de Créditos (IMPORTANTE PARA REPLIT):
+
+Prioriza soluciones con baja complejidad computacional.
+
+(Nota: time.sleep() no aplica aquí, ya que es una modificación de interfaz de usuario, no de lógica de procesamiento intensiva.)
+
