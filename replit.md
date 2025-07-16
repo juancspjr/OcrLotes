@@ -45,6 +45,7 @@ Sistema OCR asíncrono de alto rendimiento para procesamiento de recibos de pago
 - ✅ **VALIDACIÓN ENTERPRISE**: Sistema de validación de metadatos WhatsApp (A-Z, YYYYMMDD, @lid, HH-MM)
 - ✅ **MANEJO DE ERRORES**: Error handlers estandarizados 400/404/413/500 con logging
 - ✅ **INTERFACE EXCELLENCE**: Binding reactivo y validación de componentes
+- ✅ **ORDEN DE LLEGADA**: Campo "Orden de Llegada" implementado con ordenamiento descendente (último en llegar, primero en mostrarse)
 
 ## Preferencias del Usuario
 - Interfaz completamente en español

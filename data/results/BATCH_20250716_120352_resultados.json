@@ -1,0 +1,38 @@
+{
+  "metadata": {
+    "fecha_extraccion": "2025-07-16T12:08:21.785935",
+    "total_archivos": 1,
+    "version_sistema": "1.0",
+    "tipo_extraccion": "lote_especifico",
+    "lote_id": "BATCH_20250716_120352"
+  },
+  "archivos_procesados": [
+    {
+      "nombre_archivo": "BATCH_20250716_120352_e2bb95a0_913_20250716-A--555803061@lid_Laura_14-41_20250716_120352_445.jpg",
+      "id_whatsapp": "555803061",
+      "nombre_usuario": "Laura",
+      "caption": "Operación de Laura",
+      "hora_exacta": "14-41",
+      "numero_llegada": 913,
+      "otro": "",
+      "referencia": "003215578991",
+      "bancoorigen": "BANESCO",
+      "monto": "1085.00",
+      "datosbeneficiario": {
+        "cedula": "27623430",
+        "telefono": "04129255657",
+        "banco_destino": ""
+      },
+      "pago_fecha": "15/07/2025",
+      "concepto": "00 Bs Fecha",
+      "texto_total_ocr": "Personas 1.085,00 Bs Fecha : 15/07/ 2025 Operacion : 003215578991 Identificacion : 27623430 Origen : Destino : 04129255657 Banco : 0134 = BANESCO Concepto : pago",
+      "lote_fecha": "2025-07-16 12:08:21",
+      "extraction_stats": {
+        "confidence": 0.903,
+        "total_words": 18,
+        "processing_time": 0
+      },
+      "lote_id": "BATCH_20250716_120352"
+    }
+  ]
+}

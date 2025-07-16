@@ -245,6 +245,11 @@ window.OCRSystem = window.OCRSystem || {};
         async updateBatchHistory() {
             try {
                 const batches = await this.apiClient.getBatchHistory();
+                
+                // MANDATO: Asegurar ordenamiento descendente por Orden de Llegada
+                // Ordenar por ordenLlegada ascendente (1=más reciente, 2=siguiente, etc.)
+                batches.sort((a, b) => a.ordenLlegada - b.ordenLlegada);
+                
                 this.renderBatchHistory(batches.slice(0, 10)); // Mostrar últimos 10 lotes
                 
             } catch (error) {

@@ -1,0 +1,38 @@
+MANDATO OPTIMIZADO PARA CORRECCIONES EN REPLIT (AHORRO DE CRÉDITOS Y PRECISIÓN)
+OBJETIVO PRINCIPAL DE ESTA SOLICITUD: "Asegurar que la tabla 'Historial de Lotes' en la sección 'Monitoreo' esté correctamente ordenada por el campo 'Orden de Llegada' de forma descendente, garantizando que el lote más reciente (el último en llegar/ser creado) siempre aparezca en la primera posición de la tabla."
+
+1. CONTEXTO MÍNIMO Y RELEVANTE DEL PROBLEMA (Indispensable para el Diagnóstico)
+Ubicación/Sección del Código Afectado: "La lógica que prepara y ordena los datos del historial de lotes en el backend Python (CO-01) (ej. routes.py, función que provee /api/batches/history), y la lógica de renderizado y ordenamiento de la tabla en el frontend JavaScript (ej. static/js/modules/monitoring-dashboard.js). La columna 'Orden de Llegada' ya ha sido añadida en el HTML."
+
+El campo timestampCreacion del Lote es el dato fuente para el "Orden de Llegada".
+
+Extracto de Código Actual Relevante (¡SOLO LAS LÍNEAS DIRECTAMENTE INVOLUCRADAS!):
+
+Python
+
+# IMPORTANTE: No tengo acceso directo a tu código.
+# Agente Replit, revisa la función en el backend que prepara los datos para /api/batches/history.
+# Asegúrate de que los lotes se están ordenando correctamente ANTES de enviarlos al frontend,
+# o de que el campo 'ordenLlegada' está siendo generado de manera que facilite el ordenamiento descendente.
+# Por ejemplo, el timestamp puede ser directamente usado para ordenar.
+#
+# Código JavaScript en static/js/modules/monitoring-dashboard.js
+# Revisa la sección donde se procesan los datos de 'data.batches'
+# y se renderizan las filas de la tabla.
+# Asegúrate de que se aplique un método de ordenamiento (ej. .sort())
+# sobre el array de lotes basado en el campo 'ordenLlegada' o 'timestampCreacion' antes de renderizar.
+# Ejemplo:
+# data.batches.sort((a, b) => b.ordenLlegada - a.ordenLlegada); // O usando timestamps
+Comportamiento Actual Observado: "La columna 'Orden de Llegada' ya es visible en la tabla 'Historial de Lotes'. Sin embargo, no se observa que el lote más reciente aparezca siempre en la primera posición de la tabla. El orden de los lotes en la interfaz no parece ser consistentemente descendente por su tiempo de llegada."
+
+Comportamiento Esperado (RESULTADO BLINDADO): "La tabla 'Historial de Lotes' debe mostrar los lotes ordenados de forma estrictamente descendente por su tiempo de llegada/creación ('Orden de Llegada'). El lote que fue procesado o llegó más recientemente debe aparecer siempre en la primera fila de la tabla. Los valores en la columna 'Orden de Llegada' deben reflejar esta secuencia (ej. '1' para el más reciente, '2' para el siguiente, etc., o directamente el timestamp si se decide usar)."
+
+2. TIPO DE SOLUCIÓN REQUERIDA Y ÉNFASIS EN EFICIENCIA
+Tipo de Solución: "Corrección de snippet(s) de código Python y/o JavaScript para ajustar la lógica de ordenamiento de los datos de lotes antes de su renderizado en la tabla 'Historial de Lotes'. Esto puede implicar modificar cómo se genera o usa el campo 'Orden de Llegada' o cómo se aplica el algoritmo de ordenamiento en el frontend."
+
+Formato de Entrega: "Directamente el código corregido con comentarios breves, indicando el archivo (.py o .js) y la función/sección donde aplicar la modificación."
+
+Énfasis en Consumo de Créditos (IMPORTANTE PARA REPLIT):
+
+Prioriza soluciones con baja complejidad computacional. El ordenamiento debe ser eficiente, aplicando el algoritmo de ordenamiento adecuado (.sort() en JavaScript, sorted() en Python) con la clave correcta.
+
