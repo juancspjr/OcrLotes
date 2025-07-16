@@ -255,6 +255,20 @@ Sistema OCR asíncrono de alto rendimiento para procesamiento de recibos de pago
 - ✅ **Sistema validado**: Motor de reglas configurable con 13 campos funcionando
 - ✅ **Arquitectura segura**: Separación cliente-servidor implementada correctamente
 
+## CORRECCIÓN CRÍTICA INTEGRIDAD TOTAL - Sistema ID Único Implementado (Julio 16, 2025)
+### FILOSOFÍA APLICADA: INTEGRIDAD TOTAL + IDENTIFICADORES ÚNICOS NO TEMPORALES
+- ✅ **PROBLEMA RESUELTO**: Sistema de micro-lotes eliminado completamente
+- ✅ **SOLUCIÓN IMPLEMENTADA**: Sistema de ID único no temporal para lotes de ejecución
+- ✅ **ARQUITECTURA**: ID único generado formato `BATCH_YYYYMMDD_HHMMSS_UUID` almacenado en `data/current_batch_id.txt`
+- ✅ **VALIDACIÓN**: Sistema busca archivos específicos por ID único, evitando agrupación temporal
+- ✅ **INTEGRIDAD TOTAL**: Archivos del lote = archivos mostrados (sin micro-divisiones)
+- ✅ **ARCHIVOS MODIFICADOS**: 
+  - `routes.py`: Funciones `_save_batch_execution_id()` y `_get_current_batch_id_from_file()`
+  - `main_ocr_process.py`: Función `_get_current_batch_id()` y uso de ID único en procesamiento
+  - `api_extract_results()`: Modificado para usar ID único en lugar de agrupación temporal
+- ✅ **TESTING EXITOSO**: ID único `BATCH_20250716_014242_4e5ea9a3` genera y almacena correctamente
+- ✅ **RESULTADO**: Sistema cumple requerimiento "olvidate de temporizadores colocale un numero fijo a ese grupo"
+
 ## CORRECCIONES CRÍTICAS FINALES - Mandato de Intervención Crítica (Julio 7, 2025 06:02 UTC)
 ### FILOSOFÍA APLICADA: INTEGRIDAD TOTAL + ZERO-FAULT DETECTION + PERSISTENCIA INQUEBRANTABLE
 

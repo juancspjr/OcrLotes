@@ -802,7 +802,14 @@ class OrquestadorOCR:
             # Generar nombre único para el lote
             import uuid
             from datetime import datetime
-            batch_id = f"BATCH_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{str(uuid.uuid4())[:3]}_{filename}"
+            # INTEGRIDAD TOTAL: Usar ID único del lote de ejecución
+            current_batch_id = self._get_current_batch_id()
+            if current_batch_id:
+                # Usar ID único del lote + hash del filename para archivo individual
+                batch_id = f"{current_batch_id}_{hash(filename)%1000:03d}_{filename}"
+            else:
+                # Fallback: generar ID individual si no hay lote
+                batch_id = f"BATCH_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{str(uuid.uuid4())[:3]}_{filename}"
             
             # 1. VALIDACIÓN
             validation_result = self.validador.analizar_imagen(image_path)
@@ -1129,6 +1136,21 @@ class OrquestadorOCR:
                     'total_files': 0
                 }
             }
+    
+    def _get_current_batch_id(self):
+        """
+        INTEGRIDAD TOTAL: Obtener ID único del lote actual
+        """
+        try:
+            from pathlib import Path
+            batch_file = Path('data/current_batch_id.txt')
+            if batch_file.exists():
+                with open(batch_file, 'r', encoding='utf-8') as f:
+                    return f.read().strip()
+            return None
+        except Exception as e:
+            logger.error(f"Error obteniendo ID de lote actual: {e}")
+            return None
 
     def _extraer_campos_posicionales(self, palabras_detectadas, texto_completo):
         """

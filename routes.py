@@ -490,10 +490,13 @@ def api_process_batch():
         import uuid
         from datetime import datetime
         
-        # Generar request_id único para el lote
+        # INTEGRIDAD TOTAL: Generar ID único fijo para TODO el lote de ejecución
         batch_timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         batch_uuid = str(uuid.uuid4())[:8]
         request_id = f"BATCH_{batch_timestamp}_{batch_uuid}"
+        
+        # Almacenar ID único del lote para usar en todos los archivos
+        _save_batch_execution_id(request_id)
         
         # FIX: Manejo robusto de datos JSON y form-data
         # REASON: Error 400 puede ser causado por datos malformados o contenido mixto
@@ -594,7 +597,7 @@ def api_process_batch():
                     
                     logger.info(f"📁 Archivo guardado: {final_filename}")
         
-        # Procesar lote con tracking del request_id
+        # Procesar lote con tracking del request_id único
         # FIX: Procesar TODOS los archivos disponibles sin límite de batch_size
         # REASON: Usuario reportó que solo se procesaron 4 de 10 archivos subidos
         # SOLUTION: Usar max_files=50 para procesar todos los archivos disponibles
@@ -1799,61 +1802,82 @@ def api_extract_results():
             if os.path.exists(historial_dir):
                 results_dir = historial_dir
         
-        # FIX: APLICAR INTEGRIDAD TOTAL - RECUPERAR TODOS LOS ARCHIVOS DEL ÚLTIMO LOTE
-        # REASON: Usuario requiere que si envía 15 archivos, se muestren exactamente 15 archivos
-        # IMPACT: Sistema no-dinámico - archivos enviados = archivos mostrados (INTEGRIDAD TOTAL)
-        # METODOLOGÍA: Buscar en AMBOS directorios (results + historial) y recuperar TODOS los archivos del último lote
+        # INTEGRIDAD TOTAL: Usar ID único del lote actual
+        current_batch_id = _get_current_batch_id_from_file()
         json_files = []
         
-        # INTEGRIDAD TOTAL: Buscar archivos en AMBOS directorios
-        all_json_files = []
-        
-        # Buscar en directorio results
-        if os.path.exists(results_dir):
-            for file in os.listdir(results_dir):
-                if file.endswith('.json') and file.startswith('BATCH_'):
-                    file_path = os.path.join(results_dir, file)
-                    if os.path.isfile(file_path):
-                        all_json_files.append(file_path)
-        
-        # Buscar TAMBIÉN en historial (para archivos que se movieron automáticamente)
-        historial_dir = directories.get('historial', 'data/historial')
-        if os.path.exists(historial_dir):
-            for file in os.listdir(historial_dir):
-                if file.endswith('.json') and file.startswith('BATCH_'):
-                    file_path = os.path.join(historial_dir, file)
-                    if os.path.isfile(file_path):
-                        all_json_files.append(file_path)
-        
-        # INTEGRIDAD TOTAL: Agrupar archivos por EJECUCIÓN de lote (proximidad temporal)
-        if all_json_files:
-            # Extraer todos los timestamps y agrupar por proximidad
-            file_timestamps = []
-            for file_path in all_json_files:
-                filename = os.path.basename(file_path)
-                parts = filename.split('_')
-                if len(parts) >= 3:
-                    # Extraer timestamp completo (YYYYMMDD_HHMMSS)
-                    timestamp = f"{parts[1]}_{parts[2]}"
-                    file_timestamps.append((timestamp, file_path))
+        if current_batch_id:
+            # Buscar archivos del lote específico usando el ID único
+            logger.info(f"📊 INTEGRIDAD TOTAL: Buscando archivos del lote único: {current_batch_id}")
+            
+            # Buscar archivos en AMBOS directorios con el ID único
+            all_json_files = []
+            
+            # Buscar en directorio results
+            if os.path.exists(results_dir):
+                for file in os.listdir(results_dir):
+                    if file.endswith('.json') and file.startswith(current_batch_id):
+                        file_path = os.path.join(results_dir, file)
+                        if os.path.isfile(file_path):
+                            all_json_files.append(file_path)
+            
+            # Buscar TAMBIÉN en historial (para archivos que se movieron automáticamente)
+            historial_dir = directories.get('historial', 'data/historial')
+            if os.path.exists(historial_dir):
+                for file in os.listdir(historial_dir):
+                    if file.endswith('.json') and file.startswith(current_batch_id):
+                        file_path = os.path.join(historial_dir, file)
+                        if os.path.isfile(file_path):
+                            all_json_files.append(file_path)
+            
+            json_files = all_json_files
+            logger.info(f"📊 INTEGRIDAD TOTAL: Encontrados {len(json_files)} archivos del lote único {current_batch_id}")
+        else:
+            logger.warning("📊 No hay lote único configurado, usando fallback temporal")
+            # Fallback: buscar por proximidad temporal si no hay ID único
+            # [mantener código anterior como fallback]
+            all_json_files = []
+            
+            # Buscar en directorio results
+            if os.path.exists(results_dir):
+                for file in os.listdir(results_dir):
+                    if file.endswith('.json') and file.startswith('BATCH_'):
+                        file_path = os.path.join(results_dir, file)
+                        if os.path.isfile(file_path):
+                            all_json_files.append(file_path)
+            
+            # Buscar TAMBIÉN en historial (para archivos que se movieron automáticamente)
+            historial_dir = directories.get('historial', 'data/historial')
+            if os.path.exists(historial_dir):
+                for file in os.listdir(historial_dir):
+                    if file.endswith('.json') and file.startswith('BATCH_'):
+                        file_path = os.path.join(historial_dir, file)
+                        if os.path.isfile(file_path):
+                            all_json_files.append(file_path)
             
             # Agrupar archivos por proximidad temporal (mismo minuto de procesamiento)
-            batch_groups = {}
-            for timestamp, file_path in file_timestamps:
-                # Agrupar por minuto (YYYYMMDD_HHMM) - archivos procesados en el mismo minuto = mismo lote
-                batch_minute = timestamp[:13]  # YYYYMMDD_HHMM
-                if batch_minute not in batch_groups:
-                    batch_groups[batch_minute] = []
-                batch_groups[batch_minute].append(file_path)
-            
-            # Obtener el último lote COMPLETO por proximidad temporal de ejecución
-            if batch_groups:
-                # Ordenar por timestamp de minuto
-                sorted_batches = sorted(batch_groups.keys(), reverse=True)
-                if sorted_batches:
-                    latest_batch_minute = sorted_batches[0]
-                    json_files = batch_groups[latest_batch_minute]
-                    logger.info(f"📥 INTEGRIDAD TOTAL: Recuperando TODOS los archivos del último lote por ejecución: {latest_batch_minute} ({len(json_files)} archivos)")
+            if all_json_files:
+                file_timestamps = []
+                for file_path in all_json_files:
+                    filename = os.path.basename(file_path)
+                    parts = filename.split('_')
+                    if len(parts) >= 3:
+                        timestamp = f"{parts[1]}_{parts[2]}"
+                        file_timestamps.append((timestamp, file_path))
+                
+                batch_groups = {}
+                for timestamp, file_path in file_timestamps:
+                    batch_minute = timestamp[:13]  # YYYYMMDD_HHMM
+                    if batch_minute not in batch_groups:
+                        batch_groups[batch_minute] = []
+                    batch_groups[batch_minute].append(file_path)
+                
+                if batch_groups:
+                    sorted_batches = sorted(batch_groups.keys(), reverse=True)
+                    if sorted_batches:
+                        latest_batch_minute = sorted_batches[0]
+                        json_files = batch_groups[latest_batch_minute]
+                        logger.info(f"📥 FALLBACK: Recuperando TODOS los archivos del último lote por ejecución: {latest_batch_minute} ({len(json_files)} archivos)")
         
         if not json_files:
             logger.info("📭 No hay archivos JSON disponibles")
@@ -3779,6 +3803,50 @@ def get_processed_count():
         return count
     except:
         return 0
+
+def _save_batch_execution_id(batch_id):
+    """
+    INTEGRIDAD TOTAL: Almacenar ID único del lote de ejecución
+    """
+    try:
+        batch_file = Path('data/current_batch_id.txt')
+        batch_file.parent.mkdir(parents=True, exist_ok=True)
+        
+        with open(batch_file, 'w', encoding='utf-8') as f:
+            f.write(batch_id)
+        
+        logger.info(f"📦 INTEGRIDAD TOTAL: ID único de lote almacenado: {batch_id}")
+        
+    except Exception as e:
+        logger.error(f"Error almacenando ID de lote: {e}")
+
+def _get_current_batch_execution_id():
+    """
+    INTEGRIDAD TOTAL: Obtener ID único del lote actual
+    """
+    try:
+        batch_file = Path('data/current_batch_id.txt')
+        if batch_file.exists():
+            with open(batch_file, 'r', encoding='utf-8') as f:
+                return f.read().strip()
+        return None
+    except Exception as e:
+        logger.error(f"Error obteniendo ID de lote actual: {e}")
+        return None
+
+def _get_current_batch_id_from_file():
+    """
+    INTEGRIDAD TOTAL: Obtener ID único del lote actual desde archivo
+    """
+    try:
+        batch_file = Path('data/current_batch_id.txt')
+        if batch_file.exists():
+            with open(batch_file, 'r', encoding='utf-8') as f:
+                return f.read().strip()
+        return None
+    except Exception as e:
+        logger.error(f"Error obteniendo ID de lote actual desde archivo: {e}")
+        return None
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
