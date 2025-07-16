@@ -1,0 +1,1140 @@
+{
+  "status": "exitoso",
+  "request_id": "BATCH_20250716_062117_7413cd2e_150_20250716-E--208506157@lid_Sofía_07-42_20250716_062117_704.png",
+  "filename": "20250716-E--208506157@lid_Sofía_07-42_20250716_062117_704.png",
+  "tiempo_procesamiento": 0.10821723937988281,
+  "fecha_procesamiento": "2025-07-16T06:21:18.421500",
+  "original_text_ocr": "- PagomovilBDV Personas 200,00 Bs Fecha : 01/04/ 2025 Operacion : 002501174438 1 Identificacion : 26714848 Origen : 0102 **** 0938 Destino : 04247504716 Banco : 0102 = BANCO DE VENEZUELA Concepto : pago",
+  "structured_text_ocr": "Personas Operacion pago 200,00 002501174438 26714848 04247504716 Banco BANCO VENEZUELA 01/04/ - PagomovilBDV Bs Fecha : 2025 : 1 Identificacion : Origen : 0102 **** 0938 Destino : : 0102 = DE Concepto :",
+  "extracted_fields": {
+    "referencia": "002501174438",
+    "bancoorigen": "BANCO DE VENEZUELA",
+    "monto": "200.00",
+    "telefono": "04247504716",
+    "cedula": "",
+    "banco_destino": "",
+    "pago_fecha": "01/04/ 2025",
+    "fecha_operacion": "01/04/ 2025",
+    "concepto": "Transacción bancaria",
+    "texto_total_ocr": "- PagomovilBDV Personas 200,00 Bs Fecha : 01/04/ 2025 Operacion : 002501174438 1 Identificacion : 26714848 Origen : 0102 **** 0938 Destino : 04247504716 Banco : 0102 = BANCO DE VENEZUELA Concepto : pago"
+  },
+  "processing_metadata": {
+    "logica_oro_aplicada": true,
+    "ocr_confidence_avg": 0.9,
+    "error_messages": [
+      "Lógica de oro aplicada sobre caché para cumplir mandato"
+    ],
+    "processing_time_ms": 0,
+    "total_words_detected": 0,
+    "coordinates_available": 0,
+    "ocr_method": "ONNX_TR_CACHE_WITH_GOLD_LOGIC",
+    "timestamp": "2025-07-16T06:21:18.420160"
+  },
+  "Información del Archivo": {
+    "fecha_procesamiento": "2025-07-16T06:21:18.420260",
+    "formato": ".png",
+    "nombre_original": "20250716-E--208506157@lid_Sofía_07-42_20250716_062117_704.png",
+    "tamaño": 80790
+  },
+  "Estadísticas": {
+    "confianza_promedio": "86.4%",
+    "palabras_alta_confianza": 17,
+    "palabras_baja_confianza": 0,
+    "total_palabras": 24,
+    "calidad_categoria": "Muy Buena",
+    "tiempo_procesamiento": "0.11s",
+    "lineas_texto": 1,
+    "longitud_texto": 202
+  },
+  "Texto Extraído": {
+    "texto_completo": "- PagomovilBDV Personas 200,00 Bs Fecha : 01/04/ 2025 Operacion : 002501174438 1 Identificacion : 26714848 Origen : 0102 **** 0938 Destino : 04247504716 Banco : 0102 = BANCO DE VENEZUELA Concepto : pago",
+    "longitud_texto": 202,
+    "lineas_texto": 1
+  },
+  "validacion": {
+    "imagen_info": {
+      "ancho": 720,
+      "alto": 876,
+      "resolucion_total": 630720,
+      "canales": 1,
+      "modo": "L",
+      "formato": "PNG",
+      "brillo_promedio": 206.4094162227296,
+      "desviacion_brillo": 46.72289690085157,
+      "rango_dinamico": 255.0,
+      "histogram": [
+        16937.0,
+        81.0,
+        77.0,
+        65.0,
+        88.0,
+        80.0,
+        65.0,
+        60.0,
+        78.0,
+        69.0,
+        46.0,
+        80.0,
+        63.0,
+        62.0,
+        56.0,
+        71.0,
+        61.0,
+        53.0,
+        47.0,
+        56.0,
+        60.0,
+        69.0,
+        69.0,
+        68.0,
+        73.0,
+        93.0,
+        73.0,
+        65.0,
+        65.0,
+        82.0,
+        93.0,
+        80.0,
+        64.0,
+        74.0,
+        61.0,
+        77.0,
+        82.0,
+        84.0,
+        79.0,
+        92.0,
+        78.0,
+        92.0,
+        74.0,
+        96.0,
+        90.0,
+        123.0,
+        133.0,
+        149.0,
+        1234.0,
+        174.0,
+        97.0,
+        115.0,
+        95.0,
+        94.0,
+        113.0,
+        95.0,
+        84.0,
+        71.0,
+        77.0,
+        67.0,
+        71.0,
+        72.0,
+        64.0,
+        64.0,
+        92.0,
+        80.0,
+        76.0,
+        58.0,
+        68.0,
+        72.0,
+        76.0,
+        66.0,
+        57.0,
+        69.0,
+        64.0,
+        67.0,
+        69.0,
+        79.0,
+        69.0,
+        64.0,
+        54.0,
+        67.0,
+        60.0,
+        58.0,
+        65.0,
+        64.0,
+        64.0,
+        62.0,
+        60.0,
+        63.0,
+        53.0,
+        73.0,
+        56.0,
+        66.0,
+        69.0,
+        75.0,
+        66.0,
+        78.0,
+        54.0,
+        57.0,
+        68.0,
+        72.0,
+        73.0,
+        65.0,
+        59.0,
+        56.0,
+        69.0,
+        56.0,
+        69.0,
+        74.0,
+        58.0,
+        83.0,
+        76.0,
+        68.0,
+        63.0,
+        83.0,
+        60.0,
+        187.0,
+        77.0,
+        106.0,
+        71.0,
+        77.0,
+        672.0,
+        98.0,
+        89.0,
+        93.0,
+        105.0,
+        708.0,
+        132.0,
+        126.0,
+        718.0,
+        135.0,
+        718.0,
+        170.0,
+        702.0,
+        195.0,
+        793.0,
+        326.0,
+        43305.0,
+        893.0,
+        208.0,
+        148.0,
+        161.0,
+        753.0,
+        141.0,
+        732.0,
+        143.0,
+        148.0,
+        129.0,
+        135.0,
+        105.0,
+        126.0,
+        93.0,
+        112.0,
+        101.0,
+        119.0,
+        137.0,
+        111.0,
+        103.0,
+        126.0,
+        90.0,
+        134.0,
+        107.0,
+        143.0,
+        136.0,
+        146.0,
+        145.0,
+        179.0,
+        225.0,
+        847.0,
+        256.0,
+        460.0,
+        491.0,
+        232.0,
+        158.0,
+        159.0,
+        116.0,
+        114.0,
+        91.0,
+        110.0,
+        78.0,
+        90.0,
+        89.0,
+        92.0,
+        110.0,
+        108.0,
+        97.0,
+        118.0,
+        110.0,
+        116.0,
+        126.0,
+        133.0,
+        150.0,
+        163.0,
+        164.0,
+        215.0,
+        192.0,
+        209.0,
+        220.0,
+        263.0,
+        249.0,
+        285.0,
+        288.0,
+        372.0,
+        355.0,
+        450.0,
+        983.0,
+        485.0,
+        529.0,
+        555.0,
+        558.0,
+        1866.0,
+        777.0,
+        726.0,
+        834.0,
+        892.0,
+        970.0,
+        1171.0,
+        1758.0,
+        1374.0,
+        1520.0,
+        5038.0,
+        483811.0,
+        2990.0,
+        2444.0,
+        1277.0,
+        1268.0,
+        1174.0,
+        1060.0,
+        1000.0,
+        1483.0,
+        865.0,
+        771.0,
+        2020.0,
+        680.0,
+        1291.0,
+        634.0,
+        1248.0,
+        586.0,
+        617.0,
+        537.0,
+        640.0,
+        503.0,
+        521.0,
+        484.0,
+        1230.0,
+        465.0,
+        464.0,
+        426.0,
+        377.0,
+        413.0,
+        401.0,
+        384.0,
+        372.0,
+        357.0,
+        7721.0
+      ],
+      "histogram_analysis": {
+        "picos_principales": [
+          [
+            222,
+            483811
+          ],
+          [
+            138,
+            43305
+          ]
+        ],
+        "rango_fondo_sugerido": 222,
+        "rango_texto_sugerido": 138,
+        "distribucion": {
+          "oscuras": 0.03892377018928528,
+          "medias": 0.09330130368471146,
+          "claras": 0.8677749037742615
+        },
+        "requiere_inversion": false,
+        "bimodal": true
+      },
+      "variaciones_fondo": {
+        "total_regiones_analizadas": 918,
+        "fondos_unicos_detectados": 5,
+        "variacion_fondos": 29.573605964521473,
+        "fondos_heterogeneos": true,
+        "rango_fondos": [
+          0,
+          222
+        ],
+        "requiere_unificacion_avanzada": true,
+        "regiones_variacion": [
+          {
+            "posicion": [
+              0,
+              0
+            ],
+            "media_local": 222.0,
+            "std_local": 0.0,
+            "pico_fondo": 222
+          },
+          {
+            "posicion": [
+              25,
+              0
+            ],
+            "media_local": 222.0,
+            "std_local": 0.0,
+            "pico_fondo": 222
+          },
+          {
+            "posicion": [
+              50,
+              0
+            ],
+            "media_local": 222.0,
+            "std_local": 0.0,
+            "pico_fondo": 222
+          },
+          {
+            "posicion": [
+              75,
+              0
+            ],
+            "media_local": 222.0,
+            "std_local": 0.0,
+            "pico_fondo": 222
+          },
+          {
+            "posicion": [
+              100,
+              0
+            ],
+            "media_local": 222.0,
+            "std_local": 0.0,
+            "pico_fondo": 222
+          },
+          {
+            "posicion": [
+              125,
+              0
+            ],
+            "media_local": 222.0,
+            "std_local": 0.0,
+            "pico_fondo": 222
+          },
+          {
+            "posicion": [
+              150,
+              0
+            ],
+            "media_local": 222.0,
+            "std_local": 0.0,
+            "pico_fondo": 222
+          },
+          {
+            "posicion": [
+              175,
+              0
+            ],
+            "media_local": 222.0,
+            "std_local": 0.0,
+            "pico_fondo": 222
+          },
+          {
+            "posicion": [
+              200,
+              0
+            ],
+            "media_local": 222.0,
+            "std_local": 0.0,
+            "pico_fondo": 222
+          },
+          {
+            "posicion": [
+              225,
+              0
+            ],
+            "media_local": 222.0,
+            "std_local": 0.0,
+            "pico_fondo": 222
+          }
+        ]
+      }
+    },
+    "calidad_imagen": {
+      "contraste": 46.72289690085157,
+      "blur_variance": 2263.3734676786003,
+      "entropy": 2.016232490539551,
+      "gradiente_promedio": 49.313268879925594,
+      "brillo_promedio": 206.4094162227296,
+      "uniformidad_brillo": 46.72289690085157,
+      "calificacion_calidad": 70
+    },
+    "deteccion_texto": {
+      "regiones_detectadas": 25,
+      "area_total_texto": 166184,
+      "densidad_texto": 0.2634830035514967,
+      "regiones": [
+        {
+          "x": 593,
+          "y": 789,
+          "width": 73,
+          "height": 30,
+          "area": 2190,
+          "aspect_ratio": 2.433333333333333
+        },
+        {
+          "x": 53,
+          "y": 781,
+          "width": 138,
+          "height": 34,
+          "area": 4692,
+          "aspect_ratio": 4.0588235294117645
+        },
+        {
+          "x": 339,
+          "y": 720,
+          "width": 104,
+          "height": 35,
+          "area": 3640,
+          "aspect_ratio": 2.9714285714285715
+        },
+        {
+          "x": 239,
+          "y": 720,
+          "width": 74,
+          "height": 31,
+          "area": 2294,
+          "aspect_ratio": 2.3870967741935485
+        },
+        {
+          "x": 494,
+          "y": 718,
+          "width": 171,
+          "height": 37,
+          "area": 6327,
+          "aspect_ratio": 4.621621621621622
+        },
+        {
+          "x": 450,
+          "y": 718,
+          "width": 40,
+          "height": 36,
+          "area": 1440,
+          "aspect_ratio": 1.1111111111111112
+        },
+        {
+          "x": 53,
+          "y": 718,
+          "width": 93,
+          "height": 36,
+          "area": 3348,
+          "aspect_ratio": 2.5833333333333335
+        },
+        {
+          "x": 470,
+          "y": 662,
+          "width": 197,
+          "height": 28,
+          "area": 5516,
+          "aspect_ratio": 7.035714285714286
+        },
+        {
+          "x": 57,
+          "y": 662,
+          "width": 113,
+          "height": 29,
+          "area": 3277,
+          "aspect_ratio": 3.896551724137931
+        },
+        {
+          "x": 470,
+          "y": 597,
+          "width": 196,
+          "height": 28,
+          "area": 5488,
+          "aspect_ratio": 7.0
+        },
+        {
+          "x": 53,
+          "y": 597,
+          "width": 101,
+          "height": 38,
+          "area": 3838,
+          "aspect_ratio": 2.6578947368421053
+        },
+        {
+          "x": 517,
+          "y": 534,
+          "width": 149,
+          "height": 34,
+          "area": 5066,
+          "aspect_ratio": 4.382352941176471
+        },
+        {
+          "x": 54,
+          "y": 533,
+          "width": 186,
+          "height": 38,
+          "area": 7068,
+          "aspect_ratio": 4.894736842105263
+        },
+        {
+          "x": 416,
+          "y": 479,
+          "width": 106,
+          "height": 27,
+          "area": 2862,
+          "aspect_ratio": 3.925925925925926
+        },
+        {
+          "x": 520,
+          "y": 478,
+          "width": 19,
+          "height": 26,
+          "area": 494,
+          "aspect_ratio": 0.7307692307692307
+        },
+        {
+          "x": 537,
+          "y": 477,
+          "width": 92,
+          "height": 29,
+          "area": 2668,
+          "aspect_ratio": 3.1724137931034484
+        },
+        {
+          "x": 53,
+          "y": 475,
+          "width": 150,
+          "height": 34,
+          "area": 5100,
+          "aspect_ratio": 4.411764705882353
+        },
+        {
+          "x": 638,
+          "y": 464,
+          "width": 37,
+          "height": 43,
+          "area": 1591,
+          "aspect_ratio": 0.8604651162790697
+        },
+        {
+          "x": 501,
+          "y": 413,
+          "width": 165,
+          "height": 37,
+          "area": 6105,
+          "aspect_ratio": 4.45945945945946
+        },
+        {
+          "x": 56,
+          "y": 413,
+          "width": 91,
+          "height": 37,
+          "area": 3367,
+          "aspect_ratio": 2.4594594594594597
+        }
+      ],
+      "cobertura_texto_porcentaje": 26.348300355149668
+    },
+    "ruido_artefactos": {
+      "nivel_ruido": 4.255197234906139,
+      "desviacion_ruido": 14.38457950522974,
+      "porcentaje_pixeles_ruidosos": 5.078798833079655,
+      "uniformidad": 3.9740930999492643,
+      "calificacion_ruido": "Moderado"
+    },
+    "geometria_orientacion": {
+      "sesgo_estimado": 2.5,
+      "lineas_detectadas": 50,
+      "simetria_horizontal": 0.4670492112636566,
+      "relacion_aspecto": 0.821917808219178,
+      "requiere_deskew": true,
+      "orientacion_correcta": true
+    },
+    "deteccion_inteligente": {
+      "tipo_imagen": "documento_escaneado",
+      "esquema_color": "texto_oscuro_fondo_claro",
+      "inversion_requerida": false,
+      "ui_elements_detectados": true,
+      "aspect_ratio": 0.821917808219178,
+      "calidad_digital": false,
+      "dark_percentage": 4.589199542999268,
+      "light_percentage": 95.41079711914062,
+      "edge_density": 0.03080923389142567,
+      "noise_estimate": 61.97622542975945,
+      "confianza_deteccion": 0.4
+    },
+    "recomendaciones": {
+      "perfil_recomendado": "rapido",
+      "aplicar_deskew": true,
+      "nivel_denoise": "moderado",
+      "ajuste_contraste": false,
+      "filtro_bilateral": true,
+      "prioridades": [
+        "Corrección de sesgo necesaria"
+      ]
+    },
+    "puntuacion_general": {
+      "total": 80.0,
+      "calidad": 70,
+      "texto": 100,
+      "ruido": 60,
+      "geometria": 100,
+      "categoria": "Excelente"
+    }
+  },
+  "mejora": {
+    "perfil_usado": "ultra_rapido",
+    "pasos_aplicados": [
+      "00_analisis_sin_unificacion",
+      "00_maxima_claridad_letras",
+      "01_no_inversion_necesaria",
+      "02_sin_procesamiento"
+    ],
+    "metricas_antes": {
+      "brillo_promedio": 206.4094162227296,
+      "contraste": 46.72289690085157,
+      "nitidez": 2263.3734676786003,
+      "rango_dinamico": 255.0
+    },
+    "parametros_aplicados": {
+      "analisis_fondos": {
+        "intensidad_media_original": 206.41,
+        "porcentaje_fondo_oscuro": 0.03799999877810478,
+        "unificacion_aplicada": false,
+        "razon_no_unificacion": "preservacion_calidad_usuario"
+      },
+      "no_inversion": {
+        "razon": "imagen_suficientemente_clara",
+        "intensidad_media": 206.41
+      },
+      "documento_processing_eliminado": {
+        "razon": "eliminado_por_solicitud_usuario",
+        "bilateral_filter": false,
+        "contraste_adaptativo": false,
+        "binarizacion": false,
+        "impacto": "preserva_imagen_original_completamente"
+      }
+    },
+    "tiempo_procesamiento": 0.011,
+    "estrategia_aplicada": "Documento Escaneado - SIN PROCESAMIENTO",
+    "metricas_despues": {
+      "brillo_promedio": 206.37786339421612,
+      "contraste": 48.122777797777175,
+      "nitidez": 3805.8203721947693,
+      "rango_dinamico": 255.0
+    },
+    "imagen_mejorada": "imagen_mejorada.png",
+    "mejora_calidad": {
+      "contraste": {
+        "antes": 46.72,
+        "despues": 48.12,
+        "cambio": 1.4,
+        "porcentaje": 3.0
+      },
+      "nitidez": {
+        "antes": 2263.37,
+        "despues": 3805.82,
+        "cambio": 1542.45,
+        "porcentaje": 68.1
+      },
+      "rango_dinamico": {
+        "antes": 255.0,
+        "despues": 255.0,
+        "cambio": 0.0,
+        "porcentaje": 0.0
+      }
+    }
+  },
+  "datos_extraidos": {
+    "texto_completo": "- PagomovilBDV Personas 200,00 Bs Fecha : 01/04/ 2025 Operacion : 002501174438 1 Identificacion : 26714848 Origen : 0102 **** 0938 Destino : 04247504716 Banco : 0102 = BANCO DE VENEZUELA Concepto : pago",
+    "palabras_detectadas": [
+      {
+        "texto": "-",
+        "confianza": 0.5989275574684143,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 0,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "PagomovilBDV",
+        "confianza": 0.8377845883369446,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 1,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "Personas",
+        "confianza": 0.9922658801078796,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 1,
+          "palabra": 1
+        }
+      },
+      {
+        "texto": "200,00",
+        "confianza": 0.9892812967300415,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 2,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "Bs",
+        "confianza": 0.9975887537002563,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 2,
+          "palabra": 1
+        }
+      },
+      {
+        "texto": "Fecha:",
+        "confianza": 0.9986347556114197,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 3,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "01/04/2025",
+        "confianza": 0.9991390705108643,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 4,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "Operacion:",
+        "confianza": 0.6623085737228394,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 5,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "002501174438",
+        "confianza": 0.988211452960968,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 6,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "1",
+        "confianza": 0.6779965758323669,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 7,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "Identificacion:",
+        "confianza": 0.5886964797973633,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 8,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "26714848",
+        "confianza": 0.9994850158691406,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 9,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "Origen:",
+        "confianza": 0.9112686514854431,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 10,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "0102****0938",
+        "confianza": 0.6715519428253174,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 11,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "Destino:",
+        "confianza": 0.986467182636261,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 12,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "04247504716",
+        "confianza": 0.8560893535614014,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 13,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "Banco:",
+        "confianza": 0.50550776720047,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 14,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "0102",
+        "confianza": 0.9999850988388062,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 15,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "=",
+        "confianza": 0.6374116539955139,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 15,
+          "palabra": 1
+        }
+      },
+      {
+        "texto": "BANCO",
+        "confianza": 0.9182335734367371,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 15,
+          "palabra": 2
+        }
+      },
+      {
+        "texto": "DE",
+        "confianza": 0.9593595266342163,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 15,
+          "palabra": 3
+        }
+      },
+      {
+        "texto": "VENEZUELA",
+        "confianza": 0.9988723397254944,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 15,
+          "palabra": 4
+        }
+      },
+      {
+        "texto": "Concepto:",
+        "confianza": 0.9983843564987183,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 16,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "pago",
+        "confianza": 0.9515377283096313,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 17,
+          "palabra": 0
+        }
+      }
+    ],
+    "metodo_extraccion": "ONNXTR_SINGLE_PASS_COORDENADAS",
+    "tiempo_procesamiento": 0.10821723937988281,
+    "total_palabras_detectadas": 24,
+    "confianza_promedio": 0.8635412156581879
+  },
+  "estadisticas": {
+    "confianza_promedio": "86.4%",
+    "palabras_alta_confianza": 17,
+    "palabras_baja_confianza": 0,
+    "total_palabras": 24,
+    "calidad_categoria": "Muy Buena",
+    "tiempo_procesamiento": "0.11s",
+    "lineas_texto": 1,
+    "longitud_texto": 202
+  },
+  "calidad_extraccion": {},
+  "texto_extraido": "- PagomovilBDV Personas 200,00 Bs Fecha : 01/04/ 2025 Operacion : 002501174438 1 Identificacion : 26714848 Origen : 0102 **** 0938 Destino : 04247504716 Banco : 0102 = BANCO DE VENEZUELA Concepto : pago"
+}
