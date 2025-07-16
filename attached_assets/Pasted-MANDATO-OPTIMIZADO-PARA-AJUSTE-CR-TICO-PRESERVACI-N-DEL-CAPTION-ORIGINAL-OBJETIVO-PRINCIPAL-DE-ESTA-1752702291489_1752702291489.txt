@@ -1,0 +1,41 @@
+MANDATO OPTIMIZADO PARA AJUSTE CRÍTICO: PRESERVACIÓN DEL CAPTION ORIGINAL
+OBJETIVO PRINCIPAL DE ESTA SOLICITUD: "Modificar el sistema para asegurar que el campo caption de cada Documento de Pago mantenga siempre el valor exacto proporcionado originalmente en metadatosEntrada (desde 'Archivos en Cola') a lo largo de todo el pipeline de procesamiento, hasta los 'Resultados del Procesamiento' (JSONs) y la tabla 'Historial de Lotes'. El caption no debe ser generado ni modificado por el sistema en función del contenido del archivo (OCR) ni del nombre del archivo."
+
+1. CONTEXTO MÍNIMO Y RELEVANTE DEL PROBLEMA (Indispensable para el Diagnóstico)
+Ubicación/Sección del Código Afectado: "Principalmente el backend Python (CO-01), en las funciones que orquestan el procesamiento de lotes y archivos individuales (ej. main_ocr_process.py, routes.py). También, cualquier punto donde se construyan los objetos Resultado OCR y Resultado Consolidado del Lote."
+
+Referencia Clave: El MODELO DE DOMINIO CONCEPTUAL.docx define metadatosEntrada del Documento de Pago como el lugar donde se proporciona el caption original.
+
+Archivos JSON de Resultados: resultados_ocr_2025-07-16 (1).json, resultados_BATCH_20250716_200312.json, resultados_ocr_2025-07-16(3).json, resultados_BATCH_20250716_212741.json, resultados_ocr_2025-07-16(5).json donde se observa el caption generado en lugar del original.
+
+Extracto de Código Actual Relevante (¡SOLO LAS LÍNEAS DIRECTAMENTE INVOLUCRADAS!):
+
+Python
+
+# Agente Replit, ahora tu enfoque debe ser rastrear dónde se **recibe** el 'caption' original
+# de 'metadatosEntrada' y asegurar que sea **este** valor el que se use y propague.
+
+# Revisa los puntos donde se genera el JSON de salida y donde se alimenta el historial.
+# El código que Agente Replit ya modificó para generar 'caption' desde 'nombre_usuario' y 'fecha'
+# debe ser revertido o modificado para usar el 'caption' de 'metadatosEntrada'.
+
+# Por ejemplo, busca llamadas a _extract_whatsapp_metadata_from_filename
+# Asegúrate de que el 'caption' que se extrae del nombre de archivo NO SOBRESCRIBA el 'caption'
+# que viene de los metadatos originales (metadatosEntrada) si este existe.
+
+# El 'caption' es un dato de entrada, NO un dato a generar.
+Comportamiento Actual Observado: "El campo caption en los JSON de 'Resultados del Procesamiento' y en la tabla 'Historial de Lotes' muestra un valor generado por el sistema (ej. 'Laura - 16/07/2025 14:41' o 'Operación Bancaria') en lugar del valor exacto que fue ingresado manualmente por el usuario en 'Archivos en Cola' (el metadatosEntrada.caption)."
+
+Comportamiento Esperado (RESULTADO BLINDADO): "El campo caption en todos los resultados (JSON de 'Resultados del Procesamiento', y la tabla 'Historial de Lotes') debe ser exactamente igual al valor que se proporcionó en metadatosEntrada al cargar el archivo en 'Archivos en Cola'."
+
+2. TIPO DE SOLUCIÓN REQUERIDA Y ÉNFASIS EN EFICIENCIA
+Tipo de Solución: "Corrección de snippet(s) de código Python (backend) para asegurar la propagación correcta del caption desde metadatosEntrada a través de todo el procesamiento hasta los resultados finales. Implica identificar la Fuente de Verdad del caption y priorizarla sobre cualquier lógica de generación de caption."
+
+Formato de Entrega: "Directamente el código corregido con comentarios que expliquen cómo se garantiza que el caption original de metadatosEntrada es el que prevalece. Dejar muy claro si alguna lógica de generación de caption fue eliminada o modificada para este fin."
+
+Énfasis en Consumo de Créditos (IMPORTANTE PARA REPLIT):
+
+Máxima Precisión en la identificación de la fuente de caption.
+
+La solución debe ser quirúrgica, corrigiendo solo el flujo de caption sin afectar otras lógicas.
+
