@@ -1,0 +1,65 @@
+{
+  "archivos_procesados": [
+    {
+      "bancoorigen": "BBVA PROVINCIAL",
+      "caption": "",
+      "concepto": "Eldinero fue enviado",
+      "datosbeneficiario": {
+        "banco_destino": "",
+        "cedula": "27061025",
+        "telefono": "04125318244"
+      },
+      "extraction_stats": {
+        "confidence": 0.922,
+        "processing_time": 0,
+        "total_words": 23
+      },
+      "hora_exacta": "07-19",
+      "id_whatsapp": "535687340",
+      "lote_fecha": "2025-07-16 22:16:08",
+      "lote_id": "BATCH_20250716_221506",
+      "monto": "313.62",
+      "nombre_archivo": "BATCH_20250716_221506_cd3331fd_162_20250716-I--535687340@lid_Miguel_07-19_20250716_221507_026.jpg",
+      "nombre_usuario": "Miguel",
+      "numero_llegada": 162,
+      "otro": "",
+      "pago_fecha": "20/06/2025",
+      "referencia": "000012071",
+      "texto_total_ocr": "Eldinero fue enviado Bs . 313,62 Dinero Rapido BBVA Provincial Banco : BANCO MERCANTIL Numero celular : 04125318244 Identificacion : V 27061025 Concepto : Pago Fecha : 20/06/ 2025 Referencia : 000012071"
+    },
+    {
+      "bancoorigen": "BANCO DE VENEZUELA",
+      "caption": "",
+      "concepto": "00 Bs Fecha",
+      "datosbeneficiario": {
+        "banco_destino": "BANCO DE VENEZUELA Concepto",
+        "cedula": "26714848",
+        "telefono": ""
+      },
+      "extraction_stats": {
+        "confidence": 0.938,
+        "processing_time": 0,
+        "total_words": 20
+      },
+      "hora_exacta": "19-57",
+      "id_whatsapp": "113171260",
+      "lote_fecha": "2025-07-16 22:16:08",
+      "lote_id": "BATCH_20250716_221506",
+      "monto": "200.00",
+      "nombre_archivo": "BATCH_20250716_221506_cd3331fd_425_20250716-E--113171260@lid_Carmen_19-57_20250716_221507_025.jpeg",
+      "nombre_usuario": "Carmen",
+      "numero_llegada": 425,
+      "otro": "",
+      "pago_fecha": "01/04/2025",
+      "referencia": "002501174438",
+      "texto_total_ocr": "Personas 200,00 Bs Fecha : 01/04/ 2025 Operacion : 002501174438 Identificacion : 26714848 Origen : Destino : 04247504 /16 Banco : 0102 = BANCO DE VENEZUELA Concepto : pago"
+    }
+  ],
+  "metadata": {
+    "fecha_extraccion": "2025-07-16T22:16:08.615644",
+    "lote_id": "BATCH_20250716_221506",
+    "tipo_extraccion": "lote_especifico",
+    "total_archivos": 2,
+    "version_sistema": "1.0"
+  }
+}

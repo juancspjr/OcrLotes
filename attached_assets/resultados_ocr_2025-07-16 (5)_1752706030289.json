@@ -1,0 +1,64 @@
+{
+  "metadata": {
+    "fecha_extraccion": "2025-07-16T22:15:47.937971",
+    "total_archivos": 2,
+    "version_sistema": "1.0",
+    "tipo_extraccion": "consolidado_empresarial"
+  },
+  "archivos_procesados": [
+    {
+      "nombre_archivo": "20250716-E--113171260@lid_Carmen_19-57_20250716_221507_025.jpeg",
+      "id_whatsapp": "113171260@lid",
+      "nombre_usuario": "Carmen",
+      "caption": "Pago MóvilA",
+      "hora_exacta": "19-57",
+      "numero_llegada": 2,
+      "otro": "",
+      "referencia": "002501174438",
+      "bancoorigen": "BANCO DE VENEZUELA",
+      "monto": "200.00",
+      "datosbeneficiario": {
+        "cedula": "26714848",
+        "telefono": "",
+        "banco_destino": "BANCO DE VENEZUELA Concepto"
+      },
+      "pago_fecha": "01/04/2025",
+      "concepto": "00 Bs Fecha",
+      "texto_total_ocr": "Personas 200,00 Bs Fecha : 01/04/ 2025 Operacion : 002501174438 Identificacion : 26714848 Origen : Destino : 04247504 /16 Banco : 0102 = BANCO DE VENEZUELA Concepto : pago",
+      "lote_id": "BATCH_20250716_221506",
+      "lote_fecha": "2025-07-16 22:15:06",
+      "extraction_stats": {
+        "confidence": 0.938,
+        "total_words": 20,
+        "processing_time": 0.14008688926696777
+      }
+    },
+    {
+      "nombre_archivo": "20250716-I--535687340@lid_Miguel_07-19_20250716_221507_026.jpg",
+      "id_whatsapp": "535687340@lid",
+      "nombre_usuario": "Miguel",
+      "caption": "Pago MóvilB",
+      "hora_exacta": "07-19",
+      "numero_llegada": 1,
+      "otro": "",
+      "referencia": "000012071",
+      "bancoorigen": "BBVA PROVINCIAL",
+      "monto": "313.62",
+      "datosbeneficiario": {
+        "cedula": "27061025",
+        "telefono": "04125318244",
+        "banco_destino": ""
+      },
+      "pago_fecha": "20/06/2025",
+      "concepto": "Eldinero fue enviado",
+      "texto_total_ocr": "Eldinero fue enviado Bs . 313,62 Dinero Rapido BBVA Provincial Banco : BANCO MERCANTIL Numero celular : 04125318244 Identificacion : V 27061025 Concepto : Pago Fecha : 20/06/ 2025 Referencia : 000012071",
+      "lote_id": "BATCH_20250716_221506",
+      "lote_fecha": "2025-07-16 22:15:06",
+      "extraction_stats": {
+        "confidence": 0.922,
+        "total_words": 23,
+        "processing_time": 0.27005529403686523
+      }
+    }
+  ]
+}

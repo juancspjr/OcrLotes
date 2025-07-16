@@ -3644,7 +3644,8 @@ def _extract_tracking_parameters(nombre_archivo, metadata, result_data):
         'id_whatsapp': '',        # ID de WhatsApp con @lid
         'nombre_usuario': '',     # Nombre del usuario
         'hora_exacta': '',        # Hora en formato HH-MM
-        'numero_llegada': 0       # Orden de llegada en el lote (NUEVO MANDATO)
+        'numero_llegada': 0,      # Orden de llegada en el lote (NUEVO MANDATO)
+        'caption': ''             # ✅ CORRECCIÓN CRÍTICA: Caption preservation para historial
     }
     
     try:
@@ -3654,6 +3655,8 @@ def _extract_tracking_parameters(nombre_archivo, metadata, result_data):
             tracking_params['id_whatsapp'] = metadata.get('idWhatsapp', '') or metadata.get('id_whatsapp', '')
             tracking_params['nombre_usuario'] = metadata.get('nombre', '') or metadata.get('nombre_usuario', '')
             tracking_params['hora_exacta'] = metadata.get('horamin', '') or metadata.get('hora_exacta', '')
+            # ✅ CORRECCIÓN CRÍTICA: Extraer caption desde metadata
+            tracking_params['caption'] = metadata.get('caption', '') or metadata.get('fuente_whatsapp', {}).get('caption', '')
         
         # FUENTE 2: Extraer desde filename usando patrones WhatsApp empresariales
         if nombre_archivo and not all(tracking_params.values()):
@@ -3701,6 +3704,9 @@ def _extract_tracking_parameters(nombre_archivo, metadata, result_data):
                         tracking_params['nombre_usuario'] = source.get('nombre', '') or source.get('nombre_usuario', '')
                     if not tracking_params['hora_exacta']:
                         tracking_params['hora_exacta'] = source.get('horamin', '') or source.get('hora_exacta', '')
+                    # ✅ CORRECCIÓN CRÍTICA: Extraer caption desde todas las fuentes de datos
+                    if not tracking_params['caption']:
+                        tracking_params['caption'] = source.get('caption', '') or source.get('fuente_whatsapp', {}).get('caption', '')
         
         # MANDATO CRÍTICO: Generar numero_llegada basado en timestamp o posición en filename
         # REASON: Frontend necesita orden de llegada para correlación con interfaz

@@ -1,0 +1,34 @@
+1. OBJETIVO PRINCIPAL DEL MANDATO:
+Asegurar que el campo caption, presente y correcto en los JSON individuales o de lote procesados originalmente (ej. resultados_ocr_2025-07-16 (5).json), se mantenga íntegro y se refleje correctamente en el JSON de historial (ej. resultados_BATCH_20250716_221506.json) y en cualquier otra visualización o almacenamiento relacionado con el historial, evitando que aparezca en blanco ("").
+
+2. CONTEXTO PRECISO DEL PROBLEMA:
+Comportamiento Actual Observado:
+
+Los archivos JSON que contienen los resultados del procesamiento de un lote (resultados_ocr_*.json, como resultados_ocr_2025-07-16 (5).json) contienen el caption correcto para cada archivo procesado dentro del lote (ej. "Pago MóvilA", "Pago MóvilB").
+
+Sin embargo, cuando esta misma información se consolida o se guarda en el JSON de historial (resultados_BATCH_*.json, como resultados_BATCH_20250716_221506.json), el campo caption aparece vacío ("") para todos los archivos procesados.
+
+Esto indica que el caption se pierde o se sobrescribe específicamente durante la fase de consolidación o guardado del lote para el historial, o al generar el JSON que alimenta dicho historial.
+
+Fuente de Datos del caption:
+
+La Fuente de Verdad para el caption es el valor ya presente en el JSON de resultado del lote procesado (resultados_ocr_*.json), que a su vez debería provenir de los metadatosEntrada originales.
+
+Alcance de los JSON:
+
+Reiteramos que el problema afecta cómo los resultados de un lote (que pueden contener varios archivos) se guardan y representan en el historial.
+
+3. COMPORTAMIENTO ESPERADO (RESULTADO BLINDADO):
+El campo caption en el JSON de historial (resultados_BATCH_*.json) y en cualquier interfaz que muestre el historial, debe ser exactamente el valor que figura en el caption del JSON de resultado del lote original (resultados_ocr_*.json).
+
+No deben aparecer valores vacíos ("") en el historial si el caption original del lote procesado no lo estaba.
+
+4. DIRECTRICES Y RESTRICCIONES CLAVE PARA LA RESOLUCIÓN DE LA IA:
+Preservar el caption Existente: La IA no debe inventar ni generar el valor del caption. Su tarea es asegurar la transferencia y persistencia del caption ya extraído y presente en los JSON de resultados de lote originales (resultados_ocr_*.json) al momento de consolidar o guardar la información para el historial (resultados_BATCH_*.json).
+
+Enfoque en la Consolidación/Registro del Historial: La IA debe investigar el proceso de cómo los resultados de un lote se transforman en la entrada del historial. Identificar el punto exacto donde el caption se vacía o no se mapea correctamente durante esta transferencia.
+
+Sin Refactorización Masiva: La solución debe ser precisa y focalizada en la lógica de guardado y consolidación de datos para el historial.
+
+Claridad de Implementación: La IA debe describir los cambios necesarios con extrema claridad y especificidad, indicando los archivos, funciones y secciones de código afectadas en la fase de escritura/lectura del historial o del JSON de lote para historial.
+

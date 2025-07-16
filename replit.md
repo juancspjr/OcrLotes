@@ -448,6 +448,14 @@ Sistema OCR asíncrono de alto rendimiento para procesamiento de recibos de pago
 - ✅ **TESTING CONFIRMADO**: JSON consolidado muestra captions preservados en `/api/extract_results`
 - ✅ **INTEGRIDAD TOTAL**: Caption preservation funcionando end-to-end desde entrada hasta salida final
 
+### CORRECCIÓN CRÍTICA DEFINITIVA - Caption Preservation Root Cause Resolved (Julio 16, 2025 22:53 UTC)
+- ✅ **CAUSA RAÍZ DEFINITIVA**: Función `_extract_tracking_parameters` NO incluía campo `caption` en parámetros de seguimiento
+- ✅ **SOLUCIÓN IMPLEMENTADA**: Añadido campo `caption` a inicialización y extracción en `_extract_tracking_parameters`
+- ✅ **CORRECCIÓN TÉCNICA**: Extracción desde metadata principal y fuentes adicionales en result_data
+- ✅ **RESULTADO VERIFICADO**: Captions "Pago MóvilA" y "Pago MóvilB" preservados correctamente
+- ✅ **TESTING CONFIRMADO**: `/api/extract_results` muestra captions originales en JSON consolidado
+- ✅ **FILOSOFÍA CENTRAL CUMPLIDA**: INTEGRIDAD TOTAL + ZERO-FAULT DETECTION + SINGLE SOURCE OF TRUTH
+
 ## CORRECCIÓN CRÍTICA INTEGRIDAD TOTAL - Julio 16, 2025
 ### FILOSOFÍA APLICADA: INTEGRIDAD TOTAL + ZERO-FAULT DETECTION
 - ✅ **PROBLEMA RESUELTO**: Sistema mostraba 86 resultados en lugar de 16 archivos del lote ejecutado
