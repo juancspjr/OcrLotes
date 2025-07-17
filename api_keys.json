@@ -29,5 +29,23 @@
     "created_at": "2025-07-06T16:59:03.595278",
     "last_used": null,
     "usage_count": 0
+  },
+  "ocr_7a471989792a9330": {
+    "key_id": "ocr_7a471989792a9330",
+    "api_key": "4e3926d8595bf22081a077b01e373e05db8250e277b31abd9bc206ded9791352",
+    "name": "test_key",
+    "is_active": true,
+    "created_at": "2025-07-17T01:37:14.673918",
+    "last_used": null,
+    "usage_count": 0
+  },
+  "ocr_aad46051a5f0f475": {
+    "key_id": "ocr_aad46051a5f0f475",
+    "api_key": "bb944783048629aaf75e043f615ef1a73113429039f64c952abbc76b34cf8ca7",
+    "name": "test_frontend_fix",
+    "is_active": true,
+    "created_at": "2025-07-17T01:38:01.268043",
+    "last_used": null,
+    "usage_count": 0
   }
 }

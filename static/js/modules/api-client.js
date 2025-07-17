@@ -352,9 +352,17 @@ window.OCRSystem = window.OCRSystem || {};
          */
         async generateApiKey() {
             try {
-                const response = await this.request('/api/generate_api_key', { method: 'POST' });
-                if (response.api_key) {
-                    this.setApiKey(response.api_key);
+                const response = await this.request('/api/generate_api_key', { 
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        name: `API Key ${new Date().toISOString().slice(0, 19).replace('T', ' ')}`
+                    })
+                });
+                if (response.data && response.data.api_key) {
+                    this.setApiKey(response.data.api_key);
                 }
                 return response;
             } catch (error) {

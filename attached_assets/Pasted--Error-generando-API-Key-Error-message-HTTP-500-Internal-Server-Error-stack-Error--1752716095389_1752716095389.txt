@@ -1,0 +1,37 @@
+
+
+ Error generando API Key: 
+Error {}
+message: "HTTP 500: Internal Server Error"
+stack: "Error: HTTP 500: Internal Server Error↵ at APIClient.request (https://ca38cda7-9ac0-421b-99aa-b49a46752cd0-00-30fjw2ep64rk5.kirk.replit.dev/static/js/modules/api-client.js:54:27)↵ at async APIClient.generateApiKey (https://ca38cda7-9ac0-421b-99aa-b49a46752cd0-00-30fjw2ep64rk5.kirk.replit.dev/static/js/modules/api-client.js:355:34)↵ at async APIDocs.generateNewApiKey (https://ca38cda7-9ac0-421b-99aa-b49a46752cd0-00-30fjw2ep64rk5.kirk.replit.dev/static/js/modules/api-docs.js:114:34)"
+get stack: ƒ ()
+set stack: ƒ ()
+[[Prototype]]: Object
+
+at t.value (https://ca38cda7-9ac0-421b-99aa-b49a46752cd0-00-30fjw2ep64rk5.kirk.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://ca38cda7-9ac0-421b-99aa-b49a46752cd0-00-30fjw2ep64rk5.kirk.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://ca38cda7-9ac0-421b-99aa-b49a46752cd0-00-30fjw2ep64rk5.kirk.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://ca38cda7-9ac0-421b-99aa-b49a46752cd0-00-30fjw2ep64rk5.kirk.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400
+
+
+ Error generando API Key: 
+Error {}
+
+at t.value (https://ca38cda7-9ac0-421b-99aa-b49a46752cd0-00-30fjw2ep64rk5.kirk.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://ca38cda7-9ac0-421b-99aa-b49a46752cd0-00-30fjw2ep64rk5.kirk.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://ca38cda7-9ac0-421b-99aa-b49a46752cd0-00-30fjw2ep64rk5.kirk.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://ca38cda7-9ac0-421b-99aa-b49a46752cd0-00-30fjw2ep64rk5.kirk.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400
+
+
+❌ API Error: POST /api/generate_api_key 
+Error {}
+message: "HTTP 500: Internal Server Error"
+stack: "Error: HTTP 500: Internal Server Error↵ at APIClient.request (https://ca38cda7-9ac0-421b-99aa-b49a46752cd0-00-30fjw2ep64rk5.kirk.replit.dev/static/js/modules/api-client.js:54:27)↵ at async APIClient.generateApiKey (https://ca38cda7-9ac0-421b-99aa-b49a46752cd0-00-30fjw2ep64rk5.kirk.replit.dev/static/js/modules/api-client.js:355:34)↵ at async APIDocs.generateNewApiKey (https://ca38cda7-9ac0-421b-99aa-b49a46752cd0-00-30fjw2ep64rk5.kirk.replit.dev/static/js/modules/api-docs.js:114:34)"
+get stack: ƒ ()
+set stack: ƒ ()
+[[Prototype]]: Object
+
+at t.value (https://ca38cda7-9ac0-421b-99aa-b49a46752cd0-00-30fjw2ep64rk5.kirk.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://ca38cda7-9ac0-421b-99aa-b49a46752cd0-00-30fjw2ep64rk5.kirk.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://ca38cda7-9ac0-421b-99aa-b49a46752cd0-00-30fjw2ep64rk5.kirk.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://ca38cda7-9ac0-421b-99aa-b49a46752cd0-00-30fjw2ep64rk5.kirk.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400

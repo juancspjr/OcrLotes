@@ -3848,8 +3848,15 @@ def generate_api_key():
     try:
         logger.info("🔑 Iniciando generación de nueva API Key")
         
-        # Obtener datos del request
-        data = request.get_json() or {}
+        # Obtener datos del request con mejor manejo de errores
+        try:
+            data = request.get_json() or {}
+        except Exception as json_error:
+            logger.error(f"Error parsing JSON: {json_error}")
+            # Intentar con form data como fallback
+            data = request.form.to_dict()
+        
+        logger.debug(f"Request data: {data}")
         api_key_name = data.get('name', f'API Key {datetime.now().strftime("%Y%m%d_%H%M%S")}')
         
         # Generar API Key segura
