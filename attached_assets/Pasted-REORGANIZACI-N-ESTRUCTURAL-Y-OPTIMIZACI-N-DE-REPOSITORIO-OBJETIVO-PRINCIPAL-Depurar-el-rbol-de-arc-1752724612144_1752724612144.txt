@@ -1,0 +1,73 @@
+REORGANIZACIÓN ESTRUCTURAL Y OPTIMIZACIÓN DE REPOSITORIO
+OBJETIVO PRINCIPAL: Depurar el árbol de archivos del proyecto, eliminando elementos no utilizados o irrelevantes (especialmente tests no funcionales y archivos JavaScript de prueba), manteniendo la integridad del sistema y actualizando replit.md y README.md con información crucial de rendimiento y hardware.
+
+1. PRINCIPIOS OBLIGATORIOS:
+PRESERVACIÓN DE LA FUNCIONALIDAD: Bajo ninguna circunstancia se debe comprometer la operatividad actual del sistema. Cada cambio debe ser reversible.
+
+ELIMINACIÓN JUSTIFICADA: Solo se eliminarán archivos que se hayan verificado explícitamente como no funcionales, de prueba o "basura". En caso de duda, se moverán a una zona de cuarentena.
+
+CONSISTENCIA DE LA DOCUMENTACIÓN: Los archivos replit.md y README.md deben ser coherentes y contener la información requerida.
+
+2. FASES DEL MANDATO - ACCIONES A EJECUTAR:
+FASE 1: AUDITORÍA Y CLASIFICACIÓN DE ARCHIVOS
+Objetivo: Identificar y categorizar todos los archivos dentro del proyecto para determinar su relevancia y uso.
+
+Acciones:
+
+Identificación de Archivos y Directorios de Código Principal: Listar explícitamente los archivos y directorios esenciales para la ejecución de la aplicación Flask, el procesamiento OCR, y la gestión de la API (ej., main.py, routes.py, config.py, modelos OCR, directorios de datos data/, uploads/, temp/). Estos NO deben ser tocados en las fases de limpieza.
+
+Localización de Tests No Funcionales: Buscar archivos o directorios que contengan "tests no funcionales" (ej., archivos .py en carpetas tests/ que no sean de pruebas unitarias o de integración críticas, scripts de pruebas de carga desechados, etc.).
+
+Localización de Archivos .js de Prueba: Identificar cualquier archivo .js que sea claramente para propósitos de prueba o desarrollo temporal y que no forme parte del frontend de producción.
+
+Identificación de Otros Archivos "Basura": Buscar archivos temporales, backups antiguos (fuera de control de versiones), logs excesivos no gestionados o cualquier otro archivo que no tenga una función clara en la aplicación final.
+
+Revisión de replit.md y README.md: Verificar su existencia y contenido actual para identificar dónde se debe añadir la nueva información.
+
+FASE 2: REORGANIZACIÓN Y LIMPIEZA CONTROLADA DE ARCHIVOS
+Objetivo: Eliminar los archivos identificados como no necesarios, manteniendo una estructura limpia y funcional.
+
+Acciones:
+
+Creación de Zona de Cuarentena (Opcional pero Recomendado): Crear un directorio temporal como _quarantine_unused_files/ en la raíz del proyecto. Mover los archivos de los que se tenga duda sobre su uso final, en lugar de borrarlos directamente. Esto permite una recuperación fácil si se comete un error.
+
+Eliminación de Tests No Funcionales: Borrar de forma permanente (o mover a cuarentena) los archivos .py correspondientes a "tests no funcionales" que no se consideren esenciales para el futuro desarrollo o depuración.
+
+Eliminación de Archivos .js de Prueba: Borrar de forma permanente (o mover a cuarentena) los archivos .js identificados como de prueba o temporales.
+
+Limpieza General: Borrar cualquier otro archivo "basura" o directorios vacíos que no aporten valor al proyecto.
+
+Mantener Archivos Cruciales: Asegurarse de que replit.md, README.md y todos los archivos dentro de la carpeta doc/ permanezcan en su lugar y sean accesibles.
+
+FASE 3: ACTUALIZACIÓN DE LA DOCUMENTACIÓN CLAVE (replit.md y README.md)
+Objetivo: Asegurar que los archivos de documentación principales contengan la información solicitada de "test de 50 archivos" y "bases de hardware".
+
+Acciones:
+
+Añadir Información del "Test de 50 Archivos":
+
+Contenido a Incluir: Descripción de la metodología del "test de 50 archivos" (si se refiere a una prueba específica de rendimiento), y los resultados clave obtenidos (ej., tiempo promedio de procesamiento por archivo, latencia total del lote).
+
+Formato Sugerido: Puedes usar un formato Markdown como una lista o una pequeña tabla.
+
+Añadir Información de las "Bases de Hardware":
+
+Contenido a Incluir: Detallar las especificaciones de hardware en las que se probó o se espera que funcione el sistema de manera óptima (ej., Tipo de CPU y número de núcleos, Cantidad de RAM, Tipo de almacenamiento (SSD/HDD), Sistema operativo).
+
+Formato Sugerido: Una sección clara como "Requisitos/Especificaciones de Hardware" o "Entorno de Despliegue".
+
+Consistencia entre replit.md y README.md: Asegurarse de que esta nueva información esté presente de forma coherente en ambos archivos. Si replit.md es la fuente principal para README.md, asegúrate de que replit.md sea el primero en ser actualizado.
+
+FASE 4: VERIFICACIÓN POST-REORGANIZACIÓN
+Objetivo: Confirmar que el sistema sigue funcionando correctamente y que la documentación está actualizada y accesible.
+
+Acciones:
+
+Pruebas de Arranque y Funcionalidad: Reiniciar la aplicación y realizar una serie de pruebas funcionales básicas para asegurar que todos los endpoints y flujos de trabajo principales (subida, procesamiento, consulta) operan sin errores.
+
+Verificación de Documentación:
+
+Abrir replit.md y README.md para confirmar que el contenido actualizado sobre el "test de 50 archivos" y las "bases de hardware" está presente y es legible.
+
+Verificar que la carpeta doc/ y sus contenidos sigan siendo accesibles (ej., navegando a /doc/REPORTE_VERIFICACION_POST_MIGRACION_COMPLETO.md si existe un endpoint para servir documentos).
+
