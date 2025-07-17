@@ -1,0 +1,193 @@
+MANDATO: PRUEBA DE CARGA ASÍNCRONA (200 ARCHIVOS)
+OBJETIVO: Evaluar la consistencia del rendimiento y la estabilidad del Sistema OCR Empresarial bajo carga asíncrona con un volumen de 200 archivos. El objetivo es verificar cómo el sistema gestiona la concurrencia y si su procesamiento asíncrono mantiene un rendimiento óptimo sin degradación, revelando posibles limitaciones en el uso de memoria, CPU sostenida, y I/O.
+
+CANTIDAD DE ARCHIVOS: 200 archivos representativos (similares a los usados en pruebas anteriores).
+
+1. FASES DEL MANDATO - ACCIONES A EJECUTAR:
+FASE 1: PREPARACIÓN DEL ENTORNO Y DATOS
+1.1 Preparar Datos de Prueba:
+
+Asegúrate de tener 200 archivos de imagen (PNG, JPG, JPEG) disponibles. Es crucial que estos archivos sean representativos de los datos reales que el sistema procesará en producción (similares en tamaño, complejidad, tipo de contenido).
+
+Recomendación: Coloca estos archivos en un directorio temporal para fácil acceso y gestión durante la prueba.
+
+1.2 Limpiar Entorno Previo (Sin Eliminar Archivos Existentes):
+
+Para esta prueba, NO ELIMINAREMOS los archivos de resultados o logs existentes. Nos centraremos en observar los nuevos resultados y el comportamiento del sistema. Sin embargo, si deseas limpiar los logs, puedes hacerlo de forma selectiva.
+
+Si decides limpiar solo el log de la aplicación:
+
+Abre una terminal en Replit.
+
+Ejecuta: echo "" > logs/app.log (Esto vacía el contenido del archivo de log sin borrar el archivo en sí).
+
+1.3 Asegurar Recursos:
+
+Verifica que el sistema host tenga suficientes recursos de CPU, RAM y espacio en disco disponibles antes de iniciar la prueba.
+
+FASE 2: EJECUCIÓN DE LA PRUEBA DE CARGA ASÍNCRONA (200 ARCHIVOS)
+Objetivo: Iniciar el procesamiento concurrente de los 200 archivos y monitorear el sistema en tiempo real.
+
+Acciones:
+
+2.1 Iniciar la Aplicación: Asegúrate de que tu aplicación Flask/Gunicorn esté corriendo en el modo optimizado. Esto es clave para el procesamiento asíncrono.
+
+Comando Sugerido: gunicorn --workers 4 --threads 2 --bind 0.0.0.0:5000 main:app (Ajusta workers y threads según tus núcleos de CPU y experimentación previa. Gunicorn con múltiples workers/threads es fundamental para la asincronía y concurrencia).
+
+2.2 Iniciar el Monitoreo en Tiempo Real: Abre terminales separadas para observar el uso de recursos mientras la prueba está en curso.
+
+Para CPU/Memoria (General): htop o top.
+
+Para I/O de Disco: iostat -x 1 (si está disponible, observa r/s, w/s, %util).
+
+Para Logs: tail -f logs/app.log (o la ruta de tu archivo de log principal para ver errores o warnings).
+
+2.3 Lanzar la Carga Asíncrona de 200 Archivos:
+
+Utiliza el siguiente script de Bash. El & al final del comando curl es crucial, ya que permite que cada solicitud de subida se inicie de forma independiente en segundo plano, simulando una carga concurrente que pondrá a prueba la capacidad asíncrona de tu backend.
+
+Abre una nueva terminal en Replit.
+
+Copia y pega este script. ¡Recuerda ajustar la ruta DIRECTORIO_IMAGENES y ENDPOINT!
+
+Bash
+
+#!/bin/bash
+
+# --- CONFIGURACIÓN DE LA PRUEBA ---
+NUM_ARCHIVOS=200
+ENDPOINT="http://localhost:5000/api/ocr/upload" # O tu URL pública de Replit si es diferente
+DIRECTORIO_IMAGENES="/path/to/your/test_images" # <--- ¡IMPORTANTE! CAMBIA ESTO A LA RUTA REAL DE TUS 200 IMÁGENES
+TIPO_IMAGEN="png" # O "jpg", "jpeg", etc.
+# --- FIN CONFIGURACIÓN ---
+
+echo "Iniciando prueba de carga asíncrona con $NUM_ARCHIVOS archivos..."
+START_TIME=$(date +%s.%N)
+
+for i in $(seq 1 $NUM_ARCHIVOS); do
+    ARCHIVO_ACTUAL="${DIRECTORIO_IMAGENES}/image_${i}.${TIPO_IMAGEN}" # Asume nombres como image_1.png, image_2.png, etc.
+
+    if [ ! -f "$ARCHIVO_ACTUAL" ]; then
+        echo "Error: Archivo no encontrado - $ARCHIVO_ACTUAL. Asegúrate de que la ruta y los nombres de archivo sean correctos."
+        exit 1
+    fi
+
+    # Envía cada archivo de forma concurrente (asíncrona desde el cliente)
+    curl -X POST -H "Content-Type: multipart/form-data" \
+         -F "file=@$ARCHIVO_ACTUAL" \
+         $ENDPOINT > /dev/null 2>&1 & # El '&' es para concurrencia
+
+    # Puedes añadir un pequeño "sleep" aquí si quieres controlar la tasa de envío.
+    # Para probar la máxima asincronía, no uses sleep o usa un valor muy pequeño (ej. sleep 0.001).
+done
+
+wait # Espera a que todos los procesos de 'curl' en segundo plano terminen de enviar sus solicitudes.
+END_TIME=$(date +%s.%N)
+
+DURATION=$(echo "$END_TIME - $START_TIME" | bc)
+echo "--- ENVÍO DE SOLICITUDES COMPLETADO ---"
+echo "Tiempo Total de Envío de $NUM_ARCHIVOS Solicitudes (Asíncronas): $DURATION segundos"
+echo "El sistema ahora estará procesando los archivos en segundo plano."
+echo "Por favor, monitorea los logs y los directorios de resultados."
+
+# Se recomienda una pausa para permitir que el backend termine de procesar las colas
+echo "Esperando a que el procesamiento backend finalice (esto puede tomar un tiempo considerable para 200 archivos)..."
+sleep 30 # Ajusta este tiempo según el rendimiento promedio de tu sistema
+
+echo "Verificando archivos procesados..."
+PROCESSED_COUNT=$(find data/results/ -name "*.json" | wc -l)
+echo "Archivos JSON de resultados encontrados (total acumulado): $PROCESSED_COUNT"
+echo "Continúa monitoreando y verifica el conteo de JSONs en tus directorios de salida (data/results/ y data/historial/) hasta que el número de archivos nuevos se estabilice."
+¡Observa las otras terminales! Verás cómo la CPU, la memoria y el I/O reaccionan bajo esta carga concurrente. Presta especial atención al estado de la cola en tu sistema si tienes un dashboard o un endpoint de estado.
+
+FASE 3: RECOPILACIÓN EXHAUSTIVA Y ANÁLISIS DE MÉTRICAS
+Objetivo: Consolidar y analizar los datos de rendimiento para obtener una imagen precisa del comportamiento del sistema bajo carga asíncrona.
+
+Acciones:
+
+3.1 Recopilación de Tiempos de Procesamiento Individuales:
+
+Una vez que el procesamiento en el backend se haya estabilizado (todos los 200 archivos o la mayoría se hayan procesado y los JSONs estén en data/results/ o data/historial/), recopila los processing_time de cada JSON de resultado.
+
+Comando Sugerido (para JSONs de resultados individuales, adapta según tus rutas):
+
+Bash
+
+echo "--- ANÁLISIS DE TIEMPOS DE PROCESAMIENTO INDIVIDUALES ---"
+# Asegúrate de ejecutar esto DESPUÉS de que la mayoría de los 200 archivos estén procesados.
+# Esto buscará *todos* los JSON, incluidos los de pruebas anteriores si no los borraste.
+# Si necesitas solo los de esta prueba, tendrías que filtrar por fecha/lote_id.
+find data/results/ data/historial/ -name "*.json" -print0 | xargs -0 -I {} \
+    sh -c 'cat "{}" | python3 -c "import json,sys; data=json.load(sys.stdin); pt=data.get(\"extraction_stats\",{}).get(\"processing_time\", \"N/A\"); if pt == 0: pt=\"0 (instant)\"; print(f\"{pt}\")" 2>/dev/null' > processing_times_current_test.txt
+
+# Calcular estadísticas de los tiempos individuales extraídos
+echo "--- ESTADÍSTICAS GLOBALES DE TIEMPO POR ARCHIVO DE LA PRUEBA ACTUAL ---"
+awk '{ sum += $1; count++ } END { print "Suma:", sum, "Count:", count, "Avg:", sum/count }' processing_times_current_test.txt
+sort -n processing_times_current_test.txt | awk 'BEGIN {c=0;} {a[c++]=$0;} END {print "Mediana:", (a[int(c/2)] + a[int((c-1)/2)])/2, "Min:", a[0], "Max:", a[c-1];}'
+(Nota: Si tu processing_time es 0, significa que la extracción es tan rápida que no se registra adecuadamente en esa unidad de tiempo. En ese caso, la métrica clave será el Throughput global del lote y el monitoreo de recursos.)
+
+3.2 Cálculo de Métricas Clave:
+
+Tiempo Total de Envío (Asíncrono): Es el DURATION obtenido del script de la Fase 2 (cuánto tardó en enviar las 200 solicitudes).
+
+Tiempo Total de Procesamiento del Lote (Backend): Esto requerirá observar tus logs o el dashboard si tu sistema lo registra. Es el tiempo desde que el primer archivo de este lote empieza a procesarse hasta que el último termina. Si no tienes un lote_id o timestamp común en tus logs que te permita medir esto, la mejor aproximación será el tiempo desde el START_TIME del script de envío hasta que find data/results/ ... wc -l te muestre 200 nuevos archivos.
+
+Archivos Procesados (Para este lote): Debería ser 200. Si tienes lote_id en tus JSONs de salida, puedes filtrar por el lote_id específico generado durante esta prueba.
+
+Comando Sugerido (si tu JSON de salida tiene lote_id y lo capturas):
+
+Bash
+
+# Asumiendo que el lote_id se genera en el formato "BATCH_YYYYMMDD_HHMMSS"
+# y que el script lo imprime o lo puedes obtener del primer JSON de salida
+LOTE_ID_ACTUAL="BATCH_20250717_xxxxxx" # <--- REEMPLAZA CON EL LOTE_ID REAL DE TU PRUEBA
+find data/results/ data/historial/ -name "*.json" -print0 | xargs -0 -I {} \
+    sh -c 'cat "{}" | python3 -c "import json,sys; data=json.load(sys.stdin); lid=data.get(\"lote_id\", \"N/A\"); if lid == \"'$LOTE_ID_ACTUAL'\": print(lid)" 2>/dev/null' | wc -l
+Throughput (archivos/segundo): Archivos Procesados (para este lote) / Tiempo Total de Procesamiento del Lote (Backend). Esta es la métrica más importante para evaluar la eficiencia asíncrona.
+
+Tasa de Éxito: Si el número de archivos procesados para este lote es 200, la tasa de éxito es 100%. Si no, investiga los errores en los logs.
+
+3.3 Análisis de Uso de Recursos (Post-Test):
+
+Revisa los registros que observaste en htop/top y iostat durante la prueba.
+
+Identifica: picos máximos de CPU y RAM, uso promedio, si el disco fue un cuello de botella (%util alto), y si hubo alguna inestabilidad o crecimiento de memoria que no se liberó.
+
+Comando Sugerido para uso de memoria y CPU (resumen final): free -h y grep 'cpu ' /proc/stat | awk '{usage=($2+$4)*100/($2+$4+$5)} END {print "CPU Usage:", usage "%"}'
+
+3.4 Revisión de Logs del Sistema:
+
+Examina cuidadosamente los logs de la aplicación (logs/app.log o similar) y los logs del servidor (si tienes acceso a ellos, ej., logs de Gunicorn o Nginx/Apache) en busca de errores, advertencias, o trazas de excepción que pudieran indicar problemas subyacentes bajo carga.
+
+3.5 Identificación de Outliers:
+
+Si el cálculo de processing_time individual funciona, identifica los archivos con los tiempos de procesamiento más altos en tu processing_times_current_test.txt. Investiga si hay patrones.
+
+FASE 4: EVALUACIÓN Y CONCLUSIONES
+Objetivo: Interpretar los datos recopilados y sacar conclusiones sobre el rendimiento asíncrono y la escalabilidad del sistema.
+
+Acciones:
+
+4.1 Comparación de Rendimiento:
+
+Compara el Throughput y el Tiempo Promedio por Archivo de la prueba de 200 archivos con los resultados de la prueba de 50 archivos.
+
+¿Se mantiene la eficiencia? Si el tiempo promedio por archivo se mantiene bajo y el throughput es proporcionalmente alto (cercano a (nuevo_total_archivos / anterior_total_archivos) * anterior_throughput), el sistema escala bien asíncronamente.
+
+¿Hay una degradación significativa? Si el tiempo promedio sube drásticamente o el throughput baja considerablemente, indica un cuello de botella o problemas con la gestión de la cola/concurrencia.
+
+4.2 Evaluación de Estabilidad Asíncrona:
+
+¿Hubo errores durante el procesamiento, especialmente relacionados con concurrencia o recursos?
+
+¿El uso de memoria o CPU fue insostenible o causó ralentizaciones críticas a medida que más archivos se acumulaban en la cola?
+
+¿Se gestionó la cola de manera eficiente (sin bloqueos o ralentizaciones prolongadas)?
+
+4.3 Identificación de Limitaciones (Si las hay):
+
+Si se detectaron limitaciones, documéntalas claramente (ej., "La CPU alcanzó el 100% de uso durante X segundos de procesamiento asíncrono", "Se observó un aumento gradual de la latencia de procesamiento a medida que la cola crecía", "El consumo de RAM subió a X GB y no se liberó").
+
+4.4 Informe de Resultados:
+
+Prepara un informe conciso (preferiblemente en un archivo Markdown .md en tu carpeta doc/) con todas las métricas clave, las observaciones, las conclusiones y, si es necesario, las recomendaciones para futuras optimizaciones o ajustes de infraestructura.

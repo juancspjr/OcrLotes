@@ -1,0 +1,15 @@
+{
+  "filename_original": "cuenta_bancaria_ejemplo.jpg",
+  "filename_final": "20250717-I--863918815@lid_Sofía_04-35_20250717_051305_597.jpg",
+  "request_id": "BATCH_20250717_051304_5b425f05",
+  "upload_timestamp": "2025-07-17T05:13:05.597744",
+  "file_size": 24998,
+  "numerosorteo": "I",
+  "idWhatsapp": "863918815@lid",
+  "nombre": "Sofía",
+  "horamin": "04-35",
+  "fechasorteo": "20250717",
+  "caption": "Pago Móvil",
+  "numero_llegada": "9",
+  "processed_via": "process_batch_direct"
+}

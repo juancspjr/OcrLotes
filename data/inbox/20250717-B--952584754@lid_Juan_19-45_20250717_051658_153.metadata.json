@@ -1,0 +1,15 @@
+{
+  "filename_original": "cuenta_bancaria_ejemplo.jpg",
+  "filename_final": "20250717-B--952584754@lid_Juan_19-45_20250717_051658_153.jpg",
+  "request_id": "BATCH_20250717_051657_e08bcc04",
+  "upload_timestamp": "2025-07-17T05:16:58.153925",
+  "file_size": 24998,
+  "numerosorteo": "B",
+  "idWhatsapp": "952584754@lid",
+  "nombre": "Juan",
+  "horamin": "19-45",
+  "fechasorteo": "20250717",
+  "caption": "Pago Móvil",
+  "numero_llegada": "2",
+  "processed_via": "process_batch_direct"
+}
