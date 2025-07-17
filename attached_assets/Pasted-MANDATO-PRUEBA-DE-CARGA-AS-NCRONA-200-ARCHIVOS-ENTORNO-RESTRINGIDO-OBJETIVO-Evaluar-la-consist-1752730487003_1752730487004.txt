@@ -1,0 +1,181 @@
+MANDATO: PRUEBA DE CARGA ASÍNCRONA (200 ARCHIVOS) - ENTORNO RESTRINGIDO
+OBJETIVO: Evaluar la consistencia del rendimiento y la estabilidad del Sistema OCR Empresarial bajo carga asíncrona con un volumen de 200 archivos, simulando un entorno con recursos limitados (2 GB de RAM, 4 núcleos). Se busca identificar nuevas limitaciones en el uso de memoria, CPU sostenida, I/O, y verificar si el rendimiento se mantiene aceptable o si se degrada significativamente.
+
+CANTIDAD DE ARCHIVOS: 200 archivos representativos.
+
+ENTORNO DE PRUEBA:
+
+RAM: 2 GB
+
+CPU: 4 núcleos de procesador
+
+1. FASES DEL MANDATO - ACCIONES A EJECUTAR:
+FASE 1: PREPARACIÓN DEL ENTORNO Y DATOS
+1.1 Preparar Datos de Prueba:
+
+Asegúrate de tener 200 archivos de imagen disponibles en un directorio temporal (/path/to/your/test_images).
+
+1.2 NO Eliminar Archivos Existentes:
+
+Confirmado: Para esta prueba, NO se eliminarán los archivos de resultados o logs existentes. Nos centraremos en observar los nuevos resultados.
+
+Si deseas limpiar solo el log de la aplicación:
+
+Abre una terminal en Replit y ejecuta: echo "" > logs/app.log
+
+1.3 Asegurar Recursos (Virtuales/Limitados):
+
+Confirma que tu entorno de Replit (o tu máquina virtual/contenedor) esté configurado con 2 GB de RAM y 4 núcleos de CPU. Este es el punto crítico de esta prueba.
+
+FASE 2: EJECUCIÓN DE LA PRUEBA DE CARGA ASÍNCRONA (200 ARCHIVOS)
+Objetivo: Iniciar el procesamiento concurrente de los 200 archivos y monitorear el sistema en tiempo real, observando el comportamiento bajo los nuevos límites de recursos.
+
+Acciones:
+
+2.1 Iniciar la Aplicación (Configuración Optimizada para Recursos Limitados):
+
+Ajustaremos la configuración de Gunicorn para ser más conservadora con la memoria y la CPU. Es crucial que tu aplicación Flask/Gunicorn esté corriendo con esta configuración.
+
+Comando Sugerido para Gunicorn (ajustado para 2GB RAM / 4 núcleos):
+
+Bash
+
+gunicorn --workers 2 --threads 2 --bind 0.0.0.0:5000 main:app
+# Alternativa conservadora para RAM: gunicorn --workers 4 --threads 1 --bind 0.0.0.0:5000 main:app
+# Explica: `workers 2 --threads 2` intenta mantener menos procesos Python (que consumen RAM)
+# mientras aún permite 4 operaciones concurrentes (2 workers * 2 hilos por worker).
+# Si el rendimiento no es el esperado, prueba con `workers 4 --threads 1`.
+2.2 Iniciar el Monitoreo en Tiempo Real (¡Más Crítico que Antes!):
+
+Abre terminales separadas para observar el uso de recursos. Presta EXTREMA atención a la memoria y el uso de SWAP (swp en free -h o Swap en top/htop).
+
+Para CPU/Memoria: htop o top.
+
+Para I/O de Disco: iostat -x 1.
+
+Para Logs: tail -f logs/app.log.
+
+2.3 Lanzar la Carga Asíncrona de 200 Archivos:
+
+Utiliza el mismo script de Bash que ya tienes para enviar las 200 solicitudes de forma concurrente.
+
+Abre una nueva terminal en Replit.
+
+Copia y pega este script, asegurándote de ajustar DIRECTORIO_IMAGENES y ENDPOINT:
+
+Bash
+
+#!/bin/bash
+
+# --- CONFIGURACIÓN DE LA PRUEBA ---
+NUM_ARCHIVOS=200
+ENDPOINT="http://localhost:5000/api/ocr/upload" # O tu URL pública de Replit si es diferente
+DIRECTORIO_IMAGENES="/path/to/your/test_images" # <--- ¡IMPORTANTE! CAMBIA ESTO A LA RUTA REAL DE TUS 200 IMÁGENES
+TIPO_IMAGEN="png" # O "jpg", "jpeg", etc.
+# --- FIN CONFIGURACIÓN ---
+
+echo "Iniciando prueba de carga asíncrona con $NUM_ARCHIVOS archivos en entorno de 2GB RAM / 4 núcleos..."
+START_TIME=$(date +%s.%N)
+
+for i in $(seq 1 $NUM_ARCHIVOS); do
+    ARCHIVO_ACTUAL="${DIRECTORIO_IMAGENES}/image_${i}.${TIPO_IMAGEN}" 
+
+    if [ ! -f "$ARCHIVO_ACTUAL" ]; then
+        echo "Error: Archivo no encontrado - $ARCHIVO_ACTUAL. Asegúrate de que la ruta y los nombres de archivo sean correctos."
+        exit 1
+    fi
+
+    curl -X POST -H "Content-Type: multipart/form-data" \
+         -F "file=@$ARCHIVO_ACTUAL" \
+         $ENDPOINT > /dev/null 2>&1 & # El '&' es para concurrencia
+done
+
+wait 
+END_TIME=$(date +%s.%N)
+
+DURATION=$(echo "$END_TIME - $START_TIME" | bc)
+echo "--- ENVÍO DE SOLICITUDES COMPLETADO ---"
+echo "Tiempo Total de Envío de $NUM_ARCHIVOS Solicitudes (Asíncronas): $DURATION segundos"
+echo "El sistema ahora estará procesando los archivos en segundo plano con recursos limitados."
+echo "Por favor, monitorea los logs y los directorios de resultados."
+
+echo "Esperando a que el procesamiento backend finalice (esto puede tomar MÁS tiempo con menos recursos)..."
+sleep 60 # Ajusta este tiempo si los archivos tardan más en procesarse con 2GB RAM
+
+echo "Verificando archivos procesados..."
+PROCESSED_COUNT=$(find data/results/ -name "*.json" | wc -l)
+echo "Archivos JSON de resultados encontrados (total acumulado): $PROCESSED_COUNT"
+echo "Continúa monitoreando y verifica el conteo de JSONs en tus directorios de salida hasta que el número de archivos nuevos se estabilice."
+¡Observa con lupa las terminales de monitoreo! La RAM y el SWAP son los indicadores más críticos aquí.
+
+FASE 3: RECOPILACIÓN EXHAUSTIVA Y ANÁLISIS DE MÉTRICAS
+Objetivo: Consolidar y analizar los datos de rendimiento para obtener una imagen precisa del comportamiento del sistema bajo carga asíncrona con recursos limitados.
+
+Acciones:
+
+3.1 Recopilación de Tiempos de Procesamiento Individuales:
+
+Cuando el procesamiento se estabilice, usa el mismo comando para extraer los tiempos de procesamiento de los JSONs.
+
+Comando Sugerido: (El mismo de antes, pero presta atención a si los tiempos son ahora mayores o si hay más errores en la extracción).
+
+Bash
+
+echo "--- ANÁLISIS DE TIEMPOS DE PROCESAMIENTO INDIVIDUALES ---"
+find data/results/ data/historial/ -name "*.json" -print0 | xargs -0 -I {} \
+    sh -c 'cat "{}" | python3 -c "import json,sys; data=json.load(sys.stdin); pt=data.get(\"extraction_stats\",{}).get(\"processing_time\", \"N/A\"); if pt == 0: pt=\"0 (instant)\"; print(f\"{pt}\")" 2>/dev/null' > processing_times_current_test.txt
+
+echo "--- ESTADÍSTICAS GLOBALES DE TIEMPO POR ARCHIVO DE LA PRUEBA ACTUAL ---"
+awk '{ sum += $1; count++ } END { print "Suma:", sum, "Count:", count, "Avg:", sum/count }' processing_times_current_test.txt
+sort -n processing_times_current_test.txt | awk 'BEGIN {c=0;} {a[c++]=$0;} END {print "Mediana:", (a[int(c/2)] + a[int((c-1)/2)])/2, "Min:", a[0], "Max:", a[c-1];}'
+3.2 Cálculo de Métricas Clave:
+
+Tiempo Total de Envío (Asíncrono): El DURATION del script de la Fase 2.
+
+Tiempo Total de Procesamiento del Lote (Backend): Estimación desde el inicio del envío hasta que todos los 200 archivos se hayan procesado (o hasta que ya no aparezcan nuevos JSONs). Es crucial estimar esto con precisión.
+
+Archivos Procesados (Para este lote): Conteo de los nuevos JSONs de resultados.
+
+Throughput (archivos/segundo): Archivos Procesados / Tiempo Total de Procesamiento del Lote.
+
+Tasa de Éxito: (Archivos Procesados / 200) * 100%.
+
+3.3 Análisis de Uso de Recursos (Post-Test):
+
+Revisa los registros de htop/top y iostat.
+
+¡ENFOQUE EN RAM y SWAP! Documenta si la RAM se agotó, si hubo uso intensivo de SWAP (esto ralentiza mucho), y si la CPU se saturó (permaneció al 100%).
+
+Comando Sugerido para resumen de memoria y CPU al final: free -h y grep 'cpu ' /proc/stat | awk '{usage=($2+$4)*100/($2+$4+$5)} END {print "CPU Usage:", usage "%"}'
+
+3.4 Revisión de Logs del Sistema: Examina los logs en busca de nuevos errores o warnings relacionados con memoria insuficiente, cuellos de botella o fallos de procesamiento.
+
+3.5 Identificación de Outliers: Identifica los archivos con los tiempos de procesamiento más altos o aquellos que fallaron.
+
+FASE 4: EVALUACIÓN Y CONCLUSIONES (Foco en Limitaciones de Recursos)
+Objetivo: Interpretar los datos recopilados, con especial atención a cómo los recursos limitados impactaron el rendimiento.
+
+Acciones:
+
+4.1 Comparación de Rendimiento con Entorno de Alta RAM:
+
+Compara el Throughput, Tiempo Promedio por Archivo y Tasa de Éxito de esta prueba de 200 archivos (2GB RAM) con los resultados de la prueba anterior de 200 archivos (62GB RAM).
+
+¿Cuál fue la degradación de rendimiento? Cuantifícala.
+
+¿La menor RAM o CPU fueron el cuello de botella principal?
+
+4.2 Evaluación de Estabilidad bajo Limitación de Recursos:
+
+¿El sistema se mantuvo estable o hubo bloqueos, cierres inesperados, o una ralentización extrema?
+
+¿Hubo uso de SWAP significativo? (Indica que la RAM disponible no fue suficiente).
+
+4.3 Identificación de Limitaciones Claras de Recursos:
+
+Documenta si la RAM se agotó, la CPU se saturó constantemente, o si el I/O de disco se convirtió en un cuello de botella debido a la gestión de SWAP o la incapacidad de la CPU para procesar los datos a tiempo.
+
+4.4 Informe de Resultados:
+
+Prepara un informe conciso (preferiblemente en un archivo Markdown .md en tu carpeta doc/) con todas las métricas clave, las observaciones, las conclusiones (especialmente sobre el impacto de los recursos limitados) y, si es necesario, las recomendaciones para despliegues con recursos mínimos.
+
