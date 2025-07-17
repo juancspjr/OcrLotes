@@ -2093,11 +2093,17 @@ def api_extract_results():
         if not json_files:
             logger.info("No hay archivos de resultados disponibles para extraer")
             return jsonify({
-                'status': 'warning',
+                'status': 'success',
                 'message': 'No hay resultados disponibles para extraer',
                 'total_files': 0,
-                'error_code': 'NO_RESULTS_AVAILABLE'
-            }), 404
+                'archivos_procesados': [],
+                'metadata': {
+                    'fecha_extraccion': datetime.now().isoformat(),
+                    'total_archivos': 0,
+                    'version_sistema': '1.0',
+                    'tipo_extraccion': 'consolidado_empresarial'
+                }
+            }), 200
         
         # FIX: Generar JSON consolidado empresarial con estructura específica requerida
         # REASON: Usuario requiere formato consolidado con campos específicos empresariales
