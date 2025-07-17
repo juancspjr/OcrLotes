@@ -1,0 +1,86 @@
+MANDATO: SANEAMIENTO INTEGRAL Y OPTIMIZACIÓN SISTÉMICA (CÓDIGO Y DOCUMENTACIÓN)
+OBJETIVO PRINCIPAL: Realizar una auditoría completa del sistema para identificar y erradicar código "basura" o dañino, optimizar el rendimiento, y reorganizar la estructura de la documentación, todo ello sin comprometer la funcionalidad existente y garantizando una base sólida para el futuro.
+
+1. PRINCIPIOS OBLIGATORIOS:
+ANÁLISIS PREVIO: No se iniciará ninguna limpieza o depuración sin una fase de escaneo exhaustiva que identifique claramente las áreas problemáticas.
+
+INTEGRIDAD TOTAL: La funcionalidad actual del sistema debe permanecer 100% intacta después de cada modificación. La depuración y optimización no deben introducir regresiones.
+
+PERFECCIÓN CONTINUA: Buscar la máxima eficiencia, legibilidad y organización en cada componente del sistema.
+
+2. FASES DEL MANDATO - ACCIONES A EJECUTAR:
+Este mandato se estructura en fases secuenciales para asegurar un proceso controlado y efectivo:
+
+FASE 1: ESCANEO Y AUDITORÍA EXHAUSTIVA (PRE-LIMPIEZA)
+Objetivo: Obtener una comprensión clara del estado actual del código y la documentación, identificando de manera proactiva la "basura" y las áreas de mejora.
+
+Acciones:
+
+Análisis de Código Estático: Utilizar herramientas (si disponibles) o realizar una revisión manual metódica para identificar:
+
+Código Muerto: Funciones, clases, variables o bloques de código que no se llaman o utilizan en ninguna parte del sistema.
+
+Duplicaciones: Secciones de código idénticas o muy similares que pueden ser refactorizadas en funciones reutilizables.
+
+Vulnerabilidades Comunes: Patrones de código que podrían llevar a errores o problemas de seguridad (ej., manejo inadecuado de rutas, gestión de excepciones débil).
+
+Anti-patrones: Diseños de código ineficientes o confusos.
+
+Complejidad Innecesaria: Funciones demasiado largas o lógicas enredadas que dificultan la comprensión.
+
+Auditoría de Documentación:
+
+Revisar todos los archivos .md existentes para evaluar su relevancia, precisión y consistencia.
+
+Identificar cualquier información desactualizada o redundante.
+
+Generación de Informe Preliminar: Documentar todos los hallazgos con detalles específicos sobre la ubicación de los problemas y su naturaleza. Este informe servirá como hoja de ruta para la siguiente fase.
+
+FASE 2: LIMPIEZA PROFUNDA Y DEPURACIÓN DEL CÓDIGO
+Objetivo: Implementar las correcciones y mejoras identificadas en la Fase 1, eliminando el código innecesario y mejorando la calidad general del sistema.
+
+Acciones:
+
+Eliminación de Código Muerto: Remover con cautela todo el código que se haya determinado como no utilizado.
+
+Consolidación de Duplicaciones: Refactorizar el código repetido en funciones, clases o módulos reutilizables para mejorar la mantenibilidad y reducir el tamaño del código.
+
+Depuración de Errores Ocultos: Investigar y corregir cualquier comportamiento inesperado o bugs latentes detectados durante la fase de escaneo o en el uso regular.
+
+Optimización del Rendimiento:
+
+Revisar algoritmos críticos para encontrar soluciones más eficientes.
+
+Optimizar el uso de recursos (memoria, CPU) en las partes más intensivas del sistema.
+
+Ajustar configuraciones que puedan impactar el rendimiento.
+
+Mejora de la Legibilidad y Estilo:
+
+Estandarizar el formato y el estilo del código.
+
+Añadir comentarios claros y concisos donde la lógica no sea evidente.
+
+Eliminar comentarios obsoletos o que solo repiten lo que hace el código.
+
+Reestructurar funciones o clases para mejorar la modularidad y cohesión.
+
+Refuerzo de Manejo de Errores: Implementar mecanismos más robustos para la captura y gestión de excepciones.
+
+FASE 3: REORGANIZACIÓN ESTRUCTURAL DE LA DOCUMENTACIÓN
+Objetivo: Organizar la documentación de manera lógica y accesible dentro de la estructura del proyecto, además de consolidar la información clave.
+
+Acciones:
+
+Creación del Directorio /doc: Crear una nueva carpeta en la raíz del proyecto llamada doc.
+
+Migración de Archivos .md: Mover todos los archivos de documentación con extensión .md (incluyendo DOCUMENTACION_SISTEMA_OCR_COMPLETA.md y cualquier otro .md existente) a este nuevo directorio /doc.
+
+Replicación de replit.md a README.md:
+
+Copiar el contenido completo del archivo replit.md al archivo README.md (ubicado en la raíz del proyecto).
+
+Si README.md ya existe, el contenido de replit.md debe reemplazarlo o fusionarse de manera coherente, asegurando que la información más relevante de replit.md se mantenga y sirva como una introducción completa al proyecto.
+
+Actualización de Rutas: Si hay referencias a la documentación en el código o en otros archivos (ej., enlaces en plantillas HTML), se deben actualizar para reflejar la nueva ubicación en /doc.
+

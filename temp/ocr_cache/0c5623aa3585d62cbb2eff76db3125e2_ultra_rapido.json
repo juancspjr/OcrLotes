@@ -1,25 +1,42 @@
 {
   "original_text_ocr": "A Personas 104,54 Bs Fecha : 20/06/ 2025 Operacion; 003039387344 I - Identificacion : 2/ 061025 Origen : 0102 **** 2679 Destino : 04125318244 Banco : 0105 - BANCO MERCANTIL",
-  "structured_text_ocr": "A Personas 104,54 Bs Fecha: 20/06/2025 Operacion; 003039387344 I - Identificacion: 2/061025 Origen: 0102**** 2679 Destino: 04125318244 Banco: 0105 - BANCO MERCANTIL",
-  "extracted_fields": {},
+  "structured_text_ocr": "A Personas 104, 54 Bs Fecha: 20/06/2025 Operacion; 003039387344 I - Identificacion: 2/ 061025 Origen: 0102 **** 2679 Destino: 04125318244 Banco: 0105 - BANCO MERCANTIL",
+  "extracted_fields": {
+    "valor_referencia_operacion": "",
+    "monto_total": "",
+    "datos_beneficiario": "",
+    "concepto_motivo": "",
+    "fecha_operacion": "",
+    "telefono": "",
+    "cedula": "061025",
+    "banco_emisor_pagador": "",
+    "banco_receptor_beneficiario": "",
+    "tipo_transaccion": "",
+    "identificador_cuenta_origen": "",
+    "identificador_cuenta_destino": "",
+    "banco_destino": "",
+    "pago_fecha": "",
+    "hora_operacion": ""
+  },
   "processing_metadata": {
     "logica_oro_aplicada": false,
     "ocr_confidence_avg": 0.923,
     "error_messages": [
-      "Error en extracción de campos: 'text'"
+      "Lógica de oro basada en coordenadas no aplicada: No se detectaron coordenadas válidas en el OCR de origen"
     ],
-    "processing_time_ms": 555.32,
+    "processing_time_ms": 835.63,
     "total_words_detected": 22,
     "coordinates_available": 0,
     "ocr_method": "ONNXTR_SINGLE_PASS_COORDENADAS",
-    "timestamp": "2025-07-07T20:46:45.146930"
+    "timestamp": "2025-07-17T03:18:28.878184"
   },
+  "word_data_granular": [],
   "texto_completo": "A Personas 104,54 Bs Fecha : 20/06/ 2025 Operacion; 003039387344 I - Identificacion : 2/ 061025 Origen : 0102 **** 2679 Destino : 04125318244 Banco : 0105 - BANCO MERCANTIL",
-  "texto_total_ocr": "A Personas 104,54 Bs Fecha: 20/06/2025 Operacion; 003039387344 I - Identificacion: 2/061025 Origen: 0102**** 2679 Destino: 04125318244 Banco: 0105 - BANCO MERCANTIL",
+  "texto_total_ocr": "A Personas 104, 54 Bs Fecha: 20/06/2025 Operacion; 003039387344 I - Identificacion: 2/ 061025 Origen: 0102 **** 2679 Destino: 04125318244 Banco: 0105 - BANCO MERCANTIL",
   "concepto_empresarial": "Operación registrada",
   "total_caracteres": 172,
-  "total_caracteres_ordenados": 164,
-  "tiempo_procesamiento": 0.555,
+  "total_caracteres_ordenados": 167,
+  "tiempo_procesamiento": 0.836,
   "metodo_extraccion": "ONNXTR_SINGLE_PASS_COORDENADAS",
   "configuracion_onnxtr": "ultra_rapido",
   "total_palabras_detectadas": 22,
