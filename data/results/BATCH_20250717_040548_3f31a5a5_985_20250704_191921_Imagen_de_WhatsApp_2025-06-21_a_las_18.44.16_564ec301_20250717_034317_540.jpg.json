@@ -1,0 +1,1329 @@
+{
+  "status": "exitoso",
+  "request_id": "BATCH_20250717_040548_3f31a5a5_985_20250704_191921_Imagen_de_WhatsApp_2025-06-21_a_las_18.44.16_564ec301_20250717_034317_540.jpg",
+  "filename": "20250704_191921_Imagen_de_WhatsApp_2025-06-21_a_las_18.44.16_564ec301_20250717_034317_540.jpg",
+  "tiempo_procesamiento": 0.09657907485961914,
+  "fecha_procesamiento": "2025-07-17T04:05:53.697553",
+  "metadata": {},
+  "original_text_ocr": "7:15P M . - 60 Ejecutado exitosamente . Cuental debitada : Cta . Corriente . BNC : ** 9496 Beneficiario : 0412 - 5318244 BINGO TREBOL V - 27061025 - MERCANIIL Monto : Bs . 105,00 Comision : Bs . 0,32 Total : Bs . 105,32 Reterencia : 490760968 Côdigo autorizador : 282689 CUENTAS TARJETAS BNC PAGOS DIVISAS",
+  "structured_text_ocr": "105,00 0,32 105,32 27061025 490760968 7:15P M . - 60 Ejecutado exitosamente . Cuental debitada : Cta . Corriente . BNC : ** 9496 Beneficiario : 0412 - 5318244 BINGO TREBOL V - - MERCANIIL Monto : Bs . Comision : Bs . Total : Bs . Reterencia : Côdigo autorizador : 282689 CUENTAS TARJETAS BNC PAGOS DIVISAS",
+  "extracted_fields": {
+    "referencia": "",
+    "bancoorigen": "",
+    "monto": "0.32",
+    "telefono": "",
+    "cedula": "V - 27061025",
+    "banco_destino": "",
+    "pago_fecha": "",
+    "fecha_operacion": "",
+    "concepto": "Transacción bancaria",
+    "texto_total_ocr": "7:15P M . - 60 Ejecutado exitosamente . Cuental debitada : Cta . Corriente . BNC : ** 9496 Beneficiario : 0412 - 5318244 BINGO TREBOL V - 27061025 - MERCANIIL Monto : Bs . 105,00 Comision : Bs . 0,32 Total : Bs . 105,32 Reterencia : 490760968 Côdigo autorizador : 282689 CUENTAS TARJETAS BNC PAGOS DIVISAS"
+  },
+  "processing_metadata": {
+    "logica_oro_aplicada": true,
+    "ocr_confidence_avg": 0.9,
+    "error_messages": [
+      "Lógica de oro aplicada sobre caché para cumplir mandato"
+    ],
+    "processing_time_ms": 0,
+    "total_words_detected": 0,
+    "coordinates_available": 0,
+    "ocr_method": "ONNX_TR_CACHE_WITH_GOLD_LOGIC",
+    "timestamp": "2025-07-17T04:05:53.696291"
+  },
+  "Información del Archivo": {
+    "fecha_procesamiento": "2025-07-17T04:05:53.696367",
+    "formato": ".jpg",
+    "nombre_original": "20250704_191921_Imagen_de_WhatsApp_2025-06-21_a_las_18.44.16_564ec301_20250717_034317_540.jpg",
+    "tamaño": 43018
+  },
+  "Estadísticas": {
+    "confianza_promedio": "86.2%",
+    "palabras_alta_confianza": 28,
+    "palabras_baja_confianza": 0,
+    "total_palabras": 39,
+    "calidad_categoria": "Muy Buena",
+    "tiempo_procesamiento": "0.10s",
+    "lineas_texto": 1,
+    "longitud_texto": 305
+  },
+  "Texto Extraído": {
+    "texto_completo": "7:15P M . - 60 Ejecutado exitosamente . Cuental debitada : Cta . Corriente . BNC : ** 9496 Beneficiario : 0412 - 5318244 BINGO TREBOL V - 27061025 - MERCANIIL Monto : Bs . 105,00 Comision : Bs . 0,32 Total : Bs . 105,32 Reterencia : 490760968 Côdigo autorizador : 282689 CUENTAS TARJETAS BNC PAGOS DIVISAS",
+    "longitud_texto": 305,
+    "lineas_texto": 1
+  },
+  "validacion": {
+    "imagen_info": {
+      "ancho": 288,
+      "alto": 645,
+      "resolucion_total": 185760,
+      "canales": 3,
+      "modo": "RGB",
+      "formato": "JPEG",
+      "brillo_promedio": 210.91189168819983,
+      "desviacion_brillo": 84.66307149338816,
+      "rango_dinamico": 255.0,
+      "histogram": [
+        18.0,
+        11.0,
+        16.0,
+        23.0,
+        37.0,
+        57.0,
+        57.0,
+        61.0,
+        67.0,
+        78.0,
+        69.0,
+        96.0,
+        85.0,
+        99.0,
+        114.0,
+        98.0,
+        121.0,
+        237.0,
+        194.0,
+        155.0,
+        228.0,
+        294.0,
+        472.0,
+        648.0,
+        1194.0,
+        19945.0,
+        2619.0,
+        661.0,
+        413.0,
+        220.0,
+        109.0,
+        80.0,
+        46.0,
+        47.0,
+        39.0,
+        27.0,
+        28.0,
+        30.0,
+        36.0,
+        31.0,
+        29.0,
+        32.0,
+        33.0,
+        23.0,
+        23.0,
+        43.0,
+        31.0,
+        38.0,
+        41.0,
+        58.0,
+        97.0,
+        47.0,
+        38.0,
+        43.0,
+        22.0,
+        33.0,
+        31.0,
+        23.0,
+        35.0,
+        35.0,
+        37.0,
+        36.0,
+        30.0,
+        51.0,
+        51.0,
+        37.0,
+        58.0,
+        53.0,
+        54.0,
+        51.0,
+        66.0,
+        45.0,
+        48.0,
+        50.0,
+        49.0,
+        39.0,
+        44.0,
+        59.0,
+        75.0,
+        49.0,
+        44.0,
+        57.0,
+        61.0,
+        68.0,
+        77.0,
+        66.0,
+        52.0,
+        52.0,
+        48.0,
+        49.0,
+        48.0,
+        50.0,
+        36.0,
+        45.0,
+        49.0,
+        38.0,
+        38.0,
+        47.0,
+        50.0,
+        42.0,
+        56.0,
+        55.0,
+        49.0,
+        198.0,
+        57.0,
+        55.0,
+        40.0,
+        45.0,
+        38.0,
+        40.0,
+        44.0,
+        28.0,
+        37.0,
+        39.0,
+        43.0,
+        32.0,
+        40.0,
+        56.0,
+        36.0,
+        34.0,
+        40.0,
+        41.0,
+        35.0,
+        29.0,
+        35.0,
+        36.0,
+        53.0,
+        51.0,
+        46.0,
+        52.0,
+        43.0,
+        29.0,
+        29.0,
+        39.0,
+        36.0,
+        35.0,
+        47.0,
+        43.0,
+        36.0,
+        33.0,
+        42.0,
+        40.0,
+        39.0,
+        41.0,
+        45.0,
+        36.0,
+        30.0,
+        39.0,
+        34.0,
+        50.0,
+        47.0,
+        32.0,
+        44.0,
+        44.0,
+        36.0,
+        42.0,
+        30.0,
+        24.0,
+        42.0,
+        38.0,
+        43.0,
+        36.0,
+        41.0,
+        34.0,
+        34.0,
+        33.0,
+        39.0,
+        44.0,
+        39.0,
+        48.0,
+        48.0,
+        43.0,
+        39.0,
+        45.0,
+        34.0,
+        28.0,
+        30.0,
+        35.0,
+        39.0,
+        33.0,
+        27.0,
+        30.0,
+        23.0,
+        257.0,
+        32.0,
+        36.0,
+        32.0,
+        31.0,
+        40.0,
+        44.0,
+        33.0,
+        43.0,
+        38.0,
+        40.0,
+        36.0,
+        40.0,
+        27.0,
+        52.0,
+        261.0,
+        43.0,
+        37.0,
+        1094.0,
+        46.0,
+        46.0,
+        41.0,
+        31.0,
+        33.0,
+        42.0,
+        48.0,
+        46.0,
+        32.0,
+        41.0,
+        47.0,
+        40.0,
+        46.0,
+        74.0,
+        46.0,
+        47.0,
+        45.0,
+        54.0,
+        51.0,
+        49.0,
+        46.0,
+        39.0,
+        49.0,
+        54.0,
+        53.0,
+        1097.0,
+        1115.0,
+        59.0,
+        78.0,
+        51.0,
+        68.0,
+        286.0,
+        70.0,
+        284.0,
+        308.0,
+        66.0,
+        101.0,
+        1141.0,
+        1143.0,
+        6647.0,
+        1603.0,
+        1429.0,
+        610.0,
+        1251.0,
+        481.0,
+        816.0,
+        1004.0,
+        928.0,
+        1585.0,
+        4577.0,
+        3449.0,
+        8205.0,
+        98833.0,
+        10069.0
+      ],
+      "histogram_analysis": {
+        "picos_principales": [
+          [
+            254,
+            98833
+          ],
+          [
+            25,
+            19945
+          ],
+          [
+            241,
+            6647
+          ]
+        ],
+        "rango_fondo_sugerido": 254,
+        "rango_texto_sugerido": 25,
+        "distribucion": {
+          "oscuras": 0.16636520624160767,
+          "medias": 0.020101206377148628,
+          "claras": 0.81353360414505
+        },
+        "requiere_inversion": false,
+        "bimodal": true
+      },
+      "variaciones_fondo": {
+        "total_regiones_analizadas": 240,
+        "fondos_unicos_detectados": 4,
+        "variacion_fondos": 71.1309257197599,
+        "fondos_heterogeneos": true,
+        "rango_fondos": [
+          25,
+          254
+        ],
+        "requiere_unificacion_avanzada": true,
+        "regiones_variacion": [
+          {
+            "posicion": [
+              0,
+              0
+            ],
+            "media_local": 113.9568,
+            "std_local": 102.46710171445272,
+            "pico_fondo": 25
+          },
+          {
+            "posicion": [
+              25,
+              0
+            ],
+            "media_local": 113.9268,
+            "std_local": 100.31535396817378,
+            "pico_fondo": 25
+          },
+          {
+            "posicion": [
+              50,
+              0
+            ],
+            "media_local": 121.8644,
+            "std_local": 104.77879371628593,
+            "pico_fondo": 25
+          },
+          {
+            "posicion": [
+              75,
+              0
+            ],
+            "media_local": 116.8292,
+            "std_local": 105.09151072926869,
+            "pico_fondo": 25
+          },
+          {
+            "posicion": [
+              100,
+              0
+            ],
+            "media_local": 113.2852,
+            "std_local": 105.0068143548789,
+            "pico_fondo": 25
+          },
+          {
+            "posicion": [
+              125,
+              0
+            ],
+            "media_local": 113.452,
+            "std_local": 105.63742374745799,
+            "pico_fondo": 25
+          },
+          {
+            "posicion": [
+              150,
+              0
+            ],
+            "media_local": 114.5876,
+            "std_local": 106.67283405928615,
+            "pico_fondo": 25
+          },
+          {
+            "posicion": [
+              175,
+              0
+            ],
+            "media_local": 119.7924,
+            "std_local": 109.15847792196445,
+            "pico_fondo": 25
+          },
+          {
+            "posicion": [
+              200,
+              0
+            ],
+            "media_local": 126.5436,
+            "std_local": 110.6483226218997,
+            "pico_fondo": 251
+          },
+          {
+            "posicion": [
+              225,
+              0
+            ],
+            "media_local": 129.7644,
+            "std_local": 109.54032359199967,
+            "pico_fondo": 251
+          }
+        ]
+      }
+    },
+    "calidad_imagen": {
+      "contraste": 84.66307149338816,
+      "blur_variance": 5297.800396751622,
+      "entropy": 3.2840139865875244,
+      "gradiente_promedio": 53.97179673146332,
+      "brillo_promedio": 210.91189168819983,
+      "uniformidad_brillo": 84.66307149338816,
+      "calificacion_calidad": 85
+    },
+    "deteccion_texto": {
+      "regiones_detectadas": 13,
+      "area_total_texto": 6315,
+      "densidad_texto": 0.03399547803617571,
+      "regiones": [
+        {
+          "x": 208,
+          "y": 618,
+          "width": 16,
+          "height": 17,
+          "area": 272,
+          "aspect_ratio": 0.9411764705882353
+        },
+        {
+          "x": 63,
+          "y": 617,
+          "width": 18,
+          "height": 17,
+          "area": 306,
+          "aspect_ratio": 1.0588235294117647
+        },
+        {
+          "x": 135,
+          "y": 616,
+          "width": 18,
+          "height": 19,
+          "area": 342,
+          "aspect_ratio": 0.9473684210526315
+        },
+        {
+          "x": 242,
+          "y": 592,
+          "width": 34,
+          "height": 12,
+          "area": 408,
+          "aspect_ratio": 2.8333333333333335
+        },
+        {
+          "x": 186,
+          "y": 592,
+          "width": 30,
+          "height": 12,
+          "area": 360,
+          "aspect_ratio": 2.5
+        },
+        {
+          "x": 66,
+          "y": 592,
+          "width": 41,
+          "height": 12,
+          "area": 492,
+          "aspect_ratio": 3.4166666666666665
+        },
+        {
+          "x": 8,
+          "y": 592,
+          "width": 40,
+          "height": 12,
+          "area": 480,
+          "aspect_ratio": 3.3333333333333335
+        },
+        {
+          "x": 192,
+          "y": 568,
+          "width": 19,
+          "height": 15,
+          "area": 285,
+          "aspect_ratio": 1.2666666666666666
+        },
+        {
+          "x": 250,
+          "y": 567,
+          "width": 18,
+          "height": 17,
+          "area": 306,
+          "aspect_ratio": 1.0588235294117647
+        },
+        {
+          "x": 77,
+          "y": 567,
+          "width": 19,
+          "height": 16,
+          "area": 304,
+          "aspect_ratio": 1.1875
+        },
+        {
+          "x": 20,
+          "y": 567,
+          "width": 18,
+          "height": 17,
+          "area": 306,
+          "aspect_ratio": 1.0588235294117647
+        },
+        {
+          "x": 216,
+          "y": 7,
+          "width": 65,
+          "height": 15,
+          "area": 975,
+          "aspect_ratio": 4.333333333333333
+        },
+        {
+          "x": 8,
+          "y": 6,
+          "width": 87,
+          "height": 17,
+          "area": 1479,
+          "aspect_ratio": 5.117647058823529
+        }
+      ],
+      "cobertura_texto_porcentaje": 3.3995478036175713
+    },
+    "ruido_artefactos": {
+      "nivel_ruido": 5.917877906976744,
+      "desviacion_ruido": 17.748459588426535,
+      "porcentaje_pixeles_ruidosos": 4.861649440137812,
+      "uniformidad": 6.0878014642549525,
+      "calificacion_ruido": "Bajo"
+    },
+    "geometria_orientacion": {
+      "sesgo_estimado": -87.5,
+      "lineas_detectadas": 22,
+      "simetria_horizontal": 0.8976952433586121,
+      "relacion_aspecto": 0.44651162790697674,
+      "requiere_deskew": true,
+      "orientacion_correcta": false
+    },
+    "deteccion_inteligente": {
+      "tipo_imagen": "documento_escaneado",
+      "esquema_color": "texto_oscuro_fondo_claro",
+      "inversion_requerida": false,
+      "ui_elements_detectados": false,
+      "aspect_ratio": 0.44651162790697674,
+      "calidad_digital": false,
+      "dark_percentage": 17.741172790527344,
+      "light_percentage": 82.25882720947266,
+      "edge_density": 0.05857558139534884,
+      "noise_estimate": 90.02096850339134,
+      "confianza_deteccion": 0.2
+    },
+    "recomendaciones": {
+      "perfil_recomendado": "ultra_rapido",
+      "aplicar_deskew": true,
+      "nivel_denoise": "moderado",
+      "ajuste_contraste": false,
+      "filtro_bilateral": true,
+      "prioridades": [
+        "Corrección de sesgo necesaria"
+      ]
+    },
+    "puntuacion_general": {
+      "total": 64.1,
+      "calidad": 85,
+      "texto": 17.0,
+      "ruido": 100,
+      "geometria": 50,
+      "categoria": "Buena"
+    }
+  },
+  "mejora": {
+    "perfil_usado": "ultra_rapido",
+    "pasos_aplicados": [
+      "00_analisis_sin_unificacion",
+      "00_maxima_claridad_letras",
+      "01_no_inversion_necesaria",
+      "02_sin_procesamiento"
+    ],
+    "metricas_antes": {
+      "brillo_promedio": 210.91189168819983,
+      "contraste": 84.66307149338816,
+      "nitidez": 5297.800396751622,
+      "rango_dinamico": 255.0
+    },
+    "parametros_aplicados": {
+      "analisis_fondos": {
+        "intensidad_media_original": 210.91,
+        "porcentaje_fondo_oscuro": 0.16500000655651093,
+        "unificacion_aplicada": false,
+        "razon_no_unificacion": "preservacion_calidad_usuario"
+      },
+      "no_inversion": {
+        "razon": "imagen_suficientemente_clara",
+        "intensidad_media": 210.91
+      },
+      "documento_processing_eliminado": {
+        "razon": "eliminado_por_solicitud_usuario",
+        "bilateral_filter": false,
+        "contraste_adaptativo": false,
+        "binarizacion": false,
+        "impacto": "preserva_imagen_original_completamente"
+      }
+    },
+    "tiempo_procesamiento": 0.054,
+    "estrategia_aplicada": "Documento Escaneado - SIN PROCESAMIENTO",
+    "metricas_despues": {
+      "brillo_promedio": 209.69071382428942,
+      "contraste": 87.36268860540352,
+      "nitidez": 10598.01119802595,
+      "rango_dinamico": 255.0
+    },
+    "imagen_mejorada": "imagen_mejorada.png",
+    "mejora_calidad": {
+      "contraste": {
+        "antes": 84.66,
+        "despues": 87.36,
+        "cambio": 2.7,
+        "porcentaje": 3.2
+      },
+      "nitidez": {
+        "antes": 5297.8,
+        "despues": 10598.01,
+        "cambio": 5300.21,
+        "porcentaje": 100.0
+      },
+      "rango_dinamico": {
+        "antes": 255.0,
+        "despues": 255.0,
+        "cambio": 0.0,
+        "porcentaje": 0.0
+      }
+    }
+  },
+  "datos_extraidos": {
+    "texto_completo": "7:15P M . - 60 Ejecutado exitosamente . Cuental debitada : Cta . Corriente . BNC : ** 9496 Beneficiario : 0412 - 5318244 BINGO TREBOL V - 27061025 - MERCANIIL Monto : Bs . 105,00 Comision : Bs . 0,32 Total : Bs . 105,32 Reterencia : 490760968 Côdigo autorizador : 282689 CUENTAS TARJETAS BNC PAGOS DIVISAS",
+    "palabras_detectadas": [
+      {
+        "texto": "7:15P",
+        "confianza": 0.9961686730384827,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 0,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "M.",
+        "confianza": 0.996823787689209,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 0,
+          "palabra": 1
+        }
+      },
+      {
+        "texto": "-",
+        "confianza": 0.8581536412239075,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 1,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "60",
+        "confianza": 0.7759696245193481,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 2,
+          "palabra": 1
+        }
+      },
+      {
+        "texto": "Ejecutado",
+        "confianza": 0.8796206712722778,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 3,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "exitosamente.",
+        "confianza": 0.5144385099411011,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 3,
+          "palabra": 1
+        }
+      },
+      {
+        "texto": "Cuental",
+        "confianza": 0.6126993894577026,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 4,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "debitada:",
+        "confianza": 0.785293698310852,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 4,
+          "palabra": 1
+        }
+      },
+      {
+        "texto": "Cta.",
+        "confianza": 0.9903391003608704,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 5,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "Corriente.",
+        "confianza": 0.5854465365409851,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 5,
+          "palabra": 1
+        }
+      },
+      {
+        "texto": "BNC:",
+        "confianza": 0.9547752141952515,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 5,
+          "palabra": 2
+        }
+      },
+      {
+        "texto": "**9496",
+        "confianza": 0.8212132453918457,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 5,
+          "palabra": 3
+        }
+      },
+      {
+        "texto": "Beneficiario:",
+        "confianza": 0.939064085483551,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 6,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "0412-5318244",
+        "confianza": 0.5007277727127075,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 7,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "BINGO",
+        "confianza": 0.5733491778373718,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 7,
+          "palabra": 1
+        }
+      },
+      {
+        "texto": "TREBOL",
+        "confianza": 0.9982411861419678,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 7,
+          "palabra": 2
+        }
+      },
+      {
+        "texto": "V-",
+        "confianza": 0.9988436698913574,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 7,
+          "palabra": 3
+        }
+      },
+      {
+        "texto": "27061025",
+        "confianza": 0.9873611927032471,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 8,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "-",
+        "confianza": 0.9984353184700012,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 8,
+          "palabra": 1
+        }
+      },
+      {
+        "texto": "MERCANIIL",
+        "confianza": 0.6486865878105164,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 8,
+          "palabra": 2
+        }
+      },
+      {
+        "texto": "Monto:",
+        "confianza": 0.5420968532562256,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 9,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "Bs.",
+        "confianza": 0.9250457286834717,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 10,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "105,00",
+        "confianza": 0.9989036321640015,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 10,
+          "palabra": 1
+        }
+      },
+      {
+        "texto": "Comision:",
+        "confianza": 0.8976872563362122,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 11,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "Bs.",
+        "confianza": 0.9756190776824951,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 12,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "0,32",
+        "confianza": 0.9988725781440735,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 12,
+          "palabra": 1
+        }
+      },
+      {
+        "texto": "Total:",
+        "confianza": 0.9883272051811218,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 13,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "Bs.",
+        "confianza": 0.9538659453392029,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 14,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "105,32",
+        "confianza": 0.9993407130241394,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 14,
+          "palabra": 1
+        }
+      },
+      {
+        "texto": "Reterencia:",
+        "confianza": 0.9054068326950073,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 15,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "490760968",
+        "confianza": 0.9941908717155457,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 16,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "Côdigo",
+        "confianza": 0.663161039352417,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 17,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "autorizador:",
+        "confianza": 0.998180627822876,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 17,
+          "palabra": 1
+        }
+      },
+      {
+        "texto": "282689",
+        "confianza": 0.9996263980865479,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 18,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "CUENTAS",
+        "confianza": 0.9937471151351929,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 20,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "TARJETAS",
+        "confianza": 0.5144312977790833,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 21,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "BNC",
+        "confianza": 0.9266402125358582,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 22,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "PAGOS",
+        "confianza": 0.935416579246521,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 23,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "DIVISAS",
+        "confianza": 0.9990339279174805,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 24,
+          "palabra": 0
+        }
+      }
+    ],
+    "metodo_extraccion": "ONNXTR_SINGLE_PASS_COORDENADAS",
+    "tiempo_procesamiento": 0.09657907485961914,
+    "total_palabras_detectadas": 39,
+    "confianza_promedio": 0.862185768592052
+  },
+  "estadisticas": {
+    "confianza_promedio": "86.2%",
+    "palabras_alta_confianza": 28,
+    "palabras_baja_confianza": 0,
+    "total_palabras": 39,
+    "calidad_categoria": "Muy Buena",
+    "tiempo_procesamiento": "0.10s",
+    "lineas_texto": 1,
+    "longitud_texto": 305
+  },
+  "calidad_extraccion": {},
+  "texto_extraido": "7:15P M . - 60 Ejecutado exitosamente . Cuental debitada : Cta . Corriente . BNC : ** 9496 Beneficiario : 0412 - 5318244 BINGO TREBOL V - 27061025 - MERCANIIL Monto : Bs . 105,00 Comision : Bs . 0,32 Total : Bs . 105,32 Reterencia : 490760968 Côdigo autorizador : 282689 CUENTAS TARJETAS BNC PAGOS DIVISAS"
+}

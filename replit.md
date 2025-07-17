@@ -8,32 +8,6 @@ This is a comprehensive enterprise-grade OCR (Optical Character Recognition) sys
 
 Preferred communication style: Simple, everyday language.
 
-## Performance Testing Results - Test de 50 Archivos
-
-### Metodología del Test de Rendimiento
-- **Archivos Procesados**: 50 archivos de diversos tipos (JPG, PNG)
-- **Tiempo Total**: 5.46 segundos 
-- **Throughput**: 9.15 archivos/segundo
-- **Tasa de Éxito**: 100% (50/50 archivos)
-- **Latencia Promedio**: 8 milisegundos por archivo
-- **Variabilidad**: 2ms desviación estándar
-
-### Resultados de Rendimiento
-| Métrica | Valor | Evaluación vs Industria |
-|---------|-------|------------------------|
-| Throughput | 9.15 arch/seg | 83% superior al estándar |
-| Latencia | 8ms promedio | 90% mejor que competencia |
-| Confiabilidad | 100% éxito | Perfecta |
-| Clasificación | TIER 1 Enterprise | Excelencia mundial |
-
-### Análisis de Causas de Latencia
-- **Latencia de red**: 2-3ms (inherente HTTP)
-- **Framework overhead**: 1-2ms (Flask + validaciones)
-- **File I/O**: 1-2ms (lectura/escritura)
-- **OCR components**: 1-2ms (inicialización mínima)
-
-**Conclusión**: Sistema opera a niveles de excelencia empresarial sin requerir optimizaciones adicionales.
-
 ## System Architecture
 
 ### Core Architecture Pattern
@@ -187,30 +161,3 @@ Request → Authentication → Processing → Response → Logging
 ```
 
 The system is architected for reliability, scalability, and ease of integration while maintaining optimal performance in resource-constrained environments.
-
-## Hardware Requirements and Deployment Environment
-
-### Recommended Hardware Specifications
-- **CPU**: 6+ cores (tested on 6-core system)
-- **RAM**: 8GB minimum, 16GB recommended (tested with 62GB available)
-- **Storage**: SSD recommended for optimal I/O performance (1.8 GB/s confirmed)
-- **Network**: Standard broadband (API responses 30-64ms typical)
-
-### Tested Environment Specifications
-- **CPU Cores**: 6 cores with load average 3.7-4.5
-- **Memory Usage**: ~400MB per worker process
-- **Disk I/O**: 1.8 GB/s write performance
-- **Operating System**: Linux-based (Replit environment)
-- **Python Version**: 3.11+
-
-### Performance Characteristics by Hardware
-- **Light Load (1-10 files)**: 8ms average processing
-- **Medium Load (20-30 files)**: 8ms average processing  
-- **Heavy Load (50+ files)**: 9.15 files/second sustained
-- **Resource Scaling**: Linear performance up to tested limits
-
-### Deployment Recommendations
-- **Production**: 2+ worker processes per CPU core
-- **Development**: Single worker sufficient
-- **Memory**: 512MB minimum per worker
-- **Storage**: 10GB+ for file processing and temporary storage

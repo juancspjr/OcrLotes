@@ -1,0 +1,1355 @@
+{
+  "status": "exitoso",
+  "request_id": "BATCH_20250717_040548_3f31a5a5_621_20250701_060702_20250620-A_214056942235719lid_Juanc_13-19_20250717_034312_516.png",
+  "filename": "20250701_060702_20250620-A_214056942235719lid_Juanc_13-19_20250717_034312_516.png",
+  "tiempo_procesamiento": 0.09199190139770508,
+  "fecha_procesamiento": "2025-07-17T04:05:49.705750",
+  "metadata": {},
+  "original_text_ocr": "8:21 E T it all Comprobante de operacion Personas 522,70 Bs Fecha : 20/06/ 2025 Operacion : 003039965664 Identificacion : 27061025 Origen : 0102 **** 5071 Destino : 04125318244 Banco : 0105 - BANCO MERCANTIL Concepto : 4 15 89 * 107 Crear Acceso directo III C",
+  "structured_text_ocr": "operacion Personas Operacion 522,70 003039965664 27061025 04125318244 Banco BANCO MERCANTIL 20/06/ 8:21 E T it all Comprobante de Bs Fecha : 2025 : Identificacion : Origen : 0102 **** 5071 Destino : : 0105 - Concepto : 4 15 89 * 107 Crear Acceso directo III C",
+  "extracted_fields": {
+    "referencia": "003039965664",
+    "bancoorigen": "BANCO MERCANTIL",
+    "monto": "522.70",
+    "telefono": "04125318244",
+    "cedula": "",
+    "banco_destino": "BANCO MERCANTIL",
+    "pago_fecha": "20/06/ 2025",
+    "fecha_operacion": "20/06/ 2025",
+    "concepto": "Transacción bancaria",
+    "texto_total_ocr": "8:21 E T it all Comprobante de operacion Personas 522,70 Bs Fecha : 20/06/ 2025 Operacion : 003039965664 Identificacion : 27061025 Origen : 0102 **** 5071 Destino : 04125318244 Banco : 0105 - BANCO MERCANTIL Concepto : 4 15 89 * 107 Crear Acceso directo III C"
+  },
+  "processing_metadata": {
+    "logica_oro_aplicada": true,
+    "ocr_confidence_avg": 0.9,
+    "error_messages": [
+      "Lógica de oro aplicada sobre caché para cumplir mandato"
+    ],
+    "processing_time_ms": 0,
+    "total_words_detected": 0,
+    "coordinates_available": 0,
+    "ocr_method": "ONNX_TR_CACHE_WITH_GOLD_LOGIC",
+    "timestamp": "2025-07-17T04:05:49.704867"
+  },
+  "Información del Archivo": {
+    "fecha_procesamiento": "2025-07-17T04:05:49.704977",
+    "formato": ".png",
+    "nombre_original": "20250701_060702_20250620-A_214056942235719lid_Juanc_13-19_20250717_034312_516.png",
+    "tamaño": 23554
+  },
+  "Estadísticas": {
+    "confianza_promedio": "88.3%",
+    "palabras_alta_confianza": 27,
+    "palabras_baja_confianza": 0,
+    "total_palabras": 37,
+    "calidad_categoria": "Muy Buena",
+    "tiempo_procesamiento": "0.09s",
+    "lineas_texto": 1,
+    "longitud_texto": 259
+  },
+  "Texto Extraído": {
+    "texto_completo": "8:21 E T it all Comprobante de operacion Personas 522,70 Bs Fecha : 20/06/ 2025 Operacion : 003039965664 Identificacion : 27061025 Origen : 0102 **** 5071 Destino : 04125318244 Banco : 0105 - BANCO MERCANTIL Concepto : 4 15 89 * 107 Crear Acceso directo III C",
+    "longitud_texto": 259,
+    "lineas_texto": 1
+  },
+  "validacion": {
+    "imagen_info": {
+      "ancho": 485,
+      "alto": 1080,
+      "resolucion_total": 523800,
+      "canales": 3,
+      "modo": "RGB",
+      "formato": "JPEG",
+      "brillo_promedio": 41.0049350897289,
+      "desviacion_brillo": 36.4990879559563,
+      "rango_dinamico": 255.0,
+      "histogram": [
+        2671.0,
+        25584.0,
+        116.0,
+        96.0,
+        80.0,
+        65.0,
+        68.0,
+        83.0,
+        83.0,
+        72.0,
+        74.0,
+        107.0,
+        608.0,
+        116.0,
+        148.0,
+        167.0,
+        253.0,
+        250.0,
+        302.0,
+        358.0,
+        419.0,
+        550.0,
+        619.0,
+        740.0,
+        1226.0,
+        1603.0,
+        13883.0,
+        2053.0,
+        1326.0,
+        1860.0,
+        2233.0,
+        3325.0,
+        2839.0,
+        391236.0,
+        3483.0,
+        3032.0,
+        1661.0,
+        1870.0,
+        1186.0,
+        2062.0,
+        869.0,
+        786.0,
+        664.0,
+        569.0,
+        473.0,
+        421.0,
+        363.0,
+        291.0,
+        696.0,
+        263.0,
+        263.0,
+        241.0,
+        201.0,
+        198.0,
+        222.0,
+        155.0,
+        183.0,
+        167.0,
+        185.0,
+        157.0,
+        163.0,
+        170.0,
+        175.0,
+        160.0,
+        139.0,
+        152.0,
+        148.0,
+        127.0,
+        143.0,
+        144.0,
+        139.0,
+        133.0,
+        132.0,
+        126.0,
+        120.0,
+        123.0,
+        126.0,
+        153.0,
+        122.0,
+        139.0,
+        135.0,
+        137.0,
+        154.0,
+        385.0,
+        282.0,
+        599.0,
+        373.0,
+        144.0,
+        141.0,
+        148.0,
+        139.0,
+        109.0,
+        114.0,
+        123.0,
+        91.0,
+        97.0,
+        142.0,
+        107.0,
+        141.0,
+        119.0,
+        123.0,
+        223.0,
+        125.0,
+        146.0,
+        111.0,
+        109.0,
+        123.0,
+        121.0,
+        126.0,
+        131.0,
+        135.0,
+        160.0,
+        136.0,
+        579.0,
+        177.0,
+        645.0,
+        271.0,
+        18199.0,
+        1031.0,
+        613.0,
+        230.0,
+        203.0,
+        152.0,
+        132.0,
+        126.0,
+        122.0,
+        152.0,
+        108.0,
+        108.0,
+        115.0,
+        92.0,
+        86.0,
+        124.0,
+        92.0,
+        105.0,
+        95.0,
+        109.0,
+        99.0,
+        88.0,
+        110.0,
+        110.0,
+        98.0,
+        104.0,
+        102.0,
+        106.0,
+        122.0,
+        108.0,
+        95.0,
+        99.0,
+        109.0,
+        107.0,
+        122.0,
+        101.0,
+        91.0,
+        101.0,
+        86.0,
+        85.0,
+        108.0,
+        87.0,
+        99.0,
+        100.0,
+        83.0,
+        111.0,
+        108.0,
+        92.0,
+        98.0,
+        120.0,
+        95.0,
+        113.0,
+        97.0,
+        97.0,
+        110.0,
+        89.0,
+        101.0,
+        102.0,
+        108.0,
+        113.0,
+        103.0,
+        117.0,
+        93.0,
+        102.0,
+        102.0,
+        94.0,
+        104.0,
+        121.0,
+        89.0,
+        97.0,
+        125.0,
+        124.0,
+        316.0,
+        142.0,
+        138.0,
+        108.0,
+        127.0,
+        107.0,
+        110.0,
+        98.0,
+        96.0,
+        108.0,
+        100.0,
+        100.0,
+        118.0,
+        116.0,
+        117.0,
+        121.0,
+        159.0,
+        196.0,
+        465.0,
+        206.0,
+        132.0,
+        111.0,
+        106.0,
+        107.0,
+        133.0,
+        101.0,
+        109.0,
+        101.0,
+        110.0,
+        88.0,
+        86.0,
+        108.0,
+        91.0,
+        87.0,
+        90.0,
+        105.0,
+        86.0,
+        103.0,
+        88.0,
+        103.0,
+        109.0,
+        90.0,
+        101.0,
+        106.0,
+        104.0,
+        114.0,
+        94.0,
+        111.0,
+        101.0,
+        102.0,
+        96.0,
+        106.0,
+        94.0,
+        104.0,
+        123.0,
+        116.0,
+        93.0,
+        116.0,
+        111.0,
+        110.0,
+        86.0,
+        123.0,
+        108.0,
+        113.0,
+        112.0,
+        146.0,
+        2750.0
+      ],
+      "histogram_analysis": {
+        "picos_principales": [
+          [
+            33,
+            391236
+          ],
+          [
+            1,
+            25584
+          ],
+          [
+            117,
+            18199
+          ]
+        ],
+        "rango_fondo_sugerido": 33,
+        "rango_texto_sugerido": 1,
+        "distribucion": {
+          "oscuras": 0.9160003662109375,
+          "medias": 0.06008591130375862,
+          "claras": 0.023913707584142685
+        },
+        "requiere_inversion": true,
+        "bimodal": true
+      },
+      "variaciones_fondo": {
+        "total_regiones_analizadas": 756,
+        "fondos_unicos_detectados": 5,
+        "variacion_fondos": 19.602368083145468,
+        "fondos_heterogeneos": false,
+        "rango_fondos": [
+          1,
+          207
+        ],
+        "requiere_unificacion_avanzada": true,
+        "regiones_variacion": [
+          {
+            "posicion": [
+              0,
+              0
+            ],
+            "media_local": 33.5548,
+            "std_local": 27.718510006131286,
+            "pico_fondo": 26
+          },
+          {
+            "posicion": [
+              25,
+              0
+            ],
+            "media_local": 40.4436,
+            "std_local": 39.38176759669378,
+            "pico_fondo": 26
+          },
+          {
+            "posicion": [
+              50,
+              0
+            ],
+            "media_local": 45.436,
+            "std_local": 48.34966291506073,
+            "pico_fondo": 26
+          },
+          {
+            "posicion": [
+              75,
+              0
+            ],
+            "media_local": 50.394,
+            "std_local": 57.476071229686525,
+            "pico_fondo": 26
+          },
+          {
+            "posicion": [
+              100,
+              0
+            ],
+            "media_local": 39.8928,
+            "std_local": 44.67489348795362,
+            "pico_fondo": 26
+          },
+          {
+            "posicion": [
+              125,
+              0
+            ],
+            "media_local": 28.046,
+            "std_local": 8.209840680549167,
+            "pico_fondo": 26
+          },
+          {
+            "posicion": [
+              150,
+              0
+            ],
+            "media_local": 27.52,
+            "std_local": 2.92054789380349,
+            "pico_fondo": 26
+          },
+          {
+            "posicion": [
+              175,
+              0
+            ],
+            "media_local": 27.52,
+            "std_local": 2.92054789380349,
+            "pico_fondo": 26
+          },
+          {
+            "posicion": [
+              200,
+              0
+            ],
+            "media_local": 27.52,
+            "std_local": 2.92054789380349,
+            "pico_fondo": 26
+          },
+          {
+            "posicion": [
+              225,
+              0
+            ],
+            "media_local": 27.52,
+            "std_local": 2.92054789380349,
+            "pico_fondo": 26
+          }
+        ]
+      }
+    },
+    "calidad_imagen": {
+      "contraste": 36.4990879559563,
+      "blur_variance": 936.4802749140894,
+      "entropy": 2.211930274963379,
+      "gradiente_promedio": 34.851996597549984,
+      "brillo_promedio": 41.0049350897289,
+      "uniformidad_brillo": 36.4990879559563,
+      "calificacion_calidad": 70
+    },
+    "deteccion_texto": {
+      "regiones_detectadas": 42,
+      "area_total_texto": 87747,
+      "densidad_texto": 0.1675200458190149,
+      "regiones": [
+        {
+          "x": 371,
+          "y": 1037,
+          "width": 15,
+          "height": 25,
+          "area": 375,
+          "aspect_ratio": 0.6
+        },
+        {
+          "x": 230,
+          "y": 1037,
+          "width": 25,
+          "height": 25,
+          "area": 625,
+          "aspect_ratio": 1.0
+        },
+        {
+          "x": 197,
+          "y": 978,
+          "width": 166,
+          "height": 20,
+          "area": 3320,
+          "aspect_ratio": 8.3
+        },
+        {
+          "x": 134,
+          "y": 974,
+          "width": 50,
+          "height": 30,
+          "area": 1500,
+          "aspect_ratio": 1.6666666666666667
+        },
+        {
+          "x": 228,
+          "y": 893,
+          "width": 30,
+          "height": 30,
+          "area": 900,
+          "aspect_ratio": 1.0
+        },
+        {
+          "x": 413,
+          "y": 619,
+          "width": 33,
+          "height": 18,
+          "area": 594,
+          "aspect_ratio": 1.8333333333333333
+        },
+        {
+          "x": 385,
+          "y": 619,
+          "width": 25,
+          "height": 18,
+          "area": 450,
+          "aspect_ratio": 1.3888888888888888
+        },
+        {
+          "x": 335,
+          "y": 619,
+          "width": 49,
+          "height": 18,
+          "area": 882,
+          "aspect_ratio": 2.7222222222222223
+        },
+        {
+          "x": 319,
+          "y": 619,
+          "width": 13,
+          "height": 19,
+          "area": 247,
+          "aspect_ratio": 0.6842105263157895
+        },
+        {
+          "x": 39,
+          "y": 619,
+          "width": 82,
+          "height": 21,
+          "area": 1722,
+          "aspect_ratio": 3.9047619047619047
+        },
+        {
+          "x": 344,
+          "y": 579,
+          "width": 103,
+          "height": 22,
+          "area": 2266,
+          "aspect_ratio": 4.681818181818182
+        },
+        {
+          "x": 217,
+          "y": 579,
+          "width": 46,
+          "height": 19,
+          "area": 874,
+          "aspect_ratio": 2.4210526315789473
+        },
+        {
+          "x": 39,
+          "y": 579,
+          "width": 56,
+          "height": 19,
+          "area": 1064,
+          "aspect_ratio": 2.9473684210526314
+        },
+        {
+          "x": 276,
+          "y": 578,
+          "width": 66,
+          "height": 20,
+          "area": 1320,
+          "aspect_ratio": 3.3
+        },
+        {
+          "x": 326,
+          "y": 540,
+          "width": 119,
+          "height": 21,
+          "area": 2499,
+          "aspect_ratio": 5.666666666666667
+        },
+        {
+          "x": 39,
+          "y": 540,
+          "width": 68,
+          "height": 19,
+          "area": 1292,
+          "aspect_ratio": 3.5789473684210527
+        },
+        {
+          "x": 38,
+          "y": 501,
+          "width": 62,
+          "height": 22,
+          "area": 1364,
+          "aspect_ratio": 2.8181818181818183
+        },
+        {
+          "x": 326,
+          "y": 499,
+          "width": 118,
+          "height": 21,
+          "area": 2478,
+          "aspect_ratio": 5.619047619047619
+        },
+        {
+          "x": 359,
+          "y": 461,
+          "width": 88,
+          "height": 20,
+          "area": 1760,
+          "aspect_ratio": 4.4
+        },
+        {
+          "x": 39,
+          "y": 461,
+          "width": 112,
+          "height": 19,
+          "area": 2128,
+          "aspect_ratio": 5.894736842105263
+        }
+      ],
+      "cobertura_texto_porcentaje": 16.752004581901488
+    },
+    "ruido_artefactos": {
+      "nivel_ruido": 2.660546009927453,
+      "desviacion_ruido": 10.126517822005317,
+      "porcentaje_pixeles_ruidosos": 4.509545628102329,
+      "uniformidad": 3.2601050019091256,
+      "calificacion_ruido": "Bajo"
+    },
+    "geometria_orientacion": {
+      "sesgo_estimado": 2.5,
+      "lineas_detectadas": 44,
+      "simetria_horizontal": 0.5953348875045776,
+      "relacion_aspecto": 0.44907407407407407,
+      "requiere_deskew": true,
+      "orientacion_correcta": true
+    },
+    "deteccion_inteligente": {
+      "tipo_imagen": "screenshot_movil",
+      "esquema_color": "texto_claro_fondo_oscuro",
+      "inversion_requerida": true,
+      "ui_elements_detectados": false,
+      "aspect_ratio": 0.44907407407407407,
+      "calidad_digital": false,
+      "dark_percentage": 96.77300262451172,
+      "light_percentage": 3.2269949913024902,
+      "edge_density": 0.028228331424207713,
+      "noise_estimate": 60.17154150905604,
+      "confianza_deteccion": 0.5
+    },
+    "recomendaciones": {
+      "perfil_recomendado": "rapido",
+      "aplicar_deskew": true,
+      "nivel_denoise": "moderado",
+      "ajuste_contraste": false,
+      "filtro_bilateral": true,
+      "prioridades": [
+        "Corrección de sesgo necesaria"
+      ]
+    },
+    "puntuacion_general": {
+      "total": 83.1,
+      "calidad": 70,
+      "texto": 83.8,
+      "ruido": 100,
+      "geometria": 100,
+      "categoria": "Excelente"
+    }
+  },
+  "mejora": {
+    "perfil_usado": "ultra_rapido",
+    "pasos_aplicados": [
+      "00_analisis_sin_unificacion",
+      "00_maxima_claridad_letras",
+      "01_inversion_global_simple",
+      "02_sin_procesamiento"
+    ],
+    "metricas_antes": {
+      "brillo_promedio": 41.0049350897289,
+      "contraste": 36.4990879559563,
+      "nitidez": 936.4802749140894,
+      "rango_dinamico": 255.0
+    },
+    "parametros_aplicados": {
+      "analisis_fondos": {
+        "intensidad_media_original": 41.0,
+        "porcentaje_fondo_oscuro": 0.9139999747276306,
+        "unificacion_aplicada": false,
+        "razon_no_unificacion": "preservacion_calidad_usuario"
+      },
+      "inversion_global": {
+        "intensidad_media_original": 41.0,
+        "razon": "imagen_muy_oscura_necesita_inversion"
+      },
+      "screenshot_processing_eliminado": {
+        "razon": "eliminado_por_solicitud_usuario",
+        "upscaling": false,
+        "unsharp_masking": false,
+        "contrast_adjustment": false,
+        "binarization": false,
+        "brightness_adjustment": false,
+        "impacto": "preserva_imagen_original_completamente"
+      }
+    },
+    "tiempo_procesamiento": 0.007,
+    "estrategia_aplicada": "Screenshot Móvil - SIN PROCESAMIENTO",
+    "metricas_despues": {
+      "brillo_promedio": 214.22145857197404,
+      "contraste": 38.95275000709227,
+      "nitidez": 2099.718258877434,
+      "rango_dinamico": 255.0
+    },
+    "imagen_mejorada": "imagen_mejorada.png",
+    "mejora_calidad": {
+      "contraste": {
+        "antes": 36.5,
+        "despues": 38.95,
+        "cambio": 2.45,
+        "porcentaje": 6.7
+      },
+      "nitidez": {
+        "antes": 936.48,
+        "despues": 2099.72,
+        "cambio": 1163.24,
+        "porcentaje": 124.2
+      },
+      "rango_dinamico": {
+        "antes": 255.0,
+        "despues": 255.0,
+        "cambio": 0.0,
+        "porcentaje": 0.0
+      }
+    }
+  },
+  "datos_extraidos": {
+    "texto_completo": "8:21 E T it all Comprobante de operacion Personas 522,70 Bs Fecha : 20/06/ 2025 Operacion : 003039965664 Identificacion : 27061025 Origen : 0102 **** 5071 Destino : 04125318244 Banco : 0105 - BANCO MERCANTIL Concepto : 4 15 89 * 107 Crear Acceso directo III C",
+    "palabras_detectadas": [
+      {
+        "texto": "8:21",
+        "confianza": 0.9517103433609009,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 0,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "E",
+        "confianza": 0.5124341249465942,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 0,
+          "palabra": 1
+        }
+      },
+      {
+        "texto": "T",
+        "confianza": 0.6303025484085083,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 0,
+          "palabra": 2
+        }
+      },
+      {
+        "texto": "it",
+        "confianza": 0.6780872941017151,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 1,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "all",
+        "confianza": 0.9114375710487366,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 1,
+          "palabra": 1
+        }
+      },
+      {
+        "texto": "Comprobante",
+        "confianza": 0.9919290542602539,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 2,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "de",
+        "confianza": 0.9999970197677612,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 2,
+          "palabra": 1
+        }
+      },
+      {
+        "texto": "operacion",
+        "confianza": 0.9900619983673096,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 2,
+          "palabra": 2
+        }
+      },
+      {
+        "texto": "Personas",
+        "confianza": 0.9783719182014465,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 3,
+          "palabra": 1
+        }
+      },
+      {
+        "texto": "522,70",
+        "confianza": 0.9893165826797485,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 4,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "Bs",
+        "confianza": 0.9997226595878601,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 4,
+          "palabra": 1
+        }
+      },
+      {
+        "texto": "Fecha:",
+        "confianza": 0.9862853288650513,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 5,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "20/06/2025",
+        "confianza": 0.8900331854820251,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 6,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "Operacion:",
+        "confianza": 0.8240923881530762,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 7,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "003039965664",
+        "confianza": 0.6626704931259155,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 8,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "Identificacion:",
+        "confianza": 0.7646126747131348,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 9,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "27061025",
+        "confianza": 0.7042946219444275,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 10,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "Origen:",
+        "confianza": 0.9883825182914734,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 11,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "0102****5071",
+        "confianza": 0.9918613433837891,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 12,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "Destino:",
+        "confianza": 0.9925634264945984,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 13,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "04125318244",
+        "confianza": 0.9202780723571777,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 14,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "Banco:",
+        "confianza": 0.9909908771514893,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 15,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "0105",
+        "confianza": 0.9999598264694214,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 16,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "-",
+        "confianza": 0.9994170665740967,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 16,
+          "palabra": 1
+        }
+      },
+      {
+        "texto": "BANCO",
+        "confianza": 0.9887458682060242,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 16,
+          "palabra": 2
+        }
+      },
+      {
+        "texto": "MERCANTIL",
+        "confianza": 0.9510788917541504,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 16,
+          "palabra": 3
+        }
+      },
+      {
+        "texto": "Concepto:",
+        "confianza": 0.9942910671234131,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 17,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "4",
+        "confianza": 0.9997733235359192,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 18,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "15",
+        "confianza": 0.9971893429756165,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 18,
+          "palabra": 1
+        }
+      },
+      {
+        "texto": "89",
+        "confianza": 0.6471103429794312,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 18,
+          "palabra": 2
+        }
+      },
+      {
+        "texto": "*",
+        "confianza": 0.6731259226799011,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 18,
+          "palabra": 3
+        }
+      },
+      {
+        "texto": "107",
+        "confianza": 0.999248206615448,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 18,
+          "palabra": 4
+        }
+      },
+      {
+        "texto": "Crear",
+        "confianza": 0.999784529209137,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 19,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "Acceso",
+        "confianza": 0.6705791354179382,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 19,
+          "palabra": 1
+        }
+      },
+      {
+        "texto": "directo",
+        "confianza": 0.999808132648468,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 19,
+          "palabra": 2
+        }
+      },
+      {
+        "texto": "III",
+        "confianza": 0.8809292912483215,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 20,
+          "palabra": 0
+        }
+      },
+      {
+        "texto": "C",
+        "confianza": 0.514939546585083,
+        "coordinates": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "posicion": {
+          "pagina": 0,
+          "bloque": 0,
+          "linea": 21,
+          "palabra": 0
+        }
+      }
+    ],
+    "metodo_extraccion": "ONNXTR_SINGLE_PASS_COORDENADAS",
+    "tiempo_procesamiento": 0.09199190139770508,
+    "total_palabras_detectadas": 37,
+    "confianza_promedio": 0.8828490956409557
+  },
+  "estadisticas": {
+    "confianza_promedio": "88.3%",
+    "palabras_alta_confianza": 27,
+    "palabras_baja_confianza": 0,
+    "total_palabras": 37,
+    "calidad_categoria": "Muy Buena",
+    "tiempo_procesamiento": "0.09s",
+    "lineas_texto": 1,
+    "longitud_texto": 259
+  },
+  "calidad_extraccion": {},
+  "texto_extraido": "8:21 E T it all Comprobante de operacion Personas 522,70 Bs Fecha : 20/06/ 2025 Operacion : 003039965664 Identificacion : 27061025 Origen : 0102 **** 5071 Destino : 04125318244 Banco : 0105 - BANCO MERCANTIL Concepto : 4 15 89 * 107 Crear Acceso directo III C"
+}
