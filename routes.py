@@ -2351,12 +2351,27 @@ def _extract_enterprise_data_from_json(data, json_file_path):
         # Extraer campos empresariales usando la función existente
         campos_empresariales = _extract_enterprise_fields(data, texto_completo)
         
+        # ✅ CORRECCIÓN CRÍTICA CAPTION: Preservar caption original desde metadata JSON
+        # REASON: Caption debe mantenerse exacto como fue ingresado por el usuario
+        # IMPACT: Integridad total del campo caption desde entrada hasta salida JSON descargado
+        # CAUSA RAÍZ: Función solo buscaba en nombre de archivo, no en metadatos reales
+        metadata = data.get('metadata', {})
+        caption_original = metadata.get('caption', '').strip()
+        
+        if caption_original:
+            logger.info(f"📋 Caption original preservado desde JSON metadata: '{caption_original}'")
+            caption = caption_original
+        else:
+            # Solo usar caption del filename si no hay metadata real
+            caption = metadatos_whatsapp.get('caption', '')
+            logger.info(f"📋 Caption desde filename (no metadata): '{caption}'")
+        
         # Construir estructura empresarial final
         archivo_resultado = {
             'nombre_archivo': filename.replace('.json', ''),
             'id_whatsapp': metadatos_whatsapp.get('id_whatsapp', ''),
             'nombre_usuario': metadatos_whatsapp.get('nombre_usuario', ''),
-            'caption': metadatos_whatsapp.get('caption', ''),  # FIX: Preservar caption original, no fallback genérico
+            'caption': caption,  # ✅ CORRECCIÓN CRÍTICA: Usar caption preservado
             'hora_exacta': metadatos_whatsapp.get('hora_exacta', ''),
             'numero_llegada': metadatos_whatsapp.get('numero_llegada', 0),
             'otro': campos_empresariales.get('otro', ''),

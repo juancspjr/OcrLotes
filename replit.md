@@ -20,6 +20,7 @@ Sistema OCR asíncrono de alto rendimiento para procesamiento de recibos de pago
 - ✅ Migración completada de Replit Agent a Replit (Julio 16, 2025)
 - ✅ CORRECCIÓN CRÍTICA: Problema de caption vacío ("") en JSON del historial resuelto (Julio 17, 2025)
 - ✅ CORRECCIÓN CRÍTICA: Problema de discrepancias en Historial de Lotes resuelto
+- ✅ CORRECCIÓN CRÍTICA: Problema de discrepancias en Historial de Lotes resuelto
 - ✅ Backend: Campos successCount y errorCount añadidos al endpoint /api/batches/history
 - ✅ Frontend: Valores "undefined" eliminados en columnas Exitosos y Errores
 - ✅ Conteo de archivos corregido: excluye archivos de resumen _resultados.json
