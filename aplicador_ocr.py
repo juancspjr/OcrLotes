@@ -20,6 +20,8 @@ from onnxtr.models import ocr_predictor
 from fuzzywuzzy import fuzz
 import statistics
 from memory_optimizer import memory_optimizer
+from memory_profiler_advanced import advanced_profiler, profile_memory
+from onnx_optimizer import onnx_optimizer
 
 # Configurar logging
 # FIX: Configuración directa para evitar problemas con tipos de datos en LOGGING_CONFIG

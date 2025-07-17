@@ -12,6 +12,7 @@ from datetime import datetime
 from flask import Flask, jsonify
 from werkzeug.middleware.proxy_fix import ProxyFix
 from memory_optimizer import memory_optimizer, start_memory_monitoring
+from memory_profiler_advanced import advanced_profiler
 
 # Configurar logging
 logging.basicConfig(level=logging.DEBUG)
@@ -110,6 +111,10 @@ def preload_ocr_components():
         try:
             logger.info("Pre-cargando componentes OCR para sistema asíncrono...")
             
+            # Iniciar perfilado avanzado
+            advanced_profiler.start_profiling()
+            advanced_profiler.take_snapshot("inicio_carga_ocr")
+            
             # Inicializar optimizador de memoria
             memory_optimizer.optimize_numpy_arrays()
             memory_optimizer.optimize_onnx_models()
@@ -124,6 +129,10 @@ def preload_ocr_components():
                 
                 _ocr_components_loaded = True
                 logger.info("✅ Componentes OCR pre-cargados exitosamente")
+            
+            # Analizar memoria post-carga
+            advanced_profiler.take_snapshot("post_carga_ocr")
+            advanced_profiler.optimize_based_on_analysis()
             
         except Exception as e:
             logger.error(f"Error pre-cargando componentes OCR: {e}")

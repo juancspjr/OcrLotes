@@ -26,9 +26,10 @@ class MemoryOptimizer:
     """Optimizador agresivo de memoria para el sistema OCR"""
     
     def __init__(self):
-        self.max_memory_mb = 4096  # Límite máximo de 4GB
-        self.cleanup_threshold = 0.8  # Limpiar al 80% del límite
+        self.max_memory_mb = 300  # Límite máximo reducido a 300MB
+        self.cleanup_threshold = 0.7  # Limpiar al 70% del límite
         self.aggressive_cleanup = True
+        self.use_generators = True  # Usar generadores para procesamiento lazy
         
     def get_memory_usage(self):
         """Obtiene el uso actual de memoria en MB"""

@@ -1,0 +1,78 @@
+Mandato: Optimización Avanzada de Memoria y Compatibilidad del Sistema OCR
+Fecha: 17 de Julio de 2025
+Objetivo: Reducir aún más el consumo de memoria del Sistema OCR Empresarial (actualmente en ~441 MB) y asegurar la máxima eficiencia y estabilidad en entornos con recursos limitados, investigando e implementando técnicas y bibliotecas avanzadas de optimización.
+
+Fase 1: Análisis Profundo y Perfilado de Memoria
+Propósito: Identificar con precisión dónde se está consumiendo la memoria después de las optimizaciones iniciales, para dirigir los esfuerzos de optimización de manera efectiva.
+
+Implementar Herramientas de Perfilado de Memoria:
+
+Acción: Integrar y ejecutar herramientas de perfilado de memoria como memory_profiler, tracemalloc, o Memray (desarrollado por Bloomberg).
+
+Método Sugerido:
+
+memory_profiler: Instalar con pip install memory_profiler. Utilizar el decorador @profile en funciones clave de procesamiento (por ejemplo, en aplicador_ocr.py) para obtener un desglose del uso de memoria línea por línea.
+
+tracemalloc: Módulo incorporado de Python que permite tomar "snapshots" de la memoria y compararlas para identificar nuevas asignaciones.
+
+Compatibilidad: Estas bibliotecas son compatibles con la mayoría de las aplicaciones Python. La integración se realizará a nivel de código o al ejecutar el script principal.
+
+Generar Reportes de Uso:
+
+Acción: Ejecutar el sistema bajo una carga de prueba (por ejemplo, con 5 a 10 archivos) mientras las herramientas de perfilado están activas.
+
+Resultado Esperado: Reportes detallados que muestren el consumo de RAM por función, objeto o línea de código.
+
+Fase 2: Optimización Dirigida de Código y Configuración
+Propósito: Aplicar técnicas específicas basadas en los hallazgos del perfilado y las mejores prácticas para Flask, Gunicorn y ONNX Runtime.
+
+Optimización de Datos y Estructuras en Python:
+
+Acción: Revisar el código para identificar grandes listas o colecciones de datos que puedan ser reemplazadas por:
+
+Generadores: Para el procesamiento "lazy" de datos, evitando cargar todo en memoria a la vez.
+
+array module: Si se manejan grandes colecciones de números homogéneos, el módulo array es más eficiente que las listas Python estándar.
+
+Acción: Para clases personalizadas (__slots__): Si se crean muchas instancias de una misma clase, considerar el uso de __slots__ en la definición de la clase para reducir el overhead de la memoria por instancia.
+
+Compatibilidad: Alto nivel de compatibilidad. Requiere cambios en la lógica de manejo de datos.
+
+Afinación de Gunicorn:
+
+Acción: Experimentar con el parámetro --max-requests de Gunicorn. Este parámetro fuerza a los procesos de trabajador a reiniciarse después de un número específico de solicitudes, lo que ayuda a liberar memoria que podría estar "fugándose" con el tiempo.
+
+Comando Sugerido: gunicorn --workers 2 --threads 1 --max-requests 100 --bind 0.0.0.0:5000 main:app (el número 100 es un ejemplo y deberá ajustarse).
+
+Compatibilidad: Parámetro estándar de Gunicorn, alta compatibilidad.
+
+Optimización Específica de ONNX Runtime (OnnxTR):
+
+Acción: Investigar y aplicar técnicas de optimización de modelos ONNX para reducir su tamaño y consumo de memoria durante la inferencia.
+
+Cuantización del Modelo: Si no se ha hecho, explorar la cuantización del modelo (convertir de FP32 a FP16 o INT8). Esto puede reducir drásticamente el tamaño del modelo y el consumo de RAM. Dado que ya se están usando modelos mobilenet_v3_large (que suelen ser compactos), la cuantización a INT8 sería el siguiente paso más impactante. Esto podría requerir herramientas específicas de ONNX para la conversión del modelo.
+
+Configuraciones de Sesión de ONNX Runtime: Explorar las opciones de configuración de la sesión de ONNX Runtime que optimizan el uso de memoria (ej. sess_options.add_session_config_entry('session.intra_op_num_threads', '1') para controlar hilos internos, o configuraciones relacionadas con allocators si es posible).
+
+Compatibilidad: La cuantización puede afectar ligeramente la precisión, por lo que es vital una validación exhaustiva. La integración de nuevas configuraciones de sesión es directamente compatible con onnxruntime.
+
+Fase 3: Verificación de Compatibilidad y Pruebas Rigurosas
+Propósito: Asegurar que las optimizaciones no introducen errores o degradación de la precisión del OCR, manteniendo la robustez del sistema.
+
+Pruebas de Regresión de Precisión:
+
+Acción: Después de cada cambio de optimización significativo (especialmente la cuantización del modelo), ejecutar el sistema con un conjunto de datos de prueba conocido y comparar la precisión de la extracción OCR (confianza, valores extraídos) con los resultados de la versión anterior.
+
+Criterio de Éxito: La precisión del OCR debe mantenerse dentro de un margen aceptable.
+
+Pruebas de Carga y Estabilidad:
+
+Acción: Realizar pruebas de carga como las que ya hemos hecho (ej. 5 o 200 archivos) en el entorno simulado de 2 GB/2 núcleos, monitoreando el uso de RAM (con htop) y el rendimiento general.
+
+Criterio de Éxito: El uso de memoria debe mantenerse bajo, sin aumento de SWAP significativo, y el tiempo de procesamiento debe ser estable o mejorado.
+
+Documentación de Cambios:
+
+Acción: Documentar cada optimización implementada, su impacto en el uso de memoria, cualquier efecto secundario (positivo o negativo) y los resultados de las pruebas de compatibilidad y rendimiento.
+
+Autorización para Proceder: Con este mandato, tienes la autorización para investigar, proponer y, bajo tu criterio, implementar las mejoras descritas, siempre priorizando la estabilidad y precisión del sistema.
