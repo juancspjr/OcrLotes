@@ -1,0 +1,150 @@
+{
+  "timestamp": "2025-07-17T07:00:48.789382",
+  "current_memory": {
+    "rss_mb": 17.875,
+    "vms_mb": 23.8515625,
+    "percent": 0.027793892012833537,
+    "available_mb": 27697.30859375,
+    "total_mb": 64312.69140625
+  },
+  "top_consumers": [
+    {
+      "file": "  File \"/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/tracemalloc.py\", line 560",
+      "size_mb": 0.00060272216796875,
+      "count": 4,
+      "average_size": 158.0
+    },
+    {
+      "file": "  File \"/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/tracemalloc.py\", line 423",
+      "size_mb": 0.00060272216796875,
+      "count": 4,
+      "average_size": 158.0
+    },
+    {
+      "file": "  File \"/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/psutil/_common.py\", line 766",
+      "size_mb": 0.00038909912109375,
+      "count": 4,
+      "average_size": 102.0
+    },
+    {
+      "file": "  File \"/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/pathlib.py\", line 310",
+      "size_mb": 0.00030517578125,
+      "count": 2,
+      "average_size": 160.0
+    },
+    {
+      "file": "  File \"/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/pathlib.py\", line 294",
+      "size_mb": 0.00030517578125,
+      "count": 2,
+      "average_size": 160.0
+    },
+    {
+      "file": "  File \"/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/logging/__init__.py\", line 1572",
+      "size_mb": 0.0002593994140625,
+      "count": 1,
+      "average_size": 272.0
+    },
+    {
+      "file": "  File \"/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/pathlib.py\", line 952",
+      "size_mb": 0.00025177001953125,
+      "count": 3,
+      "average_size": 88.0
+    },
+    {
+      "file": "  File \"/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/pathlib.py\", line 356",
+      "size_mb": 0.000213623046875,
+      "count": 4,
+      "average_size": 56.0
+    },
+    {
+      "file": "  File \"/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/tracemalloc.py\", line 558",
+      "size_mb": 0.0001983642578125,
+      "count": 4,
+      "average_size": 52.0
+    },
+    {
+      "file": "  File \"/home/runner/workspace/test_memory_optimization_validation.py\", line 53",
+      "size_mb": 0.0001983642578125,
+      "count": 1,
+      "average_size": 208.0
+    }
+  ],
+  "object_growth": [
+    {
+      "type": "function",
+      "count": 3499,
+      "refs": 10
+    },
+    {
+      "type": "tuple",
+      "count": 1716,
+      "refs": 10
+    },
+    {
+      "type": "dict",
+      "count": 1605,
+      "refs": 10
+    },
+    {
+      "type": "wrapper_descriptor",
+      "count": 1256,
+      "refs": 10
+    },
+    {
+      "type": "builtin_function_or_method",
+      "count": 913,
+      "refs": 10
+    },
+    {
+      "type": "ReferenceType",
+      "count": 907,
+      "refs": 10
+    },
+    {
+      "type": "method_descriptor",
+      "count": 892,
+      "refs": 10
+    },
+    {
+      "type": "cell",
+      "count": 606,
+      "refs": 10
+    },
+    {
+      "type": "getset_descriptor",
+      "count": 516,
+      "refs": 10
+    },
+    {
+      "type": "type",
+      "count": 473,
+      "refs": 10
+    },
+    {
+      "type": "list",
+      "count": 417,
+      "refs": 10
+    },
+    {
+      "type": "member_descriptor",
+      "count": 403,
+      "refs": 10
+    },
+    {
+      "type": "property",
+      "count": 284,
+      "refs": 10
+    },
+    {
+      "type": "_tuplegetter",
+      "count": 268,
+      "refs": 10
+    },
+    {
+      "type": "classmethod",
+      "count": 160,
+      "refs": 10
+    }
+  ],
+  "snapshot_count": 1
+}

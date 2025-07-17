@@ -28,7 +28,7 @@ class AdvancedMemoryProfiler:
         self.profiling_active = False
         self.baseline_snapshot = None
         self.reports_dir = Path("temp/memory_reports")
-        self.reports_dir.mkdir(exist_ok=True)
+        self.reports_dir.mkdir(parents=True, exist_ok=True)
         
     def start_profiling(self):
         """Inicia el perfilado de memoria avanzado"""

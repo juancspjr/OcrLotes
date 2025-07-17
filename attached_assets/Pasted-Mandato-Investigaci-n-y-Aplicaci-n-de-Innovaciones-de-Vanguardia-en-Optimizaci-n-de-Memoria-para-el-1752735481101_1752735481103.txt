@@ -1,0 +1,53 @@
+Mandato: Investigación y Aplicación de Innovaciones de Vanguardia en Optimización de Memoria para el Sistema OCR Empresarial
+Fecha: 17 de Julio de 2025
+Objetivo: Explorar y evaluar las últimas innovaciones en optimización de memoria para sistemas Python, particularmente aquellas relevantes para la inferencia de modelos de aprendizaje profundo (ONNX Runtime) y aplicaciones web (Flask/Gunicorn), con el fin de identificar oportunidades para reducir aún más el consumo de RAM o mejorar la eficiencia en casos de uso muy específicos.
+
+Fase 1: Re-evaluación del Estado Actual con Perfilado de Vanguardia
+Propósito: Comprender los patrones de asignación de memoria más sutiles y el ciclo de vida de los objetos, incluso con un consumo de RAM ya bajo.
+
+Perfilado Detallado del Heap:
+
+Acción: Utilizar herramientas de perfilado de memoria más granulares como Memray (si aún no se ha explotado su máximo potencial) o explorar integraciones más profundas con tracemalloc y objgraph para visualizar la evolución del heap de Python, detectar pequeñas fugas o patrones ineficientes que no sean obvios.
+
+Objetivo: Identificar los pocos objetos que aún puedan estar consumiendo memoria considerable o creciendo de forma inesperada.
+
+Compatibilidad: Estas herramientas están diseñadas para perfilar aplicaciones Python existentes con mínima intrusión.
+
+Fase 2: Exploración de Innovaciones de Vanguardia y Compatibilidad
+Propósito: Investigar las últimas técnicas y bibliotecas que puedan ofrecer mejoras incrementales o disruptivas, evaluando su aplicabilidad y riesgo.
+
+Optimización Avanzada de Modelos ONNX (Nivel de Modelo):
+
+Cuantización Extrema (Post-entrenamiento):
+
+Acción: Investigar herramientas más sofisticadas como Intel Neural Compressor o Microsoft Olive (parte del ecosistema ONNX Runtime) que permiten la cuantización INT8 y otras técnicas de baja precisión de manera más robusta, a veces con "calibración" para mantener la precisión. Aunque ya se usan modelos optimizados (mobilenet_v3_large), siempre es posible una cuantización más agresiva si la precisión lo permite.
+
+Compatibilidad: Requiere un pipeline de conversión de modelo separado. El modelo resultante sería compatible con ONNX Runtime. El riesgo es la posible pérdida de precisión, que debe ser validada rigurosamente.
+
+Poda (Pruning) y Esparcidad del Modelo:
+
+Acción: Investigar técnicas de "pruning" (poda de pesos) o entrenar modelos sparse (esparcidos) para reducir el número de parámetros del modelo sin una pérdida significativa de precisión.
+
+Compatibilidad: Requiere re-entrenamiento o post-procesamiento del modelo. El modelo final sería más pequeño y, potencialmente, más rápido y eficiente en memoria.
+
+Gestión de Memoria a Nivel de Sistema (Python Avanzado):
+
+Uso de Asignadores de Memoria Alternativos:
+
+Acción: Investigar la posibilidad de integrar asignadores de memoria optimizados a nivel de sistema operativo como jemalloc (para Linux) para Python. Aunque Python tiene su propio asignador, jemalloc puede ofrecer mejoras en el rendimiento y eficiencia de memoria para cargas de trabajo específicas, especialmente si se manejan muchos arreglos grandes (numpy).
+
+Compatibilidad: Es una configuración a nivel de entorno y puede ser compleja de implementar y mantener en Replit o entornos contenerizados si no está soportado de fábrica. El impacto real debe medirse cuidadosamente.
+
+Referencias Débiles Avanzadas y Caché de Objetos:
+
+Acción: Para patrones de creación/destrucción de objetos muy frecuentes y repetitivos, investigar la implementación de "pools de objetos" o "cachés de objetos" personalizados utilizando el módulo weakref para reutilizar objetos en lugar de crearlos y destruirlos constantemente, reduciendo el "churn" de memoria.
+
+Compatibilidad: Implementación a nivel de código de aplicación, alta compatibilidad.
+
+Ajustes Finos de Gunicorn para Concurrencia/Memoria:
+
+Exploración de Clases de Trabajadores Asíncronos:
+
+Acción: Si se detecta que el cuello de botella es la E/S (lectura de archivos, respuestas de red) más que la CPU, investigar el uso de clases de trabajadores Gunicorn como gevent o eventlet. Estas pueden permitir un mayor número de conexiones concurrentes con menos trabajadores (y, por ende, potencialmente menos memoria si se configuran bien), ya que son más eficientes en el manejo de la concurrencia asíncrona.
+
+Compatibilidad: Requiere que el código de la aplicación sea compatible con estas librerías asíncronas. El sistema ya es asíncrono en su procesamiento interno, pero la integración a nivel de Gunicorn debe ser validada.

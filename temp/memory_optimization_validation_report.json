@@ -1,0 +1,16 @@
+{
+  "validation_timestamp": "2025-07-17T07:00:49.003980",
+  "system_info": {
+    "cpu_count": 8,
+    "memory_total_gb": 62.805362701416016,
+    "python_version": "3.11.10 (main, Sep  7 2024, 01:03:31) [GCC 13.3.0]"
+  },
+  "baseline_metrics": {
+    "timestamp": "2025-07-17T07:00:45.761312",
+    "memory_rss_mb": 17.625,
+    "memory_vms_mb": 23.72265625,
+    "cpu_percent": 0.0,
+    "threads": 1,
+    "file_descriptors": 5,
+    "start_time": 1752735645.7613082,
+    "tracemalloc_snapshot": 
