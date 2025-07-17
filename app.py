@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 # Crear aplicación Flask
 app = Flask(__name__)
-app.secret_key = os.environ.get("SESSION_SECRET") or "fallback-secret-key-for-replit-dev"
+app.secret_key = os.environ.get("SESSION_SECRET")
 app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
 # Configuración de la aplicación
