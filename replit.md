@@ -20,6 +20,8 @@ Sistema OCR asíncrono de alto rendimiento para procesamiento de recibos de pago
 - ✅ Migración completada de Replit Agent a Replit (Julio 16, 2025)
 - ✅ CORRECCIÓN CRÍTICA: Problema de caption vacío ("") en JSON del historial resuelto (Julio 17, 2025)
 - ✅ DOCUMENTACIÓN API: Documentación completa para integración n8n creada (Julio 17, 2025)
+- ✅ VERSIÓN 3.0: Sistema actualizado a versión 3.0 con arquitectura confirmada (Julio 17, 2025)
+- ✅ ARQUITECTURA CONFIRMADA: Flask + PostgreSQL + OnnxTR verificada y documentada
 - ✅ FILOSOFÍA APLICADA: Claridad, precisión y funcionalidad garantizadas según principios centrales
 - ✅ Backend: Campos successCount y errorCount añadidos al endpoint /api/batches/history
 - ✅ Frontend: Valores "undefined" eliminados en columnas Exitosos y Errores
@@ -65,10 +67,18 @@ Sistema OCR asíncrono de alto rendimiento para procesamiento de recibos de pago
 - Prioridad en coordenadas correctas y archivos JSON visibles
 
 ## APIs Principales
-- `POST /api/ocr/process_image`: Encolar imagen
-- `POST /api/ocr/process_batch`: Procesar lote
-- `GET /api/ocr/result/{id}`: Obtener resultados
-- `GET /api/ocr/processed_files`: Listar archivos procesados
+- `POST /api/ocr/upload`: Subir archivos con metadatos
+- `POST /api/ocr/process_batch`: Procesar lote completo
+- `GET /api/ocr/batch_status/{id}`: Monitorear estado del lote
+- `GET /api/extract_results`: Obtener JSON consolidado
+- `GET /api/batches/download/{id}`: Descargar lote en ZIP
+
+## Documentación API
+- **Ubicación:** `/api/docs` (web) y `templates/api_documentation.html`
+- **Versión:** 3.0 actualizada (Julio 17, 2025)
+- **Contenido:** Documentación completa con ejemplos curl y configuración n8n
+- **Características:** Información del sistema, arquitectura confirmada, campos de datos extraídos
+- **Filosofía:** Claridad, precisión y funcionalidad sin redundancias
 
 ## Correcciones Críticas Implementadas - ARQUITECTO PRINCIPAL OCR (Julio 6, 2025)
 - ✅ **CORRECCIÓN CRÍTICA #1**: Endpoint `/api/extract_results` completamente funcional para descarga ZIP

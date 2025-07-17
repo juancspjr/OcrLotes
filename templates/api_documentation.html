@@ -65,19 +65,18 @@
             <div class="col-lg-3">
                 <div class="sidebar">
                     <nav class="nav flex-column">
-                        <h6 class="nav-header text-muted text-uppercase fw-bold mb-3">Endpoints API</h6>
+                        <h6 class="nav-header text-muted text-uppercase fw-bold mb-3">Sistema OCR v3.0</h6>
                         <a class="nav-link active" href="#overview">Descripción General</a>
-                        <a class="nav-link" href="#process-image">POST /api/ocr/process_image</a>
+                        <a class="nav-link" href="#upload">POST /api/ocr/upload</a>
                         <a class="nav-link" href="#process-batch">POST /api/ocr/process_batch</a>
-                        <a class="nav-link" href="#queue-status">GET /api/ocr/queue/status</a>
-                        <a class="nav-link" href="#queue-files">GET /api/ocr/queue/files</a>
-                        <a class="nav-link" href="#queue-clear">POST /api/ocr/queue/clear</a>
-                        <a class="nav-link" href="#get-result">GET /api/ocr/result/{id}</a>
-                        <a class="nav-link" href="#download-result">GET /api/ocr/download/{id}</a>
+                        <a class="nav-link" href="#batch-status">GET /api/ocr/batch_status/{id}</a>
+                        <a class="nav-link" href="#extract-results">GET /api/extract_results</a>
+                        <a class="nav-link" href="#download-batch">GET /api/batches/download/{id}</a>
                         
-                        <h6 class="nav-header text-muted text-uppercase fw-bold mb-3 mt-4">Flujo de Trabajo</h6>
+                        <h6 class="nav-header text-muted text-uppercase fw-bold mb-3 mt-4">Integración</h6>
                         <a class="nav-link" href="#workflow">Flujo Completo</a>
-                        <a class="nav-link" href="#integration">Integración n8n</a>
+                        <a class="nav-link" href="#n8n-integration">Integración n8n</a>
+                        <a class="nav-link" href="#data-fields">Campos de Datos</a>
                         <a class="nav-link" href="#errors">Códigos de Error</a>
                     </nav>
                 </div>
@@ -87,33 +86,55 @@
             <div class="col-lg-9">
                 <!-- Overview -->
                 <section id="overview" class="mb-5">
-                    <h1 class="mb-4">Sistema OCR Asíncrono de Alto Volumen</h1>
-                    <p class="lead">API REST para procesamiento de imágenes con OCR, diseñada para integración con sistemas externos como n8n, WhatsApp Business, y workflows de automatización.</p>
+                    <h1 class="mb-4">Sistema OCR Empresarial - API Documentation</h1>
+                    <p class="lead">API REST para procesamiento de documentos financieros con OCR, diseñada para integración con sistemas externos como n8n, WhatsApp Business, y workflows de automatización.</p>
                     
-                    <div class="alert alert-info">
-                        <h5><i class="fas fa-info-circle me-2"></i>Características Principales</h5>
-                        <ul class="mb-0">
-                            <li><strong>Procesamiento Asíncrono:</strong> Acumulación y procesamiento separados para control total</li>
-                            <li><strong>Alto Volumen:</strong> Capacidad de procesar 10+ imágenes simultáneamente</li>
-                            <li><strong>Extracción Posicional:</strong> Mapeo inteligente de campos basado en coordenadas</li>
-                            <li><strong>Metadatos WhatsApp:</strong> Extracción automática de datos de mensajes móviles</li>
-                            <li><strong>Control Manual:</strong> Sin procesamiento automático, requiere activación explícita</li>
-                        </ul>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="alert alert-info">
+                                <h5><i class="fas fa-info-circle me-2"></i>Información del Sistema</h5>
+                                <ul class="mb-0">
+                                    <li><strong>Versión:</strong> 3.0</li>
+                                    <li><strong>Arquitectura:</strong> Flask + PostgreSQL + OnnxTR</li>
+                                    <li><strong>Base URL:</strong> <code>http://localhost:5000</code></li>
+                                    <li><strong>Filosofía:</strong> Integridad Total y Perfección Continua</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="alert alert-success">
+                                <h5><i class="fas fa-check-circle me-2"></i>Características Principales</h5>
+                                <ul class="mb-0">
+                                    <li><strong>Procesamiento por Lotes:</strong> Control total del flujo de trabajo</li>
+                                    <li><strong>Extracción Inteligente:</strong> Campos específicos para documentos financieros</li>
+                                    <li><strong>Metadatos Preservados:</strong> Caption e índice de subida intactos</li>
+                                    <li><strong>Integración n8n:</strong> Endpoints optimizados para workflows</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-warning">
+                        <h5><i class="fas fa-key me-2"></i>Autenticación</h5>
+                        <p class="mb-0"><strong>Estado actual:</strong> No requerida para endpoints públicos en desarrollo local. <strong>Producción:</strong> Se recomienda implementar autenticación para entornos productivos.</p>
                     </div>
                 </section>
 
-                <!-- Process Image -->
-                <section id="process-image" class="mb-5">
+                <!-- Upload -->
+                <section id="upload" class="mb-5">
                     <div class="endpoint-card card">
                         <div class="card-header">
-                            <h3><span class="method-badge method-post">POST</span> /api/ocr/process_image</h3>
-                            <p class="mb-0 text-muted">Acumula una imagen individual en la cola para procesamiento posterior</p>
+                            <h3><span class="method-badge method-post">POST</span> /api/ocr/upload</h3>
+                            <p class="mb-0 text-muted">Sube archivos de imagen para procesamiento OCR, preservando metadatos y orden de subida</p>
                         </div>
                         <div class="card-body">
                             <h5>Descripción</h5>
-                            <p>Este endpoint permite acumular imágenes en la cola sin activar el procesamiento automáticamente. Es el primer paso del flujo de trabajo asíncrono.</p>
+                            <p>Permite subir archivos de imagen para procesamiento OCR, preservando metadatos y orden de subida. Es el primer paso del flujo de trabajo empresarial.</p>
                             
-                            <h5>Parámetros (multipart/form-data)</h5>
+                            <h5>Content-Type</h5>
+                            <p><code>multipart/form-data</code></p>
+                            
+                            <h5>Parámetros</h5>
                             <div class="table-responsive">
                                 <table class="table table-striped">
                                     <thead>
@@ -126,70 +147,63 @@
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td><code>image</code></td>
-                                            <td>File</td>
+                                            <td><code>files</code></td>
+                                            <td>File[]</td>
                                             <td><span class="badge bg-danger">Sí</span></td>
-                                            <td>Archivo de imagen (PNG, JPG, JPEG)</td>
+                                            <td>Archivos de imagen (JPG, PNG, JPEG)</td>
                                         </tr>
                                         <tr>
-                                            <td><code>caption</code></td>
-                                            <td>String</td>
-                                            <td><span class="badge bg-secondary">No</span></td>
-                                            <td>Texto del caption de WhatsApp</td>
-                                        </tr>
-                                        <tr>
-                                            <td><code>sender_id</code></td>
-                                            <td>String</td>
-                                            <td><span class="badge bg-secondary">No</span></td>
-                                            <td>ID del remitente (ej: 123456789@s.whatsapp.net)</td>
-                                        </tr>
-                                        <tr>
-                                            <td><code>sender_name</code></td>
-                                            <td>String</td>
-                                            <td><span class="badge bg-secondary">No</span></td>
-                                            <td>Nombre del remitente</td>
-                                        </tr>
-                                        <tr>
-                                            <td><code>sorteo_fecha</code></td>
-                                            <td>String</td>
-                                            <td><span class="badge bg-secondary">No</span></td>
-                                            <td>Fecha del sorteo (YYYYMMDD)</td>
-                                        </tr>
-                                        <tr>
-                                            <td><code>posicion_sorteo</code></td>
-                                            <td>String</td>
-                                            <td><span class="badge bg-secondary">No</span></td>
-                                            <td>Posición en el sorteo (A, B, C, D, E, etc.)</td>
-                                        </tr>
-                                        <tr>
-                                            <td><code>hora_min</code></td>
-                                            <td>String</td>
-                                            <td><span class="badge bg-secondary">No</span></td>
-                                            <td>Hora y minutos (HH-MM)</td>
+                                            <td><code>metadata</code></td>
+                                            <td>JSON String</td>
+                                            <td><span class="badge bg-danger">Sí</span></td>
+                                            <td>Metadatos por archivo en formato JSON</td>
                                         </tr>
                                     </tbody>
                                 </table>
                             </div>
 
-                            <h5>Ejemplo de Uso</h5>
-                            <pre><code class="language-bash">curl -X POST http://localhost:5000/api/ocr/process_image \
-  -F "image=@recibo_pago.jpg" \
-  -F "caption=Pago móvil Banesco" \
-  -F "sender_id=987654321@s.whatsapp.net" \
-  -F "sender_name=Juan Perez" \
-  -F "sorteo_fecha=20250706" \
-  -F "posicion_sorteo=A" \
-  -F "hora_min=15-30"</code></pre>
+                            <h5>Estructura del metadata JSON</h5>
+                            <pre><code class="language-json">{
+  "nombre_archivo": "recibo_001.jpg",
+  "id_whatsapp": "123456789",
+  "idsorteo": "SORT001",
+  "nombre_usuario": "Juan Pérez",
+  "hora_minuto_subida": "14:30",
+  "caption": "Pago Móvil BDV",
+  "indice_de_subida": 1
+}</code></pre>
 
-                            <h5>Respuesta (202 Accepted)</h5>
+                            <h5>Ejemplo de request con curl</h5>
+                            <pre><code class="language-bash">curl -X POST "http://localhost:5000/api/ocr/upload" \
+  -F "files=@recibo_001.jpg" \
+  -F "files=@recibo_002.jpg" \
+  -F 'metadata=[
+    {
+      "nombre_archivo": "recibo_001.jpg",
+      "id_whatsapp": "123456789",
+      "nombre_usuario": "Juan Pérez",
+      "hora_minuto_subida": "14:30",
+      "caption": "Pago Móvil BDV",
+      "indice_de_subida": 1
+    },
+    {
+      "nombre_archivo": "recibo_002.jpg",
+      "id_whatsapp": "987654321",
+      "nombre_usuario": "María García",
+      "hora_minuto_subida": "14:35",
+      "caption": "Transferencia Bancaria",
+      "indice_de_subida": 2
+    }
+  ]'</code></pre>
+
+                            <h5>Respuesta exitosa</h5>
                             <div class="response-example">
                                 <pre><code class="language-json">{
-  "status": "accepted",
-  "message": "Image queued for processing",
-  "request_id": "987654321@s.whatsapp.net_Juan_Perez_20250706_A_15-30_20250706_153045_123",
-  "queue_position": "pending",
-  "check_result_endpoint": "/api/ocr/result/987654321@s.whatsapp.net_Juan_Perez_20250706_A_15-30_20250706_153045_123",
-  "batch_process_endpoint": "/api/ocr/process_batch"
+  "status": "success",
+  "message": "Archivos subidos exitosamente",
+  "batch_id": "BATCH_20250117_143000_abc123",
+  "files_uploaded": 2,
+  "timestamp": "2025-01-17T14:30:00Z"
 }</code></pre>
                             </div>
                         </div>
@@ -201,117 +215,185 @@
                     <div class="endpoint-card card">
                         <div class="card-header">
                             <h3><span class="method-badge method-post">POST</span> /api/ocr/process_batch</h3>
-                            <p class="mb-0 text-muted">Procesa las imágenes acumuladas en la cola bajo demanda</p>
+                            <p class="mb-0 text-muted">Ejecuta el procesamiento OCR de todos los archivos en cola del lote actual</p>
                         </div>
                         <div class="card-body">
                             <h5>Descripción</h5>
                             <p>Activa el procesamiento manual de las imágenes en cola. Este endpoint requiere activación explícita y no se ejecuta automáticamente.</p>
                             
-                            <h5>Parámetros (JSON)</h5>
-                            <div class="table-responsive">
-                                <table class="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>Campo</th>
-                                            <th>Tipo</th>
-                                            <th>Requerido</th>
-                                            <th>Descripción</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td><code>batch_size</code></td>
-                                            <td>Integer</td>
-                                            <td><span class="badge bg-secondary">No</span></td>
-                                            <td>Tamaño del lote (default: 5, max: 20)</td>
-                                        </tr>
-                                        <tr>
-                                            <td><code>profile</code></td>
-                                            <td>String</td>
-                                            <td><span class="badge bg-secondary">No</span></td>
-                                            <td>Perfil de procesamiento: ultra_rapido, rapido, normal, high_confidence</td>
-                                        </tr>
-                                        <tr>
-                                            <td><code>process_all</code></td>
-                                            <td>Boolean</td>
-                                            <td><span class="badge bg-secondary">No</span></td>
-                                            <td>Procesar todas las imágenes en cola</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
+                            <h5>Content-Type</h5>
+                            <p><code>application/json</code></p>
+                            
+                            <h5>Request Body</h5>
+                            <pre><code class="language-json">{}</code></pre>
 
-                            <h5>Ejemplo de Uso</h5>
-                            <pre><code class="language-bash">curl -X POST http://localhost:5000/api/ocr/process_batch \
+                            <h5>Ejemplo de request</h5>
+                            <pre><code class="language-bash">curl -X POST "http://localhost:5000/api/ocr/process_batch" \
   -H "Content-Type: application/json" \
-  -d '{
-    "batch_size": 10,
-    "profile": "ultra_rapido",
-    "process_all": false
-  }'</code></pre>
+  -d '{}'</code></pre>
 
-                            <h5>Respuesta (200 OK)</h5>
+                            <h5>Respuesta exitosa</h5>
                             <div class="response-example">
                                 <pre><code class="language-json">{
   "status": "success",
-  "message": "Batch processed successfully",
-  "batch_info": {
-    "batch_id": "batch_20250706_153045",
-    "processed_count": 5,
-    "successful_count": 4,
-    "failed_count": 1,
-    "processing_time_seconds": 12.45,
-    "profile_used": "ultra_rapido",
-    "remaining_in_queue": 3
-  },
-  "processing_summary": {
-    "average_time_per_image": 2.49,
-    "images_per_second": 0.40,
-    "queue_status": "3 images remaining"
-  }
+  "message": "Procesamiento del lote iniciado",
+  "batch_id": "BATCH_20250117_143000_abc123",
+  "processing_status": "processing",
+  "files_in_batch": 2,
+  "estimated_time": "30-45 segundos"
+}</code></pre>
+                            </div>
+
+                            <h5>Respuesta de error</h5>
+                            <div class="response-example">
+                                <pre><code class="language-json">{
+  "status": "error",
+  "message": "No hay archivos para procesar",
+  "error_code": "NO_FILES_IN_QUEUE",
+  "batch_id": null
 }</code></pre>
                             </div>
                         </div>
                     </div>
                 </section>
 
-                <!-- Queue Status -->
-                <section id="queue-status" class="mb-5">
+                <!-- Batch Status -->
+                <section id="batch-status" class="mb-5">
                     <div class="endpoint-card card">
                         <div class="card-header">
-                            <h3><span class="method-badge method-get">GET</span> /api/ocr/queue/status</h3>
-                            <p class="mb-0 text-muted">Obtiene el estado actual de la cola y sistema</p>
+                            <h3><span class="method-badge method-get">GET</span> /api/ocr/batch_status/{batch_id}</h3>
+                            <p class="mb-0 text-muted">Obtiene el estado de procesamiento de un lote específico</p>
                         </div>
                         <div class="card-body">
                             <h5>Descripción</h5>
-                            <p>Proporciona información detallada sobre el estado de la cola, recursos del sistema y estadísticas de procesamiento.</p>
+                            <p>Permite monitorear el progreso de un lote específico durante el procesamiento.</p>
                             
-                            <h5>Ejemplo de Uso</h5>
-                            <pre><code class="language-bash">curl -X GET http://localhost:5000/api/ocr/queue/status</code></pre>
+                            <h5>Parámetros URL</h5>
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Parámetro</th>
+                                            <th>Descripción</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><code>batch_id</code></td>
+                                            <td>ID del lote a consultar</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
 
-                            <h5>Respuesta (200 OK)</h5>
+                            <h5>Ejemplo de request</h5>
+                            <pre><code class="language-bash">curl -X GET "http://localhost:5000/api/ocr/batch_status/BATCH_20250117_143000_abc123"</code></pre>
+
+                            <h5>Respuesta exitosa</h5>
                             <div class="response-example">
                                 <pre><code class="language-json">{
-  "status": "active",
-  "queue_status": {
-    "inbox_count": 8,
-    "processing_count": 0,
-    "processed_count": 42,
-    "error_count": 2
-  },
-  "system_status": {
-    "ocr_engine": "active",
-    "worker_status": "manual",
-    "memory_usage_percent": 34.5,
-    "cpu_usage_percent": 12.3,
-    "disk_usage_percent": 67.8
-  },
-  "capacity_estimation": {
-    "estimated_processing_time": "16.0 segundos",
-    "max_batch_size": 20,
-    "recommended_batch_size": 8
-  }
+  "status": "success",
+  "batch_id": "BATCH_20250117_143000_abc123",
+  "processing_status": "completed",
+  "files_total": 2,
+  "files_processed": 2,
+  "files_failed": 0,
+  "completion_percentage": 100,
+  "processing_time": "45 segundos"
 }</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Extract Results -->
+                <section id="extract-results" class="mb-5">
+                    <div class="endpoint-card card">
+                        <div class="card-header">
+                            <h3><span class="method-badge method-get">GET</span> /api/extract_results</h3>
+                            <p class="mb-0 text-muted">Obtiene todos los resultados del último lote procesado en formato JSON consolidado</p>
+                        </div>
+                        <div class="card-body">
+                            <h5>Descripción</h5>
+                            <p>Retorna un JSON consolidado con todos los resultados del último lote procesado, incluyendo campos específicos para documentos financieros.</p>
+                            
+                            <h5>Ejemplo de request</h5>
+                            <pre><code class="language-bash">curl -X GET "http://localhost:5000/api/extract_results"</code></pre>
+
+                            <h5>Respuesta exitosa</h5>
+                            <div class="response-example">
+                                <pre><code class="language-json">{
+  "metadata": {
+    "fecha_extraccion": "2025-01-17T14:30:00Z",
+    "total_archivos": 2,
+    "version_sistema": "3.0",
+    "tipo_extraccion": "consolidado_empresarial"
+  },
+  "archivos_procesados": [
+    {
+      "nombre_archivo": "recibo_001.jpg",
+      "id_whatsapp": "123456789",
+      "nombre_usuario": "Juan Pérez",
+      "caption": "Pago Móvil BDV",
+      "numero_llegada": 1,
+      "referencia": "1234567890",
+      "bancoorigen": "BANCO DE VENEZUELA",
+      "monto": "200.50",
+      "datosbeneficiario": {
+        "cedula": "12345678",
+        "telefono": "04141234567",
+        "banco_destino": "BANCO MERCANTIL"
+      },
+      "pago_fecha": "17/01/2025",
+      "concepto": "Pago de Servicios"
+    }
+  ]
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Download Batch -->
+                <section id="download-batch" class="mb-5">
+                    <div class="endpoint-card card">
+                        <div class="card-header">
+                            <h3><span class="method-badge method-get">GET</span> /api/batches/download/{batch_id}</h3>
+                            <p class="mb-0 text-muted">Descarga un lote específico en formato ZIP</p>
+                        </div>
+                        <div class="card-body">
+                            <h5>Descripción</h5>
+                            <p>Permite descargar un lote específico con todos sus archivos JSON de resultados en un archivo ZIP.</p>
+                            
+                            <h5>Parámetros URL</h5>
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Parámetro</th>
+                                            <th>Descripción</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><code>batch_id</code></td>
+                                            <td>ID del lote a descargar</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <h5>Ejemplo de request</h5>
+                            <pre><code class="language-bash">curl -X GET "http://localhost:5000/api/batches/download/BATCH_20250117_143000_abc123" \
+  -o resultados_lote.zip</code></pre>
+
+                            <h5>Respuesta exitosa</h5>
+                            <div class="response-example">
+                                <pre><code>HTTP/1.1 200 OK
+Content-Type: application/zip
+Content-Disposition: attachment; filename="BATCH_20250117_143000_abc123.zip"
+
+[ZIP file content]</code></pre>
                             </div>
                         </div>
                     </div>
@@ -321,46 +403,140 @@
                 <section id="workflow" class="mb-5">
                     <h2>Flujo de Trabajo Completo</h2>
                     <div class="alert alert-light">
-                        <h5><i class="fas fa-route me-2"></i>Proceso Típico de Integración</h5>
+                        <h5><i class="fas fa-route me-2"></i>Proceso Empresarial Optimizado</h5>
                         <ol>
-                            <li><strong>Acumular Imágenes:</strong> Usar <code>POST /api/ocr/process_image</code> para cada imagen</li>
-                            <li><strong>Monitorear Cola:</strong> Usar <code>GET /api/ocr/queue/status</code> para verificar estado</li>
-                            <li><strong>Procesar Lote:</strong> Usar <code>POST /api/ocr/process_batch</code> cuando sea apropiado</li>
-                            <li><strong>Obtener Resultados:</strong> Usar <code>GET /api/ocr/result/{id}</code> para cada imagen procesada</li>
-                            <li><strong>Descargar JSONs:</strong> Usar <code>GET /api/ocr/download/{id}</code> para resultados completos</li>
+                            <li><strong>Subir Archivos:</strong> Usar <code>POST /api/ocr/upload</code> con metadatos</li>
+                            <li><strong>Procesar Lote:</strong> Usar <code>POST /api/ocr/process_batch</code></li>
+                            <li><strong>Monitorear Estado:</strong> Usar <code>GET /api/ocr/batch_status/{id}</code></li>
+                            <li><strong>Extraer Resultados:</strong> Usar <code>GET /api/extract_results</code></li>
+                            <li><strong>Descargar Archivo:</strong> Usar <code>GET /api/batches/download/{id}</code> si necesario</li>
                         </ol>
                     </div>
                     
                     <h5>Diagrama de Flujo</h5>
                     <div class="bg-light p-4 rounded">
-                        <pre><code>📤 n8n/Sistema Externo
-    ↓ POST /api/ocr/process_image (x N imágenes)
-📥 data/inbox/ (Acumulación)
-    ↓ POST /api/ocr/process_batch (Manual)
-⚙️ data/processing/ (Procesamiento)
-    ↓ Éxito/Error
-📂 data/processed/ | data/errors/
-    ↓ GET /api/ocr/result/{id}
-📊 Resultados JSON Estructurados</code></pre>
+                        <pre><code>📤 Sistema Externo/n8n
+    ↓ POST /api/ocr/upload (archivos + metadatos)
+📥 Cola de Archivos
+    ↓ POST /api/ocr/process_batch
+⚙️ Procesamiento OCR (Flask + PostgreSQL + OnnxTR)
+    ↓ Procesamiento Completo
+📊 GET /api/extract_results
+    ↓ JSON Consolidado Empresarial
+🎯 Integración con Sistema Destino</code></pre>
                     </div>
                 </section>
 
-                <!-- Integration -->
-                <section id="integration" class="mb-5">
+                <!-- n8n Integration -->
+                <section id="n8n-integration" class="mb-5">
                     <h2>Integración con n8n</h2>
                     <div class="row">
                         <div class="col-md-6">
-                            <h5>Configuración n8n</h5>
+                            <h5>Configuración n8n - Subida de Archivos</h5>
                             <pre><code class="language-json">{
   "method": "POST",
-  "url": "http://tu-servidor:5000/api/ocr/process_image",
+  "url": "http://tu-servidor:5000/api/ocr/upload",
   "headers": {
     "Accept": "application/json"
   },
   "formData": {
-    "image": "{{ $binary.data }}",
-    "caption": "{{ $json.caption }}",
-    "sender_id": "{{ $json.sender_id }}",
+    "files": "{{ $binary.data }}",
+    "metadata": "{{ $json.metadata | json }}"
+  }
+}</code></pre>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Configuración n8n - Procesamiento</h5>
+                            <pre><code class="language-json">{
+  "method": "POST",
+  "url": "http://tu-servidor:5000/api/ocr/process_batch",
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "body": {}
+}</code></pre>
+                        </div>
+                    </div>
+                    
+                    <h5>Workflow n8n Completo</h5>
+                    <div class="bg-light p-4 rounded">
+                        <pre><code>1. WhatsApp Trigger → Extraer metadatos
+2. HTTP Request → POST /api/ocr/upload
+3. Wait → 30 segundos
+4. HTTP Request → POST /api/ocr/process_batch
+5. Wait → 60 segundos
+6. HTTP Request → GET /api/extract_results
+7. Process Results → Procesar JSON consolidado</code></pre>
+                    </div>
+                </section>
+
+                <!-- Data Fields -->
+                <section id="data-fields" class="mb-5">
+                    <h2>Campos de Datos Extraídos</h2>
+                    <div class="alert alert-info">
+                        <h5><i class="fas fa-database me-2"></i>Campos Empresariales</h5>
+                        <p>El sistema extrae automáticamente los siguientes campos de documentos financieros:</p>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>Campos Principales</h5>
+                            <ul>
+                                <li><strong>referencia:</strong> Número de referencia de la transacción</li>
+                                <li><strong>bancoorigen:</strong> Banco emisor del pago</li>
+                                <li><strong>monto:</strong> Monto de la transacción</li>
+                                <li><strong>pago_fecha:</strong> Fecha de la operación</li>
+                                <li><strong>concepto:</strong> Concepto o motivo del pago</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Datos del Beneficiario</h5>
+                            <ul>
+                                <li><strong>cedula:</strong> Cédula del beneficiario</li>
+                                <li><strong>telefono:</strong> Teléfono del beneficiario</li>
+                                <li><strong>banco_destino:</strong> Banco receptor</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Errors -->
+                <section id="errors" class="mb-5">
+                    <h2>Códigos de Error</h2>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Código HTTP</th>
+                                    <th>Error Code</th>
+                                    <th>Descripción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>400</code></td>
+                                    <td>BAD_REQUEST</td>
+                                    <td>Datos de entrada inválidos</td>
+                                </tr>
+                                <tr>
+                                    <td><code>404</code></td>
+                                    <td>NOT_FOUND</td>
+                                    <td>Lote o archivo no encontrado</td>
+                                </tr>
+                                <tr>
+                                    <td><code>413</code></td>
+                                    <td>FILE_TOO_LARGE</td>
+                                    <td>Archivo excede tamaño máximo</td>
+                                </tr>
+                                <tr>
+                                    <td><code>500</code></td>
+                                    <td>INTERNAL_ERROR</td>
+                                    <td>Error interno del servidor</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
     "sender_name": "{{ $json.sender_name }}"
   }
 }</code></pre>
