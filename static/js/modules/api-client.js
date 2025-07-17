@@ -363,6 +363,8 @@ window.OCRSystem = window.OCRSystem || {};
                 });
                 if (response.data && response.data.api_key) {
                     this.setApiKey(response.data.api_key);
+                    // Also set the response format for backward compatibility
+                    response.api_key = response.data.api_key;
                 }
                 return response;
             } catch (error) {

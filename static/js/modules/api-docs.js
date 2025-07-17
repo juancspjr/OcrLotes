@@ -113,8 +113,11 @@ window.OCRSystem = window.OCRSystem || {};
                 
                 const response = await this.apiClient.generateApiKey();
                 
-                if (response.api_key) {
-                    this.currentApiKey = response.api_key;
+                // Manejar tanto formato nuevo (response.data.api_key) como antiguo (response.api_key)
+                const apiKey = response.data?.api_key || response.api_key;
+                
+                if (apiKey) {
+                    this.currentApiKey = apiKey;
                     this.updateApiKeyDisplay();
                     
                     if (window.OCRSystem.Main) {
