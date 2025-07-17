@@ -1,0 +1,212 @@
+{
+  "timestamp": "2025-07-17T07:03:54.143328",
+  "current_memory": {
+    "rss_mb": 409.9453125,
+    "vms_mb": 2112.79296875,
+    "percent": 0.6374252166037649,
+    "available_mb": 24938.46484375,
+    "total_mb": 64312.69140625
+  },
+  "top_consumers": [
+    {
+      "file": "  File \"/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/json/decoder.py\", line 353",
+      "size_mb": 0.06472492218017578,
+      "count": 972,
+      "average_size": 69.82407407407408
+    },
+    {
+      "file": "  File \"/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/onnxtr/models/recognition/zoo.py\", line 56",
+      "size_mb": 0.00118255615234375,
+      "count": 8,
+      "average_size": 155.0
+    },
+    {
+      "file": "  File \"/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/onnxtr/models/preprocessor/base.py\", line 42",
+      "size_mb": 0.0011749267578125,
+      "count": 8,
+      "average_size": 154.0
+    },
+    {
+      "file": "  File \"/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/onnxtr/models/preprocessor/base.py\", line 41",
+      "size_mb": 0.0011749267578125,
+      "count": 8,
+      "average_size": 154.0
+    },
+    {
+      "file": "  File \"/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/onnxtr/models/engine.py\", line 103",
+      "size_mb": 0.0011749267578125,
+      "count": 8,
+      "average_size": 154.0
+    },
+    {
+      "file": "  File \"/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/logging/__init__.py\", line 1749",
+      "size_mb": 0.00091552734375,
+      "count": 6,
+      "average_size": 160.0
+    },
+    {
+      "file": "  File \"/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/onnxtr/models/engine.py\", line 46",
+      "size_mb": 0.00081634521484375,
+      "count": 17,
+      "average_size": 50.35294117647059
+    },
+    {
+      "file": "  File \"<frozen abc>\", line 123",
+      "size_mb": 0.0007686614990234375,
+      "count": 9,
+      "average_size": 89.55555555555556
+    },
+    {
+      "file": "  File \"/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/onnxruntime/capi/onnxruntime_inference_collection.py\", line 570",
+      "size_mb": 0.000751495361328125,
+      "count": 12,
+      "average_size": 65.66666666666667
+    },
+    {
+      "file": "  File \"/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/onnxtr/models/predictor/base.py\", line 74",
+      "size_mb": 0.0007171630859375,
+      "count": 5,
+      "average_size": 150.4
+    }
+  ],
+  "object_growth": [
+    {
+      "type": "function",
+      "count": 20422,
+      "refs": 10
+    },
+    {
+      "type": "tuple",
+      "count": 13911,
+      "refs": 10
+    },
+    {
+      "type": "dict",
+      "count": 10025,
+      "refs": 10
+    },
+    {
+      "type": "list",
+      "count": 4708,
+      "refs": 10
+    },
+    {
+      "type": "builtin_function_or_method",
+      "count": 4542,
+      "refs": 10
+    },
+    {
+      "type": "ReferenceType",
+      "count": 4024,
+      "refs": 10
+    },
+    {
+      "type": "cell",
+      "count": 3355,
+      "refs": 10
+    },
+    {
+      "type": "getset_descriptor",
+      "count": 3347,
+      "refs": 10
+    },
+    {
+      "type": "method_descriptor",
+      "count": 3036,
+      "refs": 10
+    },
+    {
+      "type": "wrapper_descriptor",
+      "count": 2958,
+      "refs": 10
+    },
+    {
+      "type": "type",
+      "count": 2522,
+      "refs": 10
+    },
+    {
+      "type": "module",
+      "count": 1279,
+      "refs": 10
+    },
+    {
+      "type": "ModuleSpec",
+      "count": 1228,
+      "refs": 10
+    },
+    {
+      "type": "property",
+      "count": 1169,
+      "refs": 10
+    },
+    {
+      "type": "SourceFileLoader",
+      "count": 1051,
+      "refs": 10
+    }
+  ],
+  "snapshot_count": 2,
+  "memory_diff": [
+    {
+      "file": "  File \"/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/json/decoder.py\", line 353",
+      "size_diff_mb": 0.06472492218017578,
+      "count_diff": 972,
+      "current_size_mb": 0.06472492218017578
+    },
+    {
+      "file": "  File \"/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/onnxtr/models/recognition/zoo.py\", line 56",
+      "size_diff_mb": 0.00118255615234375,
+      "count_diff": 8,
+      "current_size_mb": 0.00118255615234375
+    },
+    {
+      "file": "  File \"/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/onnxtr/models/preprocessor/base.py\", line 42",
+      "size_diff_mb": 0.0011749267578125,
+      "count_diff": 8,
+      "current_size_mb": 0.0011749267578125
+    },
+    {
+      "file": "  File \"/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/onnxtr/models/preprocessor/base.py\", line 41",
+      "size_diff_mb": 0.0011749267578125,
+      "count_diff": 8,
+      "current_size_mb": 0.0011749267578125
+    },
+    {
+      "file": "  File \"/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/onnxtr/models/engine.py\", line 103",
+      "size_diff_mb": 0.0011749267578125,
+      "count_diff": 8,
+      "current_size_mb": 0.0011749267578125
+    },
+    {
+      "file": "  File \"/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/onnxtr/models/engine.py\", line 46",
+      "size_diff_mb": 0.00081634521484375,
+      "count_diff": 17,
+      "current_size_mb": 0.00081634521484375
+    },
+    {
+      "file": "  File \"<frozen abc>\", line 123",
+      "size_diff_mb": 0.0007686614990234375,
+      "count_diff": 9,
+      "current_size_mb": 0.0007686614990234375
+    },
+    {
+      "file": "  File \"/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/logging/__init__.py\", line 1749",
+      "size_diff_mb": 0.000762939453125,
+      "count_diff": 5,
+      "current_size_mb": 0.00091552734375
+    },
+    {
+      "file": "  File \"/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/onnxruntime/capi/onnxruntime_inference_collection.py\", line 570",
+      "size_diff_mb": 0.000751495361328125,
+      "count_diff": 12,
+      "current_size_mb": 0.000751495361328125
+    },
+    {
+      "file": "  File \"/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/onnxtr/models/predictor/base.py\", line 74",
+      "size_diff_mb": 0.0007171630859375,
+      "count_diff": 5,
+      "current_size_mb": 0.0007171630859375
+    }
+  ]
+}

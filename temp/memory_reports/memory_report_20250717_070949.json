@@ -1,0 +1,212 @@
+{
+  "timestamp": "2025-07-17T07:09:48.489118",
+  "current_memory": {
+    "rss_mb": 358.7265625,
+    "vms_mb": 2110.1875,
+    "percent": 0.5577849921495622,
+    "available_mb": 3123.5,
+    "total_mb": 64312.6953125
+  },
+  "top_consumers": [
+    {
+      "file": "  File \"/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/json/decoder.py\", line 353",
+      "size_mb": 0.06312274932861328,
+      "count": 958,
+      "average_size": 69.09081419624218
+    },
+    {
+      "file": "  File \"<frozen importlib._bootstrap_external>\", line 729",
+      "size_mb": 0.03267478942871094,
+      "count": 296,
+      "average_size": 115.75
+    },
+    {
+      "file": "  File \"/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/urllib/parse.py\", line 504",
+      "size_mb": 0.0049343109130859375,
+      "count": 12,
+      "average_size": 431.1666666666667
+    },
+    {
+      "file": "  File \"/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/multiprocessing/synchronize.py\", line 130",
+      "size_mb": 0.00244903564453125,
+      "count": 11,
+      "average_size": 233.45454545454547
+    },
+    {
+      "file": "  File \"/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/urllib/parse.py\", line 939",
+      "size_mb": 0.00244903564453125,
+      "count": 3,
+      "average_size": 856.0
+    },
+    {
+      "file": "  File \"/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/email/_policybase.py\", line 311",
+      "size_mb": 0.00244903564453125,
+      "count": 3,
+      "average_size": 856.0
+    },
+    {
+      "file": "  File \"/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/tempfile.py\", line 147",
+      "size_mb": 0.00244140625,
+      "count": 1,
+      "average_size": 2560.0
+    },
+    {
+      "file": "  File \"/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/multiprocessing/synchronize.py\", line 328",
+      "size_mb": 0.00241851806640625,
+      "count": 10,
+      "average_size": 253.6
+    },
+    {
+      "file": "  File \"/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/multiprocessing/synchronize.py\", line 217",
+      "size_mb": 0.00241851806640625,
+      "count": 10,
+      "average_size": 253.6
+    },
+    {
+      "file": "  File \"/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/multiprocessing/synchronize.py\", line 46",
+      "size_mb": 0.00241851806640625,
+      "count": 10,
+      "average_size": 253.6
+    }
+  ],
+  "object_growth": [
+    {
+      "type": "function",
+      "count": 20465,
+      "refs": 10
+    },
+    {
+      "type": "tuple",
+      "count": 14836,
+      "refs": 10
+    },
+    {
+      "type": "dict",
+      "count": 10055,
+      "refs": 10
+    },
+    {
+      "type": "list",
+      "count": 4727,
+      "refs": 10
+    },
+    {
+      "type": "builtin_function_or_method",
+      "count": 4548,
+      "refs": 10
+    },
+    {
+      "type": "ReferenceType",
+      "count": 4034,
+      "refs": 10
+    },
+    {
+      "type": "cell",
+      "count": 3360,
+      "refs": 10
+    },
+    {
+      "type": "getset_descriptor",
+      "count": 3353,
+      "refs": 10
+    },
+    {
+      "type": "method_descriptor",
+      "count": 3036,
+      "refs": 10
+    },
+    {
+      "type": "wrapper_descriptor",
+      "count": 2958,
+      "refs": 10
+    },
+    {
+      "type": "type",
+      "count": 2530,
+      "refs": 10
+    },
+    {
+      "type": "module",
+      "count": 1280,
+      "refs": 10
+    },
+    {
+      "type": "ModuleSpec",
+      "count": 1229,
+      "refs": 10
+    },
+    {
+      "type": "property",
+      "count": 1171,
+      "refs": 10
+    },
+    {
+      "type": "SourceFileLoader",
+      "count": 1052,
+      "refs": 10
+    }
+  ],
+  "snapshot_count": 2,
+  "memory_diff": [
+    {
+      "file": "  File \"/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/json/decoder.py\", line 353",
+      "size_diff_mb": 0.06312274932861328,
+      "count_diff": 958,
+      "current_size_mb": 0.06312274932861328
+    },
+    {
+      "file": "  File \"<frozen importlib._bootstrap_external>\", line 729",
+      "size_diff_mb": 0.03267478942871094,
+      "count_diff": 296,
+      "current_size_mb": 0.03267478942871094
+    },
+    {
+      "file": "  File \"/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/urllib/parse.py\", line 504",
+      "size_diff_mb": 0.0049343109130859375,
+      "count_diff": 12,
+      "current_size_mb": 0.0049343109130859375
+    },
+    {
+      "file": "  File \"/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/multiprocessing/synchronize.py\", line 130",
+      "size_diff_mb": 0.00244903564453125,
+      "count_diff": 11,
+      "current_size_mb": 0.00244903564453125
+    },
+    {
+      "file": "  File \"/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/urllib/parse.py\", line 939",
+      "size_diff_mb": 0.00244903564453125,
+      "count_diff": 3,
+      "current_size_mb": 0.00244903564453125
+    },
+    {
+      "file": "  File \"/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/email/_policybase.py\", line 311",
+      "size_diff_mb": 0.00244903564453125,
+      "count_diff": 3,
+      "current_size_mb": 0.00244903564453125
+    },
+    {
+      "file": "  File \"/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/tempfile.py\", line 147",
+      "size_diff_mb": 0.00244140625,
+      "count_diff": 1,
+      "current_size_mb": 0.00244140625
+    },
+    {
+      "file": "  File \"/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/multiprocessing/synchronize.py\", line 328",
+      "size_diff_mb": 0.00241851806640625,
+      "count_diff": 10,
+      "current_size_mb": 0.00241851806640625
+    },
+    {
+      "file": "  File \"/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/multiprocessing/synchronize.py\", line 217",
+      "size_diff_mb": 0.00241851806640625,
+      "count_diff": 10,
+      "current_size_mb": 0.00241851806640625
+    },
+    {
+      "file": "  File \"/nix/store/clx0mcir7qw8zk36zbr4jra789g3knf6-python3-3.11.10/lib/python3.11/multiprocessing/synchronize.py\", line 46",
+      "size_diff_mb": 0.00241851806640625,
+      "count_diff": 10,
+      "current_size_mb": 0.00241851806640625
+    }
+  ]
+}
