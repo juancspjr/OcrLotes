@@ -1,0 +1,101 @@
+Mejora de la Sección "Documentación y API" para Integración n8n
+OBJETIVO PRINCIPAL DE ESTA SOLICITUD: Optimizar y clarificar la sección de "Documentación y API" de tu sistema, con énfasis en proporcionar información precisa y fácil de entender para la integración con n8n, incluyendo el uso de API Keys y la descripción detallada del flujo de procesamiento, especificando los formatos exactos de respuesta y la inclusión del índice de subida.
+
+1. ALCANCE Y CONTEXTO DE LA MEJORA:
+Sección a Mejorar: La sección existente de tu documentación que describe la API y cómo interactuar con ella.
+
+Enfoque Específico:
+
+Explicar claramente los endpoints disponibles para el flujo de procesamiento de archivos (subida, ejecución explícita del lote, estado, obtención de resultados).
+
+Detallar los formatos de entrada (parámetros, tipos de datos, ejemplos de JSON) y salida (estructura del JSON de respuesta exacta para cada endpoint).
+
+Incluir el "índice de subida" como un metadato clave en el proceso de carga de archivos.
+
+Clarificar explícitamente el rol y el uso de la API Key en el contexto de las solicitudes a estos endpoints, especialmente para usuarios que busquen integrarse con herramientas como n8n (o en entornos locales vs. producción).
+
+2. PUNTOS CLAVE A ABORDAR EN LA DOCUMENTACIÓN:
+Uso de API Key:
+
+¿Es obligatoria la API Key para todos los endpoints? ¿O solo para algunos?
+
+¿Cómo se obtiene una API Key? (Si aplica).
+
+¿En qué parte de la solicitud HTTP se debe incluir la API Key? (Ej: Header con X-API-Key o Authorization: Bearer). Proporcionar ejemplos.
+
+¿Hay diferencias en el uso de la API Key entre un entorno de desarrollo/local y un entorno de producción/desplegado? (Ej: "En local, puede que no sea necesaria, pero sí en producción por seguridad").
+
+Endpoints y Flujo:
+
+1. POST /api/ocr/upload (Subida de Archivos y Puesta en Cola):
+
+Descripción: Permite subir uno o varios archivos para ser procesados por lotes, junto con sus metadatos. Esta acción registra el lote y lleva los archivos a una cola de espera para su posterior ejecución, preservando el índice de subida del frontend.
+
+Tipo de Content-Type: multipart/form-data.
+
+Parámetros esperados: files (archivos de imagen) y metadata (JSON string).
+
+Estructura del metadata JSON (para cada archivo):
+
+nombre_archivo (string): Nombre original del archivo.
+
+id_whatsapp (string)
+
+idsorteo (string, opcional)
+
+nombre_usuario (string)
+
+hora_minuto_subida (string)
+
+caption (string, opcional)
+
+indice_de_subida (entero): El índice que el frontend le asigna al archivo al momento de la subida, crucial para mantener el orden.
+
+Ejemplo de metadata JSON con indice_de_subida.
+
+Ejemplo de respuesta (batch_id).
+
+2. POST /api/ocr/process_batch/{batch_id} (Ejecución del Lote Acumulado):
+
+Descripción: Este endpoint es llamado explícitamente para ejecutar el procesamiento OCR de los archivos acumulados y puestos en cola previamente bajo un batch_id específico. Corresponde al punto donde se "llama la ejecución del lote" como se haría en el frontend.
+
+Método HTTP: POST.
+
+Parámetros de URL: batch_id (string) - El ID del lote obtenido en el Paso 1.
+
+Request Body: (Generalmente vacío o un JSON simple para confirmación, ej. {}).
+
+Respuesta Esperada (JSON exacto):
+
+JSON
+
+{
+  "message": "Procesamiento del lote iniciado.",
+  "batch_id": "BATCH_ID_DEL_LOTE",
+  "status": "processing"
+}
+Mejora de Comprensión para n8n: n8n debe realizar esta llamada después de que los archivos de un lote específico han sido subidos exitosamente en el Paso 1.
+
+3. GET /api/ocr/batch_status/{batch_id} (Solicitud de Notificación de Estado):
+
+Descripción: Permite consultar el estado actual del procesamiento de un lote específico.
+
+Método HTTP: GET.
+
+Parámetros de URL: batch_id (string).
+
+Ejemplos de estados de respuesta (pending, processing, completed, failed) y sus implicaciones.
+
+Explicar results_available y su importancia para saber cuándo se pueden recuperar los resultados.
+
+Mejora de Comprensión para n8n: Para flujos asíncronos, n8n debe consultar este endpoint periódicamente (ej. usando un nodo "Wait" o un bucle) hasta que el estado del lote sea completed y results_available sea true.
+
+4. GET /api/ocr/get_batch_results/{batch_id} (Solicitud de Resultados del Lote Procesado):
+
+Descripción: Recupera el JSON completo con los resultados detallados del procesamiento OCR de un lote específico, una vez que su estado es completed.
+
+Método HTTP: GET.
+
+Parámetros de URL: batch_id (string).
+
+Estructura completa del JSON de respuesta para un lote procesado, incluyendo todos los campos de archivos_procesados (caption e indice_de_subida incluidos), similar a los resultados que se mostrarían en el frontend.
