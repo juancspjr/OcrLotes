@@ -24,11 +24,11 @@
     "error_messages": [
       "Lógica de oro basada en coordenadas no aplicada: No se detectaron coordenadas válidas en el OCR de origen"
     ],
-    "processing_time_ms": 690.72,
+    "processing_time_ms": 523.34,
     "total_words_detected": 54,
     "coordinates_available": 0,
     "ocr_method": "ONNXTR_SINGLE_PASS_COORDENADAS",
-    "timestamp": "2025-07-17T03:18:35.249069"
+    "timestamp": "2025-07-17T03:30:26.322423"
   },
   "word_data_granular": [],
   "texto_completo": "20/06/ 2025 - - 06:50:24 pm Mercantil de Tpago Operacion realizada Desde mi cuenta Se Envio (Bs .) Al beneficiario . Cuental de Ahorro 3976 210,00 0412 : -244 Banco, Mercantil, C . A . S . A . C . A . Banco Universal Bingo trebol V -27.061.025 Concepto Nro . Referencia Fecha y hora 106 93 48311146148 20/06/ 2025 - 06:50:20 La informacion : en esta : pagina es confidencial",
@@ -36,7 +36,7 @@
   "concepto_empresarial": "realizada Desde mi cuenta",
   "total_caracteres": 374,
   "total_caracteres_ordenados": 363,
-  "tiempo_procesamiento": 0.691,
+  "tiempo_procesamiento": 0.523,
   "metodo_extraccion": "ONNXTR_SINGLE_PASS_COORDENADAS",
   "configuracion_onnxtr": "ultra_rapido",
   "total_palabras_detectadas": 54,

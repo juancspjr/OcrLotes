@@ -1,0 +1,100 @@
+DIAGNÓSTICO Y OPTIMIZACIÓN DE CARGAS EN PROCESAMIENTO ASÍNCRONO
+OBJETIVO PRINCIPAL: Identificar la causa raíz de la lentitud y la desmejora observada en el procesamiento asíncrono del sistema OCR empresarial y aplicar mejoras que restauren o superen el rendimiento óptimo.
+
+1. PRINCIPIOS OBLIGATORIOS:
+ENFOQUE EN DATOS: Todas las decisiones de optimización deben basarse en métricas y datos de rendimiento recopilados, no en suposiciones.
+
+IMPACTO MÍNIMO: Las mejoras deben aplicarse de forma incremental para minimizar el riesgo de introducir nuevos problemas y permitir una fácil reversión.
+
+PRUEBAS RIGUROSAS: Cada cambio implementado debe ser seguido por pruebas exhaustivas para verificar la mejora del rendimiento y la integridad funcional.
+
+2. FASES DEL MANDATO - ACCIONES A EJECUTAR:
+FASE 1: DIAGNÓSTICO PROFUNDO Y RECOPILACIÓN DE MÉTRICAS
+Objetivo: Localizar el cuello de botella exacto en el flujo de procesamiento asíncrono.
+
+Acciones:
+
+Monitoreo de Recursos del Sistema:
+
+Utilizar herramientas como top, htop, ps aux, free -h, iostat (si están disponibles) para monitorear el uso de CPU, memoria, I/O de disco y red mientras el sistema procesa cargas.
+
+Comando Sugerido: ps aux | grep python o ps aux | grep gunicorn y top para observar procesos.
+
+Monitoreo de Colas de Procesamiento:
+
+Si el sistema utiliza una cola interna (como Redis, RabbitMQ o una gestión de cola basada en archivos), monitorear el tamaño de la cola, la tasa de adición de ítems y la tasa de consumo.
+
+Comando Sugerido: curl -X GET http://localhost:5000/api/ocr/queue/status para obtener el estado de la cola y curl -X GET http://localhost:5000/api/metrics para métricas de rendimiento.
+
+Análisis de Tiempos de Procesamiento (OCR):
+
+Examinar los logs o los resultados JSON (como resultados_ocr_*.json) para buscar el processing_time de cada archivo. Identificar si el problema es en la etapa de OCR en sí, o en las etapas previas/posteriores.
+
+Comando Sugerido: Analizar el contenido de resultados_BATCH_*.json o resultados_ocr_*.json para identificar patrones de lentitud en el campo processing_time.
+
+Identificación de Cuellos de Botella I/O:
+
+Observar si la lentitud está relacionada con la lectura/escritura intensiva de archivos (ej., al subir archivos grandes, al guardar resultados). Esto puede indicarse por alta actividad de disco (iostat).
+
+Registro Detallado (Debugging):
+
+Implementar o activar logging más detallado en los puntos críticos del flujo asíncrono (ej., cuando se añade una tarea a la cola, cuando un trabajador la recoge, cuando finaliza el OCR, cuando se guarda el resultado).
+
+Generación de un Informe de Diagnóstico: Compilar todos los datos y observaciones para identificar dónde se produce el mayor retraso.
+
+FASE 2: APLICACIÓN DE MEJORAS Y OPTIMIZACIÓN
+Objetivo: Implementar soluciones dirigidas a los cuellos de botella identificados en la Fase 1.
+
+Acciones (seleccionar y adaptar según el diagnóstico):
+
+Optimización de Trabajadores Asíncronos:
+
+Ajuste del Número de Trabajadores: Si el sistema usa gunicorn con workers, ajustar el número de workers basándose en el número de núcleos de CPU y la naturaleza del procesamiento (I/O vs CPU-bound).
+
+Considerar: gunicorn --workers N --threads M si el OCR se beneficia de multihilo.
+
+Gestión de Procesos: Asegurarse de que los procesos de OCR no estén compitiendo excesivamente por recursos.
+
+Optimización de I/O de Archivos:
+
+Manejo de Archivos Temporal: Asegurarse de que los archivos temporales se gestionen eficientemente y se limpien rápidamente.
+
+Rutas de Disco: Si es posible, utilizar discos más rápidos (SSD) para directorios de uploads, temp y results.
+
+Procesamiento en Stream/Chunks: Para archivos muy grandes, procesarlos en partes si la arquitectura del OCR lo permite.
+
+Mejora de la Gestión de Colas:
+
+Si el problema está en la cola, verificar que no haya bloqueos o latencias en la comunicación con el sistema de cola (si es externo).
+
+Implementar un sistema de prioridades si ciertas cargas son más críticas.
+
+Optimización Específica del Motor OCR (si aplicable):
+
+Asegurarse de que el motor OnnxTR esté utilizando la configuración más eficiente para tu CPU (ej., uso de librerías BLAS optimizadas si OnnxTR lo soporta).
+
+Verificar que no haya cargas innecesarias de modelos.
+
+Refactorización de Código Crítico:
+
+Si el diagnóstico apunta a funciones específicas dentro del código que son lentas, aplicar técnicas de refactorización para hacerlas más eficientes (ej., optimización de bucles, reducción de operaciones redundantes).
+
+Limpieza de Recursos:
+
+Implementar limpieza automática de archivos antiguos en directorios como uploads, temp, results o historial para evitar la acumulación que pueda ralentizar el sistema de archivos.
+
+FASE 3: VERIFICACIÓN Y VALIDACIÓN DEL RENDIMIENTO
+Objetivo: Confirmar que las mejoras han sido efectivas y que el sistema funciona de manera óptima y estable bajo carga.
+
+Acciones:
+
+Repetición de Pruebas de Carga:
+
+Ejecutar las mismas pruebas de carga que se usaron en la Fase 1 para comparar las métricas de rendimiento (tiempo de procesamiento, uso de recursos).
+
+Comando Sugerido: time curl -X POST ... para simular subidas o procesos si tienes un endpoint de ejecución directa.
+
+Monitoreo Continuo: Observar el sistema durante un período extendido para detectar regresiones o problemas que solo aparecen con el tiempo.
+
+Informe Final de Optimización: Documentar los cambios realizados, las métricas de rendimiento antes y después, y las conclusiones.
+

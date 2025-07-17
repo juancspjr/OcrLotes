@@ -24,11 +24,11 @@
     "error_messages": [
       "Lógica de oro basada en coordenadas no aplicada: No se detectaron coordenadas válidas en el OCR de origen"
     ],
-    "processing_time_ms": 1293.59,
+    "processing_time_ms": 457.05,
     "total_words_detected": 37,
     "coordinates_available": 0,
     "ocr_method": "ONNXTR_SINGLE_PASS_COORDENADAS",
-    "timestamp": "2025-07-17T03:18:40.761156"
+    "timestamp": "2025-07-17T03:30:29.494828"
   },
   "word_data_granular": [],
   "texto_completo": "7:17 PM . (y M U Fallall a 60 0412 - 5318244 TREBOL V - 27061025 - MERCANTIL Monto : Bs . 104,54 Comision : Bs . 0,31 Total : Bs . 104,85 Referencia : 490760890 Codigo autorizador : 282413 Concepto : 90 a Emitir Pago CUENTAS TARJETAS BNC PAGOS DIVISAS",
@@ -36,7 +36,7 @@
   "concepto_empresarial": "Pago CUENTAS",
   "total_caracteres": 251,
   "total_caracteres_ordenados": 244,
-  "tiempo_procesamiento": 1.294,
+  "tiempo_procesamiento": 0.457,
   "metodo_extraccion": "ONNXTR_SINGLE_PASS_COORDENADAS",
   "configuracion_onnxtr": "ultra_rapido",
   "total_palabras_detectadas": 37,
