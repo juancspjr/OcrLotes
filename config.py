@@ -33,7 +33,7 @@ ONNXTR_CONFIG = {
     'batch_size': 1,  # Tamaño de lote para procesar imágenes
     'confidence_threshold': 0.6,  # Umbral de confianza para OnnxTR (equivalente a 60% de Tesseract)
     'detection_threshold': 0.7,  # Umbral para detección de texto
-    'recognition_batch_size': 16,  # Lote para reconocimiento de texto
+    'recognition_batch_size': 4,  # Lote para reconocimiento de texto (reducido de 16 a 4)
     'preserve_aspect_ratio': True,  # Preservar proporción de aspecto
     'symmetric_pad': True,  # Relleno simétrico
     'assume_straight_pages': True,  # Asumir páginas rectas (optimización para screenshots)
@@ -49,7 +49,10 @@ ONNXTR_CONFIG = {
             'confidence_threshold': 0.5,
             'assume_straight_pages': True,
             'onnx_providers': ['CPUExecutionProvider'],
-            'optimization_level': 'basic'
+            'optimization_level': 'basic',
+            'batch_size': 1,
+            'recognition_batch_size': 2,  # Muy reducido para mínima memoria
+            'max_image_size': 1024  # Limitar tamaño de imagen
         },
         # FIX: Perfil rápido balanceado para uso general
         # REASON: Balance óptimo entre velocidad y precisión para la mayoría de casos

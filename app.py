@@ -11,6 +11,7 @@ import shutil
 from datetime import datetime
 from flask import Flask, jsonify
 from werkzeug.middleware.proxy_fix import ProxyFix
+from memory_optimizer import memory_optimizer, start_memory_monitoring
 
 # Configurar logging
 logging.basicConfig(level=logging.DEBUG)
@@ -108,15 +109,21 @@ def preload_ocr_components():
     if not _ocr_components_loaded:
         try:
             logger.info("Pre-cargando componentes OCR para sistema asíncrono...")
-            from main_ocr_process import OrquestadorOCR
             
-            _ocr_orchestrator = OrquestadorOCR()
+            # Inicializar optimizador de memoria
+            memory_optimizer.optimize_numpy_arrays()
+            memory_optimizer.optimize_onnx_models()
             
-            # Warm-up de modelos críticos
-            _ocr_orchestrator.aplicador._warmup_common_models()
-            
-            _ocr_components_loaded = True
-            logger.info("✅ Componentes OCR pre-cargados exitosamente")
+            with memory_optimizer.memory_context("carga de componentes OCR"):
+                from main_ocr_process import OrquestadorOCR
+                
+                _ocr_orchestrator = OrquestadorOCR()
+                
+                # Warm-up de modelos críticos con control de memoria
+                _ocr_orchestrator.aplicador._warmup_common_models()
+                
+                _ocr_components_loaded = True
+                logger.info("✅ Componentes OCR pre-cargados exitosamente")
             
         except Exception as e:
             logger.error(f"Error pre-cargando componentes OCR: {e}")
@@ -171,54 +178,55 @@ def process_batch(image_paths, directories):
     """Procesa un lote de imágenes"""
     global _ocr_orchestrator
     
-    try:
-        # Mover imágenes a processing
-        processing_paths = []
-        caption_texts = []
-        metadata_list = []
-        
-        for img_path in image_paths:
-            # Generar rutas de procesamiento
-            filename = os.path.basename(img_path)
-            processing_path = os.path.join(directories['processing'], filename)
+    with memory_optimizer.memory_context(f"procesamiento de lote ({len(image_paths)} imágenes)"):
+        try:
+            # Mover imágenes a processing
+            processing_paths = []
+            caption_texts = []
+            metadata_list = []
             
-            # Mover imagen
-            shutil.move(img_path, processing_path)
-            processing_paths.append(processing_path)
+            for img_path in image_paths:
+                # Generar rutas de procesamiento
+                filename = os.path.basename(img_path)
+                processing_path = os.path.join(directories['processing'], filename)
+                
+                # Mover imagen
+                shutil.move(img_path, processing_path)
+                processing_paths.append(processing_path)
             
-            # ✅ PRESERVAR CAPTION ORIGINAL DE METADATOS
-            # REASON: El caption original está en metadata.json, no en .caption.txt
-            # IMPACT: Garantiza que se use el caption exacto ingresado por el usuario
-            metadata_path = img_path.replace('.png', '.metadata.json').replace('.jpg', '.metadata.json').replace('.jpeg', '.metadata.json')
-            caption_text = ""
+                # ✅ PRESERVAR CAPTION ORIGINAL DE METADATOS
+                # REASON: El caption original está en metadata.json, no en .caption.txt
+                # IMPACT: Garantiza que se use el caption exacto ingresado por el usuario
+                metadata_path = img_path.replace('.png', '.metadata.json').replace('.jpg', '.metadata.json').replace('.jpeg', '.metadata.json')
+                caption_text = ""
+                
+                if os.path.exists(metadata_path):
+                    try:
+                        with open(metadata_path, 'r', encoding='utf-8') as f:
+                            metadata_json = json.load(f)
+                            # Usar caption original de metadatosEntrada (fuente de verdad)
+                            caption_text = metadata_json.get('caption', '') or metadata_json.get('texto_mensaje_whatsapp', '')
+                            logger.info(f"✅ Caption original cargado desde metadata: '{caption_text}'")
+                            
+                            # Mover metadata también
+                            new_metadata_path = processing_path.replace('.png', '.metadata.json').replace('.jpg', '.metadata.json').replace('.jpeg', '.metadata.json')
+                            shutil.move(metadata_path, new_metadata_path)
+                    except Exception as e:
+                        logger.error(f"Error leyendo metadata para caption: {e}")
+                else:
+                    logger.warning(f"No se encontró metadata.json para {img_path}")
+                
+                caption_texts.append(caption_text)
+                
+                # Extraer metadata del nombre de archivo
+                metadata = extract_metadata_from_filename(filename)
+                metadata_list.append(metadata)
             
-            if os.path.exists(metadata_path):
-                try:
-                    with open(metadata_path, 'r', encoding='utf-8') as f:
-                        metadata_json = json.load(f)
-                        # Usar caption original de metadatosEntrada (fuente de verdad)
-                        caption_text = metadata_json.get('caption', '') or metadata_json.get('texto_mensaje_whatsapp', '')
-                        logger.info(f"✅ Caption original cargado desde metadata: '{caption_text}'")
-                        
-                        # Mover metadata también
-                        new_metadata_path = processing_path.replace('.png', '.metadata.json').replace('.jpg', '.metadata.json').replace('.jpeg', '.metadata.json')
-                        shutil.move(metadata_path, new_metadata_path)
-                except Exception as e:
-                    logger.error(f"Error leyendo metadata para caption: {e}")
-            else:
-                logger.warning(f"No se encontró metadata.json para {img_path}")
-            
-            caption_texts.append(caption_text)
-            
-            # Extraer metadata del nombre de archivo
-            metadata = extract_metadata_from_filename(filename)
-            metadata_list.append(metadata)
-        
-        # Procesar lote con orquestador
-        if _ocr_orchestrator:
-            results = _ocr_orchestrator.procesar_lote_imagenes(
-                processing_paths, caption_texts, metadata_list, 'spa', 'ultra_rapido'
-            )
+            # Procesar lote con orquestador
+            if _ocr_orchestrator:
+                results = _ocr_orchestrator.procesar_lote_imagenes(
+                    processing_paths, caption_texts, metadata_list, 'spa', 'ultra_rapido'
+                )
             
             # Guardar resultados y mover archivos
             for i, result in enumerate(results):
@@ -269,10 +277,10 @@ def process_batch(image_paths, directories):
                 except Exception as e:
                     logger.error(f"Error guardando resultado {i}: {e}")
         
-        logger.info(f"✅ Lote de {len(processing_paths)} imágenes procesado exitosamente")
-        
-    except Exception as e:
-        logger.error(f"Error procesando lote: {e}")
+            logger.info(f"✅ Lote de {len(processing_paths)} imágenes procesado exitosamente")
+            
+        except Exception as e:
+            logger.error(f"Error procesando lote: {e}")
 
 def extract_metadata_from_filename(filename):
     """
@@ -439,7 +447,11 @@ def start_batch_worker():
         _worker_running = True
         _worker_thread = threading.Thread(target=batch_processing_worker, daemon=True)
         _worker_thread.start()
-        logger.info("Worker asíncrono iniciado")
+        
+        # Iniciar monitoreo de memoria
+        start_memory_monitoring()
+        
+        logger.info("Worker asíncrono iniciado con monitoreo de memoria")
 
 def stop_batch_worker():
     """Detiene el worker asíncrono"""

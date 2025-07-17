@@ -2,7 +2,7 @@ modules = ["python-3.11", "web", "nodejs-20", "bash"]
 
 [nix]
 channel = "stable-24_05"
-packages = ["abseil-cpp", "freetype", "gtest", "lcms2", "libGL", "libGLU", "libcxx", "libimagequant", "libjpeg", "libtiff", "libwebp", "libxcrypt", "oneDNN", "openjpeg", "openssl", "pkg-config", "postgresql", "re2", "tcl", "tesseract", "tk", "xsimd", "zlib"]
+packages = ["abseil-cpp", "freetype", "gtest", "lcms2", "libGL", "libGLU", "libcxx", "libimagequant", "libjpeg", "libtiff", "libwebp", "libxcrypt", "oneDNN", "openjpeg", "openssl", "pkg-config", "postgresql", "re2", "tcl", "tesseract", "tk", "xsimd", "zlib", "htop-vim"]
 
 [deployment]
 deploymentTarget = "autoscale"
