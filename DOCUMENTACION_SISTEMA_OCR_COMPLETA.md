@@ -508,24 +508,362 @@ def validate_api_key(api_key):
 - **SESSION_SECRET**: Secreto para sesiones Flask
 - **DATABASE_URL**: URL de PostgreSQL (opcional)
 
-#### 5.2.2 Integración con N8N
-```javascript
-// Ejemplo de uso en N8N
-const apiKey = 'tu_api_key_aqui';
-const headers = {
-  'X-API-Key': apiKey,
-  'Content-Type': 'application/json'
-};
+#### 5.2.2 Integración Completa con N8N - Guía Paso a Paso
 
-// Procesamiento de lote
-const response = await fetch('http://localhost:5000/api/ocr/process_batch', {
-  method: 'POST',
-  headers: headers,
-  body: JSON.stringify({
-    profile: 'rapido'
-  })
-});
+Esta sección proporciona una guía exhaustiva para integrar el sistema OCR con N8N, cubriendo los procesos más importantes y críticos.
+
+##### 5.2.2.1 Configuración Inicial en N8N
+
+**Requisitos Previos:**
+- N8N instalado y ejecutándose
+- Sistema OCR ejecutándose en `http://localhost:5000`
+- API Key generada (opcional pero recomendada)
+
+**Configuración de Credenciales:**
+1. En N8N, ir a **Credenciales → Agregar credencial**
+2. Seleccionar **HTTP Request Auth**
+3. Configurar:
+   - **Name**: `OCR_API_Key`
+   - **Authentication**: `Header Auth`
+   - **Header Name**: `X-API-Key`
+   - **Value**: `tu_api_key_aqui` (obtenida del sistema OCR)
+
+##### 5.2.2.2 Proceso 1: Subida de Archivos de Imágenes
+
+**Objetivo:** Subir imágenes al sistema OCR con metadatos WhatsApp.
+
+**Configuración del Nodo HTTP Request:**
+- **Nodo Recomendado**: `HTTP Request` (NO usar Command Line)
+- **Razón**: Mejor manejo de multipart/form-data, respuestas JSON y manejo de errores
+- **Method**: `POST`
+- **URL**: `http://localhost:5000/api/ocr/process_image`
+- **Body Type**: `Form-Data`
+- **Authentication**: Usar credencial `OCR_API_Key`
+
+**Parámetros Form-Data:**
+```javascript
+{
+  "files": "[Binary Data del archivo de imagen]",
+  "numerosorteo": "A",
+  "fechasorteo": "20250717",
+  "idWhatsapp": "123456789@lid",
+  "nombre": "Juan Pérez",
+  "horamin": "14-30",
+  "caption": "Pago realizado exitosamente"
+}
 ```
+
+**Ejemplo de Configuración N8N:**
+```json
+{
+  "method": "POST",
+  "url": "http://localhost:5000/api/ocr/process_image",
+  "authentication": "predefinedCredentialType",
+  "nodeCredentialType": "ocrApiKey",
+  "bodyType": "form",
+  "body": {
+    "files": "={{ $binary.data }}",
+    "numerosorteo": "={{ $node['Trigger'].json.numerosorteo }}",
+    "fechasorteo": "={{ $node['Trigger'].json.fechasorteo }}",
+    "idWhatsapp": "={{ $node['Trigger'].json.idWhatsapp }}",
+    "nombre": "={{ $node['Trigger'].json.nombre }}",
+    "horamin": "={{ $node['Trigger'].json.horamin }}",
+    "caption": "={{ $node['Trigger'].json.caption }}"
+  }
+}
+```
+
+**Respuesta Esperada:**
+```json
+{
+  "status": "success",
+  "message": "Archivo procesado exitosamente",
+  "data": {
+    "filename": "imagen.jpg",
+    "request_id": "req_1234567890",
+    "processing_time": 1.57,
+    "ocr_confidence": 0.928,
+    "words_detected": 23,
+    "coordinates_available": true
+  }
+}
+```
+
+**Manejo de la Respuesta en N8N:**
+- Usar nodo `IF` para verificar `{{ $json.status === 'success' }}`
+- Guardar `request_id` para uso posterior: `{{ $json.data.request_id }}`
+- Manejar errores con `{{ $json.status === 'error' }}`
+
+##### 5.2.2.3 Proceso 2: Procesamiento por Lotes
+
+**Objetivo:** Procesar todos los archivos pendientes en un lote.
+
+**Configuración del Nodo HTTP Request:**
+- **Method**: `POST`
+- **URL**: `http://localhost:5000/api/ocr/process_batch`
+- **Body Type**: `JSON`
+- **Authentication**: Usar credencial `OCR_API_Key`
+
+**Parámetros JSON:**
+```json
+{
+  "profile": "rapido"
+}
+```
+
+**Perfiles Disponibles:**
+- `ultra_rapido`: 0.4-0.6s (MobileNet optimizado)
+- `rapido`: 0.8-1.2s (Balance velocidad/precisión)
+- `default`: 1.2-1.8s (Calidad estándar)  
+- `high_confidence`: 2.0-3.0s (Máxima precisión)
+
+**Configuración N8N:**
+```json
+{
+  "method": "POST",
+  "url": "http://localhost:5000/api/ocr/process_batch",
+  "authentication": "predefinedCredentialType",
+  "nodeCredentialType": "ocrApiKey",
+  "bodyType": "json",
+  "body": {
+    "profile": "={{ $node['Config'].json.profile || 'rapido' }}"
+  }
+}
+```
+
+**Respuesta Esperada:**
+```json
+{
+  "status": "success",
+  "message": "Lote procesado exitosamente",
+  "data": {
+    "request_id": "BATCH_20250717_014400_abc123",
+    "files_processed": 15,
+    "processing_time": 23.45,
+    "batch_id": "batch_1234567890",
+    "results_available": true
+  }
+}
+```
+
+**Uso de la Respuesta:**
+- Guardar `batch_id` para monitoreo: `{{ $json.data.batch_id }}`
+- Usar `files_processed` para validación: `{{ $json.data.files_processed }}`
+- Verificar `results_available` antes de continuar
+
+##### 5.2.2.4 Proceso 3: Monitoreo de Estado de Cola
+
+**Objetivo:** Verificar el estado actual del procesamiento.
+
+**Configuración del Nodo HTTP Request:**
+- **Method**: `GET`
+- **URL**: `http://localhost:5000/api/ocr/queue/status`
+- **Body Type**: `None`
+- **Authentication**: Usar credencial `OCR_API_Key`
+
+**Respuesta Esperada:**
+```json
+{
+  "status": "ok",
+  "estado": "exitoso",
+  "timestamp": "2025-07-17T01:52:58.024877",
+  "queue_status": {
+    "completed": 395,
+    "errors": 0,
+    "inbox": 0,
+    "pending": 0,
+    "processing": 0,
+    "results_available": 42
+  },
+  "system_status": {
+    "ocr_loaded": true,
+    "worker_running": true
+  }
+}
+```
+
+**Uso en Workflow N8N:**
+- Usar nodo `Wait` entre consultas de estado
+- Verificar `processing: 0` para saber cuando terminó
+- Monitorear `errors` para manejo de errores
+- Usar `results_available` para saber cuántos lotes hay disponibles
+
+##### 5.2.2.5 Proceso 4: Extracción de Resultados Consolidados
+
+**Objetivo:** Obtener resultados finales en formato JSON empresarial.
+
+**Configuración del Nodo HTTP Request:**
+- **Method**: `GET`
+- **URL**: `http://localhost:5000/api/extract_results`
+- **Body Type**: `None`
+- **Authentication**: Usar credencial `OCR_API_Key`
+
+**Respuesta Esperada:**
+```json
+{
+  "status": "success",
+  "total_archivos": 15,
+  "fecha_extraccion": "2025-07-17T01:45:00Z",
+  "archivos": [
+    {
+      "nombre_archivo": "imagen1.jpg",
+      "caption": "Pago realizado",
+      "otro": "",
+      "referencia": "48311146148",
+      "bancoorigen": "BANCO MERCANTIL",
+      "monto": "104.54",
+      "datosbeneficiario": {
+        "cedula": "V-12345678",
+        "telefono": "0412-1234567",
+        "banco_destino": "BANCO DE VENEZUELA"
+      },
+      "pago_fecha": "20/06/2025",
+      "concepto": "Pago Móvil"
+    }
+  ]
+}
+```
+
+**Procesamiento de Resultados:**
+- Usar nodo `Split In Batches` para procesar cada archivo
+- Acceder a datos específicos: `{{ $json.archivos[0].monto }}`
+- Filtrar por criterios: `{{ $json.archivos.filter(item => item.monto > 100) }}`
+
+##### 5.2.2.6 Proceso 5: Limpieza del Sistema
+
+**Objetivo:** Limpiar archivos procesados manteniendo retención de 24 horas.
+
+**Configuración del Nodo HTTP Request:**
+- **Method**: `POST`
+- **URL**: `http://localhost:5000/api/clean`
+- **Body Type**: `None`
+- **Authentication**: Usar credencial `OCR_API_Key`
+
+**Respuesta Esperada:**
+```json
+{
+  "status": "exitoso",
+  "message": "Sistema limpiado exitosamente",
+  "details": {
+    "results_preserved": 15,
+    "results_deleted": 0,
+    "uploads_deleted": 25,
+    "temp_files_deleted": 10
+  }
+}
+```
+
+##### 5.2.2.7 Workflow Completo N8N - Flujo Típico
+
+**Secuencia Recomendada:**
+1. **Trigger** (Webhook/Schedule) → Recibe archivos o se ejecuta periódicamente
+2. **HTTP Request** (Subida) → Sube archivos individuales con metadatos
+3. **HTTP Request** (Procesamiento) → Ejecuta procesamiento por lotes
+4. **Wait** (30 segundos) → Espera para permitir procesamiento
+5. **HTTP Request** (Estado) → Verifica estado de cola hasta completar
+6. **IF** (Verificar completado) → Continúa solo si processing = 0
+7. **HTTP Request** (Extracción) → Obtiene resultados consolidados
+8. **Procesamiento** (Datos) → Procesa y almacena resultados
+9. **HTTP Request** (Limpieza) → Limpia sistema (opcional)
+
+**Ejemplo de Workflow JSON N8N:**
+```json
+{
+  "nodes": [
+    {
+      "name": "Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "parameters": {
+        "path": "ocr-process"
+      }
+    },
+    {
+      "name": "Upload Image",
+      "type": "n8n-nodes-base.httpRequest",
+      "parameters": {
+        "method": "POST",
+        "url": "http://localhost:5000/api/ocr/process_image",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "ocrApiKey",
+        "bodyType": "form",
+        "body": {
+          "files": "={{ $binary.data }}",
+          "numerosorteo": "={{ $json.numerosorteo }}",
+          "fechasorteo": "={{ $json.fechasorteo }}",
+          "idWhatsapp": "={{ $json.idWhatsapp }}",
+          "nombre": "={{ $json.nombre }}",
+          "horamin": "={{ $json.horamin }}",
+          "caption": "={{ $json.caption }}"
+        }
+      }
+    },
+    {
+      "name": "Process Batch",
+      "type": "n8n-nodes-base.httpRequest",
+      "parameters": {
+        "method": "POST",
+        "url": "http://localhost:5000/api/ocr/process_batch",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "ocrApiKey",
+        "bodyType": "json",
+        "body": {
+          "profile": "rapido"
+        }
+      }
+    },
+    {
+      "name": "Wait Processing",
+      "type": "n8n-nodes-base.wait",
+      "parameters": {
+        "amount": 30,
+        "unit": "seconds"
+      }
+    },
+    {
+      "name": "Check Status",
+      "type": "n8n-nodes-base.httpRequest",
+      "parameters": {
+        "method": "GET",
+        "url": "http://localhost:5000/api/ocr/queue/status",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "ocrApiKey"
+      }
+    },
+    {
+      "name": "Extract Results",
+      "type": "n8n-nodes-base.httpRequest",
+      "parameters": {
+        "method": "GET",
+        "url": "http://localhost:5000/api/extract_results",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "ocrApiKey"
+      }
+    }
+  ]
+}
+```
+
+##### 5.2.2.8 Consejos Adicionales para N8N
+
+**Manejo de Errores:**
+- Usar nodo `IF` para verificar `status === 'success'`
+- Implementar reintentos con nodo `Wait` + `Loop`
+- Configurar timeout en HTTP Request (60 segundos recomendado)
+
+**Optimización:**
+- Usar variables de entorno para URLs y API Keys
+- Implementar logging con nodo `Set` para debug
+- Configurar notificaciones para errores críticos
+
+**Seguridad:**
+- Nunca hardcodear API Keys en el workflow
+- Usar credenciales de N8N para autenticación
+- Validar respuestas antes de procesar datos
+
+**Monitoreo:**
+- Implementar alertas para fallos consecutivos
+- Monitorear tiempos de respuesta
+- Registrar métricas de procesamiento
 
 ---
 

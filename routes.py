@@ -4189,6 +4189,264 @@ def get_processed_count():
     except:
         return 0
 
+# ====================================================================================================
+# ENDPOINT DOCUMENTACIÓN WEB - MANDATO USUARIO
+# ====================================================================================================
+
+@app.route('/api/docs')
+@app.route('/api/documentation')
+@app.route('/documentation')
+def serve_documentation():
+    """
+    ENDPOINT: GET /api/docs, /api/documentation, /documentation
+    PROPÓSITO: Servir documentación técnica completa del sistema OCR
+    MANDATO: Cumplir requerimiento usuario de documentación web accesible
+    """
+    try:
+        import markdown
+        from flask import render_template_string
+        
+        # Leer archivo de documentación
+        doc_file = Path('DOCUMENTACION_SISTEMA_OCR_COMPLETA.md')
+        if not doc_file.exists():
+            return jsonify({
+                'status': 'error',
+                'mensaje': 'Archivo de documentación no encontrado'
+            }), 404
+            
+        # Leer contenido markdown
+        with open(doc_file, 'r', encoding='utf-8') as f:
+            markdown_content = f.read()
+        
+        # Convertir markdown a HTML
+        html_content = markdown.markdown(
+            markdown_content,
+            extensions=['codehilite', 'fenced_code', 'tables', 'toc']
+        )
+        
+        # Template HTML con estilos
+        html_template = """
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentación Técnica - Sistema OCR Empresarial</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .doc-header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        .doc-nav {
+            position: sticky;
+            top: 20px;
+            background: white;
+            border-radius: 8px;
+            padding: 1rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        .doc-content {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .doc-content h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 0.5rem;
+        }
+        .doc-content h2 {
+            color: #34495e;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 0.5rem;
+            margin-top: 2rem;
+        }
+        .doc-content h3 {
+            color: #2c3e50;
+            margin-top: 1.5rem;
+        }
+        .doc-content pre {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            padding: 1rem;
+            overflow-x: auto;
+        }
+        .doc-content code {
+            background: #f8f9fa;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+        .doc-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+        .doc-content table th,
+        .doc-content table td {
+            border: 1px solid #dee2e6;
+            padding: 0.75rem;
+            text-align: left;
+        }
+        .doc-content table th {
+            background: #f8f9fa;
+            font-weight: 600;
+        }
+        .back-to-dashboard {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        .toc {
+            background: #f8f9fa;
+            border-radius: 6px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+        }
+        .toc ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        .toc li {
+            margin: 0.5rem 0;
+        }
+        .toc a {
+            text-decoration: none;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+        .toc a:hover {
+            color: #3498db;
+        }
+        .badge-endpoint {
+            font-size: 0.8em;
+            margin-left: 0.5rem;
+        }
+        .endpoint-get { background: #28a745; }
+        .endpoint-post { background: #007bff; }
+        .endpoint-put { background: #ffc107; color: #212529; }
+        .endpoint-delete { background: #dc3545; }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            .doc-header {
+                padding: 1rem;
+            }
+            .doc-content {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="doc-header">
+            <h1><i class="fas fa-file-alt me-3"></i>Documentación Técnica Completa</h1>
+            <h2>Sistema OCR Empresarial</h2>
+            <p class="mb-0">Guía exhaustiva para integración con N8N y uso de APIs</p>
+        </div>
+        
+        <div class="doc-nav">
+            <div class="d-flex flex-wrap justify-content-center gap-2">
+                <a href="#" class="btn btn-outline-primary btn-sm" onclick="window.scrollTo(0,0)">
+                    <i class="fas fa-arrow-up"></i> Inicio
+                </a>
+                <a href="#" class="btn btn-outline-success btn-sm" onclick="document.getElementById('toc').scrollIntoView()">
+                    <i class="fas fa-list"></i> Índice
+                </a>
+                <a href="/" class="btn btn-outline-secondary btn-sm">
+                    <i class="fas fa-home"></i> Dashboard
+                </a>
+                <a href="/api/ocr/queue/status" class="btn btn-outline-info btn-sm" target="_blank">
+                    <i class="fas fa-heartbeat"></i> Estado Sistema
+                </a>
+            </div>
+        </div>
+        
+        <div class="doc-content">
+            {{ content|safe }}
+        </div>
+    </div>
+    
+    <div class="back-to-dashboard">
+        <a href="/" class="btn btn-primary btn-lg rounded-circle" title="Volver al Dashboard">
+            <i class="fas fa-home"></i>
+        </a>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script>
+        // Resaltar código
+        hljs.highlightAll();
+        
+        // Mejorar navegación
+        document.addEventListener('DOMContentLoaded', function() {
+            // Agregar iconos a endpoints
+            const headers = document.querySelectorAll('h4, h5');
+            headers.forEach(header => {
+                if (header.textContent.includes('GET ')) {
+                    header.innerHTML = header.innerHTML.replace('GET ', '<span class="badge endpoint-get">GET</span> ');
+                } else if (header.textContent.includes('POST ')) {
+                    header.innerHTML = header.innerHTML.replace('POST ', '<span class="badge endpoint-post">POST</span> ');
+                } else if (header.textContent.includes('PUT ')) {
+                    header.innerHTML = header.innerHTML.replace('PUT ', '<span class="badge endpoint-put">PUT</span> ');
+                } else if (header.textContent.includes('DELETE ')) {
+                    header.innerHTML = header.innerHTML.replace('DELETE ', '<span class="badge endpoint-delete">DELETE</span> ');
+                }
+            });
+            
+            // Agregar navegación suave
+            const links = document.querySelectorAll('a[href^="#"]');
+            links.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+        """
+        
+        # Renderizar template
+        return render_template_string(html_template, content=html_content)
+        
+    except Exception as e:
+        logger.error(f"Error sirviendo documentación: {e}")
+        return jsonify({
+            'status': 'error',
+            'mensaje': f'Error interno sirviendo documentación: {str(e)}'
+        }), 500
+
 def _save_batch_execution_id(batch_id):
     """
     INTEGRIDAD TOTAL: Almacenar ID único del lote de ejecución

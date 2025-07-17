@@ -1,0 +1,54 @@
+OBJETIVO PRINCIPAL: Elevar la calidad y accesibilidad de la documentación del sistema, focalizándose en una guía exhaustiva para la integración con n8n en el entorno de servidor local. Simultáneamente, asegurar que esta documentación sea perfectamente visible y navegable desde la interfaz de usuario existente en la sección "Documentación y API".
+
+1. PRINCIPIOS DE EJECUCIÓN:
+Claridad Cristalina: Cada paso y concepto debe ser explicado de forma inequívoca, asumiendo un usuario de n8n que necesita una guía práctica y directa.
+
+Visibilidad Inmediata: La documentación no solo debe existir, sino ser un componente activo y accesible de la interfaz web, reflejando el compromiso con la "Excelencia de Interfaz".
+
+Enfoque Local Primero: Todos los ejemplos y URL deben hacer referencia explícita al entorno de servidor local (http://localhost:5000), mientras se mantiene la conciencia de las implicaciones de seguridad para entornos de producción.
+
+2. ACCIONES ESPECÍFICAS DEL MANDATO:
+a) Mejora y Expansión de la Sección "Integración con N8N" (o equivalente):
+
+Este mandato exige una reescritura y expansión profunda de la sección dedicada a n8n, cubriendo los procesos más críticos:
+
+Guía Paso a Paso para Procesos Clave en n8n:
+
+Para cada uno de los procesos fundamentales de la API (Subida de Archivos, Ejecución de Lote, Consulta de Estado de Lote, Obtención de Resultados Consolidados/Específicos), se debe crear una subsección detallada.
+
+Cada subsección debe incluir:
+
+Tipo de Nodo Obligatorio: Enfatizar que se debe utilizar el nodo HTTP Request y explicar brevemente por qué es la opción correcta para interactuar con APIs RESTful (seguridad, flexibilidad, facilidad de manejo de respuestas JSON), desaconsejando el nodo Command para este fin.
+
+Configuración del Nodo HTTP Request:
+
+URL Completa: Proporcionar la URL exacta para el entorno local (ej., http://localhost:5000/api/ocr/upload).
+
+Método HTTP: POST, GET, etc.
+
+Tipo de Body: Especificar Form Data (multipart/form-data), JSON, o None.
+
+Parámetros: Detallar los nombres exactos de los campos, sus tipos y ejemplos de los valores esperados (ej., estructura del JSON metadata para la subida).
+
+Uso de API Key (Recomendado): Explicar claramente cómo configurar el encabezado X-API-Key en el nodo HTTP Request de n8n. Se debe reafirmar que, aunque no es estrictamente obligatoria para el servidor local, su uso es una práctica de seguridad recomendada para la familiarización con la autenticación en un entorno controlado y como preparación para producción.
+
+Manejo de Respuestas: Describir qué esperar en la respuesta (ej., batch_id, status, results_available) y cómo estos datos pueden ser utilizados por nodos subsiguientes en n8n para construir flujos de trabajo eficientes (ej., con nodos IF o Wait).
+
+Ejemplos de Metadata y Body: Proporcionar ejemplos de JSON para los metadatos de subida y cualquier otro cuerpo de petición necesario, asegurando que sean copiables y adaptables.
+
+Flujo Típico de n8n: Describir conceptualmente el orden de los nodos para un workflow completo (ej., Disparador -> Subida -> Ejecución -> Espera/Chequeo de Estado -> Obtención de Resultados).
+
+Consejos Adicionales para n8n: Incluir recomendaciones sobre el manejo de errores, reintentos y el uso de Credenciales de n8n para la API Key.
+
+b) Integración y Visibilidad en la Interfaz de Usuario:
+
+Este mandato exige que la documentación actualizada no sea solo un archivo, sino una parte accesible de la interfaz web:
+
+Creación/Actualización de una Ruta Dedicada: Implementar o modificar una ruta en el backend de Flask (ej., /documentation o /api-docs) que sea responsable de servir el contenido de la documentación.
+
+Renderización Web de Markdown: Asegurar que el contenido Markdown de la documentación sea renderizado correctamente como HTML legible en el navegador. Esto puede requerir el uso de una librería de Python (markdown) y un template HTML que lo incruste.
+
+Enlace de Acceso en la Interfaz: Añadir un enlace claro y prominente en la interfaz del sistema (ej., en la barra de navegación, el pie de página, o una sección de "Ayuda") que dirija al usuario a esta nueva página de documentación. Este enlace debe ser intuitivo (ej., "Documentación API", "Guía de Integración").
+
+Diseño Coherente: Asegurar que la página de documentación tenga una apariencia y navegación coherentes con el resto de la interfaz del "Interface Excellence Dashboard".
+
