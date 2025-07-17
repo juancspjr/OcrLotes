@@ -1,0 +1,38 @@
+{
+  "archivos_procesados": [
+    {
+      "bancoorigen": "BANCO DE VENEZUELA",
+      "caption": "",
+      "concepto": "PagomovilBDV Personas 2",
+      "datosbeneficiario": {
+        "banco_destino": "BANCO MERCANTIL Concepto",
+        "cedula": "24609941",
+        "telefono": ""
+      },
+      "extraction_stats": {
+        "confidence": 0.889,
+        "processing_time": 0,
+        "total_words": 22
+      },
+      "hora_exacta": "15-09",
+      "id_whatsapp": "882115544",
+      "lote_fecha": "2025-07-16 23:32:40",
+      "lote_id": "BATCH_20250716_233223",
+      "monto": "2250.00",
+      "nombre_archivo": "BATCH_20250716_233223_f8f130e1_056_20250716-J--882115544@lid_Juan_15-09_20250716_233223_498.jpg",
+      "nombre_usuario": "Juan",
+      "numero_llegada": 56,
+      "otro": "",
+      "pago_fecha": "08/07/2025",
+      "referencia": "003162521173",
+      "texto_total_ocr": "PagomovilBDV Personas 2.250,00 Bs Fecha : 08/07/ 2025 Operacion : 003162521173 1 Identificacion : 24609941 Origen : 0102 **** 0938 Destino : 0424 /0/ 4539 Banco : 0105 = BANCO MERCANTIL Concepto : pagos"
+    }
+  ],
+  "metadata": {
+    "fecha_extraccion": "2025-07-16T23:32:40.626641",
+    "lote_id": "BATCH_20250716_233223",
+    "tipo_extraccion": "lote_especifico",
+    "total_archivos": 1,
+    "version_sistema": "1.0"
+  }
+}

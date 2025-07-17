@@ -1,0 +1,30 @@
+MANDATO OPTIMIZADO PARA CORRECCIONES EN REPLIT (AHORRO DE CRÉDITOS Y PRECISIÓN)
+OBJETIVO PRINCIPAL DE ESTA SOLICITUD: Asegurar que el campo caption, cuyo valor se extrae correctamente de la imagen original y se encuentra en la representación del lote procesado (que no debe ser modificada porque está bien), se mantenga íntegro y se refleje correctamente en el JSON del historial (resultados_BATCH_*.json) y en cualquier visualización del historial, evitando que aparezca en blanco ("").
+
+1. CONTEXTO MÍNIMO Y RELEVANTE DEL PROBLEMA (Indispensable para el Diagnóstico)
+Ubicación/Sección del Código Afectado: (Aquí necesito tu ayuda para que la IA pueda investigar) Debe ser la lógica donde se leen los datos del lote procesado (que tiene el caption correcto) y se utilizan para construir o actualizar el JSON del historial (resultados_BATCH_*.json). Esto podría estar en un módulo de manejo de datos, una función de guardado, o en la API que expone los datos del historial.
+
+Extracto de Código Actual Relevante (¡SOLO LAS LÍNEAS DIRECTAMENTE INVOLUCRADAS!):
+
+Python
+
+# Pega aquí el snippet de código (5-20 líneas, si es posible) donde se realiza la
+# lectura de los datos de un lote procesado (que tiene el caption correcto)
+# y su posterior escritura o transformación para el JSON del historial (resultados_BATCH_*.json).
+# Este es el punto crucial que la IA debe "investigar" para encontrar el error.
+# SIN ESTE CÓDIGO, LA IA NO PUEDE PROCEDER CON LA INVESTIGACIÓN.
+Comportamiento Actual Observado: El caption es capturado correctamente desde la imagen y está presente en el JSON que representa el lote procesado. Sin embargo, al momento de consolidar o guardar esta información para el historial, el caption en el JSON del historial (resultados_BATCH_*.json) aparece vacío (""). El valor se pierde en la transición al historial.
+
+Comportamiento Esperado (RESULTADO BLINDADO): El campo caption en el JSON del historial (resultados_BATCH_*.json) debe contener el mismo valor que fue extraído de la imagen y que está presente en la representación intermedia del lote procesado.
+
+2. TIPO DE SOLUCIÓN REQUERIDA Y ÉNFASIS EN EFICIENCIA
+Tipo de Solución: Snippet de código Python corregido para la lógica de transferencia/guardado del caption desde la representación del lote procesado hacia el historial.
+
+Formato de Entrega: Directamente el código corregido con comentarios breves, indicando dónde insertarlo o modificarlo.
+
+Énfasis en Consumo de Créditos (IMPORTANTE PARA REPLIT):
+
+Prioriza soluciones con baja complejidad computacional.
+
+(No aplica time.sleep() directamente aquí, ya que el problema es de integridad de datos, no de bucles de CPU).
+

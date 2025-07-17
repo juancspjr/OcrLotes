@@ -2217,6 +2217,13 @@ def api_extract_results():
                 numero_llegada_corregido = total_archivos - index  # Último archivo = número mayor
                 tracking_params['numero_llegada'] = numero_llegada_corregido
                 
+                # ✅ CORRECCIÓN CRÍTICA CAPTION: Usar caption preservado en lugar de tracking_params
+                # REASON: Variable caption ya contiene valor correcto preservado desde metadata
+                # IMPACT: Caption original se mantiene íntegro en JSON del historial
+                # CAUSA RAÍZ: tracking_params['caption'] no preservaba correctamente el valor original
+                if caption:
+                    tracking_params['caption'] = caption
+                
                 # Pequeña pausa para evitar 100% CPU usage
                 import time
                 time.sleep(0.01)  # 10ms pausa para eficiencia de créditos
@@ -2229,7 +2236,7 @@ def api_extract_results():
                     'nombre_archivo': nombre_archivo,
                     'id_whatsapp': tracking_params.get('id_whatsapp', ''),      # MANDATO: Parámetro de seguimiento
                     'nombre_usuario': tracking_params.get('nombre_usuario', ''), # MANDATO: Parámetro de seguimiento
-                    'caption': caption,
+                    'caption': tracking_params.get('caption', ''),              # ✅ CORRECCIÓN CRÍTICA: Usar caption preservado
                     'hora_exacta': tracking_params.get('hora_exacta', ''),      # MANDATO: Parámetro de seguimiento
                     'numero_llegada': tracking_params.get('numero_llegada', 0), # MANDATO: Parámetro de seguimiento NUEVO
                     'otro': campos_empresariales.get('otro', ''),
