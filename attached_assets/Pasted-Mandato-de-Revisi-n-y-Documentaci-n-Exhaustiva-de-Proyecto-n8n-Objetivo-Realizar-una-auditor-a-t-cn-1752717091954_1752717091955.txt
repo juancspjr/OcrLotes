@@ -1,0 +1,146 @@
+Mandato de Revisión y Documentación Exhaustiva de Proyecto n8n
+Objetivo: Realizar una auditoría técnica completa del proyecto n8n desplegado en un servidor local, enfocándose en la documentación de su API, la arquitectura subyacente y la identificación de archivos operativos. Se generará un informe detallado en formato Markdown.
+
+Alcance:
+
+Revisión y Documentación de la API:
+
+Identificación: Localizar y listar todas las API endpoints expuestas por la aplicación.
+
+Funcionalidad: Describir la función de cada endpoint.
+
+Métodos HTTP: Especificar los métodos HTTP permitidos (GET, POST, PUT, DELETE, etc.).
+
+Parámetros: Detallar los parámetros de entrada requeridos y opcionales (query, path, body), incluyendo tipo de dato y ejemplos.
+
+Respuestas: Describir los posibles formatos de respuesta (JSON, etc.) para casos de éxito y error, incluyendo códigos de estado HTTP relevantes y ejemplos.
+
+Autenticación/Autorización (API Key): Documentar cómo se utiliza la API Key, si aplica (ej. en headers, query params), su formato esperado y dónde se configura o gestiona.
+
+Ejemplos de Uso: Proporcionar ejemplos claros de cómo interactuar con cada endpoint.
+
+Herramientas: Se espera que esta documentación sea generada para consumo por usuarios o desarrolladores externos que deseen interactuar con la API.
+
+Verificación de Arquitectura:
+
+Confirmar la arquitectura declarada: Flask + PostgreSQL + ONNX RT.
+
+Describir cómo interactúan estos componentes entre sí.
+
+Identificar la ubicación y configuración de cada componente.
+
+Identificación y Descripción de Archivos Operativos:
+
+Listar los archivos y directorios clave que componen la aplicación en el servidor local.
+
+Describir brevemente la función de cada archivo o directorio relevante dentro de la estructura del proyecto (ej. app.py, config.py, directorios de modelos, etc.).
+
+Uso de API Key:
+
+Confirmar si se utiliza una API Key para autenticación o acceso.
+
+Describir dónde se almacena (ej. variables de entorno, archivo de configuración), cómo se valida y qué archivos o módulos están involucrados en su gestión.
+
+Explicar la estructura o formato de la API Key, si es relevante.
+
+Producto Final:
+
+Un reporte completo en formato Markdown (.md) que contenga las siguientes secciones detalladas:
+
+1. Resumen Ejecutivo: Breve descripción del propósito del reporte y hallazgos clave.
+
+2. Documentación de la API:
+
+Descripción general de la API.
+
+Listado de Endpoints (con todos los detalles especificados en el punto 1 del Alcance).
+
+Ejemplo:
+
+Markdown
+
+### Endpoint: `/api/v1/predict`
+
+**Descripción:** Realiza una predicción utilizando el modelo ONNX Runtime.
+
+**Método:** `POST`
+
+**Parámetros (Body - JSON):**
+- `data` (requerido, array de float): Arreglo de datos de entrada para la predicción.
+    **Ejemplo:** `[1.2, 3.4, 5.6]`
+- `model_name` (opcional, string): Nombre específico del modelo a usar si hay múltiples.
+    **Ejemplo:** `"modelo_v1"`
+
+**Headers:**
+- `X-API-Key` (requerido, string): Clave de autenticación.
+
+**Ejemplo de Request (cURL):**
+```bash
+curl -X POST \
+  http://localhost:5000/api/v1/predict \
+  -H 'Content-Type: application/json' \
+  -H 'X-API-Key: TU_API_KEY_AQUI' \
+  -d '{
+    "data": [1.2, 3.4, 5.6]
+  }'
+Respuestas:
+
+200 OK (JSON): Predicción exitosa.
+Ejemplo:
+
+JSON
+
+{
+  "status": "success",
+  "prediction": [0.85, 0.15],
+  "model_used": "default_model"
+}
+400 Bad Request (JSON): Parámetros inválidos.
+Ejemplo:
+
+JSON
+
+{
+  "status": "error",
+  "message": "Datos de entrada inválidos."
+}
+401 Unauthorized (JSON): API Key inválida o faltante.
+Ejemplo:
+
+JSON
+
+{
+  "status": "error",
+  "message": "API Key no proporcionada o inválida."
+}
+3. Arquitectura del Sistema:
+
+Diagrama o descripción textual detallada de la interacción entre Flask, PostgreSQL y ONNX RT.
+
+Explicación del flujo de datos.
+
+Componentes específicos y su rol.
+
+4. Archivos y Estructura del Sistema:
+
+Listado jerárquico de los directorios y archivos principales.
+
+Descripción de la función de cada archivo o módulo relevante.
+
+5. Uso y Gestión de la API Key:
+
+Detalle de cómo se implementa la seguridad con la API Key.
+
+Archivos involucrados en su gestión y validación.
+
+Método de almacenamiento (ej. variables de entorno en .env, configuración, etc.).
+
+6. Conclusiones y Recomendaciones (Opcional):
+
+Observaciones finales y sugerencias para futuras mejoras o consideraciones de seguridad/rendimiento.
+
+Restricciones:
+
+No modificar el código fuente de la aplicación n8n a menos que sea estrictamente necesario para obtener la información para la documentación, y en tal caso, se debe revertir cualquier cambio.
+
+La única sección que puede y debe ser modificada extensivamente es la "Documentación de la API" para reflejar con el mayor detalle posible todos los endpoints, parámetros y respuestas.
